@@ -1,0 +1,16 @@
+!!!
+html
+  head
+    title=title
+
+    script(language='javascript', type='text/javascript').
+      config = !{config};
+
+    each script in scripts
+      script(src=script)
+    
+    each styleSheet in styleSheets
+      link(href=styleSheet, rel='stylesheet')
+
+  body
+    

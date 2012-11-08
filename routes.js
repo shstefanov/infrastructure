@@ -1,9 +1,5 @@
 var _ = require("underscore");
 
-var clientConfig = require("../config/clientConfig.js");
-var config = require("../config");
-
-
 var methods = {
   get:"get",
   post:"post",
@@ -11,17 +7,19 @@ var methods = {
   del:"del"
 };
 
-module.exports = function(server, pages, bundles){ //all bundles
+module.exports = function(server, pages, config){ //all bundles
 
   pages.forEach(function(page){
     server[methods[page.method]](page.route, function(req, res, next){
+      var pageConfig = JSON.stringify(_.extend(config.clientConfig, page.config || {}));
+      console.log("pageConfig",config);
 
       function go (customData) {
-        res.render(page.template, {
+        res.render("layout.jade", {
           scripts: page.staticScripts,
           styleSheets: page.styleSheets || config.defaultStyleSheets, 
           title: typeof page.title == "function"? page.title(req, res) : page.title,
-          config:JSON.stringify(_.extend(clientConfig, page.config || {})),
+          config:pageConfig,
           custom: JSON.stringify(customData || {}),
         });
       };

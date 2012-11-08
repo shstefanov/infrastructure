@@ -1,16 +1,10 @@
-var config = require("../config");
 var _ = require("underscore");
-var app = require("./app");
 
 var EventBus = function(){
   //private variables and initialization
   var users = [];
 
   var services = {};
-  var availableServices = config.availableServices;
-  availableServices.forEach(function(serviceName){
-    services[serviceName] = require(config.socketIoServicesFolder +"/"+ serviceName);
-  });
 
   //public variables
   _.extend(this, {
@@ -40,8 +34,8 @@ var EventBus = function(){
 };
 var eventBus = new EventBus();
 
-module.exports.connect = function(app, io){
-  
+module.exports.connect = function(app, io, config, services){
+
   var sockets = io.sockets
   return function(err, socket, session){
     socket.on("ok", function(data){socket.emit("ok", data);});
@@ -55,6 +49,6 @@ module.exports.connect = function(app, io){
 
 module.exports.disconnect = function(app, io){
   return function(){
-    
+    console.log("disconnected");
   };
 };

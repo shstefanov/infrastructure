@@ -1,0 +1,21 @@
+{
+  "name": "infrastructure",
+  "version": "0.0.1",
+  "private": true,
+  
+  "dependencies": {
+    "express": "latest",
+    "socket.io": "latest",
+    "socket.io-client": "latest",
+    "session.socket.io": "latest",
+    "browserify": "latest",
+    "mongoose": "latest",
+    "connect-mongo": "latest",
+    "jade": "latest",
+    "underscore":"latest",
+    "colors": "latest"
+  },
+  "devDependencies": {
+    "jasmine-node": "latest"
+  }
+}
