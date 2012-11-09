@@ -12,12 +12,13 @@ html
     each script in libs
       script(src=script)
     
-    script(src='client_init.js');
+    script(src='core.js');
 
     each bundle in bundles
       script(src=bundle)
     
 
-  body.box-shadow
-    .header(style='width:80%; height:280px;')
+  body
+    if(bodyAdd)
+      script=bodyAdd
     

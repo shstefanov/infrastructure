@@ -1,4 +1,5 @@
 var _ = require("underscore");
+var helpers = require("./helpers");
 
 var methods = {
   get:"get",
@@ -7,12 +8,18 @@ var methods = {
   del:"del"
 };
 
-module.exports = function(server, pages, config){ //all bundles
+module.exports = function(server, config){ //all bundles
+
+  var pages = helpers.loadDirAsArray(config.routesFolder);
+
 
   pages.forEach(function(page){
 
     server[methods[page.method]](page.route, function(req, res, next){
       var pageConfig = JSON.stringify(_.extend(config.clientConfig, page.config || {}));
+
+
+      console.log("pages:", page.bundles);
 
       function go (customData) {
         res.render("init.jade", {
@@ -22,6 +29,7 @@ module.exports = function(server, pages, config){ //all bundles
           title: typeof page.title == "function"? page.title(req, res) : page.title,
           config:pageConfig,
           custom: JSON.stringify(customData || {}),
+          bodyAdd:page.bodyAdd || ""
         });
       };
 
