@@ -1,0 +1,22 @@
+!!!
+html
+  head
+    title=title
+
+    script(language='javascript', type='text/javascript').
+      config = !{config};
+
+
+    each script in libs
+      script(src=script)
+    
+    script(src='client_init.js');
+
+    each bundle in bundles
+      script(src=bundle)
+    
+    each styleSheet in styleSheets
+      link(href=styleSheet, rel='stylesheet')
+
+  body
+    

@@ -8,12 +8,12 @@
     "socket.io": "latest",
     "socket.io-client": "latest",
     "session.socket.io": "latest",
-    "browserify": "latest",
     "mongoose": "latest",
     "connect-mongo": "latest",
     "jade": "latest",
     "underscore":"latest",
-    "colors": "latest"
+    "colors": "latest",
+    "walk":"latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"

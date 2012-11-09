@@ -1,6 +1,7 @@
 var _ = require("underscore");
 var path = require("path");
-var browserify = require("browserify");
+var browserify = require(__dirname+"/modified_modules/browserify");
+var walk = require("walk");
 var colors = require("colors");
 
 var helpers = require("./helpers");
@@ -59,6 +60,50 @@ module.exports = function(express, config){
 
     //Set static file server
     app.use(express.static(config.staticFolder));
+
+
+
+
+
+    //Client initializer bundle    __dirname+"/client/client_init.js",
+    //With browserify modification to include files runtime from given strings
+    //Needs all directory to be loaded recursively in separate file
+
+    var clientInitializer = browserify({
+      mount: "/client_init.js",
+      watch: config.bundles.watch,
+      cache: config.bundles.cache
+    });
+    var files = [];
+    var walker  = walk.walk(__dirname+'/client', { followLinks: false });
+
+    var clientDir = "/client";
+    walker.on('file', function(root, stat, next) {
+      // Add this file to the list of files
+      clientInitializer.require(root+"/"+stat.name);
+      file = (root+"/"+stat.name).replace(__dirname+clientDir, ".");
+      files.push(file);
+      console.log(file);
+      next();
+    });
+    
+    walker.on("end", function(){
+      clientInitializer.addEntry(__dirname+"/client/client_init.js");
+      _.map(files, function(file){
+        return file.replace(__dirname, ".");
+      });
+      clientInitializer.prepend("__filelist = "+JSON.stringify(files)+";");
+      app.use(clientInitializer);
+    });
+
+
+
+
+
+
+
+
+
 
     //Set up javascript bundles
     bundles.forEach(function(bundle){
