@@ -10,6 +10,7 @@ var methods = {
 module.exports = function(server, pages, config){ //all bundles
 
   pages.forEach(function(page){
+
     server[methods[page.method]](page.route, function(req, res, next){
       var pageConfig = JSON.stringify(_.extend(config.clientConfig, page.config || {}));
 
@@ -17,7 +18,7 @@ module.exports = function(server, pages, config){ //all bundles
         res.render("init.jade", {
           bundles:page.bundles,
           libs:page.libs,
-          styleSheets: page.styleSheets || config.defaultStyleSheets, 
+          styleSheets: page.styleSheets, 
           title: typeof page.title == "function"? page.title(req, res) : page.title,
           config:pageConfig,
           custom: JSON.stringify(customData || {}),

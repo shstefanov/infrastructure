@@ -6,6 +6,8 @@ html
     script(language='javascript', type='text/javascript').
       config = !{config};
 
+    each styleSheet in styleSheets
+      link(rel="stylesheet/less", type="text/css", href=styleSheet)
 
     each script in libs
       script(src=script)
@@ -15,8 +17,7 @@ html
     each bundle in bundles
       script(src=bundle)
     
-    each styleSheet in styleSheets
-      link(href=styleSheet, rel='stylesheet')
 
-  body
+  body.box-shadow
+    .header(style='width:80%; height:280px;')
     

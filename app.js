@@ -61,11 +61,7 @@ module.exports = function(express, config){
     //Set static file server
     app.use(express.static(config.staticFolder));
 
-
-
-
-
-    //Client initializer bundle    __dirname+"/client/client_init.js",
+    //Client initializer bundle 
     //With browserify modification to include files runtime from given strings
     //Needs all directory to be loaded recursively in separate file
 
@@ -83,7 +79,6 @@ module.exports = function(express, config){
       clientInitializer.require(root+"/"+stat.name);
       file = (root+"/"+stat.name).replace(__dirname+clientDir, ".");
       files.push(file);
-      console.log(file);
       next();
     });
     
@@ -95,15 +90,6 @@ module.exports = function(express, config){
       clientInitializer.prepend("__filelist = "+JSON.stringify(files)+";");
       app.use(clientInitializer);
     });
-
-
-
-
-
-
-
-
-
 
     //Set up javascript bundles
     bundles.forEach(function(bundle){
@@ -125,6 +111,9 @@ module.exports = function(express, config){
       bundler.require(bundle.entryPoint);
       app.use(bundler);
     });
+
+    //less middleware setup
+    require("./less.js")(app, config);
 
     //Setting up logger
     app.use(express.logger('dev'));

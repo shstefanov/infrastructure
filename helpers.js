@@ -19,3 +19,12 @@ module.exports.loadDirAsObject = function(dir){
   });
   return obj;
 };
+
+module.exports.loadFilenamesInDir = function(dir, callback){
+
+  var files = fs.readdirSync(dir);
+  files.forEach(function(file){
+    var style = fs.readFileSync(dir+"/"+file, "utf8");
+    callback(style);
+  });
+};
