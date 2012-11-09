@@ -9,7 +9,6 @@ var EventBus = function(){
   //public variables
   _.extend(this, {
     add:function(socket, session){
-      console.log("socket");
       //Must be new User(socket, session);
       var user = {
         socket:socket,
@@ -49,6 +48,6 @@ module.exports.connect = function(app, io, config, services){
 
 module.exports.disconnect = function(app, io){
   return function(){
-    console.log("disconnected");
+    
   };
 };

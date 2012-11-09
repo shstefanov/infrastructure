@@ -2,7 +2,6 @@ var express = require('express')
   , socketio = require("socket.io")
   , SessionSockets = require('session.socket.io')
   , mongoose = require("mongoose")
-  , browserify = require("browserify")
   , http = require('http')
   , path = require('path');
 

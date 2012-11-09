@@ -12,11 +12,11 @@ module.exports = function(server, pages, config){ //all bundles
   pages.forEach(function(page){
     server[methods[page.method]](page.route, function(req, res, next){
       var pageConfig = JSON.stringify(_.extend(config.clientConfig, page.config || {}));
-      console.log("pageConfig",config);
 
       function go (customData) {
-        res.render("layout.jade", {
-          scripts: page.staticScripts,
+        res.render("init.jade", {
+          bundles:page.bundles,
+          libs:page.libs,
           styleSheets: page.styleSheets || config.defaultStyleSheets, 
           title: typeof page.title == "function"? page.title(req, res) : page.title,
           config:pageConfig,
