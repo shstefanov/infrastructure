@@ -1,4 +1,7 @@
 var _ = require("underscore");
+var colors = require("colors");
+
+var helpers = require("./helpers");
 
 var EventBus = function(){
   //private variables and initialization
@@ -33,21 +36,32 @@ var EventBus = function(){
 };
 var eventBus = new EventBus();
 
-module.exports.connect = function(app, io, config, services){
+module.exports.connect = function(app, io, config){
 
   var sockets = io.sockets
+  io.clientsCount++;
+
+  //Loading available services
+  var services = helpers.loadDirAsObject(config.socketIoServicesFolder);
+
+  console.log(("Clients connected:".blue+"[".yellow+io.clientsCount+"]".yellow));
+
+  //On connection handler
   return function(err, socket, session){
-    socket.on("ok", function(data){socket.emit("ok", data);});
+
     socket.user = eventBus.add(socket, session);
 
     //Broadcasting to all connected
     sockets.emit("visitorsOnline", io.clientsCount);
+
+    //Sending desconnect event to the handler
     socket.on("disconnect", module.exports.disconnect);
   };
 };
 
 module.exports.disconnect = function(app, io){
   return function(){
+    console.log(("Clients connected:"+"[".red+io.clientsCount+"]".red));
     
   };
 };

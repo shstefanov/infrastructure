@@ -8,4 +8,3 @@ __filelist.forEach(function(file){
 });
 
 module.exports = files.store;
-

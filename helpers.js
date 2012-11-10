@@ -2,14 +2,17 @@ var fs = require("fs");
 var _ = require("underscore");
 var walk = require("walk");
 
-module.exports.loadDirAsArray = function(dir){
+
+//Read all .js files in given directory and return array of required modules 
+module.exports.loadDirAsArray = function(dir){ //TBD - make callback and give the module to it
   return _.filter(_.map(fs.readdirSync(dir), function(filename){
     var module = filename.split(".").pop() == "js"? require(dir+"/"+filename) : false;
     if(typeof module == "object") module._filename = filename;
     return module;
-  }), function(module){return module;});
+  }), function(module){return module;}); //Here will be the callback
 };
 
+//Read all .js files in given directory and return object of type {filename:module, ...} (without extensions)
 module.exports.loadDirAsObject = function(dir){
   var obj = {};
   var modules =  _.each(fs.readdirSync(dir), function(filename){
@@ -21,8 +24,9 @@ module.exports.loadDirAsObject = function(dir){
   return obj;
 };
 
-module.exports.loadFilenamesInDir = function(dir, callback){
 
+//Reads all files in given directory and returns array with contents of files in text utf8 format
+module.exports.loadFilenamesInDir = function(dir, callback){
   var files = fs.readdirSync(dir);
   files.forEach(function(file){
     var style = fs.readFileSync(dir+"/"+file, "utf8");
@@ -30,6 +34,7 @@ module.exports.loadFilenamesInDir = function(dir, callback){
   });
 };
 
+//Wraps text in the file and wraps lines to become walid javascript string object (to be used in browser)
 module.exports.plainTextContentWrapper = function(body, file){
   var prepend = "module.exports = \n";
   var line_beginning = "\"";
@@ -42,6 +47,7 @@ module.exports.plainTextContentWrapper = function(body, file){
   return code;
 };
 
+//Loads all filenames recursively and returns array with filepaths. Gives the result  to callback
 module.exports.loadDirTreeAsArray = function(dir, callback){
   var files = [];
   var walker  = walk.walk(dir, { followLinks: false });
