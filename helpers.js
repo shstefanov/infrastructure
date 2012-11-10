@@ -33,7 +33,7 @@ module.exports.loadFilenamesInDir = function(dir, callback){
 module.exports.plainTextContentWrapper = function(body, file){
   var prepend = "module.exports = \n";
   var line_beginning = "\"";
-  var line_ending = "\"+\n";
+  var line_ending = "\\n\"+\n";
   var append = ";\n";
   var lines = body.split("\n");
   var mod = _.map(lines, function(line){return line_beginning+line+line_ending;});
