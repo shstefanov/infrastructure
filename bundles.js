@@ -10,7 +10,6 @@ module.exports = function(app, config, bundles){
 
   //Client initializer bundle 
   //With browserify modification to include files runtime from given strings
-  //Needs all directory to be loaded recursively in separate file
 
   //System core bundle
   bundles.push({
@@ -26,10 +25,16 @@ module.exports = function(app, config, bundles){
 
     var parts = bundle.entryPoint.split("/");
     parts.pop();
-    var path = parts.join("/");
-    console.log("joined bundle path", path);
+    var _path = parts.join("/");
+    //console.log("joined bundle path", path);
 
-    var bundleDirTree = helpers.loadDirTreeAsArray(path, function(files){
+    var bundleDirTree = helpers.loadDirTreeAsArray(_path, function(files){
+      var filelist = _.map(files, function(file){
+        return file.replace(_path, ".");
+      });
+      var ep = bundle.entryPoint.replace(_path, ".");
+      var list = _.without(filelist,ep);
+
       //Creating the bundler
       var bundler = browserify({
         mount: bundle.mountPoint || bundle._filename,
@@ -37,10 +42,10 @@ module.exports = function(app, config, bundles){
         cache: bundle.cache || config.bundles.cache
       });
       bundler.addEntry(bundle.entryPoint);
-      bundler.prepend( "var __filelist = "+JSON.stringify(files)+";" );
+      bundler.prepend( "var __filelist = "+JSON.stringify(list)+";var files; var RM;" );
       bundler.register(".jade", helpers.plainTextContentWrapper);
       files.forEach(function(file){
-        bundler.require(file);
+        bundler.require(path.normalize(file));
       });
       app.use(bundler);
     });

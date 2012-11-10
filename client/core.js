@@ -1,1 +1,4 @@
-console.log("core");
+var files = require("./files");
+console.log(files);
+
+

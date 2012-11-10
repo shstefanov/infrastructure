@@ -12,12 +12,12 @@ html
     each script in libs
       script(src=script)
     
-    script(src='core.js');
+    script(src='core.js')
 
     each bundle in bundles
       script(src=bundle)
       
-  body.layout
+  body
     if(bodyAdd)
       script=bodyAdd
     
