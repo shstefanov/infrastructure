@@ -13,6 +13,13 @@ module.exports = function(config){
   var db = mongoose.createConnection(config.db.host, config.db.dbName)
   .on("open", function(){
 
+    //DB error handler - to console
+    db.on('error', console.error.bind(console, 'db connection error:'));
+
+    //Initializing data models
+    var dbInitializer = require("./models.js");
+    dbInitializer(mongoose, config);
+
     //Initializing and setting up express
     var appInitializer = require("./app");
     var app  = appInitializer(express, config);
