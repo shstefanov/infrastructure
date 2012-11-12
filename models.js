@@ -9,7 +9,6 @@ module.exports = function(mongoose, config, app){
   var models = helpers.loadDirAsObject(config.modelsFolder);
 
   var defined = {}; "//{name:prototype}"
-  var notDefined = [];
   var createModel = function(name, schema){
     
    
@@ -40,6 +39,7 @@ module.exports = function(mongoose, config, app){
       }
     }
 
+    //The schema passes trough all above and deserves to be rised to real model
     //Creating the schema
     var model = new Schema();
     model.add(schema);
@@ -48,10 +48,7 @@ module.exports = function(mongoose, config, app){
     mongoose.model(name, Model);
     defined[name] = model;
 
-    //And if there are more undefined models - defined them
-    if(notDefined.length){
 
-    }
   };
 
   for(name in models)
