@@ -17,8 +17,13 @@ module.exports = function(config){
     db.on('error', console.error.bind(console, 'db connection error:'));
 
     //Initializing data models
+    //models = {
+      //defined:{mongoosemodels}
+      //schemas:{mongoose schemas} //from config.modelsFolder
+      //}
     var dbInitializer = require("./models.js");
-    dbInitializer(mongoose, config);
+    var models = dbInitializer(mongoose, config);
+
 
     //Initializing and setting up express
     var appInitializer = require("./app");
@@ -36,7 +41,7 @@ module.exports = function(config){
 
       //Initializing and setting up the incoming connections
       socketInitializer = require("./socket").connect;
-      sio.on("connection", socketInitializer(app, io, config));
+      sio.on("connection", socketInitializer(app, io, config, models));
     });
   });
 

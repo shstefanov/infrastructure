@@ -13,7 +13,7 @@ module.exports = function(mongoose, config, app){
   //Declare all models
   for(key in models){
     schemas[key] = new Schema();
-    defined[key] = mongoose.model(key, schemas[key]);
+    
     console.log("registering schema and model:", key);
   }
     
@@ -21,22 +21,30 @@ module.exports = function(mongoose, config, app){
     //building schemas
     var schema = {};
     var model = models[key];
+
     for(prop in model){
       var value = _.isArray(model[prop])? model[prop][0] : model[prop];
-      console.log("analizing propertie: ", prop, value);
+      
       if(typeof value === "string" && models[value]){ //there is such model
-        console.log("found model: ", value);
         schema[prop] = _.isArray(model[prop])? [schemas[value]] : schemas[value];
-        console.log("propertie: ", prop, "is", schemas[value]);
+        //console.log("creating propertie in",key, "propertie name:", prop, "new propertie value: ", schema[prop]);
       }
       else{
         schema[prop] = value;
       }
-      schemas[key].add(schema);
     }
   }
 
+  //So, all models schemas must be created, creating models
+  for (key in schemas){
+    console.log("|");
+    console.log("creating model: ", key);
+    defined[key] = mongoose.model(key, schemas[key]);
+  }
 
-
+  return {
+    defined:defined,
+    models:models
+  }
 };
 
