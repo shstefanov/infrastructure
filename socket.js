@@ -36,18 +36,24 @@ var EventBus = function(){
 };
 var eventBus = new EventBus();
 
-module.exports.connect = function(app, io, config){
+//called in index.js (socketInitializer)
+module.exports.connect = function(app, io, config, models){ 
 
   var sockets = io.sockets
   io.clientsCount++;
 
   //Loading available services
   var services = helpers.loadDirAsObject(config.socketIoServicesFolder);
+  //Loading db socket.io service
+  var dbService = require(__dirname+"/dbService.js");
 
   console.log(("Clients connected:".blue+"[".yellow+io.clientsCount+"]".yellow));
 
   //On connection handler
   return function(err, socket, session){
+
+    //Binding socket to db service
+    dbService(socket, app, config, models.defined);
 
     socket.user = eventBus.add(socket, session);
 
