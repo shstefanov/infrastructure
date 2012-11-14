@@ -21,6 +21,7 @@ module.exports = function(express, config){
     app.use(express.favicon());
 
     //Setting up template engine
+    //Server will render only init.jade as system initialization template
     app.set('view engine', 'jade');
     app.set('views', __dirname);
 
@@ -35,17 +36,8 @@ module.exports = function(express, config){
       store: sessionStore
     }));
 
-    //Setting up bundles
-    require("./bundles")(app, config);
-
-    //less middleware setup
-    require("./less.js")(app, config);
-
     //Setting up logger
     app.use(express.logger('dev'));
-
-    //Adding the pages
-    require("./routes")(app, config);
 
     //Set static file server
     app.use(express.static(config.staticFolder));

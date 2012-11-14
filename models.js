@@ -1,6 +1,7 @@
 var helpers = require("./helpers");
 var _ = require("underscore");
 
+//Called in index.js
 module.exports = function(mongoose, config, app){
 
   var Schema = mongoose.Schema;
@@ -9,42 +10,53 @@ module.exports = function(mongoose, config, app){
 
   var defined = {}; //{name:prototype}
   var schemas = {};
+
+  //Will be stringifyed when iterating over models
+  var stringified = {};
   
   //Declare all models
   for(key in models){
     schemas[key] = new Schema();
-    
-    console.log("registering schema and model:", key);
   }
     
+
   for(key in models){
+    var modelName = key;
+    stringified[modelName] = {};
     //building schemas
     var schema = {};
-    var model = models[key];
+    var model = models[modelName];
 
     for(prop in model){
-      var value = _.isArray(model[prop])? model[prop][0] : model[prop];
-      
+      var propertieName = prop;
+      var isArray = _.isArray(model[propertieName]);
+      var value = isArray? model[propertieName][0] : model[propertieName];
+
       if(typeof value === "string" && models[value]){ //there is such model
-        schema[prop] = _.isArray(model[prop])? [schemas[value]] : schemas[value];
-        //console.log("creating propertie in",key, "propertie name:", prop, "new propertie value: ", schema[prop]);
+        schema[propertieName] = _.isArray(model[propertieName])? [schemas[value]] : schemas[value];
+        stringified[modelName][propertieName] = isArray? [value] : value;
       }
+
+      else if (helpers.coreTypesStringify(value)) {//It is not defined model, so may be it's core type
+        var typeString = helpers.coreTypesStringify(value);
+        stringified[modelName][propertieName] = isArray? [typeString]: typeString;
+      }
+
       else{
         schema[prop] = value;
+        stringified[modelName][propertieName] = value;
       }
     }
   }
 
   //So, all models schemas must be created, creating models
-  for (key in schemas){
-    console.log("|");
-    console.log("creating model: ", key);
+  for (key in schemas)
     defined[key] = mongoose.model(key, schemas[key]);
-  }
 
   return {
     defined:defined,
-    models:models
+    schemas:models,
+    stringified:stringified
   }
 };
 

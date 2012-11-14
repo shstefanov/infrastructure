@@ -8,19 +8,25 @@ var methods = {
   update:"update",
   remove:"remove",
 
-
-  create:function(model, data, socket){
-    var instance = new models[model](data)
+  create:function(model, data){
+    var request = data;
+    var instance = new models[model](data.body)
     .save(function(err, result){
-      if(err){socket.emit("db",{model:model,error:err});return;}
-      socket.emit("db",{model:model,body:result});
+      var response = request;
+      response.body = result;
+      if(err){
+        response.error = err;
+        socket.emit("db",response);
+        return;
+      }
+      socket.emit("db",response);
     });
   }
 
 };
 
 //Called in socket.js (dbServiceInitializer)
-module.exports.db = function(socket, _app, _config, _models){
+module.exports = function(socket, _app, _config, _models){
   app = _app, config = _config, models = _models;
 
   socket.on("db", function(data){
@@ -28,7 +34,6 @@ module.exports.db = function(socket, _app, _config, _models){
     var action = data.action;
     var body = data.body;
     var method = methods[action];
-    var requestId = data.requestId; //Needs to handle the right response when creating new objects
     
     if(!models[model])    {socket.emit("db", {error:  "Can't find model: " +  model }); return;}
     if(!methods[method])  {socket.emit("db", {error:  "Invalid db action: "+  action}); return;}
@@ -42,8 +47,8 @@ module.exports.db = function(socket, _app, _config, _models){
       });
     }
     if(typeof method === "function"){
-      method(model, body, socket);
-    });
+      method(model, data);
+    }
     
   });
 

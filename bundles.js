@@ -4,10 +4,12 @@ var browserify = require(__dirname+"/modified_modules/browserify");
 
 var helpers = require("./helpers");
 
-module.exports = function(app, config, bundles){
+//Called in index.js
+module.exports = function(app, models, config){
+
+  console.log("bundles:", models);
 
   var bundles = helpers.loadDirAsArray(config.bundlesFolder);
-
 
   //System core bundle
   bundles.push({
@@ -47,8 +49,12 @@ module.exports = function(app, config, bundles){
       //Setting bundle's start point
       bundler.addEntry(bundle.entryPoint);
 
+      var prepends = "var __filelist = "+JSON.stringify(list)+";var files; var RM;";
+      if(bundle.bundleName == "core");
+        prepends+= "var __models = "+JSON.stringify(models)+";";
+
       //Adding array with local paths of all files in bundle's derectory tree
-      bundler.prepend( "var __filelist = "+JSON.stringify(list)+";var files; var RM;" );
+      bundler.prepend( prepends );
 
       //Registering template files, to be included in the bundle
       bundler.register(".jade", helpers.plainTextContentWrapper);

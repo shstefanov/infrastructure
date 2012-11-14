@@ -16,22 +16,37 @@ module.exports = function(config){
     //DB error handler - to console
     db.on('error', console.error.bind(console, 'db connection error:'));
 
-    //Initializing data models
-    //models = {
-      //defined:{mongoosemodels}
-      //schemas:{mongoose schemas} //from config.modelsFolder
-      //}
-    var dbInitializer = require("./models.js");
-    var models = dbInitializer(mongoose, config);
+    /*
+    Initializing data models
+      models = {
+        defined:{mongoosemodels}
+        schemas:{mongoose schemas} //from config.modelsFolder
+    }*/
+    var modelsInitializer = require("./models.js");
+    var models = modelsInitializer(mongoose, config);
 
 
     //Initializing and setting up express
     var appInitializer = require("./app");
     var app  = appInitializer(express, config);
 
+    //Setting up bundles
+    var bundlesInitializer = require("./bundles");
+    //console.log(models);
+    bundlesInitializer(app, models.stringified, config);
+
+    //Setting up less middleware setup
+    var lessInitializer = require("./less.js");
+    lessInitializer(app, config);
+
+    //Adding the pages
+    var routesInitializer = require("./routes");
+    routesInitializer(app, config);
+
     //Initializing and setting http server
     var server = http.createServer(app).listen(config.server.port, config.server.interface, function(){
       console.log("Server running at http://localhost:" + app.get('port'));
+
 
       //Initializing socket.io support
       var io = socketio.listen(server);
@@ -39,9 +54,9 @@ module.exports = function(config){
       io.set("log level", 0);
       var sio = new SessionSockets(io, app.sessionStore, app.cookieParser); //Set in ./app.js
 
-      //Initializing and setting up the incoming connections
-      socketInitializer = require("./socket").connect;
-      sio.on("connection", socketInitializer(app, io, config, models));
+      //Initializing and setting every incoming connection
+      socketServicesInitializer = require("./socket").connect;
+      sio.on("connection", socketServicesInitializer(app, io, config, models));
     });
   });
 

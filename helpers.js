@@ -58,3 +58,19 @@ module.exports.loadDirTreeAsArray = function(dir, callback){
   });
   walker.on("end", function(){callback(files);});
 };
+
+module.exports.coreTypesStringify = function(type){
+  var types = {
+    "String" : String,
+    "Number" : Number,
+    "Array" : Array,
+    "Boolean" : Boolean,
+    "Date" : Date,
+    "Object" :Object
+  }
+  for(key in types){
+    if(types[key] === type){
+      return key;
+    }
+  }
+};
