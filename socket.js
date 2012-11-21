@@ -44,6 +44,8 @@ module.exports.connect = function(app, io, config, models){
 
   //Loading available services
   var services = helpers.loadDirAsObject(config.socketIoServicesFolder);
+
+
   //Loading db socket.io service
   var dbService = require(__dirname+"/dbService.js");
 
@@ -54,6 +56,13 @@ module.exports.connect = function(app, io, config, models){
 
     //Binding socket to db service
     dbService(socket, app, config, models.defined);
+
+    //Binding socket to other services
+    for(name in services){
+      var serviceName = name;
+      socket.on(serviceName, services[serviceName]);
+    }
+
 
     socket.user = eventBus.add(socket, session);
 

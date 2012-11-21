@@ -34,13 +34,16 @@ module.exports = function(socket, _app, _config, _models){
     var action = data.action;
     var body = data.body;
     var method = methods[action];
+    var queryId = data.queryId;
     
-    if(!models[model])    {socket.emit("db", {error:  "Can't find model: " +  model }); return;}
-    if(!methods[method])  {socket.emit("db", {error:  "Invalid db action: "+  action}); return;}
+    if(!models[model])
+      {socket.emit(queryId || "db", {error:  "Can't find model: " +  model }); return;}
+    if(!methods[method])
+      {socket.emit(queryId || "db", {error:  "Invalid db action: "+  action}); return;}
 
     if(typeof method === "string"){
-      models[method](body, function(err, result){ //body is pattern
-        soclet.emit("db", {
+      models[methods[method]](body, function(err, result){ //body is pattern
+        socket.emit(reqId || "db", {
           model: model,
           body:result
         });

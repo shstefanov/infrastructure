@@ -6,7 +6,6 @@ module.exports = function(mongoose, config, app){
 
   var Schema = mongoose.Schema;
   var models = helpers.loadDirAsObject(config.modelsFolder);
-  //console.log(models);
 
   var defined = {}; //{name:prototype}
   var schemas = {};

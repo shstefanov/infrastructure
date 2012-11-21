@@ -32,7 +32,6 @@ module.exports = function(config){
 
     //Setting up bundles
     var bundlesInitializer = require("./bundles");
-    //console.log(models);
     bundlesInitializer(app, models.stringified, config);
 
     //Setting up less middleware setup

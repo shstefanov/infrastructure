@@ -7,8 +7,6 @@ var helpers = require("./helpers");
 //Called in index.js
 module.exports = function(app, models, config){
 
-  console.log("bundles:", models);
-
   var bundles = helpers.loadDirAsArray(config.bundlesFolder);
 
   //System core bundle
