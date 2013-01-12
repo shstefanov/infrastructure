@@ -1,6 +1,7 @@
 var _ = require("underscore");
 var path = require("path");
-var browserify = require(__dirname+"/modified_modules/browserify");
+//var browserify = require(__dirname+"/modified_modules/browserify");
+var browserify = require("browserify");
 
 var helpers = require("./helpers");
 

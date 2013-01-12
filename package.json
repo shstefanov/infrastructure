@@ -13,7 +13,8 @@
     "jade": "latest",
     "underscore":"latest",
     "colors": "latest",
-    "walk":"latest"
+    "walk":"latest",
+    "browserify": "https://github.com/shstefanov/infrastructure-game.git"
   },
   "devDependencies": {
     "jasmine-node": "latest"
