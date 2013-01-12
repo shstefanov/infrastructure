@@ -6,12 +6,8 @@
     "name": "Stefan Stefanov",
     "email": "s.h.stefanov@mail.bg"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/shstefanov/infrastructure"
-  },
+  
   "main": "./index.js",
-
   
   "dependencies": {
     "express": "latest",
@@ -23,8 +19,7 @@
     "jade": "latest",
     "underscore":"latest",
     "colors": "latest",
-    "walk":"latest",
-    "browserify": "https://github.com/shstefanov/node-browserify.git"
+    "walk":"latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"
