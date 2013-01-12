@@ -2,6 +2,16 @@
   "name": "infrastructure",
   "version": "0.0.7",
   "private": false,
+  "author": {
+    "name": "Stefan Stefanov",
+    "email": "s.h.stefanov@mail.bg"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shstefanov/infrastructure"
+  },
+  "main": "./index.js",
+
   
   "dependencies": {
     "express": "latest",
@@ -18,5 +28,7 @@
   },
   "devDependencies": {
     "jasmine-node": "latest"
-  }
+  },
+  "_id": "infrastructure@0.0.7",
+  "_from": "infrastructure@latest"
 }
