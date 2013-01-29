@@ -19,7 +19,8 @@
     "jade": "latest",
     "underscore":"latest",
     "colors": "latest",
-    "walk":"latest"
+    "walk":"latest",
+    "browserify":"latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"
