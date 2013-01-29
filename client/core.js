@@ -1,17 +1,5 @@
-/*
-  app.socket,
-  app.collections[name] - hash with Backbone collections, holding available models
-
-*/
-
-
-
-console.log("models:", __models);
-//models = require("./models");
 var BaseCollection = require("./collections/BaseCollection.js");
 var BaseModel = require("./models/BaseModel");
-
-console.log("models:",__models);
 
 window.App = function(){
   var self = this;
