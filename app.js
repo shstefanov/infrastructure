@@ -1,3 +1,4 @@
+var i18next = require("i18next");
 
 module.exports = function(express, config){
   var app = express();
@@ -41,6 +42,13 @@ module.exports = function(express, config){
 
     //Set static file server
     app.use(express.static(config.staticFolder));
+
+    //Set up i18next middleware
+    app.use(i18next.handle);
+    i18next.registerAppHelper(app);
+    i18next.serveClientScript(app)
+    .serveDynamicResources(app)
+    .serveMissingKeyRoute(app);
   });
 
   //Set up error handler in develop mode

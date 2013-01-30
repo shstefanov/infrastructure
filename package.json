@@ -20,7 +20,8 @@
     "underscore":"latest",
     "colors": "latest",
     "walk":"latest",
-    "browserify":"latest"
+    "browserify":"latest",
+    "i18next": "latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"

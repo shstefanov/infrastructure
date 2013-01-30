@@ -3,7 +3,8 @@ var express = require('express')
   , SessionSockets = require('session.socket.io')
   , mongoose = require("mongoose")
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , i18next = require('i18next');
 
 
 
@@ -25,6 +26,8 @@ module.exports = function(config){
     var modelsInitializer = require("./models.js");
     var models = modelsInitializer(mongoose, config);
 
+    //Initializing i18next support
+    i18next.init(config.i18next); // for options see i18next-node gh-page
 
     //Initializing and setting up express
     var appInitializer = require("./app");
@@ -46,7 +49,6 @@ module.exports = function(config){
     var server = http.createServer(app).listen(config.server.port, config.server.interface, function(){
       console.log("Server running at http://localhost:" + app.get('port'));
 
-
       //Initializing socket.io support
       var io = socketio.listen(server);
       io.clientsCount = 0;
@@ -57,6 +59,8 @@ module.exports = function(config){
       socketServicesInitializer = require("./socket").connect;
       sio.on("connection", socketServicesInitializer(app, io, config, models));
     });
+
+
   });
 
 };
