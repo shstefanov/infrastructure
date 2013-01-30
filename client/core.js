@@ -1,6 +1,8 @@
 var BaseCollection = require("./collections/BaseCollection.js");
 var BaseModel = require("./models/BaseModel");
 
+require("./init/i18next");
+
 window.App = function(){
   var self = this;
   this.socket = io.connect();
