@@ -1,4 +1,3 @@
-var i18next = require("i18next");
 
 module.exports = function(express, config){
   var app = express();
@@ -18,18 +17,18 @@ module.exports = function(express, config){
 
     //Basic configuration
     app.set('port', config.server.port || 3000);
-    app.use(app.router);
-    app.use(express.favicon());
 
     //Setting up template engine
     //Server will render only init.jade as system initialization template
     app.set('view engine', 'jade');
     app.set('views', __dirname);
+    app.use(express.favicon());
 
     //Advanced configuration
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.methodOverride());
+    app.use(app.router); //app.router after express.bodyParser() makes bodyParser working
 
     //Setting up sessions
     app.use(express.session({
@@ -43,12 +42,16 @@ module.exports = function(express, config){
     //Set static file server
     app.use(express.static(config.staticFolder));
 
-    //Set up i18next middleware
+    //Set up i18next
+    var i18next = require("i18next");
+    i18next.init(config.i18next);
     app.use(i18next.handle);
     i18next.registerAppHelper(app);
     i18next.serveClientScript(app)
     .serveDynamicResources(app)
-    .serveMissingKeyRoute(app);
+    .serveMissingKeyRoute(app)
+    .serveChangeKeyRoute(app)
+    .serveRemoveKeyRoute(app);
   });
 
   //Set up error handler in develop mode

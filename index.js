@@ -3,8 +3,7 @@ var express = require('express')
   , SessionSockets = require('session.socket.io')
   , mongoose = require("mongoose")
   , http = require('http')
-  , path = require('path')
-  , i18next = require('i18next');
+  , path = require('path');
 
 
 
@@ -26,8 +25,7 @@ module.exports = function(config){
     var modelsInitializer = require("./models.js");
     var models = modelsInitializer(mongoose, config);
 
-    //Initializing i18next support
-    i18next.init(config.i18next); // for options see i18next-node gh-page
+    
 
     //Initializing and setting up express
     var appInitializer = require("./app");
