@@ -6,16 +6,16 @@ name: "collectionName"
 
 */
 
-module.exports = function(socket){
+module.exports = Backbone.Collection.extend({
+  initialize: function(options){
+    
+  }
 
-  var BaseCollection = Backbone.Collection.extend({
-    initialize: function(options){
-      
-    }
+});
 
-  });
 
-}
+
+
 /*
 The service
 
