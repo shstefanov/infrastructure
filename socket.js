@@ -6,7 +6,6 @@ var helpers = require("./helpers");
 var EventBus = function(){
   //private variables and initialization
   var users = [];
-
   var services = {};
 
   //public variables
@@ -53,14 +52,19 @@ module.exports.connect = function(app, io, config, models){
 
   //On connection handler
   return function(err, socket, session){
+    socket.app = app;
 
     //Binding socket to db service
     dbService(socket, app, config, models.defined);
 
     //Binding socket to other services
+    console.log("before for");
     for(name in services){
       var serviceName = name;
-      socket.on(serviceName, services[serviceName]);
+      
+      console.log(name, serviceName);
+      socket.on(serviceName, services[serviceName].handler);
+      
     }
 
 

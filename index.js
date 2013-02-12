@@ -8,13 +8,18 @@ var express = require('express')
 
 
 module.exports = function(config){
-
+  var app;
   //Connecting to the database first
   var db = mongoose.createConnection(config.db.host, config.db.dbName)
   .on("open", function(){
 
     //DB error handler - to console
     db.on('error', console.error.bind(console, 'db connection error:'));
+
+    //Initializing and setting up express
+    var appInitializer = require("./app");
+    app = appInitializer(express, config);
+
 
     /*
     Initializing data models
@@ -23,13 +28,10 @@ module.exports = function(config){
         schemas:{mongoose schemas} //from config.modelsFolder
     }*/
     var modelsInitializer = require("./models.js");
-    var models = modelsInitializer(mongoose, config);
+    var models = modelsInitializer(mongoose, config, app);
 
     
 
-    //Initializing and setting up express
-    var appInitializer = require("./app");
-    var app  = appInitializer(express, config);
 
     //Setting up bundles
     var bundlesInitializer = require("./bundles");
@@ -60,5 +62,5 @@ module.exports = function(config){
 
 
   });
-
+  return app;
 };

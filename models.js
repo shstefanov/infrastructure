@@ -52,6 +52,8 @@ module.exports = function(mongoose, config, app){
   for (key in schemas)
     defined[key] = mongoose.model(key, schemas[key]);
 
+  app.models = defined;
+
   return {
     defined:defined,
     schemas:models,
