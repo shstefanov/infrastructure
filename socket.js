@@ -3,37 +3,26 @@ var colors = require("colors");
 
 var helpers = require("./helpers");
 
-var EventBus = function(){
-  //private variables and initialization
-  var users = [];
-  var services = {};
+var SocketService = function(name, service, socket, app){
+  var self = this;
 
-  //public variables
-  _.extend(this, {
-    add:function(socket, session){
-      //Must be new User(socket, session);
-      var user = {
-        socket:socket,
-        session:session,
+  this.app = app;
+  this.socket = socket;
+  this.name = name;
 
-        state:{
-          id:_.uniqueId("user"),
-          connectedAt:new Date()
-        }
-      }
-      this.bind(user);
-
-      return user;
-    },
-
-    bind:function(user){
-      for(name in services){
-        user.socket.on(name, services[name]);
-      }
+  for(member in service){
+    this[member] = service[member];
+  }
+  if(this.initialize && typeof this.initialize === "function"){
+    this.initialize();
+  }
+  this.socket.on(name, function(data){
+    if(typeof self[data.action] === "function" && data.action != "initialize"){
+      self[data.action].apply(self, arguments);
     }
   });
+
 };
-var eventBus = new EventBus();
 
 //called in index.js (socketInitializer)
 module.exports.connect = function(app, io, config, models){ 
@@ -58,17 +47,13 @@ module.exports.connect = function(app, io, config, models){
     dbService(socket, app, config, models.defined);
 
     //Binding socket to other services
-    console.log("before for");
     for(name in services){
       var serviceName = name;
       
-      console.log(name, serviceName);
-      socket.on(serviceName, services[serviceName].handler);
+      var service = new SocketService(name, services[name], socket, app);
+      //socket.on(serviceName, services[serviceName].handler);
       
     }
-
-
-    socket.user = eventBus.add(socket, session);
 
     //Broadcasting to all connected
     sockets.emit("visitorsOnline", io.clientsCount);

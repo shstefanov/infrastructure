@@ -50,6 +50,7 @@ module.exports = function(mongoose, config, app){
 
   //So, all models schemas must be created, creating models
   for (key in schemas)
+    console.log("schema", schemas[key]);
     defined[key] = mongoose.model(key, schemas[key]);
 
   app.models = defined;

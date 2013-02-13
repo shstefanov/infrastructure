@@ -12,9 +12,12 @@ module.exports = function(config){
   //Connecting to the database first
   var db = mongoose.createConnection(config.db.host, config.db.dbName)
   .on("open", function(){
+    console.log("mongoose on open", arguments);
 
     //DB error handler - to console
-    db.on('error', console.error.bind(console, 'db connection error:'));
+    db.on('error', function(err){
+      console.log("db error:", err);
+    });
 
     //Initializing and setting up express
     var appInitializer = require("./app");
