@@ -8,7 +8,10 @@ var SocketService = function(name, service, socket, app){
 
   this.app = app;
   this.socket = socket;
+  this.db = app.db;
+  this.models = app.db.models;
   this.name = name;
+
 
   for(member in service){
     this[member] = service[member];
@@ -33,25 +36,18 @@ module.exports.connect = function(app, io, config, models){
   //Loading available services
   var services = helpers.loadDirAsObject(config.socketIoServicesFolder);
 
-
-  //Loading db socket.io service
-  var dbService = require(__dirname+"/dbService.js");
-
   console.log(("Clients connected:".blue+"[".yellow+io.clientsCount+"]".yellow));
 
   //On connection handler
   return function(err, socket, session){
     socket.app = app;
-
-    //Binding socket to db service
-    dbService(socket, app, config, models.defined);
+    socket.session = session;
 
     //Binding socket to other services
     for(name in services){
       var serviceName = name;
       
       var service = new SocketService(name, services[name], socket, app);
-      //socket.on(serviceName, services[serviceName].handler);
       
     }
 

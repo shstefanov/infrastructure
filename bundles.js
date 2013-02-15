@@ -2,7 +2,7 @@ var browserify = require("browserify");
 var helpers = require("./helpers");
 
 //Called in index.js
-module.exports = function(app, models, config){
+module.exports = function(app, config){
 
   var bundles = helpers.loadDirAsArray(config.bundlesFolder);
 
@@ -13,7 +13,7 @@ module.exports = function(app, models, config){
     mountPoint : "/core.js",
     cache: config.bundles.cache,
     watch: config.bundles.watch,
-    prepend: "var __models = "+JSON.stringify(models)+";"
+    prepend: "var __models = {}"
   });
 
   //Set up all defined bundles
