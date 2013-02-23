@@ -20,7 +20,9 @@ module.exports = function(server, config){
     server[methods[page.method]](page.route, function(req, res, next){
 
       //Packing pageconfig to be sent to client
-      var pageConfig = JSON.stringify(_.extend(config.clientConfig, page.config || {}));
+      var pageConfig = _.extend(config.clientConfig, page.config || {});
+      pageConfig.services = page.services;
+      req.services = page.services;
 
       //Title of the page - can be function (sync)
       var title = typeof page.title == "function"? page.title(req, res) : page.title;
@@ -29,11 +31,11 @@ module.exports = function(server, config){
       function go (customData) {
         //Rendering with template engine - jade
         res.render("init.jade", {
-          bundles:page.bundles, //Array of javascript bundles
+          bundles:page.bundles, //Array of javascript bundles mountpoints
           libs:page.libs,       //Array of external libs (in static folder)
           styleSheets: page.styleSheets, //Stylesheets to be loaded
           title: title, //Title of the page(can be function)
-          config:pageConfig,    //Page config
+          config:JSON.stringify(pageConfig),  //Page config
           custom: JSON.stringify(customData || {}), //Custom data, provided by callback in go() function
           bodyAdd:page.bodyAdd || "" //Some javascripts need to have initialization in the body of the document
         });

@@ -1,17 +1,37 @@
 var BaseCollection = require("./collections/BaseCollection.js");
 var BaseModel = require("./models/BaseModel");
 
+var Service = require("./services/service.coffee");
+
+window.dispatcher = _.extend({}, Backbone.Events);
+
 require("./init/i18next");
 
+require("./init/view.coffee");
+require("./init/model.coffee");
+require("./init/collection.coffee");
+
+
 window.App = function(router_options){
+
   var self = this;
 
-  window.socket = io.connect();
-  window.socket.on("connect", function(){
+  this.socket = io.connect();
+  this.socket.on("connect", function(){
+    //Creating services objects
+    self.services = {};
+    config.services.forEach(function(service_name){
+      var service = new Service(service_name);
+      console.log("service:",service);
+      self.services[service] = service;
+    });
+
     appRouter = Backbone.Router.extend(router_options);
     self.router = new appRouter();
     if(router_options.routes)
       Backbone.history.start();
+
+
   });
 
 

@@ -1,0 +1,2 @@
+
+window.model = Backbone.Model

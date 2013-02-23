@@ -13,7 +13,7 @@ module.exports = function(app, config){
     mountPoint : "/core.js",
     cache: config.bundles.cache,
     watch: config.bundles.watch,
-    prepend: "var __models = {}"
+    prepend: "var __models = {};"
   });
 
   //Set up all defined bundles
