@@ -14,22 +14,23 @@ module.exports = class Service
         return
       if(data.action == "service_index")
         data.body.forEach (method)=>
-          console.log("set method", @name, method)
           @[method] = (data, meta, callback)=>
             dataAndMeta = (data, meta)=>
               app.socket.emit(@name, {action:method, body:data, meta:meta})
             withCallback = (data, meta, callback)=>
               reqId = _.uniqueId(@name+"_"+method)
-              console.log("with callback:", reqId)
+              console.log("with callback", data, meta, callback, reqId);
               app.socket.emit(@name, {action:method, body:data, meta:meta, reqId:reqId})
               @dispatcher.on reqId, (data)=>
                 @dispatcher.off(data.reqId)
+                console.log("response", data);
                 if(data.meta == "success")
                   callback(null, data.body)
                   return
                 if(data.meta == "error")
                   callback(data.body)
                   return
+
             onlyCallback = (callback)=>
               @eventListener.on(method, callback)
             
@@ -43,8 +44,3 @@ module.exports = class Service
               onlyCallback(data)
               return
             dataAndMeta(data, meta)
-
-
-
-
-  

@@ -21,8 +21,7 @@ window.App = function(router_options){
     //Creating services objects
     self.services = {};
     config.services.forEach(function(service_name){
-      var service = new Service(service_name);
-      self.services[service_name] = service;
+      self.services[service_name] = new Service(service_name);
     });
 
     //When session is loaded, server emits ready signal
