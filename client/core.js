@@ -22,16 +22,18 @@ window.App = function(router_options){
     self.services = {};
     config.services.forEach(function(service_name){
       var service = new Service(service_name);
-      console.log("service:",service);
-      self.services[service] = service;
+      self.services[service_name] = service;
     });
 
-    appRouter = Backbone.Router.extend(router_options);
-    self.router = new appRouter();
-    if(router_options.routes)
-      Backbone.history.start();
-
-
+    //When session is loaded, server emits ready signal
+    //Then running all other staff
+    self.socket.on("ready", _.once(function(data){
+      appRouter = Backbone.Router.extend(router_options);
+      //Here runs the application
+      self.router = new appRouter();
+      if(router_options.routes)
+        Backbone.history.start();
+    }));
   });
 
 

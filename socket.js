@@ -3,14 +3,14 @@ var colors = require("colors");
 
 var helpers = require("./helpers");
 
-var SocketService = function(name, service, socket, session, app){
+var SocketService = function(name, service, socket, socket_session, app){
   var self = this;
 
   this.name = name;
   this.app = app;
   this.socket = socket;
   this.db = app.db;
-  this.session = session;
+  this.session = socket_session;
   this.models = app.db.models;
   this.name = name;
 
@@ -40,22 +40,19 @@ var SocketService = function(name, service, socket, session, app){
   };
 
   this.next = function(data){
-    self[data.action].apply(self, data);
+    self[data.action].apply(self, arguments);
   };
 
   this.socket.on(name, function(data){
-    console.log("service call: ", self.name, data);
     //Blocking clientside initialization of object
     if(typeof self[data.action] === "function" 
       && data.action != "initialize" 
       && data.action != "next" 
       && data.action != "auth"){
       if(self.auth){
-        console.log("[1]", data);
         self.auth.apply(self, arguments);
       }
       else{
-        console.log("[2]", data);
         self.next(data);
       }
       
@@ -66,7 +63,6 @@ var SocketService = function(name, service, socket, session, app){
 
 //called in index.js (socketInitializer)
 module.exports.connect = function(app, io, config, models){ 
-  console.log("before on connection");
 
   var sockets = io.sockets
   io.clientsCount++;
@@ -77,9 +73,13 @@ module.exports.connect = function(app, io, config, models){
   console.log(("Clients connected:".blue+"[".yellow+io.clientsCount+"]".yellow));
 
   //On connection handler
-  return function(err, socket, session){
+  return function(err, socket, socket_session){
     socket.app = app;
-    socket.session = session;
+    var sessionId = socket.handshake.sessionID;
+    var session = app.sessionStore.get(sessionId, function(err, session){
+      socket.session = session;
+      socket.emit("ready", true);
+    });
 
     //Binding socket to available for this page services
     for(name in services){

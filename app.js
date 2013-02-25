@@ -33,7 +33,7 @@ module.exports = function(express, config){
     //Setting up sessions
     app.use(express.session({
       secret: config.sessionSecretCookie,
-      store: sessionStore
+      store: app.sessionStore
     }));
 
     //Setting up logger
