@@ -5,7 +5,7 @@ var helpers = require("./helpers");
 
 var SocketService = function(name, service, socket, socket_session, app){
   var self = this;
-
+  
   this.name = name;
   this.app = app;
   this.socket = socket;
@@ -64,6 +64,12 @@ var SocketService = function(name, service, socket, socket_session, app){
 //called in index.js (socketInitializer)
 module.exports.connect = function(app, io, config, models){ 
 
+  io.set("authorization", function(handshakeData, accept){
+    var cookie = parseCookie(handshakeData.headers.cookie);
+    console.log("cookie:",cookie);
+    accept(null, true);
+  });
+
   var sockets = io.sockets
   io.clientsCount++;
 
@@ -74,11 +80,14 @@ module.exports.connect = function(app, io, config, models){
 
   //On connection handler
   return function(err, socket, socket_session){
+    var count = 0;
     socket.app = app;
-    var sessionId = socket.handshake.sessionID;
+    var sessionId = socket.handshake.sessionId;
     var session = app.sessionStore.get(sessionId, function(err, session){
+      console.log("==================================================",err, session);
       socket.session = session;
       socket.emit("ready", true);
+      socket.session.something = count++;
     });
 
     //Binding socket to available for this page services

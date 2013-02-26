@@ -18,35 +18,51 @@ module.exports = function(server, config){
   pages.forEach(function(page){
 
     server[methods[page.method]](page.route, function(req, res, next){
+      console.log("route-session:", req.session);
 
-      //Packing pageconfig to be sent to client
-      var pageConfig = _.extend(config.clientConfig, page.config || {});
-      pageConfig.services = page.services;
-      req.services = page.services;
+      function go (new_page) {
+        
+        //Packing pageconfig to be sent to client
+        var pageConfig = _.extend(config.clientConfig, new_page.config || {});
+        pageConfig.services = new_page.services;
+        req.services = page.services;
 
-      //Title of the page - can be function (sync)
-      var title = typeof page.title == "function"? page.title(req, res) : page.title;
+        //Setting up javascript libs
+        var libs = config.defaultStaticScripts || [];
+        if(new_page.libs)
+          new_page.libs.forEach(function(lib){
+            libs.push(lib);
+          });
 
-      //Rendering is separate function, page can have callback
-      function go (customData) {
+        //Setting up stylesheets
+        var styles = config.defaultStyleSheets || [];
+        if(new_page.styleSheets)
+          new_page.styleSheets.forEach(function(style){
+            styles.push(style);
+          });
+        
         //Rendering with template engine - jade
         res.render("init.jade", {
-          bundles:page.bundles, //Array of javascript bundles mountpoints
-          libs:page.libs,       //Array of external libs (in static folder)
-          styleSheets: page.styleSheets, //Stylesheets to be loaded
-          title: title, //Title of the page(can be function)
+          bundles:new_page.bundles, //Array of javascript bundles mountpoints
+          libs:libs, 
+          styleSheets: styles,
+          title: new_page.title, 
           config:JSON.stringify(pageConfig),  //Page config
-          custom: JSON.stringify(customData || {}), //Custom data, provided by callback in go() function
           bodyAdd:page.bodyAdd || "" //Some javascripts need to have initialization in the body of the document
         });
       };
 
       //If there is callback in page definition, waiting it to call go() function
-      if(page.callback && typeof page.callback == "function") 
-        page.callback(req, res, next, go);
+      if(page.callback && typeof page.callback == "function"){
+        page.req = req;
+        page.res = res;
+        page.next = next;
+
+        page.callback(page, go);
+      }
 
       //Else - run the page rendering
-      else go({});
+      else go(page);
 
     });
   });

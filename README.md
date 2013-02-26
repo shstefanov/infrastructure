@@ -1,4 +1,160 @@
-Service definition:
+## Usage ##
+    npm install infrastructure
+
+in your code:
+    
+    var config = require("path/to/config/file")
+    var infrastructure = require("infrastructure");
+
+    infrastructure(config);  //And your app runs
+
+## Config file - the core of the app ##
+
+    module.exports = {
+
+      server : {
+        cookieName: "your-app-cookie-name",
+        interface: "0.0.0.0",
+        port: "3000"
+      },
+
+      //nodejs orm options - see https://github.com/dresende/node-orm2 for more
+      mysql:{ 
+        host: "localhost",
+        port: "3306", 
+        user: "username",
+        password: "password",
+        database: "database_name"
+      },
+
+      clientConfig:{
+        //Any config data, that will be accessible in app.config in your browser code
+      },
+
+      //Path to file with definition of your models - see https://github.com/dresende/node-orm2 for more
+      models:__dirname+"/../models/index.js",
+
+      //Path to folder, that contains your routes definitions - see below how to define a route
+      routesFolder: __dirname+"/../routes",
+
+      //Path to folder, dhat contains your bundles definitions - see below how to define a bundle
+      bundlesFolder:__dirname+"/../bundles",
+
+      //Path to folder, dhat contains your socket.io services definitions - see below how to define a service
+      socketIoServicesFolder: __dirname+"/../services", 
+      
+      //Folder with static content
+      staticFolder: __dirname+"/../static", 
+
+      //Folder that contains your css - it's less css
+      stylesFolder: __dirname+"/../styles",
+
+      //Original i18next options - see https://github.com/jamuhl/i18next-node for more
+      i18next: { 
+        lng: "dev",
+        fallbackLng: 'dev',
+        cookieName: 'lang',
+        detectLngQS: 'lang', // querystring parameter (?lang=en-US)
+        ns: 'translation', // Name space - will load locales/dev/resource.json' (Default namespace is 'translation'.)
+        resGetPath: __dirname+"/../static/locales/__lng__/__ns__.json",
+        resSetPath: __dirname+"/../static/locales/__lng__/__ns__.json",
+        resChangePath: __dirname+"/../static/locales/__lng__/__ns__.json",
+        resRemovePath: __dirname+"/../static/locales/__lng__/__ns__.json",
+        saveMissing: true,
+        debug: true,
+        detectLngFromPath: 0, // default false
+      },
+
+      //Formidable original options - see https://github.com/felixge/node-formidable for more
+      fileUploadOptions: {
+        uploadRoute: "/upload",
+        formEncoding: "utf-8",
+        fileUploadDir: __dirname+"/../uploads",
+        keepExtensions: true, 
+        maxFieldsSize: 2 * 1024 * 1024, //Limits the amount of memory a field (not file) can allocate in bytes.
+        hash: false, // false, 'sha1' or 'md5'
+      },
+
+      //Bundles options
+      bundles:{
+        cache:false,
+        watch:true
+      },
+
+      //Thses libraryes will be loaded as script src in all tour pages
+      defaultStaticScripts: [ 
+        '/socket.io/socket.io.js', //Express feature
+        '/js/your_js_lib.js',
+      ],
+
+      //Styles that will be loade in all your pages - file in you styles folder
+      defaultStyleSheets:["your_less_file.less"],
+
+      //Sessions options
+      sessionSecretCookie: "session-cookie-name",
+
+      //It uses mongodb for storing the sessions information
+      mongoStoreSesssionDb: "pan-varna-sessions",
+
+      //Info -set your custom info here
+      version: require(__dirname+"/../package.json").version
+
+    };
+
+## Bundles ##
+Bundle loader will load all .js files in your bundles folder and will build a javascript bundle from each.
+
+    module.exports = {
+      bundleName:"app", 
+      entryPoint:  __dirname+"/../client/app.js", //Path to entrypoint
+      mountPoint : "/app.js", //Mountpoint which browser should load as javascript src
+
+      //Individual bundle options that will override the options from your config - for easy debugging
+      cache: false,
+      watch: true
+    };
+
+## Routes ##
+The routes, as with bundles, will be loaded automaticly from your routes folder.
+
+    module.exports = {
+      route:"/",  //Regex can be provided, also '/route_name/:id'
+      method: "get",
+      title:"Some title",
+
+      //Javascripts that will be loaded from your static directory before bundles
+      libs:[ 
+        "/js/static-lib.js",
+        "/js/other-static-lib.js"
+      ],
+
+      //Write here which bundles will load your page (mountpoints)
+      bundles:["/app.js"],
+
+      //Write here which styles will load your page
+      styleSheets:[
+        "style.less"
+      ],
+
+      //This config will extend config.clientConfig. Duplicating keys will be overriden
+      config: {key:"value"},
+
+      callback: function(page, render){
+        //You can change som properties dinamicly if you wish.
+        page.bundles = ["/other_bundle.js"];
+        render(page);
+
+        //or you can reach request and response objects and use them directly as express req, res and next arguments
+        console.log(page.req.params);
+        page.res.send("some custom response");
+        page.next();
+      }
+    };
+
+
+
+
+## Service definition and usage ##
 Asuming the file name is my_service.js
 The service name will be the name of file, just without the .js extencion
 
