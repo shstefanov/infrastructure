@@ -9,16 +9,15 @@ var methods = {
   del:"del"
 };
 
-module.exports = function(server, config){
+module.exports = function(app, config){
 
   //Loading all defined in pages folder page definitons
   var pages = helpers.loadDirAsArray(config.routesFolder);
   
   //Setting up server to serve each of them
   pages.forEach(function(page){
-
-    server[methods[page.method]](page.route, function(req, res, next){
-      console.log("route-session:", req.session);
+   
+    app[methods[page.method]](page.route, function(req, res, next){
 
       function go (new_page) {
         
@@ -28,14 +27,16 @@ module.exports = function(server, config){
         req.services = page.services;
 
         //Setting up javascript libs
-        var libs = config.defaultStaticScripts || [];
+        var libs = config.defaultStaticScripts? 
+          config.defaultStaticScripts.slice() : [];//.slice() makes new copy
         if(new_page.libs)
           new_page.libs.forEach(function(lib){
             libs.push(lib);
           });
 
         //Setting up stylesheets
-        var styles = config.defaultStyleSheets || [];
+        var styles = config.defaultStyleSheets? 
+          config.defaultStyleSheets.slice() : []; //.slice() makes new copy
         if(new_page.styleSheets)
           new_page.styleSheets.forEach(function(style){
             styles.push(style);
@@ -58,7 +59,7 @@ module.exports = function(server, config){
         page.res = res;
         page.next = next;
 
-        page.callback(page, go);
+        page.callback(page, app, go);
       }
 
       //Else - run the page rendering

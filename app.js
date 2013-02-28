@@ -9,8 +9,7 @@ module.exports = function(express, config){
   app.sessionStore = sessionStore;
 
   //Get express cookeParser
-  var cookieParser = express.cookieParser(config.server.cookieName);
-  app.cookieParser = cookieParser;
+  app.cookieParser = express.cookieParser(config.sessionCookie);
 
   //Configuring app
   app.configure(function(){
@@ -28,12 +27,11 @@ module.exports = function(express, config){
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.methodOverride());
-    app.use(app.router); //app.router after express.bodyParser() makes bodyParser working
 
     //Setting up sessions
     app.use(express.session({
-      secret: config.sessionSecretCookie,
-      store: app.sessionStore
+      secret: config.sessionCookie,
+      store: sessionStore
     }));
 
     //Setting up logger
@@ -52,6 +50,8 @@ module.exports = function(express, config){
     .serveMissingKeyRoute(app)
     .serveChangeKeyRoute(app)
     .serveRemoveKeyRoute(app);
+    
+    app.use(app.router); //app.router after express.bodyParser() makes bodyParser working
   });
 
   //Set up error handler in develop mode

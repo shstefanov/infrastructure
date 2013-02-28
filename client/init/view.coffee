@@ -1,7 +1,7 @@
-
-window.View = Backbone.View.extend
+module.exports = Backbone.View.extend
 
   initialize: (options)->
+    @_binded = []
     compiled_template = jade.compile(@template)
     @template = =>
       compiled_template({view:@, t: $.t})
@@ -9,10 +9,18 @@ window.View = Backbone.View.extend
     if(@init) 
       @init(options)
 
-    dispatcher.on "translation", =>
-      @render()
+    app.dispatcher.on "translation", @render, @
 
-  update: ->
-    @
+  remove: ->
+    app.dispatcher.off null, null, @
+    @model.off null ,null ,@
+    @collection.off null, null, @
+    @_binded.forEach (b)=>
+      b.off null, null, @
+
+  bindTo: (obj)->
+    @_binded.push(obj)
+    obj
+
 
 

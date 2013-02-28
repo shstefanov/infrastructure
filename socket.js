@@ -1,6 +1,3 @@
-var _ = require("underscore");
-var colors = require("colors");
-
 var helpers = require("./helpers");
 
 var SocketService = function(name, service, socket, socket_session, app){
@@ -30,7 +27,7 @@ var SocketService = function(name, service, socket, socket_session, app){
   this.service_index = function(){
     var api = [];
     for (method in service){
-      if(method != "initialize" && method != "auth" && method != "emit")
+      if(method != "initialize" && method != "auth" && method != "emit" && method != "name")
       api.push(method);
     }
     socket.emit(name, {
@@ -64,12 +61,6 @@ var SocketService = function(name, service, socket, socket_session, app){
 //called in index.js (socketInitializer)
 module.exports.connect = function(app, io, config, models){ 
 
-  io.set("authorization", function(handshakeData, accept){
-    var cookie = parseCookie(handshakeData.headers.cookie);
-    console.log("cookie:",cookie);
-    accept(null, true);
-  });
-
   var sockets = io.sockets
   io.clientsCount++;
 
@@ -79,22 +70,17 @@ module.exports.connect = function(app, io, config, models){
   console.log(("Clients connected:".blue+"[".yellow+io.clientsCount+"]".yellow));
 
   //On connection handler
-  return function(err, socket, socket_session){
+  return function(err, socket, session){
+   
     var count = 0;
-    socket.app = app;
-    var sessionId = socket.handshake.sessionId;
-    var session = app.sessionStore.get(sessionId, function(err, session){
-      console.log("==================================================",err, session);
-      socket.session = session;
-      socket.emit("ready", true);
-      socket.session.something = count++;
-    });
 
     //Binding socket to available for this page services
     for(name in services){
       var serviceName = name;
-      var service = new SocketService(name, services[name], socket, session, app);
+      var service_handler = new SocketService(name, services[name], socket, session, app);
     }
+
+    socket.emit("ready"); //sending signal to load the client app
 
     //Broadcasting to all connected
     sockets.emit("visitorsOnline", io.clientsCount);

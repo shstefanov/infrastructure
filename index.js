@@ -9,11 +9,15 @@ var app, config;
 //After database connection handler
 var dbConnectionHandler = function(err, db){
   if(err) throw err;
-
+  
   //Initializing and setting up express
   var appInitializer = require("./app");
   app = appInitializer(express, config);
   app.db = db;
+  
+  //Adding the pages
+  var routesInitializer = require("./routes");
+  routesInitializer(app, config);
 
   //Initializing models
   var modelsInitializer = require("./models.js");
@@ -27,9 +31,6 @@ var dbConnectionHandler = function(err, db){
   var lessInitializer = require("./less.js");
   lessInitializer(app, config);
 
-  //Adding the pages
-  var routesInitializer = require("./routes");
-  routesInitializer(app, config);
 
   //Initializing and setting http server
   var server = http.createServer(app).listen(config.server.port, config.server.interface, function(){
@@ -43,6 +44,7 @@ var dbConnectionHandler = function(err, db){
 
     //Initializing and setting every incoming connection
     socketServicesInitializer = require("./socket").connect;
+
     sio.on("connection", socketServicesInitializer(app, io, config));
   });
 };
