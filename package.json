@@ -14,7 +14,7 @@
     "socket.io": "latest",
     "socket.io-client": "latest",
     "session.socket.io": "latest",
-    "orm": "latest",
+    "sequelize": "latest",
     "jade": "latest",
     "underscore":"latest",
     "colors": "latest",

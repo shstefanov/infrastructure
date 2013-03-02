@@ -1,27 +1,27 @@
 var express = require('express')
   , socketio = require("socket.io")
   , SessionSockets = require('session.socket.io')
-  , orm = require('orm')
+  , Sequelize = require('sequelize')
   , http = require('http')
   , path = require('path');
 
-var app, config;
+var app, config, models;
 //After database connection handler
-var dbConnectionHandler = function(err, db){
-  if(err) throw err;
+var dbConnectionHandler = function(){
   
   //Initializing and setting up express
   var appInitializer = require("./app");
   app = appInitializer(express, config);
-  app.db = db;
   
+  app.models = models;
+
   //Adding the pages
   var routesInitializer = require("./routes");
   routesInitializer(app, config);
 
   //Initializing models
-  var modelsInitializer = require("./models.js");
-  modelsInitializer(app, config);
+  //var modelsInitializer = require("./models.js");
+  //modelsInitializer(app, config);
 
   //Setting up bundles
   var bundlesInitializer = require("./bundles");
@@ -47,11 +47,24 @@ var dbConnectionHandler = function(err, db){
 
     sio.on("connection", socketServicesInitializer(app, io, config));
   });
+  return app;
 };
 
 
 module.exports = function(_config, callback){
   config = _config;
-  var mysql_connection = "mysql://"+config.mysql.user+":"+config.mysql.password+"@"+config.mysql.host+"/"+config.mysql.database;
-  orm.connect(mysql_connection, dbConnectionHandler);
+  var sq = new Sequelize(config.mysql.database, config.mysql.user, config.mysql.password, config.mysql);
+  var modelsInitializer = require(config.models);
+  var seeds = require(config.seed);
+  modelsInitializer(sq, {
+    STRING:  Sequelize.STRING,
+    TEXT:    Sequelize.TEXT,
+    INTEGER: Sequelize.INTEGER,
+    DATE:    Sequelize.DATE,
+    BOOLEAN: Sequelize.BOOLEAN,
+    FLOAT:   Sequelize.FLOAT
+  }, seeds, function(){
+    return dbConnectionHandler();
+  });
+  
 };

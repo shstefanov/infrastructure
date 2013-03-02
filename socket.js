@@ -6,9 +6,8 @@ var SocketService = function(name, service, socket, socket_session, app){
   this.name = name;
   this.app = app;
   this.socket = socket;
-  this.db = app.db;
   this.session = socket_session;
-  this.models = app.db.models;
+  this.models = app.models;
   this.name = name;
 
 
