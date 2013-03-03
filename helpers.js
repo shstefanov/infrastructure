@@ -36,14 +36,15 @@ module.exports.loadFilenamesInDir = function(dir, callback){
 
 //Wraps text in the file and wraps lines to become walid javascript string object (to be used in browser)
 module.exports.plainTextContentWrapper = function(body, file){
-  var prepend = "module.exports = \n";
+  var prepend = "module.exports = ";
   var line_beginning = "\"";
-  var line_ending = "\\n\"+\n";
+  var line_ending = " \\n\"+\n";
   var append = ";\n";
   var lines = body.split("\n");
   var mod = _.map(lines, function(line){return line_beginning+line+line_ending;});
   var code = prepend+mod.join("")+append;
-  code = code.replace("+\n;", ";");
+  code = code.replace("+\n;", ";").replace("\\n\"+\n\" \\n\"", "\"");
+  console.log(code);
   return code;
 };
 

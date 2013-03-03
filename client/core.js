@@ -6,7 +6,11 @@ require("./init/i18next");
 
 
 
-window.App = function(router_options){
+window.App = {};
+App.Modules = {};
+
+App.build = function(router_options){
+  console.log("build:");
 
   var self = this;
 
@@ -15,30 +19,41 @@ window.App = function(router_options){
   this.socket = io.connect();
   this.socket.on("connect", function(){
     //Creating services objects
-    self.services = {};
-    config.services.forEach(function(service_name){
-      self.services[service_name] = new Service(service_name);
-    });
 
     //When session is loaded, server emits ready signal
     //Then running all other staff
-    self.socket.on("ready", _.once(function(data){
+    console.log("before ready");
+    self.socket.on("ready", function(data){
+      self.services = {};
+      services.forEach(function(service_name){
+        self.services[service_name] = new Service(service_name);
+      });
+      console.log("ready");
       appRouter = Backbone.Router.extend(router_options);
       //Now -  running the application
       self.router = new appRouter();
       if(router_options.routes)
         Backbone.history.start();
-    }));
+
+      console.log("core:self",self);
+      for (mod in App.Modules){
+        console.log(self.modules[mod])
+      }
+    });
+    this.socket.on("redirect", this.redirect);
   });
 
   window.app = this;
 
-  this.View = require("./init/view.coffee");
-  this.Model = require("./init/model.coffee");
-  this.Collection = require("./init/collection.coffee");
-
-  this.modules = {};
-
 };
+
+App.View = require("./init/view.coffee");
+App.Model = require("./init/model.coffee");
+App.Collection = require("./init/collection.coffee");
+App.Router = require("./init/router.coffee");
+
+window.App.build.prototype.redirect = function(page){
+  window.location.href = page;
+}
 
 

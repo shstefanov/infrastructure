@@ -7,7 +7,6 @@ module.exports = class Service
   constructor: (@name)->
     app.socket.emit(@name, {action:"service_index"})
     app.socket.on @name, (data)=>
-      console.log(data)
 
       @eventListener.trigger(data.action, data.body)
       if(data.reqId && @dispatcher[data.reqId])

@@ -1,6 +1,7 @@
 
 module.exports = function(express, config){
   var app = express();
+  app.config = config;
 
   var MongoStore = require('connect-mongo')(express);
 
@@ -10,6 +11,7 @@ module.exports = function(express, config){
 
   //Get express cookeParser
   app.cookieParser = express.cookieParser(config.sessionCookie);
+  console.log("app.cookieParser:", app.cookieParser);
 
   //Configuring app
   app.configure(function(){

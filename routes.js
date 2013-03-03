@@ -23,8 +23,8 @@ module.exports = function(app, config){
         
         //Packing pageconfig to be sent to client
         var pageConfig = _.extend(config.clientConfig, new_page.config || {});
-        pageConfig.services = new_page.services;
-        req.services = page.services;
+        
+        req.session.services = new_page.services;
 
         //Setting up javascript libs
         var libs = config.defaultStaticScripts? 
@@ -49,6 +49,7 @@ module.exports = function(app, config){
           styleSheets: styles,
           title: new_page.title, 
           config:JSON.stringify(pageConfig),  //Page config
+          services: JSON.stringify(_.union(new_page.services || [], config.defaultPageServices )),
           bodyAdd:page.bodyAdd || "" //Some javascripts need to have initialization in the body of the document
         });
       };

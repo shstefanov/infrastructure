@@ -1,61 +1,8 @@
 var helpers = require("./helpers");
 
-var SocketService = function(name, service, socket, socket_session, app){
-  var self = this;
-  
-  this.name = name;
-  this.app = app;
-  this.socket = socket;
-  this.session = socket_session;
-  this.models = app.models;
-  this.name = name;
+var Service = require("./service.js");
 
-
-  for(member in service){
-    this[member] = service[member];
-  }
-  if(this.initialize && typeof this.initialize === "function"){
-    this.initialize();
-  }
-
-  this.emit = function(data){
-    self.socket.emit(self.name, data);
-  }
-
-  //Sending service api to the client
-  this.service_index = function(){
-    var api = [];
-    for (method in service){
-      if(method != "initialize" && method != "auth" && method != "emit" && method != "name")
-      api.push(method);
-    }
-    socket.emit(name, {
-      action: "service_index",
-      body: api
-    });
-  };
-
-  this.next = function(data){
-    self[data.action].apply(self, arguments);
-  };
-
-  this.socket.on(name, function(data){
-    //Blocking clientside initialization of object
-    if(typeof self[data.action] === "function" 
-      && data.action != "initialize" 
-      && data.action != "next" 
-      && data.action != "auth"){
-      if(self.auth){
-        self.auth.apply(self, arguments);
-      }
-      else{
-        self.next(data);
-      }
-      
-    }
-  });
-
-};
+var services = [];
 
 //called in index.js (socketInitializer)
 module.exports.connect = function(app, io, config, models){ 
@@ -70,22 +17,30 @@ module.exports.connect = function(app, io, config, models){
 
   //On connection handler
   return function(err, socket, session){
+    if(!session) return;
    
-    var count = 0;
-
     //Binding socket to available for this page services
-    for(name in services){
-      var serviceName = name;
-      var service_handler = new SocketService(name, services[name], socket, session, app);
-    }
+    var count = 0;
+    session.services.forEach(function(serviceName){
+      if(!services[serviceName]){
+        count++;
+        return;
+      }
+      new Service({
+        name: serviceName,
+        methods: services[serviceName],
+        socket: socket,
+        session: session,
+        app: app
+      });
+      count++;
+      if(count == session.services.length){ //Ready
+        socket.emit("ready"); //sending signal to load the client app
 
-    socket.emit("ready"); //sending signal to load the client app
-
-    //Broadcasting to all connected
-    sockets.emit("visitorsOnline", io.clientsCount);
-
-    //Sending desconnect event to the handler
-    socket.on("disconnect", module.exports.disconnect);
+        //Sending desconnect event to the handler
+        socket.on("disconnect", module.exports.disconnect);
+      }
+    });
   };
 };
 

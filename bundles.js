@@ -1,5 +1,7 @@
 var browserify = require("browserify");
+var _ = require("underscore");
 var helpers = require("./helpers");
+
 
 //Called in index.js
 module.exports = function(app, config){
@@ -19,16 +21,16 @@ module.exports = function(app, config){
   //Set up all defined bundles
   bundles.forEach(function(bundle){
 
+    var rawFilesExtensions = _.union(config.bundleRawFiles, bundle.raw || []);
+
     //Creating the bundler
     var bundler = browserify({
       mount: bundle.mountPoint || bundle._filename, 
       watch: bundle.watch || config.bundles.watch,
       cache: bundle.cache || config.bundles.cache
-    });
+    })
+    .addEntry(bundle.entryPoint);
     
-    //Setting bundle's start point
-    bundler.addEntry(bundle.entryPoint);
-
     //Adding code prepends if any
     if(bundle.prepend){
       bundler.prepend(bundle.prepend);
