@@ -13,18 +13,31 @@ in your code:
     module.exports = {
 
       server : {
-        cookieName: "your-app-cookie-name",
         interface: "0.0.0.0",
         port: "3000"
       },
 
-      //nodejs orm options - see https://github.com/dresende/node-orm2 for more
+      //nodejs sequilize options - see http://sequelizejs.com/ for more
       mysql:{ 
-        host: "localhost",
-        port: "3306", 
         user: "username",
         password: "password",
-        database: "database_name"
+        database: "database_name",
+        //+ all other options from http://sequelizejs.com/
+        host: "localhost",
+        port: "3306",
+
+        sync: { force: true },
+        syncOnAssociation: true,
+        define: {
+          underscored: true,
+          freezeTableName: false,
+          syncOnAssociation: true,
+          charset: 'utf8',
+          collate: 'utf8_general_ci',
+          //classMethods: {method1: function() {}},
+          //instanceMethods: {method2: function() {}},
+          timestamps: true
+        }
       },
 
       clientConfig:{
@@ -34,11 +47,24 @@ in your code:
       //Path to file with definition of your models - see https://github.com/dresende/node-orm2 for more
       models:__dirname+"/../models/index.js",
 
+      //Path to file with your seeds - look below for more
+      seed:__dirname+"/../models/seed.js",
+
       //Path to folder, that contains your routes definitions - see below how to define a route
       routesFolder: __dirname+"/../routes",
 
       //Path to folder, dhat contains your bundles definitions - see below how to define a bundle
       bundlesFolder:__dirname+"/../bundles",
+
+      //Raw files to be included when requiered
+      //The content will be parsed and will be returned as string variable
+      bundlesRawFiles: [".jade"],
+      
+      //Bundles options
+      bundlesOptions:{
+        cache:false,
+        watch:true //rebuilds bundles when any file is changed
+      },
 
       //Path to folder, dhat contains your socket.io services definitions - see below how to define a service
       socketIoServicesFolder: __dirname+"/../services", 
@@ -75,11 +101,6 @@ in your code:
         hash: false, // false, 'sha1' or 'md5'
       },
 
-      //Bundles options
-      bundles:{
-        cache:false,
-        watch:true
-      },
 
       //Thses libraryes will be loaded as script src in all tour pages
       defaultStaticScripts: [ 
@@ -151,7 +172,7 @@ The routes, as with bundles, will be loaded automaticly from your routes folder.
       //This config will extend config.clientConfig. Duplicating keys will be overriden
       config: {key:"value"},
 
-      callback: function(page, render){
+      callback: function(page, app, render){
         //You can change som properties dinamicly if you wish.
         page.bundles = ["/other_bundle.js"];
         render(page);
@@ -176,8 +197,7 @@ The service name will be the name of file, just without the .js extencion
         //this.socket
         //this.app
         //this.session
-        //this.db
-        //this.models - node.js orm models
+        //this.models - sequilize orm models
 
         //this.emit(data) - function 
         //this.next(data)
@@ -211,3 +231,27 @@ Clientside usage of the service will look like:
     app.services.my_service.custom_method(function(err, data){ //Passing only function will set eventlistener - client can listen if server streams some data for this action
       //Do your staff with your data here
     });
+
+## Models ##
+In http://sequelizejs.com/ documentation for models definition. Use types argument instead Sequilize.types, because this function will be called twice - once for seeding and once for building clientside models
+    module.exports = function(sq, types, seeds, cb){
+      var Settings = sq.define('settings', {
+        key:                  { type: types.STRING, unique: true},
+        value:                        types.STRING,
+        description:                  types.STRING
+      });
+
+      var User = sq.define('user', {
+        username:               type: types.STRING, unique: true},
+        passwordHash:                 types.STRING,
+        email:                        types.STRING
+      });
+
+      //Callback will return app, so you can do this:
+      var app = cb();
+
+      app.models = { //sequilize models will be accessible from any part of your app
+        Settings: Settings
+      }; 
+    };
+
