@@ -109,9 +109,21 @@ Bundle loader will load all .js files in your bundles folder and will build a ja
       entryPoint:  __dirname+"/../client/app.js", //Path to entrypoint
       mountPoint : "/app.js", //Mountpoint which browser should load as javascript src
 
-      //Individual bundle options that will override the options from your config - for easy debugging
+      //Individual bundle options that will overwrite the options from your config - for easy development
       cache: false,
-      watch: true
+      watch: true,
+
+      //Callback that will be executes instead of default app.use(bundler)
+      callback: function(bundler, app){
+        //Some of possible actions:
+        //bundler.addEntry(path_to_file);
+        //bundler.register(".file_extencion", function(body, file){...});
+        //bundler.require(path_to_file)
+        //bundler.prepend("javascript code (as string) that will be placed on top of your bundle and will be accessible from all requireded files");
+        //For more, see browserify v1.17.3 that is used
+        // Do something with your bundler and...
+        app.use(bundler);
+      }
     };
 
 ## Routes ##

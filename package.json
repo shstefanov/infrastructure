@@ -14,12 +14,13 @@
     "socket.io": "latest",
     "socket.io-client": "latest",
     "session.socket.io": "latest",
+    "connect-mongo": "latest",
     "sequelize": "latest",
     "jade": "latest",
     "underscore":"latest",
     "colors": "latest",
     "walk":"latest",
-    "browserify":"latest",
+    "browserify":"1.17.3",
     "i18next": "latest"
   },
   "devDependencies": {

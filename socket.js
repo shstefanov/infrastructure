@@ -1,8 +1,5 @@
 var helpers = require("./helpers");
-
 var Service = require("./service.js");
-
-var services = [];
 
 //called in index.js (socketInitializer)
 module.exports.connect = function(app, io, config, models){ 

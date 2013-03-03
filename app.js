@@ -11,7 +11,6 @@ module.exports = function(express, config){
 
   //Get express cookeParser
   app.cookieParser = express.cookieParser(config.sessionCookie);
-  console.log("app.cookieParser:", app.cookieParser);
 
   //Configuring app
   app.configure(function(){

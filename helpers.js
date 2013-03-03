@@ -44,7 +44,6 @@ module.exports.plainTextContentWrapper = function(body, file){
   var mod = _.map(lines, function(line){return line_beginning+line+line_ending;});
   var code = prepend+mod.join("")+append;
   code = code.replace("+\n;", ";").replace("\\n\"+\n\" \\n\"", "\"");
-  console.log(code);
   return code;
 };
 

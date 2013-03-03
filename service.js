@@ -31,6 +31,7 @@ module.exports = function(data){
   this.next = function(data){
     self[data.action].apply(self, arguments);
   };
+  
   this.socket.on(this.name, function(data){
     //Blocking clientside initialization of object
     if(typeof self[data.action] === "function" && 
