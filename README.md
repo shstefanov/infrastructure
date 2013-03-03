@@ -247,11 +247,11 @@ In http://sequelizejs.com/ documentation for models definition. Use types argume
         email:                        types.STRING
       });
 
-      //Callback will return app, so you can do this:
-      var app = cb();
-
-      app.models = { //sequilize models will be accessible from any part of your app
+      //give your models to callback and they will be accessible from any place, where you can use: app.models.User
+      var app = cb({
+        User: User,
         Settings: Settings
-      }; 
+      });
+
     };
 

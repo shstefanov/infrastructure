@@ -5,9 +5,9 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 
-var app, config, models;
+var app, config;
 //After database connection handler
-var dbConnectionHandler = function(){
+var dbConnectionHandler = function(models){
   
   //Initializing and setting up express
   var appInitializer = require("./app");
@@ -51,20 +51,84 @@ var dbConnectionHandler = function(){
 };
 
 
-module.exports = function(_config, callback){
-  config = _config;
-  var sq = new Sequelize(config.mysql.database, config.mysql.user, config.mysql.password, config.mysql);
-  var modelsInitializer = require(config.models);
-  var seeds = require(config.seed);
-  modelsInitializer(sq, {
-    STRING:  Sequelize.STRING,
-    TEXT:    Sequelize.TEXT,
-    INTEGER: Sequelize.INTEGER,
-    DATE:    Sequelize.DATE,
-    BOOLEAN: Sequelize.BOOLEAN,
-    FLOAT:   Sequelize.FLOAT
-  }, seeds, function(){
-    return dbConnectionHandler();
-  });
-  
+module.exports = { 
+  run:function(_config, callback){
+    config = _config;
+    var sq = new Sequelize(config.mysql.database, config.mysql.user, config.mysql.password, config.mysql);
+    var modelsInitializer = require(config.models);
+    modelsInitializer(sq, {
+      STRING:  Sequelize.STRING,
+      TEXT:    Sequelize.TEXT,
+      INTEGER: Sequelize.INTEGER,
+      DATE:    Sequelize.DATE,
+      BOOLEAN: Sequelize.BOOLEAN,
+      FLOAT:   Sequelize.FLOAT
+    }, function(models){
+      return dbConnectionHandler(models);
+    });
+  },
+  seed:function(config, callback){
+
+    config.mysql.define.syncOnAssociation = true;
+    config.mysql.sync = { force: true };
+    config.mysql.syncOnAssociation = true;
+    config.mysql.define = { 
+      underscored: config.mysql.define.underscored,
+      freezeTableName: config.mysql.define.freezeTableName,
+      syncOnAssociation: true,
+      charset: config.mysql.define.charset,
+      collate: config.mysql.define.collate,
+      classMethods: config.mysql.define.classMethods,
+      instanceMethods: config.mysql.define.instanceMethods,
+      timestamps: config.mysql.define.timestamps
+    };
+
+    var sq = new Sequelize(config.mysql.database, config.mysql.user, config.mysql.password, config.mysql);
+    var seeds = require(config.seed);
+
+    var modelsInitializer = require(config.models);
+    modelsInitializer(sq, {
+      STRING:  Sequelize.STRING,
+      TEXT:    Sequelize.TEXT,
+      INTEGER: Sequelize.INTEGER,
+      DATE:    Sequelize.DATE,
+      BOOLEAN: Sequelize.BOOLEAN,
+      FLOAT:   Sequelize.FLOAT
+    }, function(models){
+      var models_count = 0;
+      var methods_count = 0;
+      sq.drop().success(function(){
+        sq.sync({force: true}).success(function(){
+          var check_ready = function(){
+            if(models_count == 0 && methods_count == 0){ 
+                callback(sq, models);
+              }
+          };
+          //Tables created, seeding
+          for(model in seeds){
+            var m = model;
+            if(typeof seeds[m] == "function"){
+              methods_count++;
+              seeds[m](sq, models, function(){
+                methods_count--;
+                check_ready();
+              });
+               return;
+            }
+            
+            seeds[m].forEach(function(mo){
+              models_count++;
+              models[m].create(mo).error(function(err){throw err;})
+              .success(function(model){
+                models_count--;
+                check_ready();
+              });
+            });
+          }
+        }).error(function(err){
+          throw err;
+        });
+      });
+    });
+  }
 };
