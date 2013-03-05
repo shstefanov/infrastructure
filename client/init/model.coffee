@@ -1,2 +1,2 @@
 
-window.model = Backbone.Model
+module.exports = Backbone.Model
