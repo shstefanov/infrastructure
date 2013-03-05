@@ -42,9 +42,7 @@ module.exports = function(app, config){
     }
 
     if(bundle.callback && typeof bundle.callback == "function"){
-      bundle.callback(bundler, app, function(b){
-        app.use(b);
-      });
+      bundle.callback(bundler, app);
     }
     else{
       app.use(bundler);
