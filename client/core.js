@@ -9,10 +9,14 @@ require("./init/i18next");
 window.App = {};
 App.Modules = {};
 App.Models = {};
+App.Collections = {};
 
 App.build = function(router_options){
 
   var self = this;
+
+  this.config = config;
+  //this.settings = settings;
 
   this.dispatcher = _.extend({}, Backbone.Events);
 
