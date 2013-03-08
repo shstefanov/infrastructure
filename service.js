@@ -2,6 +2,7 @@ var _ = require("underscore");
 
 module.exports = function(data){
   var self = this;
+  console.log("Creating service:", data.name);
   
   this.name = data.name;
   this.app = data.app;
@@ -11,6 +12,8 @@ module.exports = function(data){
 
   _.extend(this, data.methods);
 
+  console.log("after extend");
+
   this.emit = function(data){
     self.socket.emit(self.name, data);
   }
@@ -19,7 +22,7 @@ module.exports = function(data){
   this.service_index = function(){
     var api = [];
     for (method in data.methods){
-      if(method != "init" && method != "auth" && method != "emit" && method != "name"){
+      if(typeof data.methods[method] == "function" && method != "init" && method != "auth" && method != "emit" && method != "name"){
         api.push(method);
       }
     }
@@ -29,10 +32,14 @@ module.exports = function(data){
     });
   };
   this.next = function(data){
-    self[data.action].apply(self, arguments);
+    console.log("in next", data);
+    if(typeof self[data.action] == "function")
+      console.log("going to action: ", data.action);
+      self[data.action].apply(self, arguments);
   };
-  
+  console.log("on socket.on");
   this.socket.on(this.name, function(data){
+    console.log("service on event:", self.name, data.action, data.body);
     //Blocking clientside initialization of object
     if(typeof self[data.action] === "function" && 
       data.action != "initialize" 
@@ -42,7 +49,8 @@ module.exports = function(data){
           self.auth.apply(self, arguments);
         }
         else{
-          self.next(data);
+          console.log("--------going next--------");
+          self.next.apply(self, arguments);
         }
       
     }

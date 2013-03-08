@@ -1,5 +1,6 @@
 var helpers = require("./helpers");
 var Service = require("./service.js");
+var ModelsServiceBuilder = require("./modelServices.js");
 
 //called in index.js (socketInitializer)
 module.exports.connect = function(app, io, config, models){ 
@@ -15,6 +16,10 @@ module.exports.connect = function(app, io, config, models){
   //On connection handler
   return function(err, socket, session){
     if(!session) return;
+    if(session.enabledModelsServices.length > 0){
+      ModelsServiceBuilder(app, socket, session);
+    }
+    console.log("after that");
    
     //Binding socket to available for this page services
     var count = 0;
@@ -31,6 +36,7 @@ module.exports.connect = function(app, io, config, models){
         app: app
       });
       count++;
+      console.log(session.services);
       if(count == session.services.length){ //Ready
         socket.emit("ready"); //sending signal to load the client app
 

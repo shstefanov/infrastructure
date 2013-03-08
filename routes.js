@@ -19,6 +19,9 @@ module.exports = function(app, config){
    
     app[methods[page.method]](page.route, function(req, res, next){
 
+      req.session.enabledModelsServices = [];
+      req.session.services = [];
+
       function go (new_page) {
         
         //Packing pageconfig to be sent to client

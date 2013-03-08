@@ -7,7 +7,7 @@ var express = require('express')
 
 var app, config;
 //After database connection handler
-var dbConnectionHandler = function(models){
+var dbConnectionHandler = function(models, callback){
   
   //Initializing and setting up express
   var appInitializer = require("./app");
@@ -47,7 +47,7 @@ var dbConnectionHandler = function(models){
 
     sio.on("connection", socketServicesInitializer(app, io, config));
   });
-  return app;
+  callback(null, app);
 };
 
 
@@ -64,7 +64,7 @@ module.exports = {
       BOOLEAN: Sequelize.BOOLEAN,
       FLOAT:   Sequelize.FLOAT
     }, function(models){
-      return dbConnectionHandler(models);
+      return dbConnectionHandler(models, callback);
     });
   },
   seed:function(config, callback){

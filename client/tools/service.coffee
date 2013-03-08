@@ -19,16 +19,21 @@ module.exports = class Service
         data.body.forEach (method)=>
 
           @[method] = (data, meta, callback)=>
+            console.log("sending something")
+            console.log(@name, method, data, meta, callback)
 
             dataAndMeta = (data, meta)=>
+              console.log("here - 11111111")
               app.socket.emit(@name, {action:method, body:data, meta:meta})
 
             withCallback = (data, meta, callback)=>
+              console.log("here - 222222222222")
               reqId = _.uniqueId(@name+"_"+method)
               app.socket.emit(@name, {action:method, body:data, meta:meta, reqId:reqId})
               @dispatcher[reqId] = callback
 
             onlyCallback = (callback)=>
+              console.log("here - 333333333333333")
               @eventListener.on(method, callback)
             
             if(typeof callback == "function")
