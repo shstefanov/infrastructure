@@ -393,6 +393,15 @@ var DefineService = function(definition){
         reqId: data.reqId
       });
     }).success(function(model){
+      if(model==null){
+        self.emit({
+          action: "destroy",
+          body: "Can't find model to delete",
+          meta:   "error",
+          reqId: data.reqId
+        });
+        return;
+      }
       model.destroy()
       .error(function(err){
         self.emit({

@@ -10,6 +10,7 @@ require("./init/sync.js");
 window.App = {};
 App.Modules = {};
 App.Models = {};
+App.Views = {};
 App.Collections = {};
 
 
@@ -110,6 +111,8 @@ App.View = require("./init/view.coffee");
 App.Model = require("./init/model.coffee");
 App.Collection = require("./init/collection.coffee");
 App.Router = require("./init/router.coffee");
+
+App.Views.EditableView = require("./tools/EditableView.coffee")
 
 App.defaultMissingAttributeValue = null;
 

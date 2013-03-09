@@ -2,7 +2,11 @@ module.exports = Backbone.View.extend
 
   initialize: (options)->
     @_binded = []
-    compiled_template = jade.compile(@template)
+    if(options and options.template)
+      tmpl = options.template 
+    else
+      tmpl = @template
+    compiled_template = jade.compile(tmpl)
     @template = ()=>
       d = {}
       d.t = $.t

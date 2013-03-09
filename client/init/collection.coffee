@@ -24,13 +24,8 @@ module.exports = Backbone.Collection.extend
 
   save: ->
     @each (model)=>
-      if(model.notSaved)
-        model.save (err, mod)=>
-          if(err) 
-            mod.trigger("error", err)
-            return
-          mod.notSaved = false
-          mod.trigger("change")
+      model.save ()=>
+       
 
 
 

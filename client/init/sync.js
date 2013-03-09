@@ -1,21 +1,11 @@
-
-
-// Backbone.sync = function(method, model, options, error){
-//   var storeService = app.services[model.name];
-//   switch (method) {
-//     case 'read':    
-//       if(!model.id) {
-//         console.log("Sync error: can't get model without id");
-//         error("Sync error: can't get model without id");
-//         break;
-//       }
-//       else{
-//         storeService.get(model.id, )
-//       break;
-//       }
-//     case 'create':  store.create(model.attributes, resp); break;
-//     case 'update':  store.update(model.attributes, resp); break;
-//     case 'delete':  store.delete(model.id, resp); break;
-//   }
-
-// }
+Backbone.sync = function(method, model, options){
+    console.log(arguments)
+  var methods={create:"new",read:"get",update:"set","delete":"destroy"};
+  var store = app.services[model.name];
+    store[methods[method]](model.toJSON(), function(err, data){
+      if(err) {model.trigger("error", err); options.error(err); return;}
+      if(method=="delete"){options.success(model); return;}
+      if(method == "create" || method == "update"){model.set(data);model.trigger("save"); return;}
+      else{model.set(data); options.success(data); return;}
+    });  
+}
