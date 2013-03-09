@@ -1,8 +1,6 @@
 
 module.exports = Backbone.Model.extend
   save: (cb)->
-      
-    console.log("save")
     app.collections[@name].add(@, {merge:true})
 
     if (@id)
@@ -11,19 +9,21 @@ module.exports = Backbone.Model.extend
           @trigger("error", err)
           cb(err) if cb
           return
-        @set(data)
-        cb(null, data)  if cb
+        @set(data,{silent:true})
+        cb(null, @)  if cb
+        @trigger("change")
       return
     app.services[@name].new @attributes, (err, data)=>
       if err
         @trigger("error", err)
         cb(err) if cb
         return
-      @set(data)
-      cb(null, data) if cb
+      @set(data,{silent:true})
+      cb(null, @)  if cb
+      @trigger("change")
 
   fetch: (id, cb)->
-    i = @id || id
+    i = @id || id.id || id
     if(!i)
       error = "Can't fetch model without id"
       cb(error)

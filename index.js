@@ -51,7 +51,8 @@ var dbConnectionHandler = function(models, callback){
 };
 
 
-module.exports = { 
+module.exports = {
+
   run:function(_config, callback){
     config = _config;
     var sq = new Sequelize(config.mysql.database, config.mysql.user, config.mysql.password, config.mysql);
@@ -67,6 +68,7 @@ module.exports = {
       return dbConnectionHandler(models, callback);
     });
   },
+  
   seed:function(config, callback){
 
     config.mysql.define.syncOnAssociation = true;

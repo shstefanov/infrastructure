@@ -14,8 +14,7 @@ App.Collections = {};
 
 
 
-App.build = function(router_options){
-  console.log("build");
+App.build = function(router){
 
   var self = this;
   window.app = this;
@@ -23,7 +22,8 @@ App.build = function(router_options){
   this.config = config;
   this.modules = {};
   this.collections = {};
-  this.makeModels = require("./tools/ModelFactory.js");
+  
+
   this.dispatcher = _.extend({}, Backbone.Events);
   this.socket = io.connect();
 
@@ -46,43 +46,59 @@ App.build = function(router_options){
 
       //Services is global declarated arry, 
       //set in page route definition
-      services.forEach(function(service_name){
-        self.services[service_name] = new Service(service_name);
-      });
       
+      var routes = {};
 
       //Now -  running the application
       var run = function(){
-        appRouter = App.Router.extend(router_options);
-        self.router = new appRouter();
-        if(router_options.routes)
-          Backbone.history.start();
+        self.router = new router();
+        Backbone.history.start({pushState:true, trigger:true});
+      };
+
+      var defineRoute = function(routeName){
+        routes[routeName] = function(){
+          self.router.$content.empty();
+          self.router.$content.append(self.modules[routeName].show().$el);
+        };
+        //router_definition[routeName] = 
       };
       
-      var modules_counter = Object.keys(App.Modules).length;
-      if(modules_counter == 0) { run(); return; }
-      if(!router_options.routes) router_options.routes = {};
-      if(!self.modules) self.modules = {};
-      router_options.moduleNames = [];
-      for (mod in App.Modules){ 
-        modules_counter--;
-        var moduleName = App.Modules[mod].name;
-        moduleNames.push(moduleName);
-        router_options.routes[moduleName] = function(){
-          self.router.$content.empty();
-          self.router.$content.append(self.modules[moduleName].show().$el);
+      var buildModules = function(){
+        var modules_counter = Object.keys(App.Modules).length;
+        if(modules_counter == 0) { run(); return; }
+        if(!self.modules) self.modules = {};
+        for (mod in App.Modules){
+          modules_counter--;
+          self.modules[mod] = new App.Modules[mod]();
+          //All modules ready - run
+          if(modules_counter == 0)
+            run();
         }
-        var moduleRoutesWithRootUrl = {};
-        for(moduleRoute in App.Modules){
-          moduleRoutesWithRootUrl[App.Modules[mod].name + "/" + moduleRoute]= App.Modules[moduleRoute];
-        }
-        App.Modules.routes = moduleRoutesWithRootUrl;
-        self.modules[moduleName] = new App.Router.extend(App.Modules[mod]);
-
-        //All modules ready - run
-        if(modules_counter == 0) run();
+      };
       
-      }
+      var makeModels = function(){
+        if(App.ModelDefinitions){
+          var modelFactory = require("./tools/ModelFactory.js");
+          modelFactory(App.ModelDefinitions, buildModules);
+        }
+        else
+          buildModules();
+      };
+
+      var servicesCounter = services.length;
+      services.forEach(function(service_name){
+        self.services[service_name] = new Service(service_name, function(name){
+          servicesCounter--;
+          if(servicesCounter == 0)
+            makeModels();
+        });
+      });
+
+
+
+
+
+
     });
   });
   

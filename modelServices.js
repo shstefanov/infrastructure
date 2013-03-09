@@ -14,14 +14,6 @@ function capitaliseFirstLetter(string)
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-
-
-
-
-
-
-
-
 var AttributeTypes = {
   STRING: "STRING",  
   TEXT: "TEXT",    
@@ -195,20 +187,17 @@ var DefineService = function(definition){
         error(err);
       }).success(function(model){
 
-        console.log("model found-------------------->", model);
 
 
         var counter = relModels.length;
         var errors = [];
 
         relModels.forEach(function(id){
-          console.log("rel model id", id);
           app.models[data.body.relatedModelName].find(id)
           .error(function(err){
             error(err);
           })
           .success(function(rel_model){
-            console.log("rel_model found-------------------->", rel_model);
             model["remove"+rel](rel_model)
             .error(function(err){
               counter--;
@@ -296,7 +285,7 @@ var DefineService = function(definition){
     }
   }
   if(definition.hasMany){
-    console.log(definition.name,"**********",definition.relations);
+    
     for(rel in definition.relations.hasMany){
       
       getRelation(capitaliseFirstLetter(rel));
@@ -313,8 +302,8 @@ var DefineService = function(definition){
 
   service.find = function(data){
     var self = this;
-    var pattern = data.body;
-    app.models[this.name].find({where:data.body})
+    
+    app.models[this.name].findAll(data.body)
     .error(function(err){
       self.emit({
         action: "new",

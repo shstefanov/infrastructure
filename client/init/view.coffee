@@ -3,8 +3,12 @@ module.exports = Backbone.View.extend
   initialize: (options)->
     @_binded = []
     compiled_template = jade.compile(@template)
-    @template = =>
-      compiled_template({view:@, t: $.t})
+    @template = ()=>
+      d = {}
+      d.t = $.t
+      d.model = @model
+      d.collection = @collection
+      compiled_template(d)
 
     if(@init) 
       @init(options)
@@ -13,14 +17,20 @@ module.exports = Backbone.View.extend
 
   remove: ->
     app.dispatcher.off null, null, @
-    @model.off null ,null ,@
-    @collection.off null, null, @
-    @_binded.forEach (b)=>
-      b.off null, null, @
+    @model.off null ,null ,@ if @model
+    @collection.off null, null, @ if @collection
+    if @_binded
+      @_binded.forEach (b)=>
+        b.off null, null, @
+    Backbone.View.prototype.remove.apply(@, arguments)
 
   bindTo: (obj)->
     @_binded.push(obj)
     obj
+
+  render: (data)->
+    @$el.html(@template(data))
+    @
 
 
 

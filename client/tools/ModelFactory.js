@@ -73,20 +73,22 @@ var hasManyInitialize = function(options){
           self[relName] = new App.Collections[relatedModelName]({ref:self});
         var relatedCollection = self[relName];
 
-        if(typeof arrayModelOrCollection == "function"){console.log("---------1");var models = [], cb = arrayModelOrCollection;}
-        else{console.log("---------2");
+        if(typeof arrayModelOrCollection == "function"){
+          var models = [], cb = arrayModelOrCollection;
+        }
+        else{
           var cb=callback;
-          if(typeof arrayModelOrCollection.models == "array"){console.log("---------3"); //It is a collection
+          if(typeof arrayModelOrCollection.models == "array"){ //It is a collection
             var models = arrayModelOrCollection.toJSON();
           }
-          else if(typeof arrayModelOrCollection.attributes == "object"){console.log("---------4"); //It is single model
+          else if(typeof arrayModelOrCollection.attributes == "object"){ //It is single model
             var models = [arrayModelOrCollection.toJSON()];
           }
-          else if (typeof arrayModelOrCollection == "array"){console.log("---------5"); //It is array of models
-            if(arrayModelOrCollection.length > 0 && typeof arrayModelOrCollection[0].attributes == "object"){console.log("---------")
+          else if (typeof arrayModelOrCollection == "array"){ //It is array of models
+            if(arrayModelOrCollection.length > 0 && typeof arrayModelOrCollection[0].attributes == "object"){
               var models = _.pluck(arrayModelOrCollection, "attributes");
             }
-            else{console.log("---------6"); //It's just array with json data
+            else{ //It's just array with json data
               var models = arrayModelOrCollection;
             }
           }
@@ -160,7 +162,7 @@ var BaseModel = App.Model.extend({
   }
 });
 
-var BaseCollection = Backbone.Collection.extend({
+var BaseCollection = App.Collection.extend({
 
 });
 
@@ -183,17 +185,22 @@ var attrAnalizer = function(name, fields, options){
   return ModelHash;
 };
 
-var modelBuilder = function(modelWrappersHash){
-  console.log(modelWrappersHash);
+var modelBuilder = function(modelWrappersHash, cb){
+  var modelsCounter = Object.keys(modelWrappersHash).length;
   for(model in modelWrappersHash){
     modelData = modelWrappersHash[model].modelHash;
-    console.log(modelData.name);
     modelData.service = app.services[modelData.name];
     App.Models[capitaliseFirstLetter(modelData.name)] = BaseModel.extend(modelData);
     App.Collections[capitaliseFirstLetter(modelData.name)] = BaseCollection.extend({
+      service:app.services[capitaliseFirstLetter(modelData.name)],
+      name: modelData.name,
       model: App.Models[modelData.name]
     });
     app.collections[modelData.name] = new App.Collections[capitaliseFirstLetter(modelData.name)]();
+    modelsCounter--;
+    if(modelsCounter == 0){
+      cb();
+    }
   }
 
 };
@@ -211,7 +218,7 @@ var AttributeTypes = App.AttributeTypes = {
 
 //Return modelBuilder function if modelsHash is 
 //prepended instead of entire models define function
-module.exports = function(models){
+module.exports = function(models, cb){
   var dbArgument = {
     define: function(name, fields, options){
       modelHash = attrAnalizer(name, fields, options);
@@ -241,10 +248,10 @@ module.exports = function(models){
 
   if(typeof models == "function"){
     models(dbArgument, AttributeTypes, function(modelWrappersHash){
-      modelBuilder(modelWrappersHash);
+      modelBuilder(modelWrappersHash, cb);
     });
   }
   else{
-    modelBuilder(models);
+    modelBuilder(models, cb);
   }
 };

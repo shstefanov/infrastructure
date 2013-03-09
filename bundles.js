@@ -12,7 +12,7 @@ module.exports = function(app, config){
   bundles.unshift({
     bundleName:"core", 
     entryPoint:  __dirname+"/client/core.js",
-    mountPoint : "/core.js",
+    mountPoint : "/js/core.js",
     cache: config.bundlesOptions.cache,
     watch: config.bundlesOptions.watch
     //prepend: "var __models = {};"
