@@ -12,7 +12,7 @@ module.exports = App.View.extend
     , @)
     @model.on("destroy", @remove, @)
     @model.on "save", =>
-      @$(".editable-field").removeClass("not-saved")
+      @$el.addClass("saved")
       @$el.removeClass("not-saved")
     ,@
 
@@ -32,7 +32,7 @@ module.exports = App.View.extend
         td.html(@model.get(attrName))
         return
       @model.set(attrName, input.val(), {silent:true})
-      @$(".editable-field").addClass("not-saved")
+      @$el.removeClass("saved")
       @$el.addClass("not-saved")
   
   save: ->
