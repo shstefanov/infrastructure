@@ -28,8 +28,8 @@ var dbConnectionHandler = function(models, callback){
   bundlesInitializer(app, config);
 
   //Setting up less middleware setup
-  var lessInitializer = require("./less.js");
-  lessInitializer(app, config);
+  var coreJavascriptLibsInitializer = require("./coreLibs.js");
+  coreJavascriptLibsInitializer(app, config);
 
 
   //Initializing and setting http server

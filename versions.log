@@ -1,33 +1,34 @@
-infrastructure@0.0.8 /home/otnesen/projects/infrastructure/core
+infrastructure@0.1.0 /home/otnesen/Desktop/infrastructure-deploy/infrastructure/core
 ├─┬ browserify@1.17.3 
-│ ├─┬ buffer-browserify@0.0.4 
+│ ├─┬ buffer-browserify@0.0.5 
 │ │ └── base64-js@0.0.2 
-│ ├── coffee-script@1.4.0 
+│ ├── coffee-script@1.5.0 
 │ ├── commondir@0.0.1 
 │ ├── console-browserify@0.1.6 
 │ ├── crypto-browserify@0.2.1 
 │ ├─┬ deputy@0.0.4 
-│ │ └── mkdirp@0.3.4 
+│ │ └── mkdirp@0.3.5 
 │ ├─┬ detective@0.2.1 
 │ │ └── esprima@0.9.9 
-│ ├─┬ http-browserify@0.1.6 
+│ ├─┬ http-browserify@0.1.8 
 │ │ └── concat-stream@0.0.8 
 │ ├── nub@0.0.0 
 │ ├─┬ optimist@0.3.5 
 │ │ └── wordwrap@0.0.2 
-│ ├── resolve@0.2.3 
+│ ├── resolve@0.2.8 
 │ ├─┬ syntax-error@0.0.0 
 │ │ └── esprima@0.9.9 
 │ └── vm-browserify@0.0.1 
 ├── colors@0.6.0-1 
-├─┬ connect-mongo@0.3.2  extraneous
-│ └─┬ mongodb@1.0.2  invalid
-│   └── bson@0.0.6 
+├─┬ connect-mongo@0.3.2 
+│ └─┬ mongodb@1.2.13 
+│   └── bson@0.1.8 
 ├─┬ express@3.1.0 
 │ ├── buffer-crc32@0.1.1 
 │ ├── commander@0.6.1 
 │ ├─┬ connect@2.7.2 
 │ │ ├── bytes@0.1.0 
+│ │ ├── formidable@1.0.11 
 │ │ ├── pause@0.0.1 
 │ │ └── qs@0.5.1 
 │ ├── cookie@0.0.5 
@@ -39,13 +40,12 @@ infrastructure@0.0.8 /home/otnesen/projects/infrastructure/core
 │ ├── range-parser@0.0.4 
 │ └─┬ send@0.1.0 
 │   └── mime@1.2.6 
-├── formidable@1.0.11  extraneous
-├─┬ i18next@1.5.16 
+├─┬ i18next@1.6.1 
 │ └── cookies@0.3.6 
 ├─┬ jade@0.28.1 
 │ ├── coffee-script@1.4.0 
 │ ├── commander@0.6.1 
-│ └── mkdirp@0.3.4 
+│ └── mkdirp@0.3.5 
 ├─┬ jasmine-node@1.3.0 
 │ ├── coffee-script@1.5.0 
 │ ├─┬ gaze@0.3.3 
@@ -59,246 +59,26 @@ infrastructure@0.0.8 /home/otnesen/projects/infrastructure/core
 │ ├── jasmine-reporters@0.2.1 
 │ ├── requirejs@2.1.4 
 │ └── walkdir@0.0.5 
-├─┬ mongoose@3.5.6  extraneous
-│ ├── hooks@0.2.1 
-│ ├─┬ mongodb@1.2.11  invalid
-│ │ └── bson@0.1.6 
-│ ├── ms@0.1.0 
-│ ├── muri@0.1.0 
-│ └── sliced@0.0.3 
-├─┬ mysql@2.0.0-alpha7  extraneous
-│ ├── bignumber.js@1.0.1 
-│ └── require-all@0.0.3 
 ├─┬ sequelize@1.6.0-beta4 
-│ ├─┬ buster@0.6.12 
-│ │ ├── buster-assertions@0.10.3 
-│ │ ├─┬ buster-autotest@0.2.0 
-│ │ │ ├─┬ buster-glob@0.3.2 
-│ │ │ │ └─┬ glob@3.1.21 
-│ │ │ │   ├── graceful-fs@1.2.0 
-│ │ │ │   ├── inherits@1.0.0 
-│ │ │ │   └─┬ minimatch@0.2.11 
-│ │ │ │     ├── lru-cache@2.2.2 
-│ │ │ │     └── sigmund@1.0.0 
-│ │ │ └── fs-watch-tree@0.2.2 
-│ │ ├── buster-core@0.6.4 
-│ │ ├── buster-evented-logger@0.4.4 
-│ │ ├── buster-format@0.5.5 
-│ │ ├─┬ buster-server-cli@0.2.2 
-│ │ │ ├─┬ buster-cli@0.5.2 
-│ │ │ │ ├─┬ buster-configuration@0.5.2 
-│ │ │ │ │ ├── async@0.1.22 
-│ │ │ │ │ ├─┬ glob@3.1.21 
-│ │ │ │ │ │ ├── graceful-fs@1.2.0 
-│ │ │ │ │ │ └── inherits@1.0.0 
-│ │ │ │ │ └─┬ ramp-resources@0.4.1 
-│ │ │ │ │   ├── buster-glob@0.3.2 
-│ │ │ │ │   ├── mime@1.2.9 
-│ │ │ │ │   └─┬ minimatch@0.1.5 
-│ │ │ │ │     └── lru-cache@1.0.6 
-│ │ │ │ ├── buster-terminal@0.4.1 
-│ │ │ │ ├─┬ minimatch@0.2.11 
-│ │ │ │ │ ├── lru-cache@2.2.2 
-│ │ │ │ │ └── sigmund@1.0.0 
-│ │ │ │ ├── posix-argv-parser@0.4.2 
-│ │ │ │ ├── rimraf@1.0.9 
-│ │ │ │ └── stream-logger@0.3.0 
-│ │ │ ├── ejs@0.4.3 
-│ │ │ ├── paperboy@0.0.5 
-│ │ │ ├─┬ phantom@0.3.5 
-│ │ │ │ ├─┬ dnode@0.9.12 
-│ │ │ │ │ ├─┬ dnode-protocol@0.1.5 
-│ │ │ │ │ │ └── traverse@0.6.3 
-│ │ │ │ │ ├── jsonify@0.0.0 
-│ │ │ │ │ ├── lazy@1.0.8 
-│ │ │ │ │ ├─┬ socket.io@0.8.6 
-│ │ │ │ │ │ ├── policyfile@0.0.4 
-│ │ │ │ │ │ └── redis@0.6.7 
-│ │ │ │ │ └─┬ socket.io-client@0.8.6 
-│ │ │ │ │   ├── uglify-js@1.0.6 
-│ │ │ │ │   ├── websocket-client@1.0.0 
-│ │ │ │ │   └── xmlhttprequest@1.2.2 
-│ │ │ │ ├─┬ dnode-protocol@0.2.2 
-│ │ │ │ │ ├── jsonify@0.0.0 
-│ │ │ │ │ └── traverse@0.6.3 
-│ │ │ │ └─┬ express@3.0.6 
-│ │ │ │   ├── buffer-crc32@0.1.1 
-│ │ │ │   ├─┬ connect@2.7.2 
-│ │ │ │   │ ├── bytes@0.1.0 
-│ │ │ │   │ ├── formidable@1.0.11 
-│ │ │ │   │ ├── pause@0.0.1 
-│ │ │ │   │ └── qs@0.5.1 
-│ │ │ │   ├── cookie@0.0.5 
-│ │ │ │   ├── cookie-signature@0.0.1 
-│ │ │ │   ├── debug@0.7.2 
-│ │ │ │   ├── fresh@0.1.0 
-│ │ │ │   ├── methods@0.0.1 
-│ │ │ │   ├── mkdirp@0.3.3 
-│ │ │ │   ├── range-parser@0.0.4 
-│ │ │ │   └─┬ send@0.1.0 
-│ │ │ │     └── mime@1.2.6 
-│ │ │ ├── platform@1.0.0 
-│ │ │ ├─┬ ramp@0.6.0 
-│ │ │ │ ├── bane@0.1.0 
-│ │ │ │ ├─┬ faye@0.8.9 
-│ │ │ │ │ ├── cookiejar@1.3.0 
-│ │ │ │ │ └── faye-websocket@0.4.4 
-│ │ │ │ └── node-uuid@1.4.0 
-│ │ │ └─┬ ramp-resources@0.5.0 
-│ │ │   ├── lodash@0.5.2 
-│ │ │   ├── mime@1.2.9 
-│ │ │   ├─┬ minimatch@0.1.5 
-│ │ │   │ └── lru-cache@1.0.6 
-│ │ │   └─┬ multi-glob@0.4.0 
-│ │ │     ├── async@0.2.5 
-│ │ │     └─┬ glob@3.1.21 
-│ │ │       ├── graceful-fs@1.2.0 
-│ │ │       ├── inherits@1.0.0 
-│ │ │       └─┬ minimatch@0.2.11 
-│ │ │         ├── lru-cache@2.2.2 
-│ │ │         └── sigmund@1.0.0 
-│ │ ├── buster-sinon@0.6.0 
-│ │ ├─┬ buster-static@0.5.1 
-│ │ │ ├─┬ buster-cli@0.5.2 
-│ │ │ │ ├─┬ buster-configuration@0.5.2 
-│ │ │ │ │ ├── async@0.1.22 
-│ │ │ │ │ └─┬ glob@3.1.21 
-│ │ │ │ │   ├── graceful-fs@1.2.0 
-│ │ │ │ │   └── inherits@1.0.0 
-│ │ │ │ ├── buster-terminal@0.4.1 
-│ │ │ │ ├─┬ minimatch@0.2.11 
-│ │ │ │ │ ├── lru-cache@2.2.2 
-│ │ │ │ │ └── sigmund@1.0.0 
-│ │ │ │ ├── posix-argv-parser@0.4.2 
-│ │ │ │ ├── rimraf@1.0.9 
-│ │ │ │ └── stream-logger@0.3.0 
-│ │ │ ├── mkdirp@0.3.5 
-│ │ │ └─┬ ramp-resources@0.4.1 
-│ │ │   ├─┬ buster-glob@0.3.2 
-│ │ │   │ └─┬ glob@3.1.21 
-│ │ │   │   ├── graceful-fs@1.2.0 
-│ │ │   │   ├── inherits@1.0.0 
-│ │ │   │   └─┬ minimatch@0.2.11 
-│ │ │   │     ├── lru-cache@2.2.2 
-│ │ │   │     └── sigmund@1.0.0 
-│ │ │   ├── mime@1.2.9 
-│ │ │   └─┬ minimatch@0.1.5 
-│ │ │     └── lru-cache@1.0.6 
-│ │ ├─┬ buster-syntax@0.4.2 
-│ │ │ ├─┬ jsdom@0.2.19 
-│ │ │ │ ├─┬ contextify@0.1.4 
-│ │ │ │ │ └── bindings@1.0.0 
-│ │ │ │ ├── cssom@0.2.5 
-│ │ │ │ ├── cssstyle@0.2.3 
-│ │ │ │ ├── htmlparser@1.7.6 
-│ │ │ │ └─┬ request@2.14.0 
-│ │ │ │   ├─┬ form-data@0.0.7 
-│ │ │ │   │ ├── async@0.1.22 
-│ │ │ │   │ └─┬ combined-stream@0.0.4 
-│ │ │ │   │   └── delayed-stream@0.0.5 
-│ │ │ │   └── mime@1.2.9 
-│ │ │ └── uglify-js@1.2.6 
-│ │ ├─┬ buster-test@0.6.1 
-│ │ │ ├── buster-terminal@0.4.1 
-│ │ │ └─┬ jsdom@0.2.19 
-│ │ │   ├─┬ contextify@0.1.4 
-│ │ │   │ └── bindings@1.0.0 
-│ │ │   ├── cssom@0.2.5 
-│ │ │   ├── cssstyle@0.2.3 
-│ │ │   ├── htmlparser@1.7.6 
-│ │ │   └─┬ request@2.14.0 
-│ │ │     ├─┬ form-data@0.0.7 
-│ │ │     │ ├── async@0.1.22 
-│ │ │     │ └─┬ combined-stream@0.0.4 
-│ │ │     │   └── delayed-stream@0.0.5 
-│ │ │     └── mime@1.2.9 
-│ │ ├─┬ buster-test-cli@0.7.5 
-│ │ │ ├── ansi-colorizer@0.5.0 
-│ │ │ ├── ansi-grid@0.5.0 
-│ │ │ ├── bane@0.2.0 
-│ │ │ ├── buster-analyzer@0.4.0 
-│ │ │ ├─┬ buster-cli@0.5.2 
-│ │ │ │ ├─┬ buster-configuration@0.5.2 
-│ │ │ │ │ ├── async@0.1.22 
-│ │ │ │ │ ├─┬ glob@3.1.21 
-│ │ │ │ │ │ ├── graceful-fs@1.2.0 
-│ │ │ │ │ │ └── inherits@1.0.0 
-│ │ │ │ │ └─┬ ramp-resources@0.4.1 
-│ │ │ │ │   ├── buster-glob@0.3.2 
-│ │ │ │ │   ├── mime@1.2.9 
-│ │ │ │ │   └─┬ minimatch@0.1.5 
-│ │ │ │ │     └── lru-cache@1.0.6 
-│ │ │ │ ├── buster-terminal@0.4.1 
-│ │ │ │ ├─┬ minimatch@0.2.11 
-│ │ │ │ │ ├── lru-cache@2.2.2 
-│ │ │ │ │ └── sigmund@1.0.0 
-│ │ │ │ ├── posix-argv-parser@0.4.2 
-│ │ │ │ ├── rimraf@1.0.9 
-│ │ │ │ └── stream-logger@0.3.0 
-│ │ │ ├── ejs@0.4.3 
-│ │ │ ├── lodash@0.8.2 
-│ │ │ ├── platform@1.0.0 
-│ │ │ ├─┬ ramp@0.6.0 
-│ │ │ │ ├── bane@0.1.0 
-│ │ │ │ ├─┬ faye@0.8.9 
-│ │ │ │ │ ├── cookiejar@1.3.0 
-│ │ │ │ │ └── faye-websocket@0.4.4 
-│ │ │ │ ├── node-uuid@1.4.0 
-│ │ │ │ └─┬ ramp-resources@0.5.0 
-│ │ │ │   ├── lodash@0.5.2 
-│ │ │ │   ├── mime@1.2.9 
-│ │ │ │   ├─┬ minimatch@0.1.5 
-│ │ │ │   │ └── lru-cache@1.0.6 
-│ │ │ │   └─┬ multi-glob@0.4.0 
-│ │ │ │     ├── async@0.2.5 
-│ │ │ │     └─┬ glob@3.1.21 
-│ │ │ │       ├── graceful-fs@1.2.0 
-│ │ │ │       ├── inherits@1.0.0 
-│ │ │ │       └─┬ minimatch@0.2.11 
-│ │ │ │         ├── lru-cache@2.2.2 
-│ │ │ │         └── sigmund@1.0.0 
-│ │ │ └── stack-filter@0.1.0 
-│ │ ├── sinon@1.6.0 
-│ │ └── when@1.3.0 
 │ ├── commander@0.6.1 
-│ ├─┬ dox-foundation@0.3.3 
-│ │ ├── commander@0.5.2 
-│ │ ├─┬ dox@0.3.3 
-│ │ │ ├── commander@0.6.1 
-│ │ │ └── github-flavored-markdown@1.0.1 
-│ │ ├─┬ jade@0.28.1 
-│ │ │ ├── coffee-script@1.4.0 
-│ │ │ └── commander@0.6.1 
-│ │ ├── mkdirp@0.3.5 
-│ │ └─┬ walk@2.2.1 
-│ │   └─┬ forEachAsync@2.2.0 
-│ │     └── sequence@2.2.1 
 │ ├── generic-pool@1.0.9 
-│ ├─┬ jasmine-node@1.0.17 
-│ │ ├── coffee-script@1.5.0 
-│ │ ├── jasmine-reporters@0.1.0 
-│ │ └── requirejs@2.1.4 
 │ ├── lingo@0.0.5 
 │ ├── moment@1.7.2 
 │ ├─┬ mysql@2.0.0-alpha7 
 │ │ ├── bignumber.js@1.0.1 
 │ │ └── require-all@0.0.3 
-│ ├─┬ pg@0.8.8 
-│ │ └── generic-pool@1.0.12 
-│ ├── sqlite3@2.1.5 
-│ ├── underscore@1.4.4 
 │ ├── underscore.string@2.3.1 
 │ └── validator@0.3.9 
-├── session.socket.io@0.1.4 
+├── session.socket.io@0.1.6 
 ├─┬ socket.io@0.9.13 
-│ ├── UNMET DEPENDENCY base64id 0.1.0
+│ ├── base64id@0.1.0 
 │ ├── policyfile@0.0.4 
 │ └── redis@0.7.3 
 ├─┬ socket.io-client@0.9.11 
 │ ├─┬ active-x-obfuscator@0.0.1 
 │ │ └── zeparser@0.0.5 
 │ ├── uglify-js@1.2.5 
-│ ├─┬ ws@0.4.22 
+│ ├─┬ ws@0.4.25 
 │ │ ├── commander@0.6.1 
 │ │ ├── options@0.0.3 
 │ │ └── tinycolor@0.0.1 

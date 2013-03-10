@@ -10,18 +10,18 @@
   "main": "./index.js",
   
   "dependencies": {
+    "browserify":"1.17.3",
+    "colors": "latest",
+    "connect-mongo": "latest",
     "express": "latest",
+    "i18next": "latest",
+    "jade": "latest",
+    "sequelize": "latest",
+    "session.socket.io": "latest",
     "socket.io": "latest",
     "socket.io-client": "latest",
-    "session.socket.io": "latest",
-    "connect-mongo": "latest",
-    "sequelize": "latest",
-    "jade": "latest",
     "underscore":"latest",
-    "colors": "latest",
-    "walk":"latest",
-    "browserify":"1.17.3",
-    "i18next": "latest"
+    "walk":"latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"
