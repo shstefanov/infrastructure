@@ -16,7 +16,7 @@ module.exports.connect = function(app, io, config, models){
   //On connection handler
   return function(err, socket, session){
     if(!session) return;
-    if(session.enabledModelsServices.length > 0){
+    if(session.modelServices.length > 0){
       ModelsServiceBuilder(app, socket, session);
     }
    

@@ -7,22 +7,16 @@ html
       config = !{config};
       services = !{services};
 
-    each styleSheet in styleSheets
+    each styleSheet in css
+      link(href=styleSheet/css, rel="stylesheet", type="text/css")
+
+    each styleSheet in less
       link(rel="stylesheet/less", type="text/css", href=styleSheet)
 
-    each script in libs
+    each script in javascripts
       script(src=script)
-
-    script(src='/i18next/i18next.js', type='text/javascript')
-    script(src='/socket.io/socket.io.js', type='text/javascript')
-    
-    
-    script(src='/js/core.js')
-
-    each bundle in bundles
-      script(src=bundle)
       
   body
     if(bodyAdd)
-      script=bodyAdd
+      script=bodyJavascript
     

@@ -13,6 +13,17 @@ var methods = {
   DEL:"del"
 };
 
+var coreLibs = [
+  "/i18next/i18next.js",
+  "/socket.io/socket.io.js",
+  "/js/jquery.js",
+  "/js/jade.js",
+  "/js/underscore.js",
+  "/js/backbone.js",
+  "/js/less.js",
+  "/js/core.js"
+];
+
 module.exports = function(app, config){
 
   //Loading all defined in pages folder page definitons
@@ -21,64 +32,117 @@ module.exports = function(app, config){
   //Setting up server to serve each of them
   pages.forEach(function(page){
 
-    var defineRoute = function(route, push){ //push - true, false
+    var defineRoute = function(route){ //push - true, false
       
       var pushState = route.indexOf(":") > -1;
 
       app[methods[page.method]](page.route, function(req, res, next){
 
-        req.session.enabledModelsServices = [];
-        req.session.services = [];
+        //Reset user's socket services
+        req.session.modelServices = {};
+        req.session.services = {};
 
-        function go (new_page) {
+        var error = function(message){
+          this.req.error(500, message);
+        }
+
+        var render = function() {
           
-          //Packing pageconfig to be sent to client
-          var pageConfig = _.extend(config.clientConfig, new_page.config || {});
+          //Setting up javascripts
+          var coreJavascripts = coreLibs;
+          var configJavascripts = config.defaultJavascripts || [];
+          var additionalJavascripts = this.javascripts || [];
+          var pageJavascripts = page.javascripts || [];
+          var allJavascripts = _.union(
+            coreJavascripts,
+            configJavascripts,
+            additionalJavascripts,
+            pageJavascripts
+          );
 
-          if(pushState){
-            pageConfig.pushUrl = req.url;
-          }
-          
-          req.session.services = new_page.services;
+          //Setting up styles
+          var configStyles = config.defaultStyles || [];
+          var additionalStyles = this.styles || [];
+          var pageStyles = page.styles || [];
+          var allStyles = _.union(
+            configStyles,
+            additionalStyles,
+            pageStyles,
+          );
+          var lessStyles = [];
+          var cssStyles  = [];
 
-          //Setting up javascript libs
-          var libs = config.defaultStaticScripts? 
-            config.defaultStaticScripts.slice() : [];//.slice() makes new copy
-          if(new_page.libs)
-            new_page.libs.forEach(function(lib){
-              libs.push(lib);
-            });
 
-          //Setting up stylesheets
-          var styles = config.defaultStyleSheets? 
-            config.defaultStyleSheets.slice() : []; //.slice() makes new copy
-          if(new_page.styleSheets)
-            new_page.styleSheets.forEach(function(style){
-              styles.push(style);
-            });
+          allStyles.forEach(function(style){
+            var ext = style.split(".").pop();
+            if(ext == "less"){
+              lessStyles.push(style);
+            }
+            if(ext = "css"){
+              cssStyles.push(ext);
+            }
+          });
+
+          //Setting up config
+          var configConfig = config.clientConfig || {};
+          var additionalConfig = this.config || {};
+          var pageConfig = page.config || {};
+          var mergedConfig = _.extend(
+            configConfig,
+            additionalConfig,
+            pageConfig
+          );
+
+          //Setting up services
+          var configServices = config.defaultServices || [];
+          var additionalServices = this.services || [];
+          var pageServices = page.services || [];
+          var allServices = _.union(
+            configServices,
+            additionalServices,
+            pageServices
+          );
           
           //Rendering with template engine - jade
           res.render("init.jade", {
-            bundles:new_page.bundles, //Array of javascript bundles mountpoints
-            libs:libs, 
-            styleSheets: styles,
-            title: new_page.title, 
+            title: this.title,
+            javascripts:allJavascripts, 
+            less: lessStyles
+            css: cssStyles
             config:JSON.stringify(pageConfig),  //Page config
-            services: JSON.stringify(_.union(new_page.services || [], config.defaultPageServices || [] )),
-            bodyAdd:page.bodyAdd || "" //Some javascripts need to have initialization in the body of the document
+            services: allServices,
+            bodyJavascript:this.bodyJavascript || ""
           });
         };
 
-        //If there is callback in page definition, waiting it to call go() function
+        //If there is callback in page definition
         if(page.callback && typeof page.callback == "function"){
-          page.req = req;
-          page.res = res;
-          page.next = next;
+          // title
+          // javascripts
+          // styles
+          // services
 
-          page.callback(page, app, go);
+          var javascripts = page.javascripts || [];
+          var styles = page.styles || [];
+          var services = page.services || [];
+
+          var current_page = {
+            title: page.title,
+            javascripts: [],
+            styles: [],
+            services:[],
+            bodyJavascript: page.bodyJavascript
+            req: req,
+            res: res,
+            next: next,
+            render: render,
+            error: error
+          };
+
+          page.callback.apppy(current_page, app);
         }
         //Else - run the page rendering
-        else go(page);
+        else render.apply(page);
 
       });
     };
