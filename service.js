@@ -1,56 +1,81 @@
 var _ = require("underscore");
 
-module.exports = function(data){
-  var self = this;
-  
-  this.name = data.name;
-  this.app = data.app;
-  this.socket = data.socket;
-  this.session = data.session;
-  this.models = this.app.models;
+var helpers = require("./helpers");
 
-  _.extend(this, data.methods);
+var internal = {
+  emit: true,
+  service_index:true,
+  initialize: true,
+  auth: true,
 
+  app:true,
+  socket:true,
+  session:true
+};
 
-  this.emit = function(data){
-    self.socket.emit(self.name, data);
-  }
+module.exports = function(err, socket, session){
 
-  //Sending service api to the client
-  this.service_index = function(){
-    var api = [];
-    for (method in data.methods){
-      if(typeof data.methods[method] == "function" && method != "init" && method != "auth" && method != "emit" && method != "name"){
-        api.push(method);
+  var app = this;
+  session.reload(function(){
+
+    var services = helpers.loadDirAsObject(app.config.socketIoServicesFolder);
+    var userServicesNames = session.services;
+    var userServices = {};
+    
+    userServicesNames.forEach(function(serviceName){
+      if(!services[serviceName]) return;
+
+      userServices[serviceName] = {
+        name:serviceName,
+        app:app,
+        socket:socket,
+        session:session,
+        emit: function(data){
+          data.service = this.name;
+          this.socket.emit("service", data);
+        },
+        next: function(data){
+          if(typeof services[this.name][data.action] == "function")
+            services[this.name][data.action].call(this, data);
+        },
+        service_index: function(){
+          var api = [];
+          for (method in services[this.name]){
+            api.push(method); 
+          }
+          this.emit({
+            action: "service_index",
+            body: api
+          });
+        }
+      };
+
+      if(services[serviceName].initialize && typeof services[serviceName].initialize === "function"){
+        services[data.service].initialize.call(userServices[serviceName]);
       }
-    }
-    self.socket.emit(self.name, {
-      action: "service_index",
-      body: api
+
     });
-  };
-  this.next = function(data){
-    if(typeof self[data.action] == "function")
-      self[data.action].apply(self, arguments);
-  };
-  this.socket.on(this.name, function(data){
-    //Blocking clientside initialization of object
-    if(typeof self[data.action] === "function" && 
-      data.action != "initialize" 
-      && data.action != "next" 
-      && data.action != "auth"){
-        if(self.auth){
-          self.auth.apply(self, arguments);
+
+    socket.on("service", function(data){
+
+      if(data.action == "service_index" && userServices[data.service]){
+        userServices[data.service].service_index()
+      }
+      else if(userServices[data.service] && typeof services[data.service][data.action] == "function"){
+        if(services[data.service].auth && typeof services[data.service].auth == "function"){
+          
+          services[data.service].auth.call(userServices[data.service], data);
         }
+
         else{
-          self.next.apply(self, arguments);
+          userServices[data.service].next.call(userServices[data.service], data);
         }
-      
-    }
+      }
+
+    });
+
+  socket.emit("ready");
   });
   
-  if(this.init && typeof this.init === "function"){
-    this.init();
-  }
   return this;
 };

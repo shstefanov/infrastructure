@@ -40,6 +40,7 @@ module.exports = function(express, config){
 
     //Set static file server
     app.use(express.static(config.staticFolder));
+    app.use(express.static(__dirname+"/coreLibs"));
 
     //Set up i18next
     var i18next = require("i18next");

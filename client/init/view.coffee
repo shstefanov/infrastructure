@@ -6,13 +6,13 @@ module.exports = Backbone.View.extend
       tmpl = options.template 
     else
       tmpl = @template
-    compiled_template = jade.compile(tmpl)
-    @template = ()=>
-      d = {}
-      d.t = $.t
+    @compiled_template = jade.compile(tmpl)
+    @template = (data)=>
+      d = data || {}
+      d.t = i18n.t
       d.model = @model
       d.collection = @collection
-      compiled_template(d)
+      @compiled_template(d)
 
     if(@init) 
       @init(options)

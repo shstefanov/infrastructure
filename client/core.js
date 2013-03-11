@@ -1,4 +1,5 @@
-var Service = require("./tools/service.coffee");
+var ServicesBuilder = require("./tools/serviceBuilder.coffee");
+var ModulesBuilder = require("./tools/modulesBuilder.coffee");
 
 window.dispatcher = _.extend({}, Backbone.Events);
 
@@ -53,7 +54,8 @@ App.build = function(router){
       //Now -  running the application
       var run = function(){
         self.router = new router();
-        Backbone.history.start({pushState:true, trigger:true});
+        if(self.router.routes)
+          Backbone.history.start({pushState:true, trigger:true});
       };
 
       var defineRoute = function(routeName){
@@ -61,45 +63,11 @@ App.build = function(router){
           self.router.$content.empty();
           self.router.$content.append(self.modules[routeName].show().$el);
         };
-        //router_definition[routeName] = 
       };
       
-      var buildModules = function(){
-        var modules_counter = Object.keys(App.Modules).length;
-        if(modules_counter == 0) { run(); return; }
-        if(!self.modules) self.modules = {};
-        for (mod in App.Modules){
-          modules_counter--;
-          self.modules[mod] = new App.Modules[mod]();
-          //All modules ready - run
-          if(modules_counter == 0)
-            run();
-        }
-      };
-      
-      var makeModels = function(){
-        if(App.ModelDefinitions){
-          var modelFactory = require("./tools/ModelFactory.js");
-          modelFactory(App.ModelDefinitions, buildModules);
-        }
-        else
-          buildModules();
-      };
-
-      var servicesCounter = services.length;
-      services.forEach(function(service_name){
-        self.services[service_name] = new Service(service_name, function(name){
-          servicesCounter--;
-          if(servicesCounter == 0)
-            makeModels();
-        });
+      ServicesBuilder(services, function(){
+        ModulesBuilder(App.Modules, run);
       });
-
-
-
-
-
-
     });
   });
   
@@ -112,8 +80,5 @@ App.Model = require("./init/model.coffee");
 App.Collection = require("./init/collection.coffee");
 App.Router = require("./init/router.coffee");
 
-App.Views.EditableView = require("./tools/EditableView.coffee")
-
-App.defaultMissingAttributeValue = null;
 
 

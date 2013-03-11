@@ -10,9 +10,10 @@ module.exports = function(app, config){
 
   //System core bundle
   bundles.unshift({
+    load:true,
     bundleName:"core", 
     entryPoint:  __dirname+"/client/core.js",
-    mountPoint : "/js/core.js",
+    mountPoint : "/bundles/core.js",
     cache: config.bundlesOptions.cache,
     watch: config.bundlesOptions.watch
     //prepend: "var __models = {};"
@@ -20,6 +21,7 @@ module.exports = function(app, config){
 
   //Set up all defined bundles
   bundles.forEach(function(bundle){
+    if(!bundle.load) return;
 
     var rawFilesExtensions = _.union(config.bundlesRawFiles, bundle.raw || []);
 

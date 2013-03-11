@@ -19,18 +19,9 @@ var dbConnectionHandler = function(models, callback){
   var routesInitializer = require("./routes");
   routesInitializer(app, config);
 
-  //Initializing models
-  //var modelsInitializer = require("./models.js");
-  //modelsInitializer(app, config);
-
   //Setting up bundles
   var bundlesInitializer = require("./bundles");
   bundlesInitializer(app, config);
-
-  //Setting up less middleware setup
-  var coreJavascriptLibsInitializer = require("./coreLibs.js");
-  coreJavascriptLibsInitializer(app, config);
-
 
   //Initializing and setting http server
   var server = http.createServer(app).listen(config.server.port, config.server.interface, function(){

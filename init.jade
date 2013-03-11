@@ -7,16 +7,16 @@ html
       config = !{config};
       services = !{services};
 
-    each styleSheet in css
-      link(href=styleSheet/css, rel="stylesheet", type="text/css")
+    each cssStyle in css
+      link(href=cssStyle, rel="stylesheet", type="text/css")
 
-    each styleSheet in less
-      link(rel="stylesheet/less", type="text/css", href=styleSheet)
+    each lessStyle in less
+      link(href=lessStyle, rel="stylesheet/less", type="text/css")
 
     each script in javascripts
       script(src=script)
       
   body
     if(bodyAdd)
-      script=bodyJavascript
+      script=bodyAdd
     

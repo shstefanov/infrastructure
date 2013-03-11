@@ -16,12 +16,12 @@ var methods = {
 var coreLibs = [
   "/i18next/i18next.js",
   "/socket.io/socket.io.js",
-  "/js/jquery.js",
-  "/js/jade.js",
-  "/js/underscore.js",
-  "/js/backbone.js",
-  "/js/less.js",
-  "/js/core.js"
+  "/core-libs/jquery.js",
+  "/core-libs/jade.js",
+  "/core-libs/underscore.js",
+  "/core-libs/backbone.js",
+  "/core-libs/less.js",
+  "/bundles/core.js"
 ];
 
 module.exports = function(app, config){
@@ -39,8 +39,7 @@ module.exports = function(app, config){
       app[methods[page.method]](page.route, function(req, res, next){
 
         //Reset user's socket services
-        req.session.modelServices = {};
-        req.session.services = {};
+        req.session.services = [];
 
         var error = function(message){
           this.req.error(500, message);
@@ -51,68 +50,73 @@ module.exports = function(app, config){
           //Setting up javascripts
           var coreJavascripts = coreLibs;
           var configJavascripts = config.defaultJavascripts || [];
-          var additionalJavascripts = this.javascripts || [];
           var pageJavascripts = page.javascripts || [];
+          var additionalJavascripts = this.javascripts || [];
           var allJavascripts = _.union(
             coreJavascripts,
             configJavascripts,
-            additionalJavascripts,
-            pageJavascripts
+            pageJavascripts,
+            additionalJavascripts
           );
 
           //Setting up styles
           var configStyles = config.defaultStyles || [];
-          var additionalStyles = this.styles || [];
           var pageStyles = page.styles || [];
+          var additionalStyles = this.styles || [];
           var allStyles = _.union(
             configStyles,
-            additionalStyles,
             pageStyles,
+            additionalStyles
           );
-          var lessStyles = [];
-          var cssStyles  = [];
 
-
+          var less = [];
+          var css  = [];
           allStyles.forEach(function(style){
             var ext = style.split(".").pop();
             if(ext == "less"){
-              lessStyles.push(style);
+              less.push(style);
             }
-            if(ext = "css"){
-              cssStyles.push(ext);
+            else if(ext = "css"){
+              css.push(style);
             }
           });
 
           //Setting up config
           var configConfig = config.clientConfig || {};
-          var additionalConfig = this.config || {};
           var pageConfig = page.config || {};
+          var additionalConfig = this.config || {};
           var mergedConfig = _.extend(
             configConfig,
-            additionalConfig,
-            pageConfig
+            pageConfig,
+            additionalConfig
           );
 
           //Setting up services
           var configServices = config.defaultServices || [];
-          var additionalServices = this.services || [];
           var pageServices = page.services || [];
+          var additionalServices = this.services || [];
           var allServices = _.union(
             configServices,
-            additionalServices,
-            pageServices
+            pageServices,
+            additionalServices
           );
-          
-          //Rendering with template engine - jade
-          res.render("init.jade", {
-            title: this.title,
-            javascripts:allJavascripts, 
-            less: lessStyles
-            css: cssStyles
-            config:JSON.stringify(pageConfig),  //Page config
-            services: allServices,
-            bodyJavascript:this.bodyJavascript || ""
+          this.req.session.services = allServices;
+          this.req.session.save(function(session){
+
+            //Rendering with template engine - jade
+            res.render("init.jade", {
+              title: this.title,
+              javascripts:allJavascripts, 
+              less: less,
+              css: css,
+              config:JSON.stringify(pageConfig),  //Page config
+              services: JSON.stringify(allServices),
+              bodyAdd:this.bodyAdd || ""
+            });
+            
           });
+
+          
         };
 
         //If there is callback in page definition
@@ -131,7 +135,7 @@ module.exports = function(app, config){
             javascripts: [],
             styles: [],
             services:[],
-            bodyJavascript: page.bodyJavascript
+            bodyJavascript: page.bodyJavascript,
             req: req,
             res: res,
             next: next,
@@ -139,10 +143,10 @@ module.exports = function(app, config){
             error: error
           };
 
-          page.callback.apppy(current_page, app);
+          page.callback.call(current_page, app);
         }
         //Else - run the page rendering
-        else render.apply(page);
+        else render.call(current_page);
 
       });
     };
