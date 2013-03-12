@@ -5,6 +5,8 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 
+var helpers = require("./helpers");
+
 var app, config;
 //After database connection handler
 var dbConnectionHandler = function(models, callback){
@@ -22,6 +24,8 @@ var dbConnectionHandler = function(models, callback){
   //Setting up bundles
   var bundlesInitializer = require("./bundles");
   bundlesInitializer(app, config);
+
+  app.services = helpers.loadDirAsObject(app.config.socketIoServicesFolder);
 
   //Initializing and setting http server
   var server = http.createServer(app).listen(config.server.port, config.server.interface, function(){

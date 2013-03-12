@@ -100,7 +100,14 @@ module.exports = function(app, config){
             pageServices,
             additionalServices
           );
-          this.req.session.services = allServices;
+          var availableServices = [];
+          allServices.forEach(function(serviceName){
+            if(app.services[serviceName])
+              availableServices.push(serviceName);
+          });
+
+          this.services = availableServices;
+          this.req.session.services = availableServices;
           this.req.session.save(function(session){
 
             //Rendering with template engine - jade
@@ -110,7 +117,7 @@ module.exports = function(app, config){
               less: less,
               css: css,
               config:JSON.stringify(pageConfig),  //Page config
-              services: JSON.stringify(allServices),
+              services: JSON.stringify(availableServices),
               bodyAdd:this.bodyAdd || ""
             });
             

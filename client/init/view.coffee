@@ -1,18 +1,32 @@
 module.exports = Backbone.View.extend
 
   initialize: (options)->
-    @_binded = []
+
+    opt = options || {}
+
     if(options and options.template)
       tmpl = options.template 
-    else
+    if @template 
       tmpl = @template
-    @compiled_template = jade.compile(tmpl)
-    @template = (data)=>
-      d = data || {}
-      d.t = i18n.t
-      d.model = @model
-      d.collection = @collection
-      @compiled_template(d)
+    if tmpl
+      @compiled_template = jade.compile(tmpl)
+      @template = ()=>
+        d = {t:i18n.t}
+        d.model = @model if @model
+        d.collection = @collection if @collection
+        @compiled_template(d)
+
+    a = opt.appendTo || @appendTo
+
+    if(a || @appendTo == "")
+      @appendTo = a
+      @append = (view)=>
+        if(!@__holder)
+          if @appendTo == ""
+            @__holder = @$el
+          else
+            @__holder = @$(@appendTo)
+        @__holder.append(view.$el)
 
     if(@init) 
       @init(options)
@@ -32,8 +46,10 @@ module.exports = Backbone.View.extend
     @_binded.push(obj)
     obj
 
-  render: (data)->
-    @$el.html(@template(data))
+  render: ()->
+    @$el.empty()
+    if(@template)
+      @$el.html(@template())
     @
 
 

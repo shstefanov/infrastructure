@@ -1,7 +1,5 @@
 var _ = require("underscore");
 
-var helpers = require("./helpers");
-
 var internal = {
   emit: true,
   service_index:true,
@@ -18,7 +16,9 @@ module.exports = function(err, socket, session){
   var app = this;
   session.reload(function(){
 
-    var services = helpers.loadDirAsObject(app.config.socketIoServicesFolder);
+    var services = app.services;
+
+    
     var userServicesNames = session.services;
     var userServices = {};
     
