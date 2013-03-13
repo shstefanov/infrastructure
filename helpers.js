@@ -21,6 +21,7 @@ module.exports.loadDirAsObject = function(dir){
     obj[name[0]] = name.length? require(dir+"/"+name[0]) : false;
     if(typeof module == "object") module._filename = filename;
   });
+  console.log(obj);
   return obj;
 };
 

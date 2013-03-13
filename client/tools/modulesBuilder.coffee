@@ -11,7 +11,8 @@ module.exports = (modules, cb)->
 
   counter = Object.keys(App.Modules).length
   cb() if counter is 0
-  for name, mod of App.Modules
-    app.module[name] = new mod()
+  for n, m of App.Modules
+    i = new m()
+    app.modules[i.name] = i
     counter--
     cb() if counter is 0

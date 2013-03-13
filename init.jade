@@ -8,10 +8,10 @@ html
       services = !{services};
 
     each cssStyle in css
-      link(href=cssStyle, rel="stylesheet", type="text/css")
+      link(href=cssStyle, rel="stylesheet", type="text/css", media='screen')
 
     each lessStyle in less
-      link(href=lessStyle, rel="stylesheet/less", type="text/css")
+      link(href=lessStyle, rel="stylesheet/less", type="text/css", media='screen')
 
     each script in javascripts
       script(src=script)

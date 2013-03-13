@@ -30,6 +30,16 @@ module.exports = function(err, socket, session){
         app:app,
         socket:socket,
         session:session,
+        error: function(data, err){
+          data.meta="error";
+          data.body=err;
+          this.socket.emit("service", data);
+        },
+        success:function(data, res){
+          data.meta="success";
+          data.body=res;
+          this.socket.emit("service", data);
+        },
         emit: function(data){
           data.service = this.name;
           this.socket.emit("service", data);

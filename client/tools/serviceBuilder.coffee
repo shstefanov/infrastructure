@@ -6,6 +6,7 @@ class Service
   eventListener: _.extend({}, Backbone.Events)
 
   constructor: (@name, @_cb)->
+    alert @name
     app.socket.emit("service", {service: @name, action:"service_index"})
     
   handle: (data)->

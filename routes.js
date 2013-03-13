@@ -90,35 +90,41 @@ module.exports = function(app, config){
             pageConfig,
             additionalConfig
           );
+          console.log("merged config for client");
+          console.log(mergedConfig);
 
           //Setting up services
           var configServices = config.defaultServices || [];
           var pageServices = page.services || [];
           var additionalServices = this.services || [];
-          var allServices = _.union(
+          var _serv = _.union(
             configServices,
-            pageServices,
-            additionalServices
+            pageServices
           );
+          var allServices = _.union(
+            _serv,
+            additionalServices
+          )
           var availableServices = [];
           allServices.forEach(function(serviceName){
             if(app.services[serviceName])
               availableServices.push(serviceName);
           });
-
+          
           this.services = availableServices;
           this.req.session.services = availableServices;
+          var self = this;
           this.req.session.save(function(session){
 
             //Rendering with template engine - jade
             res.render("init.jade", {
-              title: this.title,
+              title: self.title,
               javascripts:allJavascripts, 
               less: less,
               css: css,
-              config:JSON.stringify(pageConfig),  //Page config
+              config:JSON.stringify(mergedConfig),  //Page config
               services: JSON.stringify(availableServices),
-              bodyAdd:this.bodyAdd || ""
+              bodyAdd:self.bodyAdd || ""
             });
             
           });
@@ -150,6 +156,8 @@ module.exports = function(app, config){
             error: error
           };
 
+          console.log(req);
+
           page.callback.call(current_page, app);
         }
         //Else - run the page rendering
@@ -165,6 +173,8 @@ module.exports = function(app, config){
     }
     if(Array.isArray(page.route)){
       page.route.forEach(function(route){
+        console.log("--------------------------------")
+        console.log(route)
         defineRoute(route);
       });
       return;

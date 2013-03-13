@@ -2,8 +2,6 @@ module.exports = Backbone.View.extend
 
   initialize: (options)->
 
-    opt = options || {}
-
     if(options and options.template)
       tmpl = options.template 
     if @template 
@@ -14,20 +12,32 @@ module.exports = Backbone.View.extend
         d = {t:i18n.t}
         d.model = @model if @model
         d.collection = @collection if @collection
-        @compiled_template(d)
+        html = @compiled_template(d)
+        html
+        
 
-    a = opt.appendTo || @appendTo
+    
+    if(options && (options.appendTo || @appendTo))
+      @appendTo = options.appendTo || @appendTo
+    
+      @empty = =>
+        if @appendTo == "."
+          @$el.empty()
+        else
+          @$(@appendTo).empty()
 
-    if(a || @appendTo == "")
-      @appendTo = a
       @append = (view)=>
-        if(!@__holder)
-          if @appendTo == ""
-            @__holder = @$el
+        add = (v)=>
+          if @appendTo == "."
+            @$el.append(v.render().$el)
           else
-            @__holder = @$(@appendTo)
-        @__holder.append(view.$el)
+            @$(@appendTo).append(v.render().$el)
+        if(Array.isArray(view))
+          view.forEach add
+        else
+          add view
 
+       
     if(@init) 
       @init(options)
 

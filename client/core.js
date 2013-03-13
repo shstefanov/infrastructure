@@ -24,6 +24,8 @@ App.build = function(router){
   this.config = config;
   this.modules = {};
   this.collections = {};
+
+  this.screenGroups = {};
   
 
   this.dispatcher = _.extend({}, Backbone.Events);
