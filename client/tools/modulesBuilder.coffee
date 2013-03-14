@@ -11,8 +11,9 @@ module.exports = (modules, cb)->
 
   counter = Object.keys(App.Modules).length
   for n, m of App.Modules
+    console.log "------------building module-----------", n
     i = new m()
+    console.log "------------module built---------------", n
     app.modules[i.name] = i
-    console.log "------------build module---------------", i.name
     counter--
     cb() if counter is 0

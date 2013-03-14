@@ -9,10 +9,12 @@ require("./init/sync.js");
 
 
 window.App = {};
+
 App.Modules = {};
 App.Models = {};
 App.Views = {};
 App.Collections = {};
+App.Templates = {};
 
 
 
