@@ -2,6 +2,14 @@ module.exports = Backbone.View.extend
 
   initialize: (options)->
 
+
+
+    if @model instanceof Backbone.View
+      @model.on "change" ,@render ,@
+      @model.on "destroy remove" ,@remove ,@
+    if @collection instanceof Backbone.Collection
+      @collection.on "reset remove add", @render, @
+
     if(options and options.template)
       tmpl = options.template 
     if @template 
@@ -14,8 +22,6 @@ module.exports = Backbone.View.extend
         d.collection = @collection if @collection
         html = @compiled_template(d)
         html
-        
-
     
     if(options && (options.appendTo || @appendTo))
       @appendTo = options.appendTo || @appendTo
@@ -28,6 +34,8 @@ module.exports = Backbone.View.extend
 
       @append = (view)=>
         add = (v)=>
+          if !v
+            @$el.css {'background-color': 'red'}
           if @appendTo == "."
             @$el.append(v.render().$el)
           else
@@ -40,6 +48,7 @@ module.exports = Backbone.View.extend
        
     if(@init) 
       @init(options)
+
 
     app.dispatcher.on "translation", @render, @
 
@@ -57,7 +66,6 @@ module.exports = Backbone.View.extend
     obj
 
   render: ()->
-    @$el.empty()
     if(@template)
       @$el.html(@template())
     @

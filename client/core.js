@@ -57,7 +57,6 @@ App.build = function(router){
 
       //Now -  running the application
       var run = function(){
-        console.log("doc ready");
         self.router = new router();
         if(self.router.routes)
           Backbone.history.start({pushState:true, trigger:true});
