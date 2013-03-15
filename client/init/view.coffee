@@ -68,6 +68,8 @@ module.exports = Backbone.View.extend
   render: ()->
     if(@template)
       @$el.html(@template())
+    if @mode and @model.attributes
+      console.log @model
     @
 
 
