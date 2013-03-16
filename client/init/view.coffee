@@ -1,5 +1,5 @@
 module.exports = Backbone.View.extend
-
+  local: {}
   initialize: (options)->
 
 
@@ -20,6 +20,8 @@ module.exports = Backbone.View.extend
         d = {t:i18n.t}
         d.model = @model if @model
         d.collection = @collection if @collection
+        d.config = config
+        d.local = @local
         html = @compiled_template(d)
         html
     
@@ -68,8 +70,6 @@ module.exports = Backbone.View.extend
   render: ()->
     if(@template)
       @$el.html(@template())
-    if @mode and @model.attributes
-      console.log @model
     @
 
 
