@@ -16,7 +16,8 @@ var methods = {
 var coreLibs = [
   "/i18next/i18next.js",
   "/socket.io/socket.io.js",
-  "/core-libs/jquery.js",
+  "http://code.jquery.com/jquery-1.9.1.min.js",
+  "http://code.jquery.com/jquery-migrate-1.1.1.min.js",
   "/core-libs/jade.js",
   "/core-libs/underscore.js",
   "/core-libs/backbone.js",
@@ -90,8 +91,6 @@ module.exports = function(app, config){
             pageConfig,
             additionalConfig
           );
-          console.log("merged config for client");
-          console.log(mergedConfig);
 
           //Setting up services
           var configServices = config.defaultServices || [];
@@ -173,8 +172,7 @@ module.exports = function(app, config){
     }
     if(Array.isArray(page.route)){
       page.route.forEach(function(route){
-        console.log("--------------------------------")
-        console.log(route)
+        console.log("setting up route: "+route)
         defineRoute(route);
       });
       return;
