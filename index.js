@@ -29,7 +29,7 @@ var dbConnectionHandler = function(models, callback){
 
   //Initializing and setting http server
   var server = http.createServer(app).listen(config.server.port, config.server.interface, function(){
-    console.log("Server running at http://localhost:" + app.get('port'));
+    console.log("Server running at http://localhost:" + config.server.port);
 
     //Initializing socket.io support
     var io = socketio.listen(server);

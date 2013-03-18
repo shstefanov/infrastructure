@@ -1,15 +1,11 @@
 module.exports = Backbone.View.extend
   local: {}
   initialize: (options)->
-
-
-
     if @model instanceof Backbone.View
       @model.on "change" ,@render ,@
       @model.on "destroy remove" ,@remove ,@
     if @collection instanceof Backbone.Collection
       @collection.on "reset remove add", @render, @
-
     if(options and options.template)
       tmpl = options.template 
     if @template 
@@ -24,16 +20,13 @@ module.exports = Backbone.View.extend
         d.local = @local
         html = @compiled_template(d)
         html
-    
     if(options && (options.appendTo || @appendTo))
       @appendTo = options.appendTo || @appendTo
-    
       @empty = =>
         if @appendTo == "."
           @$el.empty()
         else
           @$(@appendTo).empty()
-
       @append = (view)=>
         add = (v)=>
           if !v
@@ -46,27 +39,20 @@ module.exports = Backbone.View.extend
           view.forEach add
         else
           add view
-
-       
     if(@init) 
       @init(options)
-
-
-    app.dispatcher.on "translation", @render, @
-
   remove: ->
+    alert "view remove"
     app.dispatcher.off null, null, @
     @model.off null ,null ,@ if @model
     @collection.off null, null, @ if @collection
     if @_binded
       @_binded.forEach (b)=>
         b.off null, null, @
-    Backbone.View.prototype.remove.apply(@, arguments)
-
+    @$el.remove()
   bindTo: (obj)->
     @_binded.push(obj)
     obj
-
   render: ()->
     if(@template)
       @$el.html(@template())

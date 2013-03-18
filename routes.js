@@ -132,31 +132,20 @@ module.exports = function(app, config){
         };
 
         //If there is callback in page definition
+        var current_page = {
+          title: page.title,
+          javascripts: [],
+          styles: [],
+          services:[],
+          bodyJavascript: page.bodyJavascript,
+          req: req,
+          res: res,
+          next: next,
+          render: render,
+          error: error
+        };
+        
         if(page.callback && typeof page.callback == "function"){
-          // title
-          // javascripts
-          // styles
-          // services
-
-          var javascripts = page.javascripts || [];
-          var styles = page.styles || [];
-          var services = page.services || [];
-
-          var current_page = {
-            title: page.title,
-            javascripts: [],
-            styles: [],
-            services:[],
-            bodyJavascript: page.bodyJavascript,
-            req: req,
-            res: res,
-            next: next,
-            render: render,
-            error: error
-          };
-
-          console.log(req);
-
           page.callback.call(current_page, app);
         }
         //Else - run the page rendering
