@@ -6,7 +6,7 @@ var helpers = require("./helpers");
 //Called in index.js
 module.exports = function(app, config){
 
-  var bundles = helpers.loadDirAsArray(config.bundlesFolder);
+  var bundles = require(config.bundles);
 
   //System core bundle
   bundles.unshift({
