@@ -106,7 +106,7 @@ module.exports = {
             var m = model;
             if(typeof seeds[m] == "function"){
               methods_count++;
-              seeds[m](sq, models, function(){
+              seeds[m](config, models, function(){
                 methods_count--;
                 check_ready();
               });
