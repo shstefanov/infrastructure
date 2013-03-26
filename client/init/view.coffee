@@ -42,7 +42,6 @@ module.exports = Backbone.View.extend
     if(@init) 
       @init(options)
   remove: ->
-    alert "view remove"
     app.dispatcher.off null, null, @
     @model.off null ,null ,@ if @model
     @collection.off null, null, @ if @collection

@@ -22,6 +22,7 @@ module.exports = function(app, config){
   //Set up all defined bundles
   bundles.forEach(function(bundle){
     if(!bundle.load) return;
+    console.log(bundle.name);
 
     var rawFilesExtensions = _.union(config.bundlesRawFiles, bundle.raw || []);
 

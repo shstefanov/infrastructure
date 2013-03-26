@@ -43,7 +43,7 @@ App.build = function(router){
   //Then running all other staff
   var ready = false;
   self.socket.on("ready", function(data){
-
+    if(ready) return;
     ready = true;
    
     $(document).ready(function(){
