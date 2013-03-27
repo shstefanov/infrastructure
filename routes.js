@@ -110,7 +110,6 @@ module.exports = function(app, config){
               availableServices.push(serviceName);
           });
           
-          this.services = availableServices;
           this.req.session.services = availableServices;
           var self = this;
           this.req.session.save(function(session){
@@ -122,7 +121,6 @@ module.exports = function(app, config){
               less: less,
               css: css,
               config:JSON.stringify(mergedConfig),  //Page config
-              services: JSON.stringify(availableServices),
               bodyAdd:self.bodyAdd || ""
             });
             

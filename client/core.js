@@ -42,7 +42,8 @@ App.build = function(router){
   //When session is loaded, server emits ready signal
   //Then running all other staff
   var ready = false;
-  self.socket.on("ready", function(data){
+  self.socket.on("ready", function(services){
+    console.log(services);
 
     if(ready == true) return;
     ready = true;
