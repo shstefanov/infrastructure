@@ -1,3 +1,39 @@
+appendToInitialize = ->
+  @empty = =>
+    if @appendTo == "."
+      @$el.empty()
+    else
+      @$(@appendTo).empty()
+    @
+  @append = (view)=>
+    add = (v)=>
+      if !v
+        @$el.css {'background-color': 'red'}
+      if @appendTo == "."
+        @$el.append(v.render().$el)
+      else
+        @$(@appendTo).append(v.render().$el)
+    if(Array.isArray(view))
+      view.forEach add
+    else
+      add view
+    @
+  @prepend = (view)=>
+    add = (v)=>
+      if !v
+        @$el.css {'background-color': 'red'}
+      if @appendTo == "."
+        @$el.prepend(v.render().$el)
+      else
+        @$(@appendTo).prepend(v.render().$el)
+    if(Array.isArray(view))
+      view.forEach add
+    else
+      add view
+    @
+
+
+
 module.exports = Backbone.View.extend
   local: {}
   initialize: (options)->
@@ -20,25 +56,10 @@ module.exports = Backbone.View.extend
         d.local = @local
         html = @compiled_template(d)
         html
-    if(options && (options.appendTo || @appendTo))
-      @appendTo = options.appendTo || @appendTo
-      @empty = =>
-        if @appendTo == "."
-          @$el.empty()
-        else
-          @$(@appendTo).empty()
-      @append = (view)=>
-        add = (v)=>
-          if !v
-            @$el.css {'background-color': 'red'}
-          if @appendTo == "."
-            @$el.append(v.render().$el)
-          else
-            @$(@appendTo).append(v.render().$el)
-        if(Array.isArray(view))
-          view.forEach add
-        else
-          add view
+    if(options && options.appendTo)
+      @appendTo =  options.appendTo
+    if @appendTo
+      appendToInitialize.call @
     if(@init) 
       @init(options)
   remove: ->
