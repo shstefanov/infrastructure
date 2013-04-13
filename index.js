@@ -9,13 +9,14 @@ var helpers = require("./helpers");
 
 var app, config;
 //After database connection handler
-var dbConnectionHandler = function(models, callback){
+var dbConnectionHandler = function(models, sq, callback){
   
   //Initializing and setting up express
   var appInitializer = require("./app");
   app = appInitializer(express, config);
   
   app.models = models;
+  app.sq = sq;
 
   //Adding the pages
   var routesInitializer = require("./routes");
@@ -60,7 +61,7 @@ module.exports = {
       BOOLEAN: Sequelize.BOOLEAN,
       FLOAT:   Sequelize.FLOAT
     }, function(models){
-      return dbConnectionHandler(models, callback);
+      return dbConnectionHandler(models, sq, callback);
     });
   },
   
