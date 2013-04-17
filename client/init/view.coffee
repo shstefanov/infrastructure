@@ -37,10 +37,10 @@ appendToInitialize = ->
 module.exports = Backbone.View.extend
   local: {}
   initialize: (options)->
-    if @model instanceof Backbone.View
+    if @model and @model.on
       @model.on "change" ,@render ,@
       @model.on "destroy remove" ,@remove ,@
-    if @collection instanceof Backbone.Collection
+    if @collection and @collection.on
       @collection.on "reset remove add", @render, @
     if(options and options.template)
       tmpl = options.template 

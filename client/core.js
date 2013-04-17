@@ -62,8 +62,16 @@ App.build = function(router){
       //Now -  running the application
       var run = function(){
         self.router = new router();
-        if(self.router.routes)
+        if(self.router.prepare){
+          self.router.prepare(function(){
+            if(self.router.routes)
+              Backbone.history.start({pushState:true, trigger:true});    
+          });
+        }
+        else{
+          if(self.router.routes)
           Backbone.history.start({pushState:true, trigger:true});
+        }
       };
 
       var defineRoute = function(routeName){
