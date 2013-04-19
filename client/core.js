@@ -42,8 +42,10 @@ App.build = function(router){
   //When session is loaded, server emits ready signal
   //Then running all other staff
   var ready = false;
-  self.socket.on("ready", function(data){
+  self.socket.on("ready", function(services){
+    console.log(services);
 
+    if(ready == true) return;
     ready = true;
    
     $(document).ready(function(){
@@ -60,8 +62,16 @@ App.build = function(router){
       //Now -  running the application
       var run = function(){
         self.router = new router();
-        if(self.router.routes)
+        if(self.router.prepare){
+          self.router.prepare(function(){
+            if(self.router.routes)
+              Backbone.history.start({pushState:true, trigger:true});    
+          });
+        }
+        else{
+          if(self.router.routes)
           Backbone.history.start({pushState:true, trigger:true});
+        }
       };
 
       var defineRoute = function(routeName){

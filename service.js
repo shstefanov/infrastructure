@@ -34,6 +34,8 @@ module.exports = function(err, socket, session){
           data.meta="error";
           data.body=err;
           this.socket.emit("service", data);
+          if(this.app.error)
+            app.error(err);
         },
         success:function(data, res){
           data.meta="success";
@@ -84,7 +86,7 @@ module.exports = function(err, socket, session){
 
     });
 
-  socket.emit("ready");
+  socket.emit("ready", _.pluck(userServices, "name"));
   });
   
   return this;

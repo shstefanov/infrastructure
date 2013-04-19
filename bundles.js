@@ -6,7 +6,7 @@ var helpers = require("./helpers");
 //Called in index.js
 module.exports = function(app, config){
 
-  var bundles = helpers.loadDirAsArray(config.bundlesFolder);
+  var bundles = require(config.bundles);
 
   //System core bundle
   bundles.unshift({
@@ -22,6 +22,7 @@ module.exports = function(app, config){
   //Set up all defined bundles
   bundles.forEach(function(bundle){
     if(!bundle.load) return;
+    console.log(bundle.name);
 
     var rawFilesExtensions = _.union(config.bundlesRawFiles, bundle.raw || []);
 

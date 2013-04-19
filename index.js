@@ -9,13 +9,14 @@ var helpers = require("./helpers");
 
 var app, config;
 //After database connection handler
-var dbConnectionHandler = function(models, callback){
+var dbConnectionHandler = function(models, sq, callback){
   
   //Initializing and setting up express
   var appInitializer = require("./app");
   app = appInitializer(express, config);
   
   app.models = models;
+  app.sq = sq;
 
   //Adding the pages
   var routesInitializer = require("./routes");
@@ -29,7 +30,7 @@ var dbConnectionHandler = function(models, callback){
 
   //Initializing and setting http server
   var server = http.createServer(app).listen(config.server.port, config.server.interface, function(){
-    console.log("Server running at http://localhost:" + app.get('port'));
+    console.log("Server running at http://localhost:" + config.server.port);
 
     //Initializing socket.io support
     var io = socketio.listen(server);
@@ -60,7 +61,7 @@ module.exports = {
       BOOLEAN: Sequelize.BOOLEAN,
       FLOAT:   Sequelize.FLOAT
     }, function(models){
-      return dbConnectionHandler(models, callback);
+      return dbConnectionHandler(models, sq, callback);
     });
   },
   
@@ -106,7 +107,7 @@ module.exports = {
             var m = model;
             if(typeof seeds[m] == "function"){
               methods_count++;
-              seeds[m](sq, models, function(){
+              seeds[m](config, models, function(){
                 methods_count--;
                 check_ready();
               });

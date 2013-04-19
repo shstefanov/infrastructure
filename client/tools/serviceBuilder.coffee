@@ -13,7 +13,7 @@ class Service
     if(data.reqId && @dispatcher[data.reqId])
       @dispatcher[data.reqId](null, data.body) if data.meta is "success"
       @dispatcher[data.reqId](data.body) if data.meta is "error"
-      #delete @dispatcher[data.reqId]
+      delete @dispatcher[data.reqId]
       return
 
     if(data.action == "service_index")

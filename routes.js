@@ -16,7 +16,8 @@ var methods = {
 var coreLibs = [
   "/i18next/i18next.js",
   "/socket.io/socket.io.js",
-  "/core-libs/jquery.js",
+  "http://code.jquery.com/jquery-1.9.1.min.js",
+  "http://code.jquery.com/jquery-migrate-1.1.1.min.js",
   "/core-libs/jade.js",
   "/core-libs/underscore.js",
   "/core-libs/backbone.js",
@@ -90,8 +91,6 @@ module.exports = function(app, config){
             pageConfig,
             additionalConfig
           );
-          console.log("merged config for client");
-          console.log(mergedConfig);
 
           //Setting up services
           var configServices = config.defaultServices || [];
@@ -111,7 +110,6 @@ module.exports = function(app, config){
               availableServices.push(serviceName);
           });
           
-          this.services = availableServices;
           this.req.session.services = availableServices;
           var self = this;
           this.req.session.save(function(session){
@@ -123,7 +121,6 @@ module.exports = function(app, config){
               less: less,
               css: css,
               config:JSON.stringify(mergedConfig),  //Page config
-              services: JSON.stringify(availableServices),
               bodyAdd:self.bodyAdd || ""
             });
             
@@ -133,31 +130,20 @@ module.exports = function(app, config){
         };
 
         //If there is callback in page definition
+        var current_page = {
+          title: page.title,
+          javascripts: [],
+          styles: [],
+          services:[],
+          bodyJavascript: page.bodyJavascript,
+          req: req,
+          res: res,
+          next: next,
+          render: render,
+          error: error
+        };
+        
         if(page.callback && typeof page.callback == "function"){
-          // title
-          // javascripts
-          // styles
-          // services
-
-          var javascripts = page.javascripts || [];
-          var styles = page.styles || [];
-          var services = page.services || [];
-
-          var current_page = {
-            title: page.title,
-            javascripts: [],
-            styles: [],
-            services:[],
-            bodyJavascript: page.bodyJavascript,
-            req: req,
-            res: res,
-            next: next,
-            render: render,
-            error: error
-          };
-
-          console.log(req);
-
           page.callback.call(current_page, app);
         }
         //Else - run the page rendering
@@ -173,8 +159,7 @@ module.exports = function(app, config){
     }
     if(Array.isArray(page.route)){
       page.route.forEach(function(route){
-        console.log("--------------------------------")
-        console.log(route)
+        console.log("setting up route: "+route)
         defineRoute(route);
       });
       return;
