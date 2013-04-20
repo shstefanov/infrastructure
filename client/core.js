@@ -64,13 +64,17 @@ App.build = function(router){
         self.router = new router();
         if(self.router.prepare){
           self.router.prepare(function(){
-            if(self.router.routes)
-              Backbone.history.start({pushState:true, trigger:true});    
+            console.log("prepare callback???")
+            if(self.router.routes){
+              Backbone.history.start({pushState:true, trigger:true});
+            }
           });
         }
         else{
-          if(self.router.routes)
-          Backbone.history.start({pushState:true, trigger:true});
+          console.log("prepare callback???")
+          if(self.router.routes){
+            Backbone.history.start({pushState:true, trigger:true});
+          }
         }
       };
 
