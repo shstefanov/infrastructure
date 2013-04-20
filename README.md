@@ -11,13 +11,15 @@ in your code:
 
 ## Client side ##
 
+# router #
+
     var router = App.Router.extend({
       //... define Backbone router
     })
 
-    new App.build(router)
+    new App.build(router) - runs your app
 
-# prepare function
+# prepare function #
     var router = App.Router.extend({
       prepare: function(callback){
         //prepare something
@@ -25,4 +27,6 @@ in your code:
       }
     })
 
+# The view
+  
 
