@@ -7,6 +7,20 @@ var express = require('express')
 
 var helpers = require("./helpers");
 
+var sequilize_types = {
+  STRING:   Sequelize.STRING,  // VARCHAR(255)
+  TEXT:     Sequelize.TEXT,    // TEXT
+  INTEGER:  Sequelize.INTEGER, // INTEGER
+  BIGINT:   Sequelize.BIGINT,  // BIGINT
+  DATE:     Sequelize.DATE,    // DATETIME
+  BOOLEAN:  Sequelize.BOOLEAN, // TINYINT(1)
+  FLOAT:    Sequelize.FLOAT,   // FLOAT
+
+  ENUM:     Sequelize.ENUM,    // ENUM('value 1', 'value 2') An ENUM with allowed values 'value 1' and 'value 2'
+  DECIMAL:  Sequelize.DECIMAL, // DECIMAL(10, 2)  DECIMAL(10,2)
+  ARRAY:    Sequelize.ARRAY(Sequelize.TEXT) // Defines an array. PostgreSQL only.
+};
+
 var app, config;
 //After database connection handler
 var dbConnectionHandler = function(models, sq, callback){
@@ -53,14 +67,7 @@ module.exports = {
     config = _config;
     var sq = new Sequelize(config.mysql.database, config.mysql.user, config.mysql.password, config.mysql);
     var modelsInitializer = require(config.models);
-    modelsInitializer(sq, {
-      STRING:  Sequelize.STRING,
-      TEXT:    Sequelize.TEXT,
-      INTEGER: Sequelize.INTEGER,
-      DATE:    Sequelize.DATE,
-      BOOLEAN: Sequelize.BOOLEAN,
-      FLOAT:   Sequelize.FLOAT
-    }, function(models){
+    modelsInitializer(sq, sequilize_types, function(models){
       return dbConnectionHandler(models, sq, callback);
     });
   },
@@ -85,14 +92,7 @@ module.exports = {
     var seeds = require(config.seed);
 
     var modelsInitializer = require(config.models);
-    modelsInitializer(sq, {
-      STRING:  Sequelize.STRING,
-      TEXT:    Sequelize.TEXT,
-      INTEGER: Sequelize.INTEGER,
-      DATE:    Sequelize.DATE,
-      BOOLEAN: Sequelize.BOOLEAN,
-      FLOAT:   Sequelize.FLOAT
-    }, function(models){
+    modelsInitializer(sq, sequilize_types, function(models){
       var models_count = 0;
       var methods_count = 0;
       sq.drop().success(function(){

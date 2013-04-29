@@ -20,6 +20,7 @@ module.exports = Backbone.Collection.extend
       
     @on "add", bindModel
     @on "remove", unbindModel
+    @on "reset", (collection)=> collection.each bindModel
     unbindEvent = "unbind_"+arguments[0]
     @on unbindEvent, =>
       @off unbindEvent
