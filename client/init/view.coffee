@@ -39,17 +39,25 @@ module.exports = Backbone.View.extend
   initialize: (options)->
     @model = options.model if options and options.model
     @collection = options.collection if options and options.collection
+    
     if @model and @model.on
       @model.on "change" ,@render ,@
       @model.on "destroy remove" ,@remove ,@
     if @collection and @collection.on
       @collection.on "reset remove add", @render, @
+    
     if(options and options.template)
       tmpl = options.template 
-    if @template 
+    else if @template 
       tmpl = @template
-    if tmpl
+    else
+      tmpl = undefined
+    if typeof tmpl == "string"
       @compiled_template = jade.compile(tmpl)
+    else if typeof tmpl == "function"
+      @compiled_template = tmpl
+    
+    if tmpl
       @template = ()=>
         d = {t:i18n.t}
         d.model = @model if @model
