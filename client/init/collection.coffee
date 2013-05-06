@@ -7,6 +7,7 @@ module.exports = Backbone.Collection.extend
   bindAll: (event, method, context)->
 
     onCollectionEvent = (arg1, arg2, arg3)->
+      console.log "collection event!!!"
       @off event, onCollectionEvent, @
       @each (model)-> model.trigger event, arg1, arg2, arg3
       @on event, onCollectionEvent, @
@@ -20,7 +21,9 @@ module.exports = Backbone.Collection.extend
       
     @on "add", bindModel
     @on "remove", unbindModel
-    @on "reset", (collection)=> collection.each bindModel
+    @on "reset", (collection)=> 
+      collection.each bindModel
+      @unbindAll('all')
     unbindEvent = "unbind_"+arguments[0]
     @on unbindEvent, =>
       @off unbindEvent
