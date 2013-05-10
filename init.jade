@@ -17,8 +17,10 @@ html
 
     each script in javascripts
       script(src=script)
-      
-  body
-    if(bodyAdd)
-      script=bodyAdd
+  
+  -if(!renderView)
+    body
+  - else
+    body.
+      !{renderView('layout', locals)}
     

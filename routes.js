@@ -1,5 +1,10 @@
 var _ = require("underscore");
+var jade = require("jade");
+var fs = require("fs");
+
+var raw_head_template = fs.readFileSync(__dirname+"/init.jade");
 var helpers = require("./helpers");
+
 
 //Allowed http request methods
 var methods = {
@@ -27,17 +32,42 @@ var coreLibs = [
 
 module.exports = function(app, config){
 
+  head_template = jade.compile(raw_head_template);
+
+
+
   //Loading all defined in pages folder page definitons
   var pages = helpers.loadDirAsArray(config.routesFolder);
   
   //Setting up server to serve each of them
   pages.forEach(function(page){
-
+    var views = undefined;
+    if(page.views){
+      views = {};
+      Object.keys(page.views).forEach(function(key){
+        if(typeof page.views[key] == "string"){
+          var path = page.views[key];
+          var wrapper = "<div></div>";
+        }
+        else if(typeof page.views[key] == "object"){
+          var path = page.views[key].path;
+          var wrapper = jade.compile(page.views[key].wrapper || "div")();
+        }
+        else{
+          return;
+        }
+        views[key] = {
+          tmpl: jade.compile(fs.readFileSync(config.templatesFolder+path)),
+          wrapper: wrapper
+        };
+      });
+      
+    }
     var defineRoute = function(route){ //push - true, false
       
-      var pushState = route.indexOf(":") > -1;
-
       app[methods[page.method]](page.route, function(req, res, next){
+
+        
 
         //Reset user's socket services
         req.session.services = [];
@@ -114,15 +144,21 @@ module.exports = function(app, config){
           var self = this;
           this.req.session.save(function(session){
 
-            //Rendering with template engine - jade
-            res.render("init.jade", {
+            var vars = {
               title: self.title,
               javascripts:allJavascripts, 
               less: less,
               css: css,
-              config:JSON.stringify(mergedConfig),  //Page config
-              bodyAdd:self.bodyAdd || ""
-            });
+              renderView:self.renderView || false
+            };
+
+            if(self.renderView && self.views){
+              mergedConfig.renderedByServer = true;
+              vars.locals = vars;
+            }
+            vars.config = JSON.stringify(mergedConfig);
+
+            res.send(head_template(vars));
             
           });
 
@@ -135,13 +171,17 @@ module.exports = function(app, config){
           javascripts: [],
           styles: [],
           services:[],
-          bodyJavascript: page.bodyJavascript,
+          data:{},
+          
           req: req,
           res: res,
           next: next,
           render: render,
           error: error
         };
+        if(views){
+          current_page.views = views;
+        }
         
         if(page.callback && typeof page.callback == "function"){
           page.callback.call(current_page, app);
