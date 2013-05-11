@@ -11,6 +11,7 @@
   
   "dependencies": {
     "browserify":"1.17.3",
+    "backbone": "latest",
     "colors": "latest",
     "connect-mongo": "latest",
     "express": "latest",

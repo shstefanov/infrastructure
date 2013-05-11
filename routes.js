@@ -1,6 +1,7 @@
 var _ = require("underscore");
 var jade = require("jade");
 var fs = require("fs");
+var Backbone = require("backbone");
 
 var raw_head_template = fs.readFileSync(__dirname+"/init.jade");
 var helpers = require("./helpers");
@@ -181,6 +182,19 @@ module.exports = function(app, config){
         };
         if(views){
           current_page.views = views;
+          current_page.renderView = function(view_name, locals){
+            if(view_name == null){
+              return '';
+            }
+            if(!current_page.views[view_name]){
+              return "No template - "+view_name;
+            }
+            if(current_page.data && current_page.data[view_name]){
+              _.extend(locals, current_page.data[view_name])
+            }
+            var html = current_page.views[view_name].tmpl(locals);
+            return current_page.views[view_name].wrapper.replace("><", ">"+html+"<");
+          };
         }
         
         if(page.callback && typeof page.callback == "function"){
