@@ -13,6 +13,7 @@ module.exports = Backbone.Collection.extend
       @on event, onCollectionEvent, @
     @on event, onCollectionEvent, @
     bindModel = (model)=>
+      model.off "all"
       model.on.call model, event, method, (context || model)
     unbindModel = (model)=>
       model.off.call model, event, method, (context || model)
