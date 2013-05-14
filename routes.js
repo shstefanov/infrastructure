@@ -43,31 +43,36 @@ module.exports = function(app, config){
   //Setting up server to serve each of them
   pages.forEach(function(page){
     var views = undefined;
-    if(page.views){
-      views = {};
-      Object.keys(page.views).forEach(function(key){
-        if(typeof page.views[key] == "string"){
-          var path = page.views[key];
-          var wrapper = "<div></div>";
-        }
-        else if(typeof page.views[key] == "object"){
-          var path = page.views[key].path;
-          var wrapper = jade.compile(page.views[key].wrapper || "div")();
-        }
-        else{
-          return;
-        }
-        views[key] = {
-          tmpl: jade.compile(fs.readFileSync(config.templatesFolder+path)),
-          wrapper: wrapper
-        };
-      });
-      
-    }
+    var initializeViews = function(){
+
+      if(page.views){
+        views = {};
+        Object.keys(page.views).forEach(function(key){
+          if(typeof page.views[key] == "string"){
+            var path = page.views[key];
+            var wrapper = "<div></div>";
+          }
+          else if(typeof page.views[key] == "object"){
+            var path = page.views[key].path;
+            var wrapper = jade.compile(page.views[key].wrapper || "div")();
+          }
+          else{
+            return;
+          }
+          views[key] = {
+            tmpl: jade.compile(fs.readFileSync(config.templatesFolder+path)),
+            wrapper: wrapper
+          };
+        });
+      }
+
+    };
+    if(process.env.MODE != 'dev'){initializeViews();}
     var defineRoute = function(route){ //push - true, false
       
       app[methods[page.method]](page.route, function(req, res, next){
 
+        if(process.env.MODE == 'dev'){initializeViews();}
         
 
         //Reset user's socket services
