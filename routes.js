@@ -151,6 +151,7 @@ module.exports = function(app, config){
           this.req.session.save(function(session){
 
             var vars = {
+              t: req.i18n.t,
               title: self.title,
               javascripts:allJavascripts, 
               less: less,

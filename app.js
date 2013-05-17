@@ -50,6 +50,7 @@ module.exports = function(express, config){
     .serveRemoveKeyRoute(app);
 
     app.t = i18next.t;
+    app.i18n = i18next;
     
     app.use(app.router); //app.router after express.bodyParser() makes bodyParser working
   });

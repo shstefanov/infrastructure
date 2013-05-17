@@ -21,13 +21,13 @@ var sequilize_types = {
   ARRAY:    Sequelize.ARRAY(Sequelize.TEXT) // Defines an array. PostgreSQL only.
 };
 
-var app, config;
+var config;
 //After database connection handler
 var dbConnectionHandler = function(models, sq, callback){
   
   //Initializing and setting up express
   var appInitializer = require("./app");
-  app = appInitializer(express, config);
+  var app = appInitializer(express, config);
   
   app.models = models;
   app.sq = sq;
