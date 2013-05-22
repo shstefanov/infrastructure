@@ -69,6 +69,7 @@ module.exports = function(app, config){
           else if(typeof page.views[key] == "object"){
             var path = page.views[key].path;
             var wrapper = jade.compile(page.views[key].wrapper || "div")();
+            console.log("here----------------------->");
             var getter = page.views[key].getter
           }
           else{
@@ -194,7 +195,7 @@ module.exports = function(app, config){
             vars.config = JSON.stringify(mergedConfig);
             vars.local = vars;
             
-            if(view.getter){
+            if(view && view.getter){
               view.getter(function(app, data){
                 vars.target_data = data;
                 res.send(head_template(vars));
