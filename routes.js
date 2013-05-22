@@ -42,12 +42,26 @@ module.exports = function(app, config){
   
   //Setting up server to serve each of them
   pages.forEach(function(page){
-    var views = undefined;
+    console.log("parsing page: ", page.route);
+    var views = {};
+    var layout = undefined;
+    var homeTemplate = undefined;
+
+    var allViews = page.views || {}
+    var viewWrappers = {};
+
     var initializeViews = function(){
+      
+      if(page.layout){
+        allViews.layout = page.layout
+      }
+      if(page.home){
+        allViews.home = page.home
+      }
 
       if(page.views){
-        views = {};
-        Object.keys(page.views).forEach(function(key){
+        
+        Object.keys(allViews).forEach(function(key){
           if(typeof page.views[key] == "string"){
             var path = page.views[key];
             var wrapper = "<div></div>";
@@ -55,25 +69,40 @@ module.exports = function(app, config){
           else if(typeof page.views[key] == "object"){
             var path = page.views[key].path;
             var wrapper = jade.compile(page.views[key].wrapper || "div")();
+            var getter = page.views[key].getter
           }
           else{
             return;
           }
           views[key] = {
             tmpl: jade.compile(fs.readFileSync(config.templatesFolder+path)),
-            wrapper: wrapper
+            wrapper: wrapper,
+            getter:getter
+          };
+          viewWrappers[key] = function(data){
+            if(!views[key]){ return "No template - "+key; }
+            var html = views[key].tmpl(data);
+            return views[key].wrapper.replace("><", ">"+html+"<");
           };
         });
       }
 
     };
-    if(process.env.MODE != 'dev'){initializeViews();}
+    initializeViews();
     var defineRoute = function(route){ //push - true, false
-      
-      app[methods[page.method]](page.route, function(req, res, next){
+
+      if(route == "/"){
+        var target = viewWrappers.home;
+        var view = views.home;
+      }
+      else{
+        var target = viewWrappers[route];
+        var view = views[route];
+      }
+      //??page.route
+      app[methods[page.method]](route, function(req, res, next){
 
         if(process.env.MODE == 'dev'){initializeViews();}
-        
 
         //Reset user's socket services
         req.session.services = [];
@@ -156,20 +185,25 @@ module.exports = function(app, config){
               javascripts:allJavascripts, 
               less: less,
               css: css,
-              renderView:self.renderView || false
+
+              views: viewWrappers,
+              target: target,
+              target_data: {}
             };
 
-            if(self.renderView && self.views){
-              mergedConfig.renderedByServer = true;
-              vars.locals = vars;
-            }
             vars.config = JSON.stringify(mergedConfig);
-
-            res.send(head_template(vars));
+            vars.local = vars;
             
+            if(view.getter){
+              view.getter(function(app, data){
+                vars.target_data = data;
+                res.send(head_template(vars));
+              });
+            }
+            else{
+              res.send(head_template(vars));
+            }
           });
-
-          
         };
 
         //If there is callback in page definition
@@ -186,23 +220,7 @@ module.exports = function(app, config){
           render: render,
           error: error
         };
-        if(views){
-          current_page.views = views;
-          current_page.renderView = function(view_name, locals){
-            if(view_name == null){
-              return '';
-            }
-            if(!current_page.views[view_name]){
-              return "No template - "+view_name;
-            }
-            if(current_page.data && current_page.data[view_name]){
-              _.extend(locals, current_page.data[view_name])
-            }
-            var html = current_page.views[view_name].tmpl(locals);
-            return current_page.views[view_name].wrapper.replace("><", ">"+html+"<");
-          };
-        }
-        
+
         if(page.callback && typeof page.callback == "function"){
           page.callback.call(current_page, app);
         }
@@ -212,18 +230,21 @@ module.exports = function(app, config){
       });
     };
 
-
+    var toBind = [];
     if(typeof page.route == "string"){
-      defineRoute(page.route);
-      return;
+      toBind.push(page.route);
     }
     if(Array.isArray(page.route)){
-      page.route.forEach(function(route){
-        console.log("setting up route: "+route)
-        defineRoute(route);
-      });
-      return;
+      toBind = page.route;
     }
+    if(page.views){
+      for(key in page.views){
+        toBind.push(key);
+      }
+    }
+    toBind.forEach(function(route){
+      defineRoute(route);
+    });
 
   });
 };

@@ -125,6 +125,12 @@ module.exports = Backbone.View.extend
         d.local = @local
         d.locals = d
         d.renderView = renderView
+
+        #To do
+        d.views = App.Views
+        d.layout = undefined
+        d.target = undefined
+
         html = @compiled_template(d)
         html
     if(options && options.appendTo)

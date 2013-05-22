@@ -18,9 +18,9 @@ html
     each script in javascripts
       script(src=script)
   
-  -if(!renderView)
+  -if(!views.layout)
     body
   - else
     body.
-      !{renderView('layout', locals)}
+      !{views.layout(locals)}
     
