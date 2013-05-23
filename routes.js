@@ -69,7 +69,6 @@ module.exports = function(app, config){
           else if(typeof page.views[key] == "object"){
             var path = page.views[key].path;
             var wrapper = jade.compile(page.views[key].wrapper || "div")();
-            console.log("here----------------------->");
             var getter = page.views[key].getter
           }
           else{
@@ -92,14 +91,9 @@ module.exports = function(app, config){
     initializeViews();
     var defineRoute = function(route){ //push - true, false
 
-      if(route == "/"){
-        var target = viewWrappers.home;
-        var view = views.home;
-      }
-      else{
-        var target = viewWrappers[route];
-        var view = views[route];
-      }
+      var target = viewWrappers[route];
+      var view = views[route];
+      
       //??page.route
       app[methods[page.method]](route, function(req, res, next){
 
@@ -189,15 +183,20 @@ module.exports = function(app, config){
 
               views: viewWrappers,
               target: target,
-              target_data: {}
+              lng:req.lng,
+
+              renderedData: undefined
             };
 
             vars.config = JSON.stringify(mergedConfig);
-            vars.local = vars;
+            vars.locals = vars;
             
             if(view && view.getter){
-              view.getter(function(app, data){
-                vars.target_data = data;
+              view.getter(app, function(data){
+                _.extend(vars, data);
+                d = (data.collection || data.model);
+                if(d){vars.renderedData = JSON.stringify(d.toJSON());}
+                else{vars.renderedData = 'null'}
                 res.send(head_template(vars));
               });
             }

@@ -125,6 +125,7 @@ module.exports = Backbone.View.extend
         d.local = @local
         d.locals = d
         d.renderView = renderView
+        d.lng = i18n.lng()
 
         #To do
         d.views = App.Views
@@ -150,7 +151,13 @@ module.exports = Backbone.View.extend
   bindTo: (obj)->
     @_binded.push(obj)
     obj
+  
   render: ()->
+    if window._renderedData
+      if @match
+        @match(window._renderedData)
+        delete window._renderedData
+      return @
     if(@template)
       @$el.html(@template())
     @
