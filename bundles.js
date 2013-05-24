@@ -22,7 +22,7 @@ module.exports = function(app, config){
   //Set up all defined bundles
   bundles.forEach(function(bundle){
     if(!bundle.load) return;
-    console.log(bundle.name);
+    
 
     var rawFilesExtensions = _.union(config.bundlesRawFiles, bundle.raw || []);
 
@@ -37,7 +37,6 @@ module.exports = function(app, config){
     });
     bundler.addEntry(bundle.entryPoint);
     //bundler.require(filename);
-    
     //Adding code prepends if any
     if(bundle.prepend){
       bundler.prepend(bundle.prepend);
@@ -50,6 +49,7 @@ module.exports = function(app, config){
     else{
       app.use(bundler);
     }
+    console.log("????????????",bundle.name);
 
   });
 };

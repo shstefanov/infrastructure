@@ -7,7 +7,7 @@ html
     | <![endif]-->
 
     script(language='javascript', type='text/javascript').
-      config = !{config};
+      config = !{stringifiedConfig};
 
     each cssStyle in css
       link(href=cssStyle, rel="stylesheet", type="text/css", media='screen')

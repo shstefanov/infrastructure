@@ -146,7 +146,9 @@ module.exports = function(app, config){
           var configConfig = config.clientConfig || {};
           var pageConfig = page.config || {};
           var additionalConfig = this.config || {};
-          var mergedConfig = _.extend(
+          var mergedConfig = {};
+          _.extend(
+            mergedConfig,
             configConfig,
             pageConfig,
             additionalConfig
@@ -184,21 +186,36 @@ module.exports = function(app, config){
               views: viewWrappers,
               target: target,
               lng:req.lng,
+              utils:app.utils,
+              config:mergedConfig,
 
               renderedData: undefined
             };
 
-            vars.config = JSON.stringify(mergedConfig);
+            vars.stringifiedConfig = JSON.stringify(mergedConfig);
             vars.locals = vars;
-            
-            if(view && view.getter){
+
+            var getViewData = function(){
               view.getter(app, function(data){
                 _.extend(vars, data);
                 d = (data.collection || data.model);
                 if(d){vars.renderedData = JSON.stringify(d.toJSON());}
                 else{vars.renderedData = 'null'}
                 res.send(head_template(vars));
-              });
+              });              
+            };
+            
+            if(view && view.getter){
+              //If layout have view
+              if(views.layout && views.layout.getter){
+                views.layout.getter(app, function(data){
+                  _.extend(vars, data);
+                  getViewData();
+                });
+              }
+              else{
+                getViewData();
+              }
             }
             else{
               res.send(head_template(vars));
