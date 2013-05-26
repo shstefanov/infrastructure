@@ -106,7 +106,7 @@ module.exports = function(app, config){
           this.req.error(500, message);
         }
 
-        var render = function() {
+        var render = function(current_page) {
           
           //Setting up javascripts
           var coreJavascripts = coreLibs;
@@ -145,7 +145,7 @@ module.exports = function(app, config){
           //Setting up config
           var configConfig = config.clientConfig || {};
           var pageConfig = page.config || {};
-          var additionalConfig = this.config || {};
+          var additionalConfig = current_page.config || {};
           var mergedConfig = {};
           _.extend(
             mergedConfig,
@@ -230,6 +230,7 @@ module.exports = function(app, config){
           styles: [],
           services:[],
           data:{},
+          config:{},
           
           req: req,
           res: res,
