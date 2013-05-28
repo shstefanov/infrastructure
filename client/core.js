@@ -149,9 +149,9 @@ App.View.merge = function(protoProps, staticProps) {
   };
 
 
-var V = App.View.wide({a:5, infrastructure:{something:10}});
-var V2 = V.wide({a:50, infrastructure:{other:222}});
-window.v = new V();
-console.log(window.v);
-window.v2 = new V2();
-console.log(window.v2);
+// var V = App.View.wide({a:5, infrastructure:{something:10}});
+// var V2 = V.wide({a:50, infrastructure:{other:222}});
+// window.v = new V();
+// console.log(window.v);
+// window.v2 = new V2();
+// console.log(window.v2);
