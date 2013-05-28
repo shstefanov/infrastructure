@@ -18,10 +18,6 @@ module.exports = function(express, config){
     //Basic configuration
     app.set('port', config.server.port || 3000);
 
-    //Setting up template engine
-    //Server will render only init.jade as system initialization template
-    app.set('view engine', 'jade');
-    app.set('views', __dirname);
     app.use(express.favicon());
 
     //Advanced configuration
@@ -52,6 +48,9 @@ module.exports = function(express, config){
     .serveMissingKeyRoute(app)
     .serveChangeKeyRoute(app)
     .serveRemoveKeyRoute(app);
+
+    app.t = i18next.t;
+    app.i18n = i18next;
     
     app.use(app.router); //app.router after express.bodyParser() makes bodyParser working
   });

@@ -1,5 +1,11 @@
 var _ = require("underscore");
+var jade = require("jade");
+var fs = require("fs");
+var Backbone = require("backbone");
+
+var raw_head_template = fs.readFileSync(__dirname+"/init.jade");
 var helpers = require("./helpers");
+
 
 //Allowed http request methods
 var methods = {
@@ -27,17 +33,71 @@ var coreLibs = [
 
 module.exports = function(app, config){
 
+  head_template = jade.compile(raw_head_template);
+
+
+
   //Loading all defined in pages folder page definitons
   var pages = helpers.loadDirAsArray(config.routesFolder);
   
   //Setting up server to serve each of them
   pages.forEach(function(page){
+    console.log("parsing page: ", page.route);
+    var views = {};
+    var layout = undefined;
+    var homeTemplate = undefined;
 
-    var defineRoute = function(route){ //push - true, false
+    var allViews = page.views || {}
+    var viewWrappers = {};
+
+    var initializeViews = function(){
       
-      var pushState = route.indexOf(":") > -1;
+      if(page.layout){
+        allViews.layout = page.layout
+      }
+      if(page.home){
+        allViews.home = page.home
+      }
 
-      app[methods[page.method]](page.route, function(req, res, next){
+      if(page.views){
+        
+        Object.keys(allViews).forEach(function(key){
+          if(typeof page.views[key] == "string"){
+            var path = page.views[key];
+            var wrapper = "<div></div>";
+          }
+          else if(typeof page.views[key] == "object"){
+            var path = page.views[key].path;
+            var wrapper = jade.compile(page.views[key].wrapper || "div")();
+            var getter = page.views[key].getter
+          }
+          else{
+            return;
+          }
+          views[key] = {
+            tmpl: jade.compile(fs.readFileSync(config.templatesFolder+path)),
+            wrapper: wrapper,
+            getter:getter
+          };
+          viewWrappers[key] = function(data){
+            if(!views[key]){ return "No template - "+key; }
+            var html = views[key].tmpl(data);
+            return views[key].wrapper.replace("><", ">"+html+"<");
+          };
+        });
+      }
+
+    };
+    initializeViews();
+    var defineRoute = function(route){ //push - true, false
+
+      var target = viewWrappers[route];
+      var view = views[route];
+      
+      //??page.route
+      app[methods[page.method]](route, function(req, res, next){
+
+        if(process.env.MODE == 'dev'){initializeViews();}
 
         //Reset user's socket services
         req.session.services = [];
@@ -46,7 +106,7 @@ module.exports = function(app, config){
           this.req.error(500, message);
         }
 
-        var render = function() {
+        var render = function(current_page) {
           
           //Setting up javascripts
           var coreJavascripts = coreLibs;
@@ -85,8 +145,10 @@ module.exports = function(app, config){
           //Setting up config
           var configConfig = config.clientConfig || {};
           var pageConfig = page.config || {};
-          var additionalConfig = this.config || {};
-          var mergedConfig = _.extend(
+          var additionalConfig = current_page.config || {};
+          var mergedConfig = {};
+          _.extend(
+            mergedConfig,
             configConfig,
             pageConfig,
             additionalConfig
@@ -114,19 +176,51 @@ module.exports = function(app, config){
           var self = this;
           this.req.session.save(function(session){
 
-            //Rendering with template engine - jade
-            res.render("init.jade", {
+            var vars = {
+              t: req.i18n.t,
               title: self.title,
               javascripts:allJavascripts, 
               less: less,
               css: css,
-              config:JSON.stringify(mergedConfig),  //Page config
-              bodyAdd:self.bodyAdd || ""
-            });
-            
-          });
 
-          
+              views: viewWrappers,
+              target: target,
+              lng:req.lng,
+              utils:app.utils,
+              config:mergedConfig,
+
+              renderedData: undefined
+            };
+
+            vars.stringifiedConfig = JSON.stringify(mergedConfig);
+            vars.locals = vars;
+
+            var getViewData = function(){
+              view.getter(app, function(data){
+                _.extend(vars, data);
+                d = (data.collection || data.model);
+                if(d){vars.renderedData = JSON.stringify(d.toJSON());}
+                else{vars.renderedData = 'null'}
+                res.send(head_template(vars));
+              });              
+            };
+            
+            if(view && view.getter){
+              //If layout have view
+              if(views.layout && views.layout.getter){
+                views.layout.getter(app, function(data){
+                  _.extend(vars, data);
+                  getViewData();
+                });
+              }
+              else{
+                getViewData();
+              }
+            }
+            else{
+              res.send(head_template(vars));
+            }
+          });
         };
 
         //If there is callback in page definition
@@ -135,14 +229,16 @@ module.exports = function(app, config){
           javascripts: [],
           styles: [],
           services:[],
-          bodyJavascript: page.bodyJavascript,
+          data:{},
+          config:{},
+          
           req: req,
           res: res,
           next: next,
           render: render,
           error: error
         };
-        
+
         if(page.callback && typeof page.callback == "function"){
           page.callback.call(current_page, app);
         }
@@ -152,18 +248,21 @@ module.exports = function(app, config){
       });
     };
 
-
+    var toBind = [];
     if(typeof page.route == "string"){
-      defineRoute(page.route);
-      return;
+      toBind.push(page.route);
     }
     if(Array.isArray(page.route)){
-      page.route.forEach(function(route){
-        console.log("setting up route: "+route)
-        defineRoute(route);
-      });
-      return;
+      toBind = page.route;
     }
+    if(page.views){
+      for(key in page.views){
+        toBind.push(key);
+      }
+    }
+    toBind.forEach(function(route){
+      defineRoute(route);
+    });
 
   });
 };

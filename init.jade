@@ -6,8 +6,10 @@ html
     | <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"><cript>
     | <![endif]-->
 
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+   
     script(language='javascript', type='text/javascript').
-      config = !{config};
+      config = !{stringifiedConfig};
 
     each cssStyle in css
       link(href=cssStyle, rel="stylesheet", type="text/css", media='screen')
@@ -17,8 +19,13 @@ html
 
     each script in javascripts
       script(src=script)
-      
-  body
-    if(bodyAdd)
-      script=bodyAdd
+  
+  -if(!views.layout)
+    body
+  - else
+    body.
+      !{views.layout(locals)}
+      <script language='javascript', type='text/javascript'>
+        window._renderedData = !{renderedData}
+      </script>
     
