@@ -172,9 +172,9 @@ module.exports = function(app, config){
               availableServices.push(serviceName);
           });
           
-          this.req.session.services = availableServices;
+          current_page.req.session.services = availableServices;
           var self = this;
-          this.req.session.save(function(session){
+          current_page.req.session.save(function(session){
 
             var vars = {
               t: req.i18n.t,
@@ -196,7 +196,7 @@ module.exports = function(app, config){
             vars.locals = vars;
 
             var getViewData = function(){
-              view.getter(app, function(data){
+              view.getter.call(current_page, app, function(data){
                 _.extend(vars, data);
                 d = (data.collection || data.model);
                 if(d){vars.renderedData = JSON.stringify(d.toJSON());}
@@ -208,7 +208,7 @@ module.exports = function(app, config){
             if(view && view.getter){
               //If layout have view
               if(views.layout && views.layout.getter){
-                views.layout.getter(app, function(data){
+                views.layout.getter.call(current_page, app, function(data){
                   _.extend(vars, data);
                   getViewData();
                 });

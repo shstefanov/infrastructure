@@ -17,7 +17,6 @@ App.Collections = {};
 App.Templates = {};
 
 
-
 App.build = function(router){
 
   var self = this;
@@ -43,7 +42,6 @@ App.build = function(router){
   //Then running all other staff
   var ready = false;
   self.socket.on("ready", function(services){
-    //console.log(services);
 
     if(ready == true) return;
     ready = true;
@@ -61,18 +59,18 @@ App.build = function(router){
 
       //Now -  running the application
       var run = function(){
-        console.log("heherere?? run?!?");
+        
         self.router = new router();
         if(self.router.prepare){
           self.router.prepare(function(){
-            console.log("prepare callback???")
+            
             if(self.router.routes){
               Backbone.history.start({pushState:true, trigger:true});
             }
           });
         }
         else{
-          console.log("prepare callback???");
+          
           if(self.router.routes){
             Backbone.history.start({pushState:true, trigger:true});
           }

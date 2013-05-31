@@ -127,6 +127,8 @@ module.exports = Backbone.View.extend
         d.renderView = renderView
         d.lng = i18n.lng()
         d.utils = app.utils
+        if @addData
+          _.extend d, @addData
 
         #To do
         d.views = App.Views
