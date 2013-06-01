@@ -164,6 +164,9 @@ module.exports = Backbone.View.extend
     if(@template)
       @$el.html(@template())
     @
+
+  match: ->
+    @
 # ,
 
 #   extend: (attrs, classMethods)->
