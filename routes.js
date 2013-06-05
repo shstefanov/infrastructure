@@ -196,19 +196,26 @@ module.exports = function(app, config){
             vars.locals = vars;
 
             var getViewData = function(){
-              view.getter.call(current_page, app, function(data){
-                _.extend(vars, data);
-                d = (data.collection || data.model);
-                if(d){vars.renderedData = JSON.stringify(d.toJSON());}
-                else{vars.renderedData = 'null'}
+              if(view.getter){
+                view.getter.call(current_page, app, function(data){
+                  _.extend(vars, data);
+                  d = (data.collection || data.model);
+                  if(d){vars.renderedData = JSON.stringify(d.toJSON());}
+                  else{vars.renderedData = 'null'}
+                  res.send(head_template(vars));
+                });        
+              }
+              else{
                 res.send(head_template(vars));
-              });              
+              }
             };
             
-            if(view && view.getter){
+            if(view){
               //If layout have view
               if(views.layout && views.layout.getter){
+                console.log("before layout getter");
                 views.layout.getter.call(current_page, app, function(data){
+                  console.log("in layout getter callback");
                   _.extend(vars, data);
                   getViewData();
                 });
