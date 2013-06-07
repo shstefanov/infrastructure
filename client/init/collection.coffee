@@ -21,6 +21,9 @@ module.exports = Backbone.Collection.extend
   unbindAll: ->
     model.off.apply model, arguments for model in @models
     @
+
+  fetch: ->
+    @
   
        
 
