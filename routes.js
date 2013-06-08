@@ -51,42 +51,32 @@ module.exports = function(app, config){
     var viewWrappers = {};
 
     var initializeViews = function(){
-      
-      if(page.layout){
-        allViews.layout = page.layout
-      }
-      if(page.home){
-        allViews.home = page.home
-      }
-
-      if(page.views){
-        
-        Object.keys(allViews).forEach(function(key){
-          if(typeof page.views[key] == "string"){
-            var path = page.views[key];
-            var wrapper = "<div></div>";
-          }
-          else if(typeof page.views[key] == "object"){
-            var path = page.views[key].path;
-            var wrapper = jade.compile(page.views[key].wrapper || "div")();
-            var getter = page.views[key].getter
-          }
-          else{
-            return;
-          }
-          views[key] = {
-            tmpl: jade.compile(fs.readFileSync(config.templatesFolder+path)),
-            wrapper: wrapper,
-            getter:getter
-          };
-          viewWrappers[key] = function(data){
-            if(!views[key]){ return "No template - "+key; }
-            var html = views[key].tmpl(data);
-            return views[key].wrapper.replace("><", ">"+html+"<");
-          };
-        });
-      }
-
+      if(page.layout){ allViews.layout = page.layout  }
+      if(page.views){ _.extend(allViews, page.views) }
+      Object.keys(allViews).forEach(function(key){
+        if(typeof allViews[key] == "string"){
+          var path = allViews[key];
+          var wrapper = "<div></div>";
+        }
+        else if(typeof allViews[key] == "object"){
+          var path = allViews[key].path;
+          var wrapper = jade.compile(allViews[key].wrapper || "div")();
+          var getter = allViews[key].getter
+        }
+        else{
+          return;
+        }
+        views[key] = {
+          tmpl: jade.compile(fs.readFileSync(config.templatesFolder+path)),
+          wrapper: wrapper,
+          getter:getter
+        };
+        viewWrappers[key] = function(data){
+          if(!views[key]){ return "No template - "+key; }
+          var html = views[key].tmpl(data);
+          return views[key].wrapper.replace("><", ">"+html+"<");
+        };
+      });
     };
     initializeViews();
     var defineRoute = function(route){ //push - true, false
@@ -195,39 +185,41 @@ module.exports = function(app, config){
             vars.stringifiedConfig = JSON.stringify(mergedConfig);
             vars.locals = vars;
 
-            var getViewData = function(){
-              if(view.getter){
-                view.getter.call(current_page, app, function(data){
-                  _.extend(vars, data);
-                  d = (data.collection || data.model);
-                  if(d){vars.renderedData = JSON.stringify(d.toJSON());}
-                  else{vars.renderedData = 'null'}
+            var renderView = function(){
+              if(view){
+                if(view.getter){
+                  view.getter.call(current_page, app, function(data){
+                    _.extend(vars, data);
+                    d = (data.collection || data.model);
+                    if(d){vars.renderedData = JSON.stringify(d.toJSON());}
+                    else{vars.renderedData = 'null'}
+                    res.send(head_template(vars));
+                  });        
+                }
+                else{
                   res.send(head_template(vars));
-                });        
+                }
               }
               else{
                 res.send(head_template(vars));
               }
             };
-            
-            if(view){
-              //If layout have view
-              if(views.layout && views.layout.getter){
-                console.log("before layout getter");
+
+            var renderLayout = function(){
+              if(views.layout.getter){
                 views.layout.getter.call(current_page, app, function(data){
-                  console.log("in layout getter callback");
                   _.extend(vars, data);
-                  getViewData();
+                  renderView();
                 });
               }
-              else{
-                getViewData();
-              }
-            }
-            else{
-              res.send(head_template(vars));
-            }
+              else{               renderView();   }
+            };
+            
+            if(views.layout){     renderLayout(); }
+            else{                 renderView();   }
+
           });
+          
         };
 
         //If there is callback in page definition

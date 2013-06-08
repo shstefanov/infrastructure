@@ -3,7 +3,8 @@ var express = require('express')
   , SessionSockets = require('session.socket.io')
   , Sequelize = require('sequelize')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , async = require('async');
 
 var helpers = require("./helpers");
 
@@ -93,36 +94,35 @@ module.exports = {
 
     var modelsInitializer = require(config.models);
     modelsInitializer(sq, sequilize_types, function(models){
-      var models_count = 0;
-      var methods_count = 0;
       sq.drop().success(function(){
         sq.sync({force: true}).success(function(){
-          var check_ready = function(){
-            if(models_count == 0 && methods_count == 0){ 
-                callback(sq, models);
+          async.eachSeries(Object.keys(seeds),
+            function(seed, callback){
+              if(seed == 'run'){callback();return;}
+              if (typeof seeds[seed] == "function"){
+                seeds[seed](models, function(err){callback(err);});
               }
-          };
-          //Tables created, seeding
-          for(model in seeds){
-            var m = model;
-            if(typeof seeds[m] == "function"){
-              methods_count++;
-              seeds[m](config, models, function(){
-                methods_count--;
-                check_ready();
-              });
-               return;
+              else if(Array.isArray(seeds[seed])){
+                async.eachSeries(seeds[seed],function(data, cb){
+                  models[seed].create(data)
+                  .error(function(err){cb(err);})
+                  .success(function(){cb();});
+                }, function(){callback(null, true)});
+              }
+              else if(typeof seeds[seed] == "object"){
+                models[seed].create(seeds[seed])
+                .error(function(err){callback(err);})
+                .success(function(){callback()});
+              }
+              else{
+                return;
+              }
+          }, function(err){
+            if(err){throw err;}
+            if(typeof seeds.run == 'function'){
+              seeds.run(config, models);
             }
-            
-            seeds[m].forEach(function(mo){
-              models_count++;
-              models[m].create(mo).error(function(err){throw err;})
-              .success(function(model){
-                models_count--;
-                check_ready();
-              });
-            });
-          }
+          });
         }).error(function(err){
           throw err;
         });

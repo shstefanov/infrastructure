@@ -1,6 +1,6 @@
 {
   "name": "infrastructure",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
@@ -22,7 +22,8 @@
     "socket.io": "latest",
     "socket.io-client": "latest",
     "underscore":"latest",
-    "walk":"latest"
+    "walk":"latest",
+    "async": "latest"
 
   },
   "devDependencies": {
