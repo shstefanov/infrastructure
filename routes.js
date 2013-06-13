@@ -192,7 +192,7 @@ module.exports = function(app, config){
                     _.extend(vars, data);
                     d = (data.collection || data.model);
                     if(d){vars.renderedData = JSON.stringify(d.toJSON());}
-                    else{vars.renderedData = 'null'}
+                    else{vars.renderedData = 'true'}
                     res.send(head_template(vars));
                   });        
                 }
