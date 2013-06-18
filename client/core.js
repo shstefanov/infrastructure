@@ -43,6 +43,8 @@ App.build = function(router){
   var ready = false;
   self.socket.on("ready", function(services){
 
+    self.dispatcher.trigger("connect");
+
     if(ready == true) return;
     ready = true;
    
