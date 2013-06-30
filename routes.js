@@ -66,8 +66,10 @@ module.exports = function(app, config){
         else{
           return;
         }
+        //This option is required to use include in template
+        var compile_options = {filename:config.templatesFolder+path};
         views[key] = {
-          tmpl: jade.compile(fs.readFileSync(config.templatesFolder+path)),
+          tmpl: jade.compile(fs.readFileSync(config.templatesFolder+path), compile_options),
           wrapper: wrapper,
           getter:getter
         };
@@ -186,13 +188,20 @@ module.exports = function(app, config){
             vars.locals = vars;
 
             var renderView = function(){
+              console.log("----------------> renderView");
               if(view){
                 if(view.getter){
                   view.getter.call(current_page, app, function(data){
+                    console.log("----------------> getter executed");
+                    //console.log(data);
                     _.extend(vars, data);
                     d = (data.collection || data.model);
+                    _.extend(vars, data);
                     if(d){vars.renderedData = JSON.stringify(d.toJSON());}
                     else{vars.renderedData = data.reneredData? JSON.stringify(data.reneredData) : 'true'; }
+                    Object.keys(vars).forEach(function(key){
+                      console.log(key, typeof vars[key]);
+                    });
                     res.send(head_template(vars));
                   });        
                 }
@@ -206,6 +215,7 @@ module.exports = function(app, config){
             };
 
             var renderLayout = function(){
+              console.log("----------------> renderLayout");
               if(views.layout.getter){
                 views.layout.getter.call(current_page, app, function(data){
                   _.extend(vars, data);
