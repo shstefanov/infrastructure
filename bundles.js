@@ -22,9 +22,7 @@ module.exports = function(app, config){
   //Set up all defined bundles
   bundles.forEach(function(bundle){
     if(!bundle.load) return;
-    
 
-    var rawFilesExtensions = _.union(config.bundlesRawFiles, bundle.raw || []);
 
     //Creating the bundler
     var bundler = browserify({
@@ -32,9 +30,25 @@ module.exports = function(app, config){
       watch: bundle.watch || config.bundlesOptions.watch,
       cache: bundle.cache || config.bundlesOptions.cache
     });
-    rawFilesExtensions.forEach(function(ext){
-      bundler.register(ext, helpers.plainTextContentWrapper);
-    });
+
+    var global_parse = config.bundleParse || {};
+    var local_parse = bundle.parse || {};
+    var x = _.extend({}, global_parse);
+    var to_parse = _.extend(x, local_parse);
+
+    // Expects config.bundleParse and bundle.parse to be something like:
+    // {
+    //  '.file_extension' : function(body, file){ 
+    //       body is file content as string, 
+    //       parse and return valid javascript code 
+    //   },
+    //   'other_extension': function(body, file){ ... }
+    // }
+
+    for(key in to_parse){
+      bundler.register(ext, to_parse[key]);
+    }
+
     bundler.addEntry(bundle.entryPoint);
     //bundler.require(filename);
     //Adding code prepends if any

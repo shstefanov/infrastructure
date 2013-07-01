@@ -10,20 +10,18 @@
   "main": "./index.js",
   
   "dependencies": {
-    "browserify":"1.17.3",
-    "backbone": "latest",
-    "colors": "latest",
-    "connect-mongo": "latest",
     "express": "latest",
-    "i18next": "latest",
-    "jade": "latest",
-    "sequelize": "latest",
+    "connect-mongo": "latest",
     "session.socket.io": "latest",
     "socket.io": "latest",
     "socket.io-client": "latest",
+    "walk": "latest",
     "underscore":"latest",
-    "walk":"latest",
-    "async": "latest"
+    "async": "latest",
+    "coffee-script":"latest",
+    "colors": "latest",
+    
+    "browserify":"latest"
 
   },
   "devDependencies": {
