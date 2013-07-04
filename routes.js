@@ -188,20 +188,16 @@ module.exports = function(app, config){
             vars.locals = vars;
 
             var renderView = function(){
-              console.log("----------------> renderView");
               if(view){
                 if(view.getter){
                   view.getter.call(current_page, app, function(data){
-                    console.log("----------------> getter executed");
-                    //console.log(data);
                     _.extend(vars, data);
                     d = (data.collection || data.model);
                     _.extend(vars, data);
                     if(d){vars.renderedData = JSON.stringify(d.toJSON());}
-                    else{vars.renderedData = data.reneredData? JSON.stringify(data.reneredData) : 'true'; }
-                    Object.keys(vars).forEach(function(key){
-                      console.log(key, typeof vars[key]);
-                    });
+                    else{
+                      vars.renderedData = data? JSON.stringify(data) : 'true'; 
+                    }
                     res.send(head_template(vars));
                   });        
                 }
