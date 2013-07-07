@@ -53,20 +53,18 @@ module.exports = {
     var appInitializer = require("./app");
     appInitializer(express, config, pluginsMap, function(app){
 
-      console.log("here------------------------>2");
-
       //Adding the pages
       if(config.routes){
         var routesInitializer = require("./routes");
         routesInitializer(app, config);
       }
-      console.log("here------------------------>3");
+
       //Setting up bundles
       if(config.bundles && fs.existsSync(config.bundles)){
         var bundlesInitializer = require("./bundles");
         bundlesInitializer(app, config);
       }
-      console.log("here------------------------>4");
+
       if(config.services && fs.existsSync(config.bundles)){
         app.services = helpers.loadDirAsObject(app.config.services);
       }

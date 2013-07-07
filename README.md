@@ -28,6 +28,15 @@ A static folder
       staticFolder: __dirname+"../static" //or
       staticFolder: [__dirname+"../static", __dirname+"../uploadedImages"] //if you have to assign multiple static folders
     }
+
+Load custom files in the client when require()
+    {
+      bundleParse:{
+        '.doc': function(body, filename){
+          //parse the body and return valid javascriptcode as string
+        }
+      }
+    }
 Client configuration
     {
       client: {...} //Write what you want, will be accessible in browser's javascript code as 'config' global variable
