@@ -65,7 +65,7 @@ module.exports = {
         bundlesInitializer(app, config);
       }
 
-      if(config.services && fs.existsSync(config.bundles)){
+      if(config.services && fs.existsSync(config.services)){
         app.services = helpers.loadDirAsObject(app.config.services);
       }
       

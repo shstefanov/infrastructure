@@ -3,8 +3,6 @@ var ModulesBuilder = require("./tools/modulesBuilder.coffee");
 
 window.dispatcher = _.extend({}, Backbone.Events);
 
-require("./init/i18next");
-
 require("./init/sync.js");
 
 

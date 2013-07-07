@@ -4,6 +4,8 @@ var async = require("async");
 module.exports = function(express, raw_config, pluginsMap, callback){
   var app = express();
 
+
+  //Running the config initialization queue
   pluginsMap.config.unshift(function(callback){
     callback(null, raw_config);
   });
@@ -12,7 +14,6 @@ module.exports = function(express, raw_config, pluginsMap, callback){
     if(err){throw err;}
 
     app.config = config;
-    console.log("here------------------------>1");
 
     var MongoStore = require('connect-mongo')(express);
 
