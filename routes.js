@@ -88,7 +88,7 @@ module.exports = function(app, config){
       
       //??page.route
       app[methods[page.method]](route, function(req, res, next){
-
+        console.log("request:", req.url);
         if(process.env.MODE == 'dev'){initializeViews();}
 
         //Reset user's socket services
@@ -187,17 +187,15 @@ module.exports = function(app, config){
             vars.stringifiedConfig = JSON.stringify(mergedConfig);
             vars.locals = vars;
 
-            var renderView = function(){
+            var renderView = function(layoutData){
               if(view){
                 if(view.getter){
                   view.getter.call(current_page, app, function(data){
-                    _.extend(vars, data);
-                    d = (data.collection || data.model);
-                    _.extend(vars, data);
-                    if(d){vars.renderedData = JSON.stringify(d.toJSON());}
-                    else{
-                      vars.renderedData = data? JSON.stringify(data) : 'true'; 
-                    }
+                    _.extend(vars, data, layoutData || {});
+                    var renderedData = _.extend({}, data || {}, layoutData || {});
+                    var string = JSON.stringify(renderedData)
+                    console.log(renderedData.regions)
+                    vars.renderedData = string+";"; 
                     res.send(head_template(vars));
                   });        
                 }
@@ -215,7 +213,7 @@ module.exports = function(app, config){
               if(views.layout.getter){
                 views.layout.getter.call(current_page, app, function(data){
                   _.extend(vars, data);
-                  renderView();
+                  renderView(data);
                 });
               }
               else{               renderView();   }

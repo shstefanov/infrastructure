@@ -1,11 +1,33 @@
 appendToInitialize = ->
+  @_childs = []
   @empty = =>
     if @appendTo == "."
       @$el.empty()
     else
       @$(@appendTo).empty()
     @
-  @append = (view)=>
+  @append = (view, opts)=>
+    options = opts || {}
+    if options.empty == true
+      if !options.silent
+        @empty()
+        child.remove() for child in @_childs
+      @_childs = []
+
+    if options.single == true
+      if !options.silent
+        @empty()
+        child.remove() for child in @_childs
+      @_childs = [view]
+    else
+      if Array.isArray view
+        @_childs.push(v) for v in view
+      else
+        @_childs.push(view)
+
+    if options.silent == true
+      return @
+
     add = (v)=>
       if !v
         @$el.css {'background-color': 'red'}
@@ -18,7 +40,28 @@ appendToInitialize = ->
     else
       add view
     @
-  @prepend = (view)=>
+  @prepend = (view, options)=>
+    options = opts || {}
+    if options.empty == true
+      if !options.silent
+        @empty()
+        child.remove() for child in @_childs
+      @_childs = []
+
+    if options.single == true
+      if !options.silent
+        @empty() 
+        child.remove() for child in @_childs 
+      @_childs = [view]
+    else
+      if Array.isArray view
+        @_childs.unshift(v) for v in view
+      else
+        @_childs.unshift(view)
+
+    if options.silent == true
+      return @
+
     add = (v)=>
       if !v
         @$el.css {'background-color': 'red'}
@@ -156,13 +199,18 @@ module.exports = Backbone.View.extend
     obj
   
   render: ()->
-    if window._renderedData
-      if @match
-        @match(window._renderedData)
-        delete window._renderedData
-      return @
     if(@template)
+      console.log "template"
       @$el.html(@template())
+    @
+
+  update: ->
+    console.log "update ????"
+    @render()
+    if @_childs.length > 0
+      childs = @_childs
+      @_childs = []
+      @append childs
     @
 
   match: ->
