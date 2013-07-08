@@ -68,13 +68,18 @@ module.exports = function(app, config, pluginsMap){
     
     //Check if routes are present
     if(typeof router.routes != "object" || Object.keys(router.routes).length==0){
-      throw new Error('router '+filepath+' don\'t have any routes');
+      throw new Error('Router '+filepath+' don\'t have any routes');
     }
 
     if(typeof router.views != "object" || Object.keys(router.views).length==0){
-      throw new Error('router '+filepath+' don\'t have any views');
+      throw new Error('Router '+filepath+' don\'t have any views');
+    }
+    var method = methods[router.method];
+    if(!method){
+      throw new Error('Http method '+filepath+' not allowed'); 
     }
 
+    //Creating bundle for the router
     pluginsMap.bundle.push(bundleObject);
 
 

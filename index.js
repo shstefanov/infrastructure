@@ -55,6 +55,13 @@ module.exports = {
     var appInitializer = require("./app");
     appInitializer(express, config, pluginsMap, function(app){
 
+      app.config = config;
+      app.pluginsMap = pluginsMap;
+
+      //Initializing some features and extending the app
+      var libsinItializer = require("./libs");
+      libsinItializer(app);
+
       //Adding the pages
       if(config.routers){
         var routesInitializer = require("./routes");

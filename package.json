@@ -20,6 +20,7 @@
     "async": "latest",
     "coffee-script":"latest",
     "colors": "latest",
+    "backbone": "latest",
     
     "browserify":"1.17.3"
 
