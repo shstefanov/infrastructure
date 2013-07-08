@@ -14,7 +14,8 @@ var configurations = [];
 pluginsMap = {
   config: [], //Work on config object via async waterfall
   configure: [], // functions runned on app.configure stage
-  corescripts: [] //corescripts that will be loaded by default
+  corelibs: [], //corescripts that will be loaded by default
+  bundle: []  //Additional bundles that must be bundled
 }
 
 module.exports = {
@@ -55,7 +56,7 @@ module.exports = {
     appInitializer(express, config, pluginsMap, function(app){
 
       //Adding the pages
-      if(config.routes){
+      if(config.routers){
         var routesInitializer = require("./routes");
         routesInitializer(app, config, pluginsMap);
       }

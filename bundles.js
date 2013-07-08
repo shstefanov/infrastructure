@@ -7,6 +7,7 @@ var helpers = require("./helpers");
 module.exports = function(app, config, pluginsMap){
 
   var bundles = require(config.bundles);
+  pluginsMap.bundle.forEach(function(b){ bundles.push(b); });
 
   //System core bundle
   core_bundle = {
