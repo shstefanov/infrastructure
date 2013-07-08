@@ -1,11 +1,10 @@
 var _ = require("underscore");
-var jade = require("jade");
 var fs = require("fs");
-var Backbone = require("backbone");
-
-var raw_head_template = fs.readFileSync(__dirname+"/init.jade");
+var path = require('path');
 var helpers = require("./helpers");
 
+//var Backbone = require("backbone");
+//var raw_head_template = fs.readFileSync(__dirname+"/init.jade");
 
 //Allowed http request methods
 var methods = {
@@ -28,19 +27,65 @@ var coreLibs = [
 ];
 
 module.exports = function(app, config, pluginsMap){
-
+  console.log("here ---- here??");
   //Corescripts plugin-point
-  pluginsMap.corescripts.forEach(function(corescript){
+  pluginsMap.corelibs.forEach(function(corescript){
     coreLibs.push(corescript);
   });
 
-  head_template = jade.compile(raw_head_template);
-
+  // {
+  //   name: "index"
+  //   load:true
+  //   entryPoint: __dirname+"/client/index.coffee"
+  //   mountPoint: "/index.js"
+  // }
 
 
   //Loading all defined in pages folder page definitons
-  var pages = helpers.loadDirAsArray(config.routers);
-  
+  var routers = helpers.loadDirAsObject(config.routers);
+
+  Object.keys(routers).forEach(function(key){
+    
+    var router = routers[key];
+    
+    var name = router._filename.split(".").shift();
+    var filename = name+".js";
+    var filepath = path.normalize(config.routers+"/"+router._filename);
+    var stat = fs.statSync(filepath);
+    if(stat.isDirectory()){
+       if(fs.existsSync(filepath+"/index.js")){filepath+="/index.js"}
+       else if(fs.existsSync(filepath+"/index.coffee")){filepath+="/index.coffee"}
+       else{throw new Error("Can't find bundle path: "+filepath);}
+    }
+    bundleObject = {
+      name: name,
+      load:true,
+      mountPoint: "/routers/"+filename,
+      entryPoint: filepath,
+      cache:config.bundlesSettings.cache,
+      watch:config.bundlesSettings.watch
+    };
+    
+    //Check if routes are present
+    if(typeof router.routes != "object" || Object.keys(router.routes).length==0){
+      throw new Error('router '+filepath+' don\'t have any routes');
+    }
+
+    if(typeof router.views != "object" || Object.keys(router.views).length==0){
+      throw new Error('router '+filepath+' don\'t have any views');
+    }
+
+    pluginsMap.bundle.push(bundleObject);
+
+
+
+
+  });
+
+  //Breaking for development 
+  return; 
+
+  head_template = jade.compile(raw_head_template);
   //Setting up server to serve each of them
   pages.forEach(function(page){
     console.log("parsing page: ", page.route);

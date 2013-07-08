@@ -17,9 +17,9 @@ module.exports.loadDirAsObject = function(dir){
   var obj = {};
   var modules =  _.each(fs.readdirSync(dir), function(filename){
     var name = filename.split(".");
-    name.pop();
+    if(name.length>1) {name.pop();}
     obj[name[0]] = name.length? require(dir+"/"+name[0]) : false;
-    if(typeof module == "object") module._filename = filename;
+    if(typeof obj[name[0]] == "object")obj[name[0]]._filename = filename;
   });
   return obj;
 };
