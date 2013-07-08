@@ -4,37 +4,51 @@ var helpers = require("./helpers");
 
 
 //Called in index.js
-module.exports = function(app, config){
+module.exports = function(app, config, pluginsMap){
 
   var bundles = require(config.bundles);
 
   //System core bundle
-  bundles.unshift({
+  core_bundle = {
     load:true,
     name:"core", 
     entryPoint:  __dirname+"/client/core.js",
-    mountPoint : "/bundles/core.js",
+    mountPoint : "/core.js",
     cache: config.bundlesSettings.cache || false,
     watch: config.bundlesSettings.watch || true
-    //prepend: "var __models = {};"
-  });
+  };
+
+  bundles.unshift(core_bundle);
 
   //Set up all defined bundles
   bundles.forEach(function(bundle){
     if(!bundle.load) return;
     
     //Add check for required fields and throw nice errors
+    var required = {
+      mountPoint:true,
+      entryPoint:true
+    };
+    Object.keys(required).forEach(function(field){
+      if(!bundle[field]){throw new Error("Bundle with name "+bundle.name+" requires field "+field+" to be set");}
+    });
 
     //Creating the bundler
+    var mountPrefix = config.bundlesPrefix || "/bundles";
+    bundleMountPoint = mountPrefix+bundle.mountPoint;
+    if(bundle.name == "core"){
+      pluginsMap.corelibs.unshift(bundleMountPoint);
+    }
     var bundler = browserify({
-      mount: bundle.mountPoint || bundle._filename, 
+      mount: bundleMountPoint, 
       watch: bundle.watch || config.bundlesSettings.watch,
       cache: bundle.cache || config.bundlesSettings.cache
     });
 
     var bundleParse = {};
     _.extend(bundleParse, config.bundleParse || {});
-    // Deep extending bundles to ovverride local options
+    
+    // Deep extending bundles to override part of options
     if(bundle.bundleParse){
       Object.keys(bundle.bundleParse).forEach(function(key){
         localBundleParse = bundle.bundleParse[key];
@@ -59,7 +73,12 @@ module.exports = function(app, config){
         });
       }
       else{
-        bundler.register(key, parser.parse);
+        if(typeof parser.parse != "function"){
+          throw new Error("bundleParse for type "+key+" needs parse to be function with arguments (body, filepath)")
+        }
+        else{
+          bundler.register(key, parser.parse);
+        }
       }
     });
 
