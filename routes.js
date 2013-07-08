@@ -21,16 +21,15 @@ var methods = {
 
 var coreLibs = [
   "/socket.io/socket.io.js",
-  "http://code.jquery.com/jquery-1.9.1.min.js",
-  "http://code.jquery.com/jquery-migrate-1.1.1.min.js",
-  "/core-libs/underscore.js",
-  "/core-libs/backbone.js",
-  "/core-libs/less.js",
-  "/bundles/core.js"
+  "http://code.jquery.com/jquery-1.9.1.min.js", //?? TODO - try loading them from npm
+  "http://code.jquery.com/jquery-migrate-1.1.1.min.js", //?? TODO - try loading them from npm
+  "/core-libs/underscore.js", //?? TODO - try loading them from npm
+  "/core-libs/backbone.js", //?? TODO - try loading them from npm
 ];
 
 module.exports = function(app, config, pluginsMap){
 
+  //Corescripts plugin-point
   pluginsMap.corescripts.forEach(function(corescript){
     coreLibs.push(corescript);
   });
@@ -40,7 +39,7 @@ module.exports = function(app, config, pluginsMap){
 
 
   //Loading all defined in pages folder page definitons
-  var pages = helpers.loadDirAsArray(config.routesFolder);
+  var pages = helpers.loadDirAsArray(config.routers);
   
   //Setting up server to serve each of them
   pages.forEach(function(page){
