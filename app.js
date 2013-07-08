@@ -69,7 +69,7 @@ module.exports = function(express, raw_config, pluginsMap, callback){
       //Additional express configuratopns and middlewares
       if(pluginsMap.configure.length > 0){
         pluginsMap.configure.forEach(function(setup){
-          setup(express, app);
+          setup(express, app, config);
         });
       }
       

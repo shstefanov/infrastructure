@@ -21,7 +21,7 @@
     "coffee-script":"latest",
     "colors": "latest",
     
-    "browserify":"latest"
+    "browserify":"1.17.3"
 
   },
   "devDependencies": {

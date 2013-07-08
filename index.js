@@ -12,8 +12,9 @@ var helpers = require("./helpers");
 var configurations = [];
 
 pluginsMap = {
-  config: [],
-  configure: []
+  config: [], //Work on config object via async waterfall
+  configure: [], // functions runned on app.configure stage
+  corescripts: [] //corescripts that will be loaded by default
 }
 
 module.exports = {

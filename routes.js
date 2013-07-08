@@ -20,18 +20,20 @@ var methods = {
 };
 
 var coreLibs = [
-  "/i18next/i18next.js",
   "/socket.io/socket.io.js",
   "http://code.jquery.com/jquery-1.9.1.min.js",
   "http://code.jquery.com/jquery-migrate-1.1.1.min.js",
-  "/core-libs/jade.js",
   "/core-libs/underscore.js",
   "/core-libs/backbone.js",
   "/core-libs/less.js",
   "/bundles/core.js"
 ];
 
-module.exports = function(app, config){
+module.exports = function(app, config, pluginsMap){
+
+  pluginsMap.corescripts.forEach(function(corescript){
+    coreLibs.push(corescript);
+  });
 
   head_template = jade.compile(raw_head_template);
 
