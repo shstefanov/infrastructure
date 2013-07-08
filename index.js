@@ -57,13 +57,13 @@ module.exports = {
       //Adding the pages
       if(config.routes){
         var routesInitializer = require("./routes");
-        routesInitializer(app, config);
+        routesInitializer(app, config, pluginsMap);
       }
 
       //Setting up bundles
       if(config.bundles && fs.existsSync(config.bundles)){
         var bundlesInitializer = require("./bundles");
-        bundlesInitializer(app, config);
+        bundlesInitializer(app, config, pluginsMap);
       }
 
       if(config.services && fs.existsSync(config.services)){
