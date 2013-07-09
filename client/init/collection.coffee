@@ -1,5 +1,5 @@
 
-module.exports = Backbone.Collection.extend
+module.exports = 
 
   initialize: ->
 

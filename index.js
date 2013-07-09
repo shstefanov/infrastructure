@@ -59,7 +59,7 @@ module.exports = {
       app.pluginsMap = pluginsMap;
 
       //Initializing some features and extending the app
-      var libsinItializer = require("./libs");
+      var libsinItializer = require("./lib");
       libsinItializer(app);
 
       //Adding the pages

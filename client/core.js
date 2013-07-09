@@ -96,7 +96,7 @@ App.build = function(router){
 
 App.View = require("./init/view.coffee");
 App.Model = require("./init/model.coffee");
-App.Collection = require("./init/collection.coffee");
+App.Collection = Backbone.Collection.extend require("./init/collection.coffee");
 App.Router = require("./init/router.coffee");
 
 App.View.merge = function(protoProps, staticProps) {

@@ -76,11 +76,22 @@ module.exports = function(app, config, pluginsMap){
     }
     var method = methods[router.method];
     if(!method){
-      throw new Error('Http method '+filepath+' not allowed'); 
+      throw new Error('Http method '+method+' not allowed'); 
     }
+    router.method = method;
+    router.filepath = filepath;
 
     //Creating bundle for the router
     pluginsMap.bundle.push(bundleObject);
+    if(!router.javascripts){router.javascript = [];}
+
+    //Adding self to router's javascripts
+    router.javascripts.push(bundleObject.mountPoint);
+
+
+    var Router = app.Router.extend(router);
+   
+    var handler =  new Router(app);
 
 
 
