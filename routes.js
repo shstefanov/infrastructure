@@ -37,16 +37,43 @@ module.exports = function(app, config, pluginsMap){
   var routers = helpers.loadDirAsObject(config.routers);
   var salam = [];
   Object.keys(routers).forEach(function(key){
-   
     var router = routers[key];
-    var method = methods[router.method];
-    if(!method){
-      throw new Error('Http method '+method+' not allowed'); 
-    }
-    router.method = method;
-    router.javascripts = coreLibs
 
-    var handler =  new app.Router(router, app);
+
+    //Creating bundle for this route
+    var filepath = path.normalize(app.config.routers+"/"+router._filename);
+    var name = router._filename.split(".").shift();
+    var mountName = name+".js";
+    var stat = fs.statSync(filepath);
+    var entryPoint = filepath+router._filename;
+    if(stat.isDirectory()){
+      if(fs.existsSync(filepath+"/index.js")){
+        filepath+="/index.js"
+      }
+      else if(fs.existsSync(filepath+"/index.coffee")){
+        filepath+="/index.coffee"
+      }
+      else{
+        throw new Error("Can't find bundle path: "+filepath)
+      } 
+    }
+   
+    var method = methods[router.method];
+    if(!method){throw new Error('Http method '+method+' not allowed'); }
+
+    mountPoint = "/routers/"+mountName
+    app.pluginsMap.bundle.push
+      load:true
+      mountPoint: mountPoint
+      entryPoint: filepath
+      cache:app.config.bundlesSettings.cache
+      watch:app.config.bundlesSettings.watch
+    
+    router.method = method;
+    addedJavascripts = _.union(coreLibs, [mountPoint]);
+    router.javascripts = _.union(addedJavascripts, router.javascripts || []);
+
+    var handler =  new app.Router(router, app, true);
 
   });
 
