@@ -15,7 +15,8 @@ pluginsMap = {
   config: [], //Work on config object via async waterfall
   configure: [], // functions runned on app.configure stage
   corelibs: [], //corescripts that will be loaded by default
-  bundle: []  //Additional bundles that must be bundled
+  bundle: [],  //Additional bundles that must be bundled
+  assetRenderers:{} //Object with functions that take arrays
 }
 
 module.exports = {
@@ -31,6 +32,12 @@ module.exports = {
           if(Array.isArray(plugin[key])){
             plugin[key].forEach(function(handler){
               pluginsMap[key].push(handler);
+            });
+          }
+          else if(key == "assetRenderers"){
+            Object.keys(plugin[key]).forEach(function(assetRenderer){
+              if(typeof plugin[key][assetRenderer] == "function")
+                pluginsMap.assetRenderers[assetRenderer] = plugin[key][assetRenderer]
             });
           }
           else{ pluginsMap[key].push(plugin[key]); }

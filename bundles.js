@@ -38,7 +38,7 @@ module.exports = function(app, config, pluginsMap){
     var mountPrefix = config.bundlesPrefix || "/bundles";
     bundleMountPoint = mountPrefix+bundle.mountPoint;
     if(bundle.name == "core"){
-      pluginsMap.corelibs.unshift(bundleMountPoint);
+      pluginsMap.corelibs.push(bundleMountPoint);
     }
     var bundler = browserify({
       mount: bundleMountPoint, 

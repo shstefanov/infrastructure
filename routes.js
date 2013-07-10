@@ -27,74 +27,26 @@ var coreLibs = [
 ];
 
 module.exports = function(app, config, pluginsMap){
-  console.log("here ---- here??");
+  
   //Corescripts plugin-point
   pluginsMap.corelibs.forEach(function(corescript){
     coreLibs.push(corescript);
   });
 
-  // {
-  //   name: "index"
-  //   load:true
-  //   entryPoint: __dirname+"/client/index.coffee"
-  //   mountPoint: "/index.js"
-  // }
-
-
   //Loading all defined in pages folder page definitons
   var routers = helpers.loadDirAsObject(config.routers);
-
+  var salam = [];
   Object.keys(routers).forEach(function(key){
-    
+   
     var router = routers[key];
-    
-    var name = router._filename.split(".").shift();
-    var filename = name+".js";
-    var filepath = path.normalize(config.routers+"/"+router._filename);
-    var stat = fs.statSync(filepath);
-    if(stat.isDirectory()){
-       if(fs.existsSync(filepath+"/index.js")){filepath+="/index.js"}
-       else if(fs.existsSync(filepath+"/index.coffee")){filepath+="/index.coffee"}
-       else{throw new Error("Can't find bundle path: "+filepath);}
-    }
-    bundleObject = {
-      name: name,
-      load:true,
-      mountPoint: "/routers/"+filename,
-      entryPoint: filepath,
-      cache:config.bundlesSettings.cache,
-      watch:config.bundlesSettings.watch
-    };
-    
-    //Check if routes are present
-    if(typeof router.routes != "object" || Object.keys(router.routes).length==0){
-      throw new Error('Router '+filepath+' don\'t have any routes');
-    }
-
-    if(typeof router.views != "object" || Object.keys(router.views).length==0){
-      throw new Error('Router '+filepath+' don\'t have any views');
-    }
     var method = methods[router.method];
     if(!method){
       throw new Error('Http method '+method+' not allowed'); 
     }
     router.method = method;
-    router.filepath = filepath;
+    router.javascripts = coreLibs
 
-    //Creating bundle for the router
-    pluginsMap.bundle.push(bundleObject);
-    if(!router.javascripts){router.javascript = [];}
-
-    //Adding self to router's javascripts
-    router.javascripts.push(bundleObject.mountPoint);
-
-
-    var Router = app.Router.extend(router);
-   
-    var handler =  new Router(app);
-
-
-
+    var handler =  new app.Router(router, app);
 
   });
 
