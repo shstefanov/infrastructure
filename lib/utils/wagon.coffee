@@ -1,90 +1,100 @@
 _ = require "underscore"
 
 class Wagon
-  store = {}
-  constructor:(@cargo)->
-
-  methods:
-    first: (data)->
-    last: (data)->
+  cargo = {}
+  
+  constructor:(options)->
+    if options
+      @defaultType = options.defaultType || []
+      @cargo = options.cargo || {}
+    else
+      @defaultType = []
+      @cargo = {} 
 
   push: (type, initial)->
-    store = @store
+    cargo = @cargo
     if typeof type == "string"
-      @store[type] = (initial || []) if !@store[type]
-      return
+      @cargo[type] = (initial || @defaultType || []) if !@cargo[type]
+      res =
         first: (data)=>
           data = [data] if !Array.isArray(data)
-          store[type] = data.concat wagon.store[type]
+          cargo[type] = data.concat wagon.cargo[type]
           return @
         last: (data)=>
           data = [data] if !Array.isArray(data)
-          store[type] = store[type].concat data
+          cargo[type] = cargo[type].concat data
           return @
         at: (num, data)=>
-          rest = @store.splice(num)
+          rest = @cargo.splice(num)
           data = [data] if !Array.isArray(data)
-          store[type].concat(data.concat(rest))
+          cargo[type].concat(data.concat(rest))
           return @
+      return res
     else if typeof type == "object"
-      for key, val of type
-        if Array.isArray(val) && Array.isArray(store[key])
-          store[key].push(v) for v in val
-        else if typeof val == "string" && store[key] == "string"
-          store[key]+=val
-        else if typeof store[key] == "object" && typeof val == "object"
-          _.extend(store[key], val)
+      Object.keys(type).forEach (key)=>
+        val = type[key]
+        if(!cargo[key])
+          cargo[key] = [val]
+          return
+        if Array.isArray(val) && Array.isArray(cargo[key])
+          cargo[key].push(v) for v in val
+        else if typeof val == "string" && cargo[key] == "string"
+          cargo[key]+=val
+        else if typeof cargo[key] == "object" && typeof val == "object"
+          _.extend(cargo[key], val)
         else
-          store[key].push(val)
-        return @
+          cargo[key].push(val)
+      return @
 
   pull: (type)->
-    store = @store
+    cargo = @cargo
+    wagon = @
     if typeof type == "string"
-      if typeof Array.isArray(store[type])
-        return
+      if typeof Array.isArray(cargo[type])
+        res = 
           first: (num)->
-            return store[type].splice(0, num);
+            return cargo[type].splice(0, num);
           last: (data)->
-            return store[type].splice(-num);
+            return cargo[type].splice(-num);
           at: (num, len)->
-            return store[type].splice(num, len);
+            if typeof len == "undefined"
+              return cargo[type].splice(num, 1)[0];
+            else
+              return cargo[type].splice(num, len);
           all: ->
-            result = store[type]
-            delete store[type]
+            result = cargo[type]
+            delete cargo[type]
           where: (comparator)->
             #If comparator is function, run all members and return these with positive result
             if typeof comparator == "function"
-              if Array.isArray(store[type])
+              if Array.isArray(cargo[type])
                 results = []
                 idx = 0
-                for member of store[type]
-                  results.push(store[type].splice(idx, ++idx)) if comparator(member)
+                for member of cargo[type]
+                  results.push(cargo[type].splice(idx, ++idx)) if comparator(member)
                 return results
-              if typeof store[type] == "object"
+              if typeof cargo[type] == "object"
                 results = {}
-                for key, value of store[type]
-                  if comparator(value)
+                for key, value of cargo[type]
+                  if comparator(value, key)
                     results[key] = value
-                    delete store[type][key]
+                    delete cargo[type][key]
                 return results
-
-            if typeof comparator == "object"
-
-
-            # If resoutce is array - check for value and return it
-            else if Array.isArray(store[type])
-              #If comparator is value, 
-
-
-      else if typeof store[type] == "object"
-        result = store[type]
-        delete store[type]
+            else if typeof comparator == "object" && Array.isArray(cargo[type])
+              results = []
+              idx=0
+              #May crash due to array change while doing loop !!!
+              for member of cargo[type]
+                results.push(wagon.pull(type).at(idx))
+              return results
+            else
+              throw new Error("Wagon pull->where unsupported case")
+        return res
+      else if typeof cargo[type] == "object"
+        result = cargo[type]
+        delete cargo[type]
         return result
       else
         return 
-
-
-    else if
 
 module.exports = Wagon
