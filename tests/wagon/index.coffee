@@ -3,7 +3,6 @@ module.exports = (suite, context)->
   {Wagon} = context
   wagon = null
 
-
   suite.about "Creating wagon", (next)->
     
     wagon = new Wagon()
@@ -39,8 +38,14 @@ module.exports = (suite, context)->
     suite.test("More complex data horse present in cargo", wagon.cargo.horse[1], "lowel")
     suite.test("More complex data eagle present in cargo", wagon.cargo.eagle[1], "sharp")
     
+    wagon.push horse:["1","2","3","4","5"]
+    suite.test "Horse must have 7 elements in it's store", wagon.cargo.horse.length, 7
+
+    elements = wagon.pull("horse").last(3)
+    suite.test "elements must equal 3", elements.length, 3
+    suite.test "store 'horse' must have 4 elements", wagon.cargo.horse.length, 4
+    
     next()
 
 
-
-
+  # suite.about "Pull last horse element"

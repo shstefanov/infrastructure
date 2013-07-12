@@ -54,7 +54,7 @@ class Wagon
         res = 
           first: (num)->
             return cargo[type].splice(0, num);
-          last: (data)->
+          last: (num)->
             return cargo[type].splice(-num);
           at: (num, len)->
             if typeof len == "undefined"
