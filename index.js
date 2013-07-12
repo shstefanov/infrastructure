@@ -115,14 +115,13 @@ module.exports = {
         var cb = function(err){
           callback(err, app);
         }
+       
         //Infrastructure tests
-        if(app.options.test_mode == "development"){
-          var testInitializer = require("./tests_init").core;
-          testInitializer(app, cb);
+        if(app.options.test_mode == "framework"){
+          app.testCore(app, cb);
         }
-        else if(config.test == true){
-          var testInitializer = require("./tests_init").core;
-          testInitializer(app, cb);
+        else if(config.test_mode == "application"){
+          app.testApp(app, cb);
         }
         else{
           callback(null, app);
