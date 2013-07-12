@@ -11,7 +11,7 @@ var internal = {
   session:true
 };
 
-module.exports = function(err, socket, session){
+module.exports = function(err, socket, session, cb){
 
   var app = this;
   session.reload(function(){
