@@ -63,6 +63,7 @@ module.exports = {
     appInitializer(express, config, pluginsMap, function(app){
 
       app.config = config;
+      app.options = require("./options.js");
       app.pluginsMap = pluginsMap;
 
       //Initializing some features and extending the app
@@ -108,12 +109,26 @@ module.exports = {
 
         //Initializing and setting every incoming connection
         socketServicesInitializer = require("./socket").connect;
-        sio.on("connection", socketServicesInitializer(app, io, config));
+        sio.on("connection", socketServicesInitializer(app, io, config, function(){
+        }));
 
-        callback(null, app);
+        var cb = function(err){
+          callback(err, app);
+        }
+        //Infrastructure tests
+        if(app.options.test_mode == "development"){
+          var testInitializer = require("./tests_init").core;
+          testInitializer(app, cb);
+        }
+        else if(config.test == true){
+          var testInitializer = require("./tests_init").core;
+          testInitializer(app, cb);
+        }
+        else{
+          callback(null, app);
+        }
+
       });
     });
-    
   }
-
 };
