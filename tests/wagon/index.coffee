@@ -1,7 +1,11 @@
 
-module.exports = (suite, context)->
-  {Wagon} = context
+Wagon = require "../../lib/utils/wagon"
+
+module.exports = (suite)->
+ 
   wagon = null
+
+  suite.description "Testing wagon class"
 
   suite.about "Creating wagon", (next)->
     

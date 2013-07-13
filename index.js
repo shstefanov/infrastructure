@@ -58,6 +58,15 @@ module.exports = {
 
   run: function(config, extensions, callback){
   
+    //Check if test is called
+    if(process.argv[2] == "test"){
+      var tester = require("./test.js");
+      var defaultTests = config.tests? config.tests : process.cwd()+"/tests"; 
+      var target = process.argv[3]? (process.cwd()+"/"+process.argv[3]) : defaultTests;
+      tester(target , config.testOptions);
+      return;
+    }
+
     //Initializing and setting up express
     var appInitializer = require("./app");
     appInitializer(express, config, pluginsMap, function(app){
