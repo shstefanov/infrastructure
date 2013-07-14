@@ -11,45 +11,55 @@ module.exports = (suite)->
     
     wagon = new Wagon()
     
-    suite.test("Store present", typeof wagon.cargo, "object")
+    suite.test "Store present", typeof wagon.cargo, "object"
     
     next()
  
 
   suite.about "Creating wagon with options", (next)->
     
-    wagon = new Wagon({defaultType:{}, cargo:{something:5}})
+    wagon = new Wagon defaultType:{}, cargo: something:5
     
-    suite.test("Store options - defaultType", typeof {}, typeof wagon.defaultType)
-    suite.test("Store options - cargo", typeof {something:5}, typeof wagon.cargo)
-    suite.test("Store options - cargo content", 5, wagon.cargo.something)
+    suite.test "Store options - defaultType", typeof {}, typeof wagon.defaultType
+    suite.test "Store options - cargo", typeof something:5, typeof wagon.cargo
+    suite.test "Store options - cargo content", 5, wagon.cargo.something
     
     next()
 
 
   suite.about "Pushing some values in wagon", (next)->
     
-    wagon = new Wagon({defaultType:[]})
+    wagon = new Wagon defaultType:[]
     
-    wagon.push("animals").last({fish:"aaalll"})
-    suite.test("Data present in cargo", wagon.cargo.animals[0].fish, "aaalll")
+    wagon.push("animals").last fish:"aaalll"
+    suite.test "Data present in cargo", wagon.cargo.animals[0].fish, "aaalll"
     
-    wagon.push({horse:"whaa", eagle:"high"})
-    suite.test("Complex data horse present in cargo", wagon.cargo.horse[0], "whaa")
-    suite.test("Complex data eagle present in cargo", wagon.cargo.eagle[0], "high")
+    wagon.push horse:"whaa", eagle:"high"
+    suite.test "Complex data horse present in cargo", wagon.cargo.horse[0], "whaa"
+    suite.test "Complex data eagle present in cargo", wagon.cargo.eagle[0], "high"
     
-    wagon.push({horse:"lowel", eagle:"sharp"})
-    suite.test("More complex data horse present in cargo", wagon.cargo.horse[1], "lowel")
-    suite.test("More complex data eagle present in cargo", wagon.cargo.eagle[1], "sharp")
+    wagon.push  horse:"lowel", eagle:"sharp"
+    suite.test "More complex data horse present in cargo", wagon.cargo.horse[1], "lowel"
+    suite.test "More complex data eagle present in cargo", wagon.cargo.eagle[1], "sharp"
     
     wagon.push horse:["1","2","3","4","5"]
     suite.test "Horse must have 7 elements in it's store", wagon.cargo.horse.length, 7
 
-    elements = wagon.pull("horse").last(3)
+    elements = wagon.pull("horse").last 3
     suite.test "elements must equal 3", elements.length, 3
     suite.test "store 'horse' must have 4 elements", wagon.cargo.horse.length, 4
-    
+
     next()
 
 
-  # suite.about "Pull last horse element"
+  suite.about "Pull data from wagon", (next)->
+    
+    eagles = wagon.pull("eagle").all()
+    suite.test "Eagels must be 2", eagles.length, 2
+    suite.test "Eagles in store must not exist", wagon.cargo.eagle, undefined
+    
+    next()
+
+  suite.about " ", (next)->
+    
+
