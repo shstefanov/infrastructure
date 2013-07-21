@@ -8,58 +8,63 @@ module.exports = (suite)->
   suite.description "Testing wagon class"
 
   suite.about "Creating wagon", (next)->
-    
     wagon = new Wagon()
-    
+    suite.test "Wagon present", typeof wagon, "object"
     suite.test "Store present", typeof wagon.cargo, "object"
-    
     next()
  
+  suite.about "Creating and testing new wagon data type - array", (next)->
+    
+    wagon.create("horses", "array")
+    suite.isArray("horses in cargo is array", wagon.get("horses").all())
+    suite.isEqual("horses in cargo is empty", wagon.get("horses").all(), [])
+    
+    #Push
+    wagon.push("horses").first("henry")
+    suite.isEqual "horses in cargo is equal to ['henry']"
+    , wagon.get("horses").all()
+    , ["henry"]
 
-  suite.about "Creating wagon with options", (next)->
-    
-    wagon = new Wagon defaultType:{}, cargo: something:5
-    
-    suite.test "Store options - defaultType", typeof {}, typeof wagon.defaultType
-    suite.test "Store options - cargo", typeof something:5, typeof wagon.cargo
-    suite.test "Store options - cargo content", 5, wagon.cargo.something
+    wagon.push("horses").first(['lowel', 'ken'])
+    suite.isEqual "horses in cargo is equal to ['lowel', 'ken', 'henry']"
+    , wagon.get("horses").all()
+    , ['lowel', 'ken', 'henry']
+
+    wagon.push("horses").last(['ben', 'ten'])
+    suite.isEqual "horses in cargo is equal to ['lowel', 'ken', 'henry', 'ben', 'ten']"
+    , wagon.get("horses").all()
+    , ['lowel', 'ken', 'henry', 'ben', 'ten']
+
+    wagon.push("horses").at(2, ['john', 'hank'])
+    suite.isEqual "horses in cargo is equal to ['lowel', 'ken','john', 'hank', 'henry', 'ben', 'ten']"
+    , wagon.get("horses").all()
+    , ['lowel', 'ken','john', 'hank', 'henry', 'ben', 'ten']
+
+    #Get
+    result = wagon.get("horses").all()
+    suite.isEqual "Fetched data should equals stored data"
+    , result
+    , wagon.get("horses").all()
+
+    suite.isNotSame "Fetched data should not be same object as stored data"
+    , result
+    , wagon.get("horses").all()
+
+    wagon.create "eagles", "array"
+    wagon.push("eagles").first([{a:1 , b:10 },{a:1 , b:20 },{a:2 , b:10 },{a:2 , b:20 },{a:3 , b:30 }])
+    result = wagon.get("eagles").where({a:2})
+    suite.isEqual "should fetch objects by pattern", result, [{a:2 , b:10 },{a:2 , b:20 }]
+    for i, v of result
+      suite.isEqual("should be the same value", v, wagon.get("eagles").at(parseInt(i)+2))
+      suite.isNotSame("should be copy of objects", v, wagon.get("eagles").at(parseInt(i)+2))
     
     next()
-
 
   suite.about "Pushing some values in wagon", (next)->
-    
-    wagon = new Wagon defaultType:[]
-    
-    wagon.push("animals").last fish:"aaalll"
-    suite.test "Data present in cargo", wagon.cargo.animals[0].fish, "aaalll"
-    
-    wagon.push horse:"whaa", eagle:"high"
-    suite.test "Complex data horse present in cargo", wagon.cargo.horse[0], "whaa"
-    suite.test "Complex data eagle present in cargo", wagon.cargo.eagle[0], "high"
-    
-    wagon.push  horse:"lowel", eagle:"sharp"
-    suite.test "More complex data horse present in cargo", wagon.cargo.horse[1], "lowel"
-    suite.test "More complex data eagle present in cargo", wagon.cargo.eagle[1], "sharp"
-    
-    wagon.push horse:["1","2","3","4","5"]
-    suite.test "Horse must have 7 elements in it's store", wagon.cargo.horse.length, 7
-
-    elements = wagon.pull("horse").last 3
-    suite.test "elements must equal 3", elements.length, 3
-    suite.test "store 'horse' must have 4 elements", wagon.cargo.horse.length, 4
-
     next()
-
 
   suite.about "Pull data from wagon", (next)->
-    
-    eagles = wagon.pull("eagle").all()
-    suite.test "Eagels must be 2", eagles.length, 2
-    suite.test "Eagles in store must not exist", wagon.cargo.eagle, undefined
-    
     next()
 
-  suite.about " ", (next)->
     
 
