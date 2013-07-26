@@ -57,6 +57,21 @@ module.exports = (suite)->
     for i, v of result
       suite.isEqual("should be the same value", v, wagon.get("eagles").at(parseInt(i)+2))
       suite.isNotSame("should be copy of objects", v, wagon.get("eagles").at(parseInt(i)+2))
+
+    result = wagon.get("eagles").where({a:1,b:20})
+    suite.isEqual "should fetch objects by pattern", result, [{a:1 , b:20 }]
+
+    result = wagon.get("eagles").where([{a:1}, {b:10}])
+    test_result = [{a:1 , b:10 },{a:1 , b:20 },{a:2 , b:10 }]
+    suite.isEqual "should fetch objects by pattern", result, test_result
+
+    result = wagon.pull("eagles").where([{a:1}, {b:10}])
+    test_result = [{a:1 , b:10 },{a:1 , b:20 },{a:2 , b:10 }]
+    test_rest = [{a:2 , b:20 },{a:3 , b:30 }]
+    suite.isEqual "should pull objects by pattern", result, test_result
+    suite.isEqual "rest in store should be reduced as"
+    ,wagon.get("eagles").all(), test_rest
+
     
     next()
 

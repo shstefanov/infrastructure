@@ -1,7 +1,12 @@
 _ = require "underscore"
 
-getType = (type)->
-  return typeof type
+checkOne = (data, pattern)->
+  pass = true
+  for k, v of pattern
+    if !_.isEqual(data[k],v)
+      pass = false
+      break
+   return _.clone(data) if pass
 
 defaultTypes = 
   
@@ -152,16 +157,23 @@ defaultTypes =
         where: (obj)->
           result = []
           rest = []
-          for val of store
-            current_status = true
-            for k, v of obj
-              if !_.has(val, k) || !_.isEqual(val[k],v)
-                current_status = false
-                break
-            if current_status
-              result.push(val)
+          
+          for index, val of store
+            if Array.isArray(obj)
+              oneofthem = false
+              for i, p of obj
+                res = checkOne val, p
+                if typeof res != "undefined"
+                  result.push res
+                  oneofthem = true
+                  break
+              rest.push val if !oneofthem
             else
-              rest.push(val)
+              res = checkOne val, obj
+              if typeof res != "undefined"
+                result.push res
+              else
+                rest.push val
           setter rest
           result
     get: (store)->
@@ -177,15 +189,19 @@ defaultTypes =
               result.push _.clone(v)
             result
         where: (obj)->
-          console.log "get where", obj
           result = []
+          
           for index, val of store
-            console.log val
-            current_status = true
-            for k, v of obj
-              if _.isEqual(val[k],v)
-                result.push(_.clone(val))
-                break
+            if Array.isArray(obj)
+              for i, p of obj
+                res = checkOne val, p
+                if typeof res != "undefined"
+                  result.push res
+                  break
+            else
+              res = checkOne val, obj
+              if typeof res != "undefined"
+                result.push res
           result
 
   "object": 
