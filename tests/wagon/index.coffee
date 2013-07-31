@@ -13,7 +13,7 @@ module.exports = (suite)->
     suite.test "Store present", typeof wagon.cargo, "object"
     next()
  
-  suite.about "Creating and testing new wagon data type - array", (next)->
+  suite.about "Creating and testing wagon data type - array", (next)->
     
     wagon.create("horses", "array")
     suite.isArray("horses in cargo is array", wagon.get("horses").all())
@@ -71,15 +71,47 @@ module.exports = (suite)->
     suite.isEqual "should pull objects by pattern", result, test_result
     suite.isEqual "rest in store should be reduced as"
     ,wagon.get("eagles").all(), test_rest
-
     
     next()
 
-  suite.about "Pushing some values in wagon", (next)->
-    next()
-
-  suite.about "Pull data from wagon", (next)->
-    next()
-
+  suite.about "Creating and testing wagon data type - string", (next)->
     
+    wagon.create("text", "string")
+    suite.test "Created data type in store should be empty string", wagon.get("text").all(), ""
 
+    wagon.push("text").first("12345")
+    suite.test "push first (initial)", wagon.get("text").all(), "12345"
+
+    wagon.push("text").first("000_001")
+    suite.test "push first"
+    , wagon.get("text").all(), "000_00112345"
+
+    wagon.push("text").last("222_333")
+    suite.test "push last"
+    , wagon.get("text").all(), "000_00112345222_333"
+
+    wagon.push("text").after("_0", ":::")
+    suite.test "push after"
+    , wagon.get("text").all(), "000_0:::0112345222_333"
+
+    wagon.push("text").afterAll("_", ";")
+    suite.test "push afterAll"
+    , wagon.get("text").all(), "000_;0:::0112345222_;333"
+
+    wagon.push("text").before(";0", "(())")
+    suite.test "push before"
+    , wagon.get("text").all(), "000_(());0:::0112345222_;333"
+
+    wagon.push("text").beforeAll(";", "--->")
+    suite.test "push beforeAll"
+    , wagon.get("text").all(), "000_(())--->;0:::0112345222_--->;333"
+
+    wagon.push("text").replace("0", "N>")
+    suite.test "push replace"
+    , wagon.get("text").all(), "N>00_(())--->;0:::0112345222_--->;333"
+
+    wagon.push("text").replaceAll("---", "GGG")
+    suite.test "push replaceAll"
+    , wagon.get("text").all(), "N>00_(())GGG>;0:::0112345222_GGG>;333"
+
+    next()

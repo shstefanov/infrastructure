@@ -8,6 +8,21 @@ checkOne = (data, pattern)->
       break
    return _.clone(data) if pass
 
+removeReOption = (option, options)->
+  opts = options || ""
+  if opts.indexOf(option) > -1
+    return opts.replace(option, "")
+  else
+    return opts
+
+addReOption = (option, options)->
+  opts = options || ""
+  if opts.indexOf(option) == -1
+    option+opts
+  else
+    return opts
+
+
 defaultTypes = 
   
   "string":
@@ -23,16 +38,22 @@ defaultTypes =
           self
         after: (pattern, val, re_opt)->
           setter store.replace(new RegExp(pattern, removeReOption("g", re_opt)), pattern+val)
+          return self
         afterAll: (pattern, val, re_options)-> 
           setter store.replace(new RegExp(pattern, addReOption("g", re_options)), pattern+val)
+          return self
         before: (pattern, val, re_options)-> 
           setter store.replace(new RegExp(pattern, removeReOption("g", re_options)), val+pattern)
+          return self
         beforeAll: (pattern, val, re_options)-> 
-          setter store.replace(new RegExp(pattern, removeReOption("g", re_options)), val+pattern)
+          setter store.replace(new RegExp(pattern, addReOption("g", re_options)), val+pattern)
+          return self
         replace: (pattern, val, re_options)->
           setter store.replace(new RegExp(pattern, removeReOption("g", re_options)), val)
+          return self
         replaceAll: (pattern, val, re_options)->
-          setter store.replace(new RegExp(pattern, removeReOption("g", re_options)), val)
+          setter store.replace(new RegExp(pattern, addReOption("g", re_options)), val)
+          return self
       return res
     pull: (store, setter)->
       self = @
@@ -322,24 +343,23 @@ class Wagon
         cargo[name] = @localTypes[type].initValue
       else
         throw new Error("Can't create non existing type")
-      return @
     else
       throw new Error("Can't override existing type")
   
   push: (name)->
-    if cargo[name]
+    if Object.prototype.hasOwnProperty.call cargo, name
       handler = getTypeDefinition.call @, name, "push"
       return handler.call @, cargo[name], (store_data)=>
         cargo[name] = store_data
       
   pull: (name)->
-    if cargo[name]
+    if Object.prototype.hasOwnProperty.call cargo, name
       handler = getTypeDefinition.call @, name, "pull"
       return handler.call @, cargo[name], (store_data)=>
         cargo[name] = store_data
   
   get: (name)->
-    if cargo[name]
+    if Object.prototype.hasOwnProperty.call cargo, name
       handler = getTypeDefinition.call @, name, "get"
       return handler.call @, cargo[name]
   
