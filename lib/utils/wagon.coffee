@@ -1,5 +1,7 @@
 _ = require "underscore"
 
+# to escape - . \ + * ? [ ^ ] $ ( ) { } = ! < > | : - ' "
+
 checkOne = (data, pattern)->
   pass = true
   for k, v of pattern
