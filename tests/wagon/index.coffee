@@ -114,4 +114,50 @@ module.exports = (suite)->
     suite.test "push replaceAll"
     , wagon.get("text").all(), "N>00_(())GGG>;0:::0112345222_GGG>;333"
 
+    res = wagon.pull("text").before("((")
+    suite.test "pull before", res, "N>00_"
+
+    res = wagon.pull("text").beforeWith(")G")
+    suite.test "pull beforeWith", res, "(())G"
+
+    res = wagon.pull("text").after("G>;3")
+    suite.test "pull after", res, "33"
+
+    res = wagon.pull("text").afterWith("_G")
+    suite.test "pull afterWith", res, "_GGG>;3"
+    
+    res = wagon.pull("text").between(":0", "45")
+    suite.test "pull between", res, "1123"
+
+    res = wagon.pull("text").betweenWith(";0", ":0")
+    suite.test "pull betweenWith", res, ";0:::0"
+    
+    res = wagon.pull("text").all()
+    suite.test "pull all", res, "GG>45222"
+
+    suite.isEqual "'text' store must be empty string", wagon.get("text").all(), ""
+
+    wagon.push("text").first "N>00_(())GGG>;0:::0112345222_GGG>;333"
+    suite.test "wagon must be full string", wagon.get("text").all(), "N>00_(())GGG>;0:::0112345222_GGG>;333"
+
+    res = wagon.get("text").before("((")
+    suite.test "get before", res, "N>00_"
+
+    res = wagon.get("text").beforeWith(")G")
+    suite.test "get beforeWith", res, "N>00_(())G"
+
+    res = wagon.get("text").after("G>;3")
+    suite.test "get after", res, "33"
+
+    res = wagon.get("text").afterWith("_G")
+    suite.test "get afterWith", res, "_GGG>;333"
+    
+    res = wagon.get("text").between(":0", "45")
+    suite.test "get between", res, "1123"
+
+    res = wagon.get("text").betweenWith(";0", ":0")
+    suite.test "get betweenWith", res, ";0:::0"
+
+    suite.isEqual "text store must be empty string", wagon.get("text").all(), "N>00_(())GGG>;0:::0112345222_GGG>;333"
+
     next()
