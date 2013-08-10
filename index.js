@@ -121,20 +121,6 @@ module.exports = {
         sio.on("connection", socketServicesInitializer(app, io, config, function(){
         }));
 
-        var cb = function(err){
-          callback(err, app);
-        }
-       
-        //Infrastructure tests
-        if(app.options.test_mode == "framework"){
-          app.testCore(app, cb);
-        }
-        else if(config.test_mode == "application"){
-          app.testApp(app, cb);
-        }
-        else{
-          callback(null, app);
-        }
 
       });
     });
