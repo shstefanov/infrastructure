@@ -1,5 +1,7 @@
 _ = require "underscore"
 
+# to escape - . \ + * ? [ ^ ] $ ( ) { } = ! < > | : - ' "
+
 checkOne = (data, pattern)->
   pass = true
   for k, v of pattern
@@ -7,6 +9,21 @@ checkOne = (data, pattern)->
       pass = false
       break
    return _.clone(data) if pass
+
+removeReOption = (option, options)->
+  opts = options || ""
+  if opts.indexOf(option) > -1
+    return opts.replace(option, "")
+  else
+    return opts
+
+addReOption = (option, options)->
+  opts = options || ""
+  if opts.indexOf(option) == -1
+    option+opts
+  else
+    return opts
+
 
 defaultTypes = 
   
@@ -23,24 +40,54 @@ defaultTypes =
           self
         after: (pattern, val, re_opt)->
           setter store.replace(new RegExp(pattern, removeReOption("g", re_opt)), pattern+val)
+          return self
         afterAll: (pattern, val, re_options)-> 
           setter store.replace(new RegExp(pattern, addReOption("g", re_options)), pattern+val)
+          return self
         before: (pattern, val, re_options)-> 
           setter store.replace(new RegExp(pattern, removeReOption("g", re_options)), val+pattern)
+          return self
         beforeAll: (pattern, val, re_options)-> 
-          setter store.replace(new RegExp(pattern, removeReOption("g", re_options)), val+pattern)
+          setter store.replace(new RegExp(pattern, addReOption("g", re_options)), val+pattern)
+          return self
         replace: (pattern, val, re_options)->
           setter store.replace(new RegExp(pattern, removeReOption("g", re_options)), val)
+          return self
         replaceAll: (pattern, val, re_options)->
-          setter store.replace(new RegExp(pattern, removeReOption("g", re_options)), val)
+          setter store.replace(new RegExp(pattern, addReOption("g", re_options)), val)
+          return self
       return res
     pull: (store, setter)->
       self = @
       res = 
-        all: ()->
+        all: ->
           result = store
           setter ""
           result
+        before: (pattern)->
+          idx = store.indexOf(pattern)
+          return "" if idx < 1
+          result = store.substring(0,idx)
+          setter store.replace(result, "")
+          return result
+        beforeWith: (pattern)->
+          idx = store.indexOf(pattern)
+          return "" if idx < 1
+          result = store.substring(0,idx+pattern.length)
+          setter store.replace(result, "")
+          return result
+        after: (pattern)->
+          idx = store.indexOf(pattern)
+          return "" if idx < 1
+          result = store.substring(idx+pattern.length)
+          setter store.replace(result, "")
+          return result
+        afterWith: (pattern)->
+          idx = store.indexOf(pattern)
+          return "" if idx < 1
+          result = store.substring(idx)
+          setter store.replace(result, "")
+          return result
         between: (v1, v2)->
           if !v1 || store.indexOf(v1) == -1
             return ""
@@ -51,15 +98,14 @@ defaultTypes =
           i2 = store.indexOf(v2)
 
           if i1 > i2
-            i1+=v1.length
+            i2+=v1.length
           else if i1< i2
-            i2+=v2.length
+            i1+=v2.length
           else
             return ""
           res = store.substring(i1,i2)
           setter store.replace res, ""
           res
-
         betweenWith: (v1, v2)->
           if !v1 || store.indexOf(v1) == -1
             return ""
@@ -69,9 +115,9 @@ defaultTypes =
           i2 = store.indexOf(v2)
 
           if i1 > i2
-            i2+=v2.length
+            i1+=v2.length
           else if i1< i2
-            i1+=v1.length
+            i2+=v1.length
           else
             return ""
             
@@ -82,8 +128,24 @@ defaultTypes =
     get: (store)->
       self = @
       res = 
-        all: ()->
+        all: ->
           store
+        before: (pattern)->
+          idx = store.indexOf(pattern)
+          return "" if idx < 1
+          store.substring(0,idx)
+        beforeWith: (pattern)->
+          idx = store.indexOf(pattern)
+          return "" if idx < 1
+          return store.substring(0,idx+pattern.length)
+        after: (pattern)->
+          idx = store.indexOf(pattern)
+          return "" if idx < 1
+          return store.substring(idx+pattern.length)
+        afterWith: (pattern)->
+          idx = store.indexOf(pattern)
+          return "" if idx < 1
+          return store.substring(idx)
         between: (v1, v2)->
           if !v1 || store.indexOf(v1) == -1
             return ""
@@ -94,12 +156,12 @@ defaultTypes =
           i2 = store.indexOf(v2)
 
           if i1 > i2
-            i1+=v1.length
-          else if i1< i2
             i2+=v2.length
+          else if i1< i2
+            i1+=v1.length
           else
             return ""
-          store.substring(i1,i2)
+          return store.substring(i1,i2)
         betweenWith: (v1, v2)->
           if !v1 || store.indexOf(v1) == -1
             return ""
@@ -109,25 +171,14 @@ defaultTypes =
           i2 = store.indexOf(v2)
 
           if i1 > i2
-            i2+=v2.length
-          else if i1< i2
             i1+=v1.length
+          else if i1< i2
+            i2+=v2.length
           else
             return ""
             
-          store.substring(i1,i2)
+          return store.substring(i1,i2)
       return res
-  
-  "number": 
-    initValue: 0
-    push: (store, setter, value)->
-      setter store+value
-      @
-    pull: (store, setter, value)->
-      setter store-value
-      @
-    get: (store)->
-      return store
 
   "array": 
     initValue: []
@@ -206,7 +257,20 @@ defaultTypes =
 
   "object": 
     initValue: {}
-    push: (store, setter, data)->
+    push: (store, setter)->
+      self = @
+      res = 
+        soft: (obj)=>
+          for key, val of obj
+            store[key] = val if !Object.prototype.hasOwnProperty.call store, key
+          setter store
+          return @
+        hard: (obj)=>
+          for key, val of obj
+            store[key] = val
+          setter store
+          return @
+
       setter _.extend data
     pull: (store, setter, data)->
       fields = []
@@ -272,13 +336,11 @@ globalCache = {}
 
 class Wagon
   localTypes: {}
+  cargoIndex:{}
 
-  cargo = {}
-  cargoIndex = {}
-
-  getTypeDefinition = (name, handlerType)->
-    if cargoIndex[name] && cargoIndex[name].type
-      type = cargoIndex[name].type
+  getTypeDefinition: (name, handlerType)->
+    if @cargoIndex[name] && @cargoIndex[name].type
+      type = @cargoIndex[name].type
       if @localTypes[type]
         return @localTypes[type][handlerType]
       else if defaultTypes[type]
@@ -312,36 +374,35 @@ class Wagon
     data
 
   create: (name, type)->
-    if !cargoIndex[name]
+    if !@cargoIndex[name]
       #Check if type is default type
       if defaultTypes[type]
-        cargoIndex[name] = {type:type, initValue:defaultTypes[type].initValue}
-        cargo[name] = defaultTypes[type].initValue
+        @cargoIndex[name] = {type:type, initValue:defaultTypes[type].initValue}
+        @cargo[name] = defaultTypes[type].initValue
       else if @localTypes[type]
-        cargoIndex[name] = {type:type, initValue:@localTypes[type].initValue}
-        cargo[name] = @localTypes[type].initValue
+        @cargoIndex[name] = {type:type, initValue:@localTypes[type].initValue}
+        @cargo[name] = @localTypes[type].initValue
       else
         throw new Error("Can't create non existing type")
-      return @
     else
       throw new Error("Can't override existing type")
   
   push: (name)->
-    if cargo[name]
-      handler = getTypeDefinition.call @, name, "push"
-      return handler.call @, cargo[name], (store_data)=>
-        cargo[name] = store_data
+    if Object.prototype.hasOwnProperty.call @cargo, name
+      handler = @getTypeDefinition.call @, name, "push"
+      return handler.call @, @cargo[name], (store_data)=>
+        @cargo[name] = store_data
       
   pull: (name)->
-    if cargo[name]
-      handler = getTypeDefinition.call @, name, "pull"
-      return handler.call @, cargo[name], (store_data)=>
-        cargo[name] = store_data
+    if Object.prototype.hasOwnProperty.call @cargo, name
+      handler = @getTypeDefinition.call @, name, "pull"
+      return handler.call @, @cargo[name], (store_data)=>
+        @cargo[name] = store_data
   
   get: (name)->
-    if cargo[name]
-      handler = getTypeDefinition.call @, name, "get"
-      return handler.call @, cargo[name]
+    if Object.prototype.hasOwnProperty.call @cargo, name
+      handler = @getTypeDefinition.call @, name, "get"
+      return handler.call @, @cargo[name]
   
 
 module.exports = Wagon
