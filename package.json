@@ -16,10 +16,10 @@
     "socket.io": "latest",
     "socket.io-client": "latest",
     "walk": "latest",
-    "underscore":"latest",
     "async": "latest",
     "coffee-script":"latest",
     "colors": "latest",
+    "underscore":"latest",
     "backbone": "latest",
     
     "browserify":"1.17.3"

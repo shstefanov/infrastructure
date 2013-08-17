@@ -12,10 +12,10 @@ var helpers = require("./helpers");
 var configurations = [];
 
 pluginsMap = {
-  config: [], //Work on config object via async waterfall
-  configure: [], // functions runned on app.configure stage
-  corelibs: [], //corescripts that will be loaded by default
-  bundle: [],  //Additional bundles that must be bundled
+  config: [],       //Work on config object via async waterfall
+  configure: [],    // functions runned on app.configure stage
+  coreLibs: [],     // corescripts that will be loaded by default
+  bundles: [],      // Additional bundles that must be bundled
   assetRenderers:{} //Object with functions that take arrays
 }
 
@@ -40,7 +40,16 @@ module.exports = {
                 pluginsMap.assetRenderers[assetRenderer] = plugin[key][assetRenderer]
             });
           }
-          else{ pluginsMap[key].push(plugin[key]); }
+          else{ 
+            if(Array.isArray(plugin[key])){
+              plugin[key].forEach(function(p_k){
+                pluginsMap[key].push(p_k); 
+              });
+            }
+            else{
+              pluginsMap[key].push(plugin[key]); 
+            }
+          }
         }
       }
     };
@@ -53,11 +62,9 @@ module.exports = {
     else{
       handle(plugins);
     }
-
   },
 
   run: function(config, extensions, callback){
-  
     //Check if test is called
     if(process.argv[2] == "test"){
       var tester = require("./test.js");
@@ -68,31 +75,24 @@ module.exports = {
     }
 
     //Initializing and setting up express
-    var appInitializer = require("./app");
-    appInitializer(express, config, pluginsMap, function(app){
+    require("./app")(express, config, pluginsMap, function(app){
 
       app.config = config;
       app.options = require("./options.js");
       app.pluginsMap = pluginsMap;
 
       //Initializing some features and extending the app
-      var libsinItializer = require("./lib");
-      libsinItializer(app);
-
-      //Adding the pages
-      if(config.routers){
-        var routesInitializer = require("./routes");
-        routesInitializer(app, config, pluginsMap);
-      }
+      require("./lib")(app);
 
       //Setting up bundles
-      if(config.bundles && fs.existsSync(config.bundles)){
-        var bundlesInitializer = require("./bundles");
-        bundlesInitializer(app, config, pluginsMap);
-      }
+      require("./bundles")(app, config, pluginsMap);
+      
+      //Adding the pages
+      if(config.routes) require("./lib/routes")(app, config, pluginsMap);
 
-      if(config.services && fs.existsSync(config.services)){
-        app.services = helpers.loadDirAsObject(app.config.services);
+
+      if(config.servicesFolder && fs.existsSync(config.servicesFolder)){
+        app.services = helpers.loadDirAsObject(app.config.servicesFolder);
       }
       
       //Extending the app with your extensions
@@ -120,21 +120,6 @@ module.exports = {
         socketServicesInitializer = require("./socket").connect;
         sio.on("connection", socketServicesInitializer(app, io, config, function(){
         }));
-
-        var cb = function(err){
-          callback(err, app);
-        }
-       
-        //Infrastructure tests
-        if(app.options.test_mode == "framework"){
-          app.testCore(app, cb);
-        }
-        else if(config.test_mode == "application"){
-          app.testApp(app, cb);
-        }
-        else{
-          callback(null, app);
-        }
 
       });
     });

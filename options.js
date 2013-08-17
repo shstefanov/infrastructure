@@ -1,6 +1,6 @@
 
 module.exports = {
-  test_mode:"framework", //"application" for loading app tests
+  test_mode:"application", //"application" for loading app tests
   tests_location: __dirname+"/tests",
   test_options:{
     console:true,

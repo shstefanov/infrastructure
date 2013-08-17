@@ -1,4 +1,10 @@
+$ = require("../coreLibs/jquery-2.0.0.min.js");
+_ = require("underscore");
+Backbone = require("backbone");
+
 var ServicesBuilder = require("./tools/serviceBuilder.coffee");
+
+//FIXME
 var ModulesBuilder = require("./tools/modulesBuilder.coffee");
 
 window.dispatcher = _.extend({}, Backbone.Events);
@@ -40,6 +46,7 @@ App.build = function(router){
   //Then running all other staff
   var ready = false;
   self.socket.on("ready", function(services){
+    alert("ready", services);
 
     self.dispatcher.trigger("connect");
 
@@ -96,7 +103,7 @@ App.build = function(router){
 
 App.View = require("./init/view.coffee");
 App.Model = require("./init/model.coffee");
-App.Collection = Backbone.Collection.extend require("./init/collection.coffee");
+App.Collection = Backbone.Collection.extend(require("./init/collection.coffee"));
 App.Router = require("./init/router.coffee");
 
 App.View.merge = function(protoProps, staticProps) {

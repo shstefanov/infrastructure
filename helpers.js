@@ -6,7 +6,8 @@ var walk = require("walk");
 //Read all .js files in given directory and return array of required modules 
 module.exports.loadDirAsArray = function(dir, callback){ //TBD - make callback and give the module to it
   return _.filter(_.map(fs.readdirSync(dir), function(filename){
-    var module = filename.split(".").pop() == "js"? require(dir+"/"+filename) : false;
+    var ext = filename.split(".").pop();
+    var module = (ext == "js" || ext == "coffee")? require(dir+"/"+filename) : false;
     if(typeof module == "object") module._filename = filename;
     return module;
   }), function(module){if(callback){callback(module);} return module;}); //Here will be the callback

@@ -6,9 +6,7 @@ module.exports = function(express, raw_config, pluginsMap, callback){
 
 
   //Running the config initialization queue
-  pluginsMap.config.unshift(function(callback){
-    callback(null, raw_config);
-  });
+  pluginsMap.config.unshift(function(callback){ callback(null, raw_config); });
 
   async.waterfall(pluginsMap.config, function(err, config){
     if(err){throw err;}

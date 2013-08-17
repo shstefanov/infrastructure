@@ -1,3 +1,4 @@
+#Backbone = require "backbone"
 class Service
 
   dispatcher: {}
