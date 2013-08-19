@@ -1,6 +1,7 @@
-$ = require("../coreLibs/jquery-2.0.0.min.js");
+window.$ = require("../coreLibs/jquery-2.0.0.min.js");
 _ = require("underscore");
 Backbone = require("backbone");
+Backbone.$ = $;
 
 var ServicesBuilder = require("./tools/serviceBuilder.coffee");
 
@@ -46,7 +47,7 @@ App.build = function(router){
   //Then running all other staff
   var ready = false;
   self.socket.on("ready", function(services){
-    alert("ready", services);
+    console.log("active services: "+ services);
 
     self.dispatcher.trigger("connect");
 
@@ -67,7 +68,8 @@ App.build = function(router){
       //Now -  running the application
       var run = function(){
         
-        self.router = new router();
+        var Router = App.Router.extend(router);
+        self.router = new Router();
         if(self.router.prepare){
           self.router.prepare(function(){
             
