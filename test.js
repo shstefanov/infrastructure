@@ -19,6 +19,7 @@ var tester = function(target, test_options){
   var addFolder = function(folderPath){
     var files = fs.readdirSync(folderPath);
     files.forEach(function(file){
+      if(file.charAt(0)=="_"){return;} //Avoid files and folders begining with _
       var location = path.normalize(folderPath+"/"+file);
       initTest(location);
     });
@@ -57,6 +58,7 @@ var tester = function(target, test_options){
           console.log(l[options.output || "console"]);
         });
       });
+    process.exit();
     }
   }
 
