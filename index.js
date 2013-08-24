@@ -88,7 +88,10 @@ module.exports = {
       require("./bundles")(app, config, pluginsMap);
       
       //Adding the pages
-      if(config.routes) require("./lib/routes")(app, config, pluginsMap);
+      var coreLibs = [ "/socket.io/socket.io.js"  ];
+      app.pluginsMap.coreLibs.forEach(function(lib){ coreLibs.push(lib); });
+      if(config.routes)  require("./lib/routes") (app, config, coreLibs);
+      if(config.routers) require("./lib/routers.coffee")(app, config, coreLibs);
 
 
       if(config.servicesFolder && fs.existsSync(config.servicesFolder)){
