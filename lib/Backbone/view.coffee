@@ -13,7 +13,48 @@ selfClosingTags = [
 
 class View
   constructor: (options)->
-    {@template} = options
+    # options is backbone view prototype hashmap
+    {@template, @appendTo, @options, @router} = options
+    @initWrapper options
+    @initContainer options if @appendTo
+
+  render: (data, getter)->
+    # extending data with self without overriding
+    data = data || {}
+    for key, val of @
+      if !data.hasOwnProperty(key)
+        data[key] = val
+
+    if typeof getter == "function"
+      getter.call @, data, (async_data)=> 
+        return @wrapper_begin+@template(async_data)+@wrapper_end
+    else
+      return @wrapper_begin+@template(data)+@wrapper_end
+
+  # Initializing appendTo container
+  initContainer: (options)->
+    
+    tagName = @appendTo.match(/(^[a-z]+)/i)
+    `tagName = tagName? tagName[1] : "div"`
+   
+    tagId = @appendTo.match(/^#([a-zA-Z0-9\-_]+)/)
+    `tagId = tagId? " id=\""+tagId[1]+"\"" : ""`
+
+    className = @appendTo.match(/\.([a-zA-Z0-9\-_]+)/g)
+    
+    if Array.isArray className
+      classes = []
+      className.forEach (class_with_dot)->
+        classes.push class_with_dot.replace(".", "")
+      className = classes
+    `className = className? " class=\""+className.join(" ")+"\"" : ""`
+
+    @container_begin = "<#{tagName}#{tagId}#{className}>"
+    @container_end = "</#{tagName}>"
+
+
+  # Wrapper imitates Backbone view main DOM element
+  initWrapper: (options)->
     wrapper_tag = options.tagName || "div"
     `var wrapper_class = options.className? " class=\""+(options.className)+"\"" : ""`
     wrapper_attributes = options.attributes || {}
@@ -22,7 +63,5 @@ class View
     @wrapper_begin = "<#{wrapper_tag}#{wrapper_class}#{attrs}>"
     @wrapper_end = "</#{wrapper_tag}>"
 
-  render: (data)->
-    return @wrapper_begin+@template(data)+@wrapper_end
 
 module.exports = View
