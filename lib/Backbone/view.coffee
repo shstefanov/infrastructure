@@ -14,22 +14,33 @@ selfClosingTags = [
 class View
   constructor: (options)->
     # options is backbone view prototype hashmap
-    {@template, @appendTo, @options, @router} = options
+    {@template, @appendTo, @options, @router, @getter} = options
     @initWrapper options
     @initContainer options if @appendTo
 
-  render: (data, getter)->
-    # extending data with self without overriding
+  extendData: (data)->
     data = data || {}
     for key, val of @
       if !data.hasOwnProperty(key)
         data[key] = val
+    return data
+    
 
-    if typeof getter == "function"
-      getter.call @, data, (async_data)=> 
-        return @wrapper_begin+@template(async_data)+@wrapper_end
+  render: (data, cb)->
+    data = @extendData
+    if typeof @getter == "function"
+      @getter data, (async_data)=> 
+        cb null, @wrapper_begin+@template(async_data)+@wrapper_end
     else
-      return @wrapper_begin+@template(data)+@wrapper_end
+      cb null, @wrapper_begin+@template(data)+@wrapper_end
+
+  append: (html, child_html)->
+    console.log arguments
+    console.log "------------------"
+    console.log @container_begin+@container_end
+    throw new Error "Can't append - view don't have container." if !@appendTo
+    return html.replace @container_begin+@container_end, @container_begin+child_html+@container_end
+
 
   # Initializing appendTo container
   initContainer: (options)->
@@ -55,13 +66,16 @@ class View
 
   # Wrapper imitates Backbone view main DOM element
   initWrapper: (options)->
-    wrapper_tag = options.tagName || "div"
-    `var wrapper_class = options.className? " class=\""+(options.className)+"\"" : ""`
-    wrapper_attributes = options.attributes || {}
-    attrs = ""
-    Object.keys(wrapper_attributes).forEach (attrName)-> attrs+=" "+attrName+"=\""+wrapper_attributes[attrName]+"\""
-    @wrapper_begin = "<#{wrapper_tag}#{wrapper_class}#{attrs}>"
-    @wrapper_end = "</#{wrapper_tag}>"
+    if options.nowrap == true
+      @wrapper_begin = @wrapper_end = ""
+    else
+      wrapper_tag = options.tagName || "div"
+      `var wrapper_class = options.className? " class=\""+(options.className)+"\"" : ""`
+      wrapper_attributes = options.attributes || {}
+      attrs = ""
+      Object.keys(wrapper_attributes).forEach (attrName)-> attrs+=" "+attrName+"=\""+wrapper_attributes[attrName]+"\""
+      @wrapper_begin = "<#{wrapper_tag}#{wrapper_class}#{attrs}>"
+      @wrapper_end = "</#{wrapper_tag}>"
 
 
 module.exports = View
