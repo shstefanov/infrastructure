@@ -22,7 +22,18 @@ App.Collections = {};
 App.Templates = {};
 
 
-App.build = function(router){
+App.run = function(module){
+  if(module.routes) App.buildRegular(module)
+  else if(module.router) App.buildComplex(module)
+};
+
+App.buildComplex = function(module){
+  console.log("building Complex");
+  // Req uire Complex and build new Complex(module)
+};
+
+App.buildRegular = function(router){
+
 
   var self = this;
   window.app = this;

@@ -22,10 +22,13 @@ methods =
 routesMap = {}
 
 module.exports = (app, config, coreLibs)->
+
+  system_javascripts = coreLibs.slice().concat(config.defaultJavascripts || [])
+  system_styles      = config.defaultStyles || []
   
   return if !fs.existsSync config.routers
 
-  defineApp = (MainLayout)->  #expecting view as layout
+  defineApp = (MainLayout, filepath)->  #expecting view as layout
 
     routes_collection = []
       
@@ -36,30 +39,33 @@ module.exports = (app, config, coreLibs)->
     
     buildRoute = (view, fragment, mount_to, all_previeous)->
       
+      if all_previeous == ""
+        node = mount_to
+      else
+        node = mount_to[fragment] = {}
+        node.__parentNode__ = mount_to
+
+
       #The node
       full_path = path.normalize "/#{all_previeous}/#{fragment}"
-      mount_to[fragment] = 
-        __instance__   : buildView(view)
-        __prototype__  : view
       
-      #It's child view
-      if all_previeous != ""
-        mount_to[fragment].__parentNode__ = mount_to
-
-      mount_to[fragment].__info__ =
+      node.__instance__   = buildView(view)
+      node.__prototype__  = view
+      
+      node.__info__ =
         path: full_path
         fragment: fragment.replace /\//g, ""
       
-      
-      routes_collection.push mount_to[fragment]
+      routes_collection.push node
       
       if view.router && view.router.routes
         for route, _view of view.router.routes
-          buildRoute _view, route, mount_to[fragment], full_path
+          buildRoute _view, route, node, full_path
       
     
     buildView = (view)->
-      
+      return new View view if !routes_tree_root.__instance__
+        
       layout = routes_tree_root.__instance__
       
       # Collecting assets
@@ -73,27 +79,42 @@ module.exports = (app, config, coreLibs)->
       #Return view instance
       return new View(view)
 
-
-    routes_tree_root.__instance__             = new View(MainLayout)
-    routes_tree_root.__instance__.javascripts = coreLibs.slice().concat(config.defaultJavascripts || []).concat(MainLayout.javascripts || [])
-    routes_tree_root.__instance__.styles      = (config.defaultStyles || []).concat(MainLayout.styles || [])
-
     # nowrap for outer layouts
     MainLayout.nowrap = true
+
+    MainLayout.javascripts  = [MainLayout.javascripts] if typeof MainLayout.javascripts == "string"
+    MainLayout.styles       = [MainLayout.styles]      if typeof MainLayout.styles      == "string"
+    MainLayout.javascripts  = system_javascripts       if typeof MainLayout.javascripts == "undefined"
+    MainLayout.styles       = system_styles            if typeof MainLayout.styles      == "undefined"
+    MainLayout.javascripts  = system_javascripts.slice().concat(MainLayout.javascripts) if Array.isArray MainLayout.javascripts
+    MainLayout.styles       = system_styles.slice()     .concat(MainLayout.styles)      if Array.isArray MainLayout.styles
+
+    # Start racursive view tree building
     buildRoute MainLayout, (MainLayout.router.root || "/" ), routes_tree_root, "" if MainLayout.router
-
     
-    # TODO - create bundle for this apptree layout and add it to javascripts
+    # App bundles will be mounted ubder "/complex" path and will looks like "/complex/root_path.js"
+    `var mountpoint = (MainLayout.router.root || "/")=="/"? "/index.js": MainLayout.router.root+".js"`
+    console.log filepath
+    module_bundle =
+      name:         MainLayout.router.root || "/"
+      load:         true
+      entryPoint:   filepath
+      mountPoint:   "/complex/#{mountpoint}"
+      cache:        config.bundlesOptions.cache || true,
+      watch:        config.bundlesOptions.watch || false
 
+    # Adding it to app bundles to initialized
+    app.pluginsMap.bundles.push module_bundle
 
-
-
-
+    # And adding it to module javascript to be loaded on request
+    routes_tree_root.__instance__.javascripts.push path.normalize((config.bundlesOptions.prefix || "/bundles/")+module_bundle.mountPoint)
 
 
 
 
     routes_collection.forEach (route)->
+      # console.log route
+      # return
      
       # node structure: 
 
@@ -120,11 +141,12 @@ module.exports = (app, config, coreLibs)->
 
         # !Asynchronous! #
         async.map map, (view, cb)->
-          view.__instance__.render
+          vars = 
             params:req.params
-            body:req.body
+            #body:req.body
             query:req.query
-          , (err, html)->
+          
+          view.__instance__.render vars, (err, html)->
             if err
               cb err
             else
@@ -165,10 +187,10 @@ module.exports = (app, config, coreLibs)->
   for routerPath in routersPath
     module_path = path.normalize "#{config.routers}/#{routerPath}" 
     if fs.statSync(module_path).isDirectory()
-      defineApp require module_path if fs.existsSync module_path+"/index.js"
-      defineApp require module_path if fs.existsSync module_path+"/index.coffee"
+      defineApp require(module_path), module_path  if fs.existsSync module_path+"/index.js"
+      defineApp require(module_path), module_path  if fs.existsSync module_path+"/index.coffee"
     else
       ext = module_path.split(".").pop()
-      defineApp require module_path if /(\.js$|\.coffee)$/.test module_path
+      defineApp require(module_path), module_path  if /(\.js$|\.coffee)$/.test module_path
   
 

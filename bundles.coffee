@@ -1,7 +1,7 @@
 browserify  = require "browserify"
 _           = require "underscore"
-helpers     = require "./helpers"
-async       = require "async"
+fs          = require "fs"
+path        = require "path"
 
 defaultBundlePrefix = "/bundles/"
 
@@ -33,13 +33,20 @@ module.exports = (app, config, pluginsMap)->
     entryPoint:   true
   
   #Set up all defined bundles
-  bundles.forEach (bundle)->
+  
+  createBundle = (bundle)->
     return if !bundle.load
-    
+
+    # Check if entryPoint is directory
+    if fs.statSync(bundle.entryPoint).isDirectory()
+      bundle.entryPoint = bundle.entryPoint+"/index.js"     if fs.existsSync(path.normalize(bundle.entryPoint+"/index.js"))
+      bundle.entryPoint = bundle.entryPoint+"/index.coffee" if fs.existsSync(path.normalize(bundle.entryPoint+"/index.coffee"))
+
     Object.keys(required).forEach (field)->
       throw new Error "Required field "+field+" for bundle to be set up" if !bundle[field]
 
-    bundleMountPoint = (config.bundlesOptions.prefix || defaultBundlePrefix)+bundle.mountPoint
+    bundleMountPoint = path.normalize((config.bundlesOptions.prefix || defaultBundlePrefix)+bundle.mountPoint)
+    console.log bundleMountPoint
     if bundle.name == "core" and !coreInitialized
       pluginsMap.coreLibs.push bundleMountPoint
       coreInitialized = true
@@ -90,3 +97,7 @@ module.exports = (app, config, pluginsMap)->
     #bundler.bundle() returns the bundle string
     
     app.use(bundler)
+
+  bundles.forEach createBundle
+
+  app.pluginsMap.bundles = {push: createBundle}

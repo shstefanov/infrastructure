@@ -1,20 +1,10 @@
-selfClosingTags = [
-  "area":       true
-  "base":       true
-  "basefont":   true
-  "br":         true
-  "hr":         true
-  "input":      true
-  "img":        true
-  "link":       true
-  "meta":       true
-]
-
+# Serverside view prototype for view tree module
 
 class View
+
   constructor: (options)->
     # options is backbone view prototype hashmap
-    {@template, @appendTo, @options, @router, @getter} = options
+    {@template, @appendTo, @options, @router, @getter, @javascripts, @styles} = options
     @initWrapper options
     @initContainer options if @appendTo
 
@@ -25,9 +15,8 @@ class View
         data[key] = val
     return data
     
-
   render: (data, cb)->
-    data = @extendData
+    data = @extendData()
     if typeof @getter == "function"
       @getter data, (async_data)=> 
         cb null, @wrapper_begin+@template(async_data)+@wrapper_end
@@ -35,12 +24,8 @@ class View
       cb null, @wrapper_begin+@template(data)+@wrapper_end
 
   append: (html, child_html)->
-    console.log arguments
-    console.log "------------------"
-    console.log @container_begin+@container_end
     throw new Error "Can't append - view don't have container." if !@appendTo
     return html.replace @container_begin+@container_end, @container_begin+child_html+@container_end
-
 
   # Initializing appendTo container
   initContainer: (options)->
@@ -63,7 +48,6 @@ class View
     @container_begin = "<#{tagName}#{tagId}#{className}>"
     @container_end = "</#{tagName}>"
 
-
   # Wrapper imitates Backbone view main DOM element
   initWrapper: (options)->
     if options.nowrap == true
@@ -76,6 +60,5 @@ class View
       Object.keys(wrapper_attributes).forEach (attrName)-> attrs+=" "+attrName+"=\""+wrapper_attributes[attrName]+"\""
       @wrapper_begin = "<#{wrapper_tag}#{wrapper_class}#{attrs}>"
       @wrapper_end = "</#{wrapper_tag}>"
-
 
 module.exports = View
