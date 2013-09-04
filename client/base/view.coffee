@@ -87,28 +87,49 @@ module.exports = Backbone.View.extend
     @$el.html(@template.call(@, @))
     @
 
-# ,
+  # merge = function(protoProps, staticProps) {
+  #   var parent = this;
+  #   var child;
 
-#   extend: (attrs, classMethods)->
-#     return 
-#     # new_attrs = {infrastructure:@prototype.infrastructure || {}}
-#     # new_attrs[key] = value for key, value of @prototype
-#     # new_attrs.infrastructure[key] = value for key, value of @prototype.infrastructure if @prototype.infrastructure
-#     # new_attrs.infrastructure[key] = value for key, value of attrs.infrastructure if attrs.infrastructure
-#     # if @prototype.events
-#     #   new_attrs.events = {} if !new_attrs.events
-#     #   for key, value of @prototype.events 
-#     #     new_attrs.events[key] = value 
-#     # if attrs.events
-#     #   new_attrs.events = {} if !new_attrs.events
-#     #   for key, value of attrs.events 
-#     #     new_attrs.events[key] = value 
-#     # console.log "sur----->", @prototype
-#     # console.log "new----->", new_attrs
-#     result = Backbone.View.extend.call(@, new_attrs, classMethods)
-#     # console.log "result------>", result.prototype
-#     return result
+  #   //console.log("????????????????",Object.keys(parent.prototype.infrastructure));
+    
+  #   if(parent.prototype.infrastructure && protoProps.infrastructure){
+  #     Object.keys(parent.prototype.infrastructure).forEach(function(prop){
+  #       if(!protoProps.infrastructure[prop])
+  #       protoProps.infrastructure[prop] = parent.prototype.infrastructure[prop];
+  #     });
+  #   }
+
+  #   // The constructor function for the new subclass is either defined by you
+  #   // (the "constructor" property in your `extend` definition), or defaulted
+  #   // by us to simply call the parent's constructor.
+  #   if (protoProps && _.has(protoProps, 'constructor')) {
+  #     child = protoProps.constructor;
+  #   } else {
+  #     child = function(){ return parent.apply(this, arguments); };
+  #   }
+
+  #   _.extend(child, parent, staticProps);
+  #   // Add static properties to the constructor function, if supplied.
 
 
+  #   // Set the prototype chain to inherit from `parent`, without calling
+  #   // `parent`'s constructor function.
+  #   console.log("INF", protoProps.infrastructure);
+  #   var Surrogate = function(){ 
+  #     this.constructor = child; 
+  #   };
+  #   Surrogate.prototype = parent.prototype;
+  #   child.prototype = new Surrogate;
+    
 
+  #   // Add prototype properties (instance properties) to the subclass,
+  #   // if supplied.
+  #   if (protoProps) _.extend(child.prototype, protoProps);
 
+  #   // Set a convenience property in case the parent's prototype is needed
+  #   // later.
+  #   child.__super__ = parent.prototype;
+
+  #   return child;
+  # };

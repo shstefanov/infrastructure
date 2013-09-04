@@ -1,4 +1,5 @@
 # Serverside view prototype for view tree module
+# Imitates serverside Backbone View 
 
 class View
 
