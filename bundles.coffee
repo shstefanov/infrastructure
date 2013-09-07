@@ -46,7 +46,6 @@ module.exports = (app, config, pluginsMap)->
       throw new Error "Required field "+field+" for bundle to be set up" if !bundle[field]
 
     bundleMountPoint = path.normalize((config.bundlesOptions.prefix || defaultBundlePrefix)+bundle.mountPoint)
-    console.log bundleMountPoint
     if bundle.name == "core" and !coreInitialized
       pluginsMap.coreLibs.push bundleMountPoint
       coreInitialized = true

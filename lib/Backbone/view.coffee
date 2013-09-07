@@ -1,11 +1,15 @@
 # Serverside view prototype for view tree module
 # Imitates serverside Backbone View 
 
+_ = require "underscore"
+
 class View
 
   constructor: (options)->
     # options is backbone view prototype hashmap
     {@template, @appendTo, @options, @router, @getter, @javascripts, @styles} = options
+    if options.config
+      @config = options.config
     @initWrapper options
     @initContainer options if @appendTo
 
@@ -13,7 +17,10 @@ class View
     data = data || {}
     for key, val of @
       if !data.hasOwnProperty(key)
-        data[key] = val
+        if key == "config"
+          data.config = JSON.stringify(_.extend(data.config || {}, @config))
+        else
+          data[key] = val
     return data
     
   render: (data, cb)->

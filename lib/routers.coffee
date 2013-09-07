@@ -88,6 +88,8 @@ module.exports = (app, config, coreLibs)->
     MainLayout.styles       = system_styles            if typeof MainLayout.styles      == "undefined"
     MainLayout.javascripts  = system_javascripts.slice().concat(MainLayout.javascripts) if Array.isArray MainLayout.javascripts
     MainLayout.styles       = system_styles.slice()     .concat(MainLayout.styles)      if Array.isArray MainLayout.styles
+    MainLayout.config       = _.extend(app.config.clientConfig, MainLayout.config || {})
+
 
     # Start racursive view tree building
     buildRoute MainLayout, (MainLayout.router.root || "/" ), routes_tree_root, "" if MainLayout.router

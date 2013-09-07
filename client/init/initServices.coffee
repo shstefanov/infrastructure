@@ -55,7 +55,6 @@ class Service
 
 
 module.exports = (serviceNames, callback)->
-  console.log arguments
   counter = serviceNames.length
   callback() if counter == 0
   for name in serviceNames

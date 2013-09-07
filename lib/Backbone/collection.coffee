@@ -1,5 +1,5 @@
 _ = require "underscore"
-collection = require "../../client/init/collection.coffee"
+collection = require "../../client/base/collection.coffee"
 
 extension = 
   
