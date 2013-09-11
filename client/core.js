@@ -9,6 +9,7 @@ window.App = {
   Model:                    require("./base/model.coffee"),
   Collection:               Backbone.Collection.extend(require("./base/collection.coffee"))
 };
+console.log(App);
 
 App.run = function(module){
   window.app = {
