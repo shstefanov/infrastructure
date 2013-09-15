@@ -108,3 +108,10 @@ Example code for route file
 
 
     }
+
+
+# Tests #
+    $>node app test       //Runs all tests in your tests folder
+    $>node app test path  //Runs only specified file or all files in specified folder
+
+    // Files and folders begining with "_" will be avoided

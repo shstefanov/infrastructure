@@ -12,13 +12,12 @@ var internal = {
 };
 
 module.exports = function(err, socket, session, cb){
+  if(err) throw err;
 
   var app = this;
-  session.reload(function(){
 
     var services = app.services;
 
-    
     var userServicesNames = session.services;
     var userServices = {};
     
@@ -87,7 +86,7 @@ module.exports = function(err, socket, session, cb){
     });
 
   socket.emit("ready", _.pluck(userServices, "name"));
-  });
+  cb();
   
   return this;
 };

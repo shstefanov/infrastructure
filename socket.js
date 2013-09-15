@@ -5,18 +5,18 @@ var clientsCount = 0;
 //called in index.js (socketInitializer)
 module.exports.connect = function(app, io, config, cb){ 
 
+  //console.log("connect: ", arguments);
   var sockets = io.sockets
   
 
   //On connection handler
   return function(err, socket, session){
+    if(err) throw err;
     if(!session){ return;}
     clientsCount++;
-    console.log(("Clients connected:"+"[".red+(""+clientsCount).green+"]".red));
-    session.save();
-    ServiceBuilder.call(app, err, socket, cb);
+    //session.save();
+    ServiceBuilder.call(app, err, socket, session, cb);
   };
-  cb();
 };
 
 module.exports.disconnect = function(app, io){
