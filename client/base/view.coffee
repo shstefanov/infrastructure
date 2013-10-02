@@ -61,6 +61,11 @@ module.exports = Backbone.View.extend
   initialize: (options)->
 
     {@model, @collection} = options if options
+    if @model
+      @model.on "change save", @render, @ 
+      @model.on "destroy", @remove, @ 
+    if @collection
+      @collection.on "add remove reset", @render, @
     
     if(options && options.appendTo)
       @appendTo =  options.appendTo
@@ -85,6 +90,7 @@ module.exports = Backbone.View.extend
   
   render: ()->
     @$el.html(@template.call(@, @))
+    @trigger "render"
     @
 
   # merge = function(protoProps, staticProps) {

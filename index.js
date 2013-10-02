@@ -120,7 +120,7 @@ module.exports = {
         var sio = new SessionSockets(io, app.sessionStore, app.cookieParser); //Set in ./app.js
 
         //Initializing and setting every incoming connection
-        socketServicesInitializer = require("./socket").connect;
+        var socketServicesInitializer = require("./socket").connect;
         sio.on("connection", socketServicesInitializer(app, io, config, function(){
         }));
       });
