@@ -13,6 +13,11 @@ var tester = function(target, test_options){
   var addFile = function(filepath){
     var suite = new Suite(filepath, options);
     require(filepath)(suite);
+    if(suite.async===true){
+      suite.end = function(){
+        suite.onEnd();
+      };
+    }
     testsQueue.push(suite);
   }
 
@@ -63,9 +68,10 @@ var tester = function(target, test_options){
   }
 
   testsQueue.forEach(function(suite){
-    suite.exec(function(sum, log){
+    var readyHandler = function(sum, log){
       ready(log);
-    });
+    };
+    suite.exec(readyHandler);
   });
 };
 
