@@ -87,6 +87,13 @@ module.exports = Backbone.View.extend
   bindTo: (obj)->
     @_binded.push(obj)
     obj
+
+  url: (str)-> 
+    if(!str || str=="/")
+      return "/"+App.settings.routePrefix
+    else
+      "/"+App.settings.routePrefix+"/"+str
+
   
   render: ()->
     @$el.html(@template.call(@, @))

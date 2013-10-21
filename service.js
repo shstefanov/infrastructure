@@ -88,8 +88,7 @@ module.exports = function(err, socket, session, cb){
 
   });
 
-  socket.emit("ready", _.pluck(userServices, "name"));
-  cb();
+  cb(_.pluck(userServices, "name"));
   
   return this;
 };

@@ -12,11 +12,16 @@ var helpers = require("./helpers");
 var configurations = [];
 
 pluginsMap = {
-  config: [],       //Work on config object via async waterfall
+  config: [],       // Work on config object via async waterfall
   configure: [],    // functions runned on app.configure stage
   coreLibs: [],     // corescripts that will be loaded by default
   bundles: [],      // Additional bundles that must be bundled
-  assetRenderers:{} //Object with functions that take arrays
+  // assetRenderers:{} //Object with functions that take arrays
+  pageLoaded: [],   // Runs async waterfall with every defined page, passed as waterfall argument
+  modelsBuilders: [],
+
+
+  services: []
 }
 
 module.exports = {
@@ -96,6 +101,19 @@ module.exports = {
 
       if(config.servicesFolder && fs.existsSync(config.servicesFolder)){
         app.services = helpers.loadDirAsObject(app.config.servicesFolder);
+        if(app.pluginsMap.services.length>0){
+          app.pluginsMap.services.forEach(function(service_set){
+            for(key in service_set){
+              if(!app.services[key]){
+                var serv = service_set[key];
+                app.services[key] = serv;
+              }
+              else{
+                throw new Error("Service "+ key + "alredady exist");
+              }
+            }
+          });
+        }
       }
       
       //Extending the app with your extensions
@@ -121,8 +139,7 @@ module.exports = {
 
         //Initializing and setting every incoming connection
         var socketServicesInitializer = require("./socket").connect;
-        sio.on("connection", socketServicesInitializer(app, io, config, function(){
-        }));
+        sio.on("connection", socketServicesInitializer(app, io, config));
       });
     });
   }
