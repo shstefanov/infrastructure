@@ -1,9 +1,7 @@
 
 module.exports = 
 
-  initialize: ->
-
-  fire: (arg1, arg2, arg3)->
+  fire: ->
     model.trigger.apply(model, arguments) for model in @models
 
   bindAll: (event, method, context)->

@@ -11,7 +11,9 @@ window.App = {
   View:                     require("./base/view.coffee"),
   Router:                   require("./base/router.coffee"),
   Model:                    require("./base/model.coffee"),
-  Collection:               Backbone.Collection.extend(require("./base/collection.coffee"))
+  Collection:               Backbone.Collection.extend(require("./base/collection.coffee")),
+  Models:                   {},
+  Collections:              {}
 };
 // console.log(App);
 
@@ -25,21 +27,18 @@ App.run = function(module){
   };
 
   var start = function(err){
-    console.log("start");
     if(err) throw new Error(err);
     Backbone.history.start({pushState:true, trigger:true});
   };
 
   var prepare_count = 2; //Waiting for models and services
   var prepare = function(){
-    console.log("prepare");
     prepare_count--;
     if(prepare_count==0){
       if(typeof module.prepare == "function")   module.prepare(start);
       else                                      start();
     }
   };
-
 
   app.socket.on("ready", function(data){ 
     require("./init/initServices")(data.services, function(){

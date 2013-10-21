@@ -103,15 +103,23 @@ module.exports = {
         app.services = helpers.loadDirAsObject(app.config.servicesFolder);
         if(app.pluginsMap.services.length>0){
           app.pluginsMap.services.forEach(function(service_set){
-            for(key in service_set){
+            var services;
+            if(typeof service_set == "function"){
+              services = service_set();
+            }
+            else{
+              services = service_set;
+            }
+
+            for(key in services){
               if(!app.services[key]){
-                var serv = service_set[key];
-                app.services[key] = serv;
+                app.services[key] = services[key];
               }
               else{
                 throw new Error("Service "+ key + "alredady exist");
               }
             }
+
           });
         }
       }
