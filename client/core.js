@@ -1,7 +1,10 @@
 window.$                    = require("./lib/jquery-2.0.0.min.js")
 , _                         = require("underscore")
+, async                     = require("async")
 , Backbone                  = require("backbone")
 , Backbone.$                = $;
+
+_.mixin(require("./init/mixins"));
 
 window.App = {
   settings:                 {
@@ -27,27 +30,31 @@ App.run = function(module){
   };
 
   var start = function(err){
+     console.log("here 3");
     if(err) throw new Error(err);
     Backbone.history.start({pushState:true, trigger:true});
   };
 
-  var prepare_count = 2; //Waiting for models and services
   var prepare = function(){
-    prepare_count--;
-    if(prepare_count==0){
-      if(typeof module.prepare == "function")   module.prepare(start);
-      else                                      start();
-    }
+    if(typeof module.prepare == "function")   module.prepare(start);
+    else                                      start();
   };
 
-  app.socket.on("ready", function(data){ 
+  var initialized = false;
+  app.socket.on("ready", function(data){
+
+    if(initialized) return;
+    
+    var buildModelsStage = function(){
+      require("./init/initModels")(data.schemas, prepare); 
+    };
+    
     require("./init/initServices")(data.services, function(){
       //Check if module is regular router or complex view-router tree
-      if     (module.routes) require("./init/initRegularApp")(module, prepare);
-      else if(module.router) require("./init/initComplexApp")(module, prepare);
+      if     (module.routes) require("./init/initRegularApp")(module, buildModelsStage);
+      else if(module.router) require("./init/initComplexApp")(module, buildModelsStage);
     }); 
 
-    require("./init/initModels")(data.schemas, prepare); 
 
   });
 

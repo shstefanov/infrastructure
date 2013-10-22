@@ -6,8 +6,6 @@ module.exports = (models, cb)->
     cb()  
     return
 
-  counter = models.length
-
   create = (model, options)->
     app.services[model.__name].create {pattern:model.attributes}, (err, res)->
       if err 
