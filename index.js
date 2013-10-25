@@ -40,9 +40,17 @@ pluginsMap = {
   // assetRenderers:{} //Object with functions that take arrays
   pageLoaded: [],   // Runs async waterfall with every defined page, passed as waterfall argument
   modelsBuilders: [],
+  pageInitialize: [],
 
 
-  services: []
+  services: [],
+
+
+  //Runtime handlers
+
+  httpRequestHandler: []
+
+
 }
 
 module.exports = {
