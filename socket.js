@@ -4,50 +4,34 @@ var ServiceBuilder = require("./service.js");
 
 var colors = require("colors");
 
-var clientsCount = 0;
 
 module.exports.connect = function(app, io, config, cb){ 
 
   app.sockets = io.sockets
 
-  var handleModelBuilders = async.simpleCompose(app.pluginsMap.modelsBuilders);
+  var socketConnectionHandlers  = async.simpleCompose(app.pluginsMap.socketConnection);
+  var sockerReadySignalHandlers = async.simpleCompose(app.pluginsMap.socketReadySignal);
 
 
   //On connection handler
   return function(err, socket, session){
-    if(err) throw err;
-    if(!session){ return;}
-    clientsCount++;
+    if(!session){ return;} //Preventing bug - socket tries to connect twice, second time without session and with error
+    if(err){app.error("Socket connection???", err); return; }
 
-    var user_data = {};
-    var count = 2;
-    var checkReady = function(){
-      count--;
-      if(count==0){
-        console.log()
-        socket.emit("ready", user_data);
-      }
-    }
-
-    if(app.pluginsMap.modelsBuilders.length>0){
-      session.services.push("models");
-      handleModelBuilders({
-          socket:socket,
-          session:session,
-        }, function(err, data){
-          user_data.schemas = data.schemas;
-          checkReady();
+    socketConnectionHandlers({
+      app: app,
+      socket:socket,
+      session:session
+    }, function(err, env){
+      if(err){app.error("Socket connection plugins", err); return; }
+      ServiceBuilder.call(app, err, socket, session, function(err, services){
+        if(err){app.error(err); return; }
+        sockerReadySignalHandlers({}, function(err, readyData){
+          if(err){app.error(err); env.socket.emit("error", err); return; }
+          env.socket.emit("ready", readyData);
         });
-    }
-    else{
-      checkReady();
-    }
-
-    ServiceBuilder.call(app, err, socket, session, function(services){
-      user_data.services = services;
-      checkReady();
+      });
     });
-
   };
 };
 

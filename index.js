@@ -5,7 +5,8 @@ var express = require('express')
   , path = require('path')
   , fs = require('fs')
   , coffeescript = require("coffee-script")
-  , async = require('async');
+  , async = require('async')
+  , colors = require("colors");
 
 var helpers = require("./helpers");
 
@@ -28,22 +29,21 @@ async.simpleCompose = function (fns) {
 };
 
 
-
-
 var configurations = [];
 
 pluginsMap = {
+  
   config: [],       // Work on config object via async waterfall
   configure: [],    // functions runned on app.configure stage
-  coreLibs: [],     // corescripts that will be loaded by default
   bundles: [],      // Additional bundles that must be bundled
-  // assetRenderers:{} //Object with functions that take arrays
-  pageLoaded: [],   // Runs async waterfall with every defined page, passed as waterfall argument
-  modelsBuilders: [],
+  services: [],
+
+  coreLibs: [],     // corescripts that will be loaded by default
+  
   pageInitialize: [],
 
-
-  services: [],
+  socketConnection: [],
+  socketReadySignal: [],
 
 
   //Runtime handlers
@@ -119,14 +119,12 @@ module.exports = {
       require("./lib")(app);
 
       //Setting up bundles
-      require("./bundles")(app, config, pluginsMap);
+      require("./bundles")(app, config);
       
       //Adding the pages
       var coreLibs = [ "/socket.io/socket.io.js"  ];
       app.pluginsMap.coreLibs.forEach(function(lib){ coreLibs.push(lib); });
       if(config.routes)  require("./lib/routes") (app, config, coreLibs);
-      if(config.routers) require("./lib/routers.coffee")(app, config, coreLibs);
-
 
       if(config.servicesFolder && fs.existsSync(config.servicesFolder)){
         app.services = helpers.loadDirAsObject(app.config.servicesFolder);
@@ -134,7 +132,7 @@ module.exports = {
           app.pluginsMap.services.forEach(function(service_set){
             var services;
             if(typeof service_set == "function"){
-              services = service_set();
+              services = service_set(app);
             }
             else{
               services = service_set;

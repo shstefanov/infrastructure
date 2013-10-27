@@ -5,14 +5,14 @@ path        = require "path"
 
 defaultBundlePrefix = "/bundles/"
 
-module.exports = (app, config, pluginsMap)->
+module.exports = (app, config)->
   
   if config.bundles
    bundles = require(config.bundles) 
   else 
     bundles = []
   
-  bundles.concat pluginsMap.bundles
+  bundles.concat app.pluginsMap.bundles
 
   #System core bundle
   core_bundle =
@@ -21,7 +21,19 @@ module.exports = (app, config, pluginsMap)->
     entryPoint:   __dirname+"/client/core.js"
     mountPoint:   "core.js"
     cache:        config.bundlesOptions.cache || true,
-    watch:        config.bundlesOptions.watch || false
+    watch:        config.bundlesOptions.watch || false,
+    prepend: """
+      var pluginsMap = {};
+      window.addPlugin = function(name, fn_s){
+        if(!pluginsMap[name]){ pluginsMap[name] = []; }
+        if(Array.isArray(fn_s)){
+          pluginsMap[name].concat(fn_s);
+        }
+        else{
+          pluginsMap[name].push(fn_s);
+        }
+      };
+    """
 
   bundles.unshift core_bundle
 
@@ -47,7 +59,7 @@ module.exports = (app, config, pluginsMap)->
 
     bundleMountPoint = path.normalize((config.bundlesOptions.prefix || defaultBundlePrefix)+bundle.mountPoint)
     if bundle.name == "core" and !coreInitialized
-      pluginsMap.coreLibs.push bundleMountPoint
+      app.pluginsMap.coreLibs.push bundleMountPoint
       coreInitialized = true
 
     bundler = browserify 

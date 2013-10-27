@@ -16,7 +16,8 @@ window.App = {
   Model:                    require("./base/model.coffee"),
   Collection:               Backbone.Collection.extend(require("./base/collection.coffee")),
   Models:                   {},
-  Collections:              {}
+  Collections:              {},
+  Views:                    {}
 };
 // console.log(App);
 
@@ -41,10 +42,22 @@ App.run = function(module){
   };
 
   var initialized = false;
+  app.socket.on("error", function(err ){
+    alert("Error: see console"); console.log(err);
+  });
   app.socket.on("ready", function(data){
-
     if(initialized) return;
-    
+    initialized = true;
+
+
+
+
+
+
+    console.log("ready sygnal");
+    console.log(data);
+    console.log("pluginsMap: ", pluginsMap );
+    return;
     var buildModelsStage = function(){
       require("./init/initModels")(data.schemas, prepare); 
     };
