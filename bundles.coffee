@@ -15,10 +15,11 @@ module.exports = (app, config)->
   bundles.concat app.pluginsMap.bundles
 
   #System core bundle
+  app.pluginsMap.coreEntry.unshift __dirname+"/client/core.js"
   core_bundle =
     name:         "core" 
     load:         true
-    entryPoint:   __dirname+"/client/core.js"
+    entryPoint:   app.pluginsMap.coreEntry
     mountPoint:   "core.js"
     cache:        config.bundlesOptions.cache || true,
     watch:        config.bundlesOptions.watch || false,
@@ -45,14 +46,23 @@ module.exports = (app, config)->
     entryPoint:   true
   
   #Set up all defined bundles
+
+  alignEntry = (entryPath)->
+    if fs.statSync(entryPath).isDirectory()
+      return entryPath+"/index.js"     if fs.existsSync(path.normalize(entryPath+"/index.js"))
+      return entryPath+"/index.coffee" if fs.existsSync(path.normalize(entryPath+"/index.coffee"))
+    else
+      return entryPath
+
   
   createBundle = (bundle)->
     return if !bundle.load
 
+    if Array.isArray bundle.entryPoint
+      bundle.entryPoint = bundle.entryPoint.map alignEntry
+    else
+      bundle.entryPoint = alignEntry bundle.entryPoint
     # Check if entryPoint is directory
-    if fs.statSync(bundle.entryPoint).isDirectory()
-      bundle.entryPoint = bundle.entryPoint+"/index.js"     if fs.existsSync(path.normalize(bundle.entryPoint+"/index.js"))
-      bundle.entryPoint = bundle.entryPoint+"/index.coffee" if fs.existsSync(path.normalize(bundle.entryPoint+"/index.coffee"))
 
     Object.keys(required).forEach (field)->
       throw new Error "Required field "+field+" for bundle to be set up" if !bundle[field]
@@ -89,10 +99,14 @@ module.exports = (app, config)->
         bundler.register key, parser
 
     #Adding the entry points of the bundle
+    console.log("here - bundles", bundle.entryPoint)
     if Array.isArray bundle.entryPoint
+      console.log "entry array - "
       bundle.entryPoint.forEach (point)->
+        console.log("point",point)
         bundler.addEntry point
     else
+      console.log "entry string - ", bundle.entryPoint
       bundler.addEntry bundle.entryPoint
 
     #Adding code prepends if any

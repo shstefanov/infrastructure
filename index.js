@@ -39,8 +39,10 @@ pluginsMap = {
   services: [],
 
   coreLibs: [],     // corescripts that will be loaded by default
+  coreEntry: [],    // path to files, that will be added to core bundle and executed as antry
   
   pageInitialize: [],
+  pageAppBundle : [],
 
   socketConnection: [],
   socketReadySignal: [],
