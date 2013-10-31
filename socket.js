@@ -26,9 +26,10 @@ module.exports.connect = function(app, io, config, cb){
       if(err){app.error("Socket connection plugins", err); return; }
       ServiceBuilder.call(app, err, socket, session, function(err, services){
         if(err){app.error(err); return; }
-        sockerReadySignalHandlers({services: session.services || []}, function(err, readyData){
+        env.obj = { services: session.services || [] };
+        sockerReadySignalHandlers(env, function(err, readyData){
           if(err){app.error(err); env.socket.emit("error", err); return; }
-          env.socket.emit("ready", readyData);
+          env.socket.emit("ready", readyData.obj);
         });
       });
     });
