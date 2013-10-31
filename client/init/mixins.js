@@ -10,8 +10,12 @@ module.exports = {
   filterObject: function(obj, iterator){
     var result = {};
     for(var prop in obj){
-      var val = iterator(prop, obj[prop]);
-      if(val) result[prop] = obj[prop];
+      if(iterator){
+        if(iterator(prop, obj[prop])) result[prop] = obj[prop];
+      }
+      else{
+        if(obj[prop]) result[prop] = obj[prop];
+      }
     }
     return result;
   },
