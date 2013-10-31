@@ -39,13 +39,6 @@ window.App = {
 };
 
 
-//Adding services plugin
-addPlugin("services", function(services, cb){
-  require("./init/initServices")(services, function(){
-    cb(null, services);
-  });
-});
-
 App.run = function(module){
   window.app = {
     config:                 window.config,
@@ -73,6 +66,7 @@ App.run = function(module){
     if(initialized) return;
     initialized = true;
 
+    console.log(pluginsMap);
     //Composing pluginsMap
     pluginsMap = _.mapObject(pluginsMap, function(key, fns){
       return async.simpleCompose(fns);
@@ -80,29 +74,27 @@ App.run = function(module){
 
     var counter = Object.keys(pluginsMap).length;
     var checkReady = function(){
+      console.log(counter);
       counter--;
       if(counter==0){
         require("./init/initRegularApp")(module, prepare);
       }
     };
 
-    for(key in pluginsMap){
-      pluginsMap[key](readyData[key], function(err, part){
-        if(err) throw new Error(err);
-        else
-          checkReady();
-      });
-    }
+    console.log("readyData", readyData);
+    require("./init/initServices")(readyData.services, function(){
 
-    return;
-    var buildModelsStage = function(){
-      require("./init/initModels")(data.schemas, prepare); 
-    };
+      for(key in pluginsMap){
+        console.log("here");
+        pluginsMap[key](readyData[key], function(err){
+          if(err) throw new Error(err);
+          else
+            checkReady();
+        });
+      }
+
+      return;
     
-    require("./init/initServices")(data.services, function(){
-      //Check if module is regular router or complex view-router tree
-      if     (module.routes) require("./init/initRegularApp")(module, buildModelsStage);
-      else if(module.router) require("./init/initComplexApp")(module, buildModelsStage);
     }); 
 
 
