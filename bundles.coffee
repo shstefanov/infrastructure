@@ -21,8 +21,8 @@ module.exports = (app, config)->
     load:         true
     entryPoint:   app.pluginsMap.coreEntry
     mountPoint:   "core.js"
-    cache:        config.bundlesOptions.cache || true,
-    watch:        config.bundlesOptions.watch || false,
+    cache:        config.bundlesOptions.cache || true
+    watch:        config.bundlesOptions.watch || false
     prepend: """
       var pluginsMap = {};
       window.addPlugin = function(name, fn_s){
@@ -99,14 +99,10 @@ module.exports = (app, config)->
         bundler.register key, parser
 
     #Adding the entry points of the bundle
-    console.log("here - bundles", bundle.entryPoint)
     if Array.isArray bundle.entryPoint
-      console.log "entry array - "
       bundle.entryPoint.forEach (point)->
-        console.log("point",point)
         bundler.addEntry point
     else
-      console.log "entry string - ", bundle.entryPoint
       bundler.addEntry bundle.entryPoint
 
     #Adding code prepends if any
