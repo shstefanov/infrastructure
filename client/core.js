@@ -66,7 +66,6 @@ App.run = function(module){
     if(initialized) return;
     initialized = true;
 
-    console.log(pluginsMap);
     //Composing pluginsMap
     pluginsMap = _.mapObject(pluginsMap, function(key, fns){
       return async.simpleCompose(fns);
@@ -74,18 +73,16 @@ App.run = function(module){
 
     var counter = Object.keys(pluginsMap).length;
     var checkReady = function(){
-      console.log(counter);
+      
       counter--;
       if(counter==0){
         require("./init/initRegularApp")(module, prepare);
       }
     };
 
-    console.log("readyData", readyData);
     require("./init/initServices")(readyData.services, function(){
 
       for(key in pluginsMap){
-        console.log("here");
         pluginsMap[key](readyData[key], function(err){
           if(err) throw new Error(err);
           else
