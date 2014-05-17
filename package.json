@@ -1,6 +1,6 @@
 {
   "name": "infrastructure",
-  "version": "0.2.12",
+  "version": "0.3.0",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
@@ -10,6 +10,7 @@
   "main": "./index.js",
   
   "dependencies": {
+    "mongodb": "latest",
     "express": "latest",
     "connect-mongo": "latest",
     "session.socket.io": "latest",
@@ -21,6 +22,8 @@
     "colors": "latest",
     "underscore":"latest",
     "backbone": "latest",
+    "jade": "latest",
+    "js-beautify": "latest",
     
     "browserify":"1.17.3"
 
