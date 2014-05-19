@@ -11,6 +11,8 @@ module.exports = function(cb){
   var dbConnection 
   if(config.db.url) dbConnection = config.db.url;
   else dbConnection = "mongodb://"+credentials+(config.db.host || "localhost")+":"+(config.db.port || 27017)+"/"+config.db.database
+  
+  console.log(">>>>>>>>>>>>>>>", dbConnection);
   // using native_parser if available:
   // MongoClient.connect('mongodb://127.0.0.1:27017/test'
   //   , {db: {native_parser: true}}, function(err, db) {});
