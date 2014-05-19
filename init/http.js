@@ -47,7 +47,9 @@ module.exports = function(cb){
   app.use(cookieParser);
   
   // https://github.com/expressjs/cookie-session
-  var sessionStore = new MongoStore({db: config.mongoStoreSesssionDb});
+  var sessionStore = new MongoStore({
+    url: config.db.url
+  });
   app.use(session({
     secret: config.sessionCookie,
     store: sessionStore
