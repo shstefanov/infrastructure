@@ -50,7 +50,7 @@ module.exports = function(cb){
   };
 
   var global_vars = "" , local_vars = "var ";
-  var _vars = "App = {}, Infrastructure = {}, app = undefined, jade = undefined, io = undefined, socket = undefined, $ = undefined;";
+  var _vars = "App = {}, Backbone = undefined; Infrastructure = {}, app = undefined, jade = undefined, io = undefined, socket = undefined, $ = undefined; _ = undefined";
   var vars_prepend = (config.debug? global_vars : local_vars)+_vars+"\n"+(config.globals || "");
   var new_line = "\n";
 

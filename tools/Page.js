@@ -52,6 +52,7 @@ var Page = Class.extend("Page", {
 
   assets: function(req, res){
     res.data                = res.data || {};
+    res.data.meta           = _.extend({},this.meta||{},res.data.meta||{});
     res.data.config         = JSON.stringify(this.config || {});
     res.data.styles         = _.union(this.styles || [], res.data.styles || []);
     res.data.settings       = JSON.stringify(_.extend({root:this.root}, this.settings, res.data.settings));

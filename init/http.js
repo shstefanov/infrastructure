@@ -6,7 +6,13 @@ var http = require('http');
 var path = require('path');
 
 var express = require("express");
-var MongoStore = require('connect-mongo')(express);
+
+var methodOverride = require('method-override')
+var bodyParser = require('body-parser')
+var favicon = require('serve-favicon');
+var CookieParser = require('cookie-parser');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 var socketio = require("socket.io");
 var SessionSockets = require('session.socket.io');
@@ -23,27 +29,36 @@ module.exports = function(cb){
   var config = env.config;
   var app = express();
   
-  var sessionStore = new MongoStore({db: config.mongoStoreSesssionDb});
-  var cookieParser = express.cookieParser(config.sessionCookie);
 
   app.set('port', process.env.PORT || config.port || 3000);
   app.set('views', path.join(config.rootDir, config.templates));
 
   app.set('view engine', 'jade');
   
-  config.favicon && app.use(express.favicon(path.join(config.rootDir, config.favicon)));
-  //app.use(express.logger('dev'));
-  app.use(express.json());
-  app.use(express.urlencoded());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser());
+  config.favicon && app.use(favicon(path.join(config.rootDir, config.favicon)));
   
-  app.use(express.session({
+
+  // Deprecated - see https://github.com/senchalabs/connect#middleware for alternatives
+  //app.use(express.logger('dev'));
+  //app.use(express.json());
+  app.use(bodyParser());
+  app.use(methodOverride());
+  var cookieParser = CookieParser(config.sessionCookie);
+  app.use(cookieParser);
+  
+  // https://github.com/expressjs/cookie-session
+  var sessionStore = new MongoStore({db: config.mongoStoreSesssionDb});
+  app.use(session({
     secret: config.sessionCookie,
     store: sessionStore
   }));
+  // app.use(session({
+  //   secret: config.sessionCookie,
+  //   store: sessionStore
+  // }));
   
-  app.use(app.router);
+  // Deprecated
+  //app.use(app.router);
   
   if(config.public && _.isObject(config.public)){
     for(route in config.public){

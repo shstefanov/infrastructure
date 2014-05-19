@@ -1,9 +1,8 @@
-console.log("App code")
 jade                            = require("jade/lib/runtime");
 io                              = require("./socket");
 _                               = require("underscore");
 $                               = require("./jquery");
-var Backbone                    = require("backbone");
+Backbone                        = require("backbone");
 Backbone.$                      = $;
 
 require("./mixins");

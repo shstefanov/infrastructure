@@ -6,9 +6,7 @@
     "name": "Stefan Stefanov",
     "email": "s.h.stefanov@mail.bg"
   },
-  
   "main": "./index.js",
-  
   "dependencies": {
     "mongodb": "latest",
     "express": "latest",
@@ -18,15 +16,18 @@
     "socket.io-client": "latest",
     "walk": "latest",
     "async": "latest",
-    "coffee-script":"latest",
+    "coffee-script": "latest",
     "colors": "latest",
-    "underscore":"latest",
+    "underscore": "latest",
     "backbone": "latest",
     "jade": "latest",
     "js-beautify": "latest",
-    
-    "browserify":"1.17.3"
-
+    "browserify": "1.17.3",
+    "express-session": "latest",
+    "cookie-parser": "~1.1.0",
+    "serve-favicon": "~2.0.0",
+    "body-parser": "~1.2.0",
+    "method-override": "~1.0.1"
   },
   "devDependencies": {
     "jasmine-node": "latest"

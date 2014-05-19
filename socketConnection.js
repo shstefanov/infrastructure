@@ -13,11 +13,12 @@ module.exports = function(cb){
 
   var n = 0;
   function report(n){console.log("Sockets connected: ".yellow+n);}
-
   this.socketConnection = function(err, socket, session){
+    if(err) throw err;
+    socket.on("disconnect", function(){report(--n)});
     report(++n);
     socket.on("init", function(namespace, cb){
-      if(_.has(env.pages, namespace)){
+      if(env.pages && _.has(env.pages, namespace)){
         var page = env.pages[namespace];
 
         // Finding the subject
