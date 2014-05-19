@@ -8,7 +8,9 @@ module.exports = function(cb){
   if(config.db.user && config.db.password){
     credentials = config.db.user +":"+ config.db.password+"@";
   }
-  var dbConnection = "mongodb://"+credentials+(config.db.host || "localhost")+":"+(config.db.port || 27017)+"/"+config.db.database
+  var dbConnection 
+  if(config.db.url) dbConnection = config.db.url;
+  else dbConnection = "mongodb://"+credentials+(config.db.host || "localhost")+":"+(config.db.port || 27017)+"/"+config.db.database
   // using native_parser if available:
   // MongoClient.connect('mongodb://127.0.0.1:27017/test'
   //   , {db: {native_parser: true}}, function(err, db) {});
