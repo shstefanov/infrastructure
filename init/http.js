@@ -48,7 +48,8 @@ module.exports = function(cb){
   
   // https://github.com/expressjs/cookie-session
   var sessionStore = new MongoStore({
-    url: config.db.url
+    url: config.db.url,
+    db:  config.db.database
   });
   app.use(session({
     secret: config.sessionCookie,
