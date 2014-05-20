@@ -43,13 +43,13 @@ module.exports = function(cb){
   //app.use(express.json());
   app.use(bodyParser());
   app.use(methodOverride());
-  var cookieParser = CookieParser(config.sessionCookie);
+  var cookieParser = CookieParser(config.session.cookie.name);
   app.use(cookieParser);
   
   // https://github.com/expressjs/cookie-session
-  var sessionStore = new MongoStore(config.db);
+  var sessionStore = new MongoStore(_.extend({db:env.db}, config.session));
   app.use(session({
-    secret: config.sessionCookie,
+    secret: config.session.cookie.name,
     store: sessionStore
   }));
   // app.use(session({

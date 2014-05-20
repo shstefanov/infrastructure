@@ -3,7 +3,7 @@ var mongodb = require("mongodb");
 
 var createURL = function(conf){
   var cr = "";
-  if(conf.user && conf.password) cr = conf.user+":"+conf.password+"@";
+  if(conf.username && conf.password) cr = conf.username+":"+conf.password+"@";
   return "mongodb://"+cr+(conf.host||"localhost")+":"+(conf.port||"27017")+"/"+(conf.database||conf.db);
 };
 
