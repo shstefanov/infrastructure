@@ -1,9 +1,9 @@
 
-var browserify = require("browserify");
-var path = require("path");
-var fs = require("fs");
-var jade = require("jade");
-var beautify = require('js-beautify').js_beautify;
+var browserify      = require("browserify");
+var path            = require("path");
+var fs              = require("fs");
+var jade            = require("jade");
+var beautify        = require('js-beautify').js_beautify;
 
 module.exports = function(cb){
 
@@ -80,7 +80,14 @@ module.exports = function(cb){
     bundler.addEntry(path.join(__dirname, "../client/app.js"));
 
     bundler.addEntry(entryPoint);
-    app.use(bundler);
+    if(config.bundlesOptions.cache === true){
+      var bundlePath = path.join(config.rootDir, mountPoint);
+      console.log("Writing bundle: ", bundlePath);
+      fs.writeFileSync(bundlePath, bundler.bundle());
+    }
+    else{
+      app.use(bundler);
+    }
     return mountPoint;
   }
 
