@@ -64,6 +64,10 @@ var Page = Class.extend("Page", {
   getControllers: function(env){
     this.controllers = _.pick(env.controllers, this.controllers || []);
     env._.cleanObject(this.controllers);
+  },
+
+  subject: function(session, cb){
+    cb(null, new this.env.Model());
   }
 
 });

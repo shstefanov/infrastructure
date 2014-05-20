@@ -18,6 +18,7 @@ module.exports = function(cb){
     socket.on("disconnect", function(){report(--n)});
     report(++n);
     socket.on("init", function(namespace, cb){
+      
       if(env.pages && _.has(env.pages, namespace)){
         var page = env.pages[namespace];
 
@@ -39,6 +40,7 @@ module.exports = function(cb){
         });
       }
       else{
+        console.log("!!!!!!!!!!!!!!!11");
         socket.disconnect();
       }
     });

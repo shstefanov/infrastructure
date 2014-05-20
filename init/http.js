@@ -39,8 +39,7 @@ module.exports = function(cb){
   
 
   // Deprecated - see https://github.com/senchalabs/connect#middleware for alternatives
-  //app.use(express.logger('dev'));
-  //app.use(express.json());
+  config.log && app.use(express.logger('dev'));
   app.use(bodyParser());
   app.use(methodOverride());
   var cookieParser = CookieParser(config.session.cookie.name);
@@ -52,27 +51,19 @@ module.exports = function(cb){
     secret: config.session.cookie.name,
     store: sessionStore
   }));
-  // app.use(session({
-  //   secret: config.sessionCookie,
-  //   store: sessionStore
-  // }));
   
   // Deprecated
   //app.use(app.router);
   
-  if(config.public && _.isObject(config.public)){
-    for(route in config.public){
-      var folderpath = config.public[route];
-      app.use(route, express.static(path.join(config.rootDir, folderpath)));
-    }
+  for(route in config.public){
+    var folderpath = config.public[route];
+    app.use(route, express.static(path.join(config.rootDir, folderpath)));
   }
-  else{
-    app.use(config.publicRoute || "/public", express.static(path.join(config.rootDir, config.static)));
-  }
+  
 
   var server = http.createServer(app).listen(app.get('port'), function(err){
     var io = socketio.listen(server);
-    io.set('log level', 2);
+    io.set('log level', config.log);
     var sio = new SessionSockets(io, sessionStore, cookieParser);
     sio.on("connection", env.socketConnection);
 
