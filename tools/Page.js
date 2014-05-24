@@ -4,10 +4,12 @@ var Class = require("../tools/Class");
 var path = require("path");
 var _ = require("underscore");
 
+var env;
+
 var Page = Class.extend("Page", {
 
-  constructor: function(env){
-
+  constructor: function(_env){
+    env = _env;
     if(!this.settings) this.settings = {};
     // env._.debug(env._.debug, 2, "green", "OOOOOOO");
     var _ = require("underscore");
@@ -46,19 +48,20 @@ var Page = Class.extend("Page", {
   },
 
   render: function(req, res){
-    this.assets(req, res);
+    res.data = this.assets(res.data);
     res.render(this.template, res.data);
   },
 
-  assets: function(req, res){
-    res.data                = res.data || {};
-    res.data.meta           = _.extend({},this.meta||{},res.data.meta||{});
-    res.data.config         = JSON.stringify(this.config || {});
-    res.data.styles         = _.union(this.styles || [], res.data.styles || []);
-    res.data.settings       = JSON.stringify(_.extend({root:this.root}, this.settings, res.data.settings));
-    res.data.title          = res.data.title || (typeof this.title === "function"?this.title(req, res) : this.title);
-    res.data.javascripts    = _.union(this.javascripts || [], res.data.javascripts || []);
-    if(this.mountPoint) res.data.javascripts.push(this.mountPoint);
+  assets: function(data){
+    data = data||{};
+    data.meta           = _.extend({},this.meta||{},data.meta||{});
+    data.config         = JSON.stringify(this.config || {});
+    data.styles         = _.union(this.styles || [], data.styles || []);
+    data.settings       = JSON.stringify(_.extend({root:this.root}, this.settings, data.settings));
+    data.title          = data.title || (typeof this.title === "function"?this.title(data) : this.title);
+    data.javascripts    = _.union(this.javascripts || [], data.javascripts || []);
+    if(this.mountPoint) data.javascripts.push(this.mountPoint);
+    return data;
   },
 
   getControllers: function(env){
@@ -66,8 +69,20 @@ var Page = Class.extend("Page", {
     env._.cleanObject(this.controllers);
   },
 
-  subject: function(session, cb){
-    cb(null, new this.env.Model());
+  getSubject: function(session, cb){
+
+    var save = false;
+    if(!session._id) {save = true; session._id = _.uniqueId("s_");}
+    var subject = env.subjects.add({_id: session._id});
+    if(!save) {
+      cb(null, subject );
+      subject.sockets.once("disconnect", env.subjects.remove, env.subjects);
+    }
+    else session.save(function(err){
+      if(err) return cb(err); 
+      cb(null, subject);
+      subject.sockets.once("disconnect", env.subjects.remove, env.subjects);
+    });
   }
 
 });

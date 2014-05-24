@@ -56,9 +56,13 @@ var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
 var emptyObj = {};
 
-var View = App.View.extend("View", {
+var View = App.View.extend("AdvancedView", {
 
   constructor: function(options){
+
+    if(this.controller && typeof this.controller === "string")
+      this.controller = app.controllers[this.controller]
+
     this.infrastructure = {};
 
     if(this.templates){

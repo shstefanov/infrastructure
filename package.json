@@ -1,6 +1,6 @@
 {
   "name": "infrastructure",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
@@ -27,11 +27,12 @@
     "cookie-parser": "~1.1.0",
     "serve-favicon": "~2.0.0",
     "body-parser": "~1.2.0",
-    "method-override": "~1.0.1"
+    "method-override": "~1.0.1",
+    "morgan":"latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"
   },
-  "_id": "infrastructure@0.3.11",
+  "_id": "infrastructure@0.3.12",
   "_from": "infrastructure@latest"
 }

@@ -4,7 +4,8 @@ var _ = require("underscore");
 
 
 module.exports = EventedClass.extend("Sockets", {
-  constructor: function(){
+  constructor: function(subject){
+    this.subject = subject;
     this.sockets = [];
   },
 
@@ -17,18 +18,13 @@ module.exports = EventedClass.extend("Sockets", {
 
   remove: function(socket){
     this.trigger("remove", this.sockets.splice(this.sockets.indexOf(socket),1)[0]);
+    if(this.sockets.length == 0) this.trigger("disconnect", this.subject);
   },
 
-  emit: function(data){
-    // {
-    //   controller: ...
-    //   action:     ...
-    //   body:       ...
-    // }
-    var sockets = _.filter(this.sockets, function(socket){
-      return socket.controllers.indexOf(data.controller)>-1;
-    });
-    _.invoke(sockets, "emit", data.controller.name, _.omit(data, ["controller"]));
+  emit: function(controller, event, data){
+    for(var i = 0; i<this.sockets.length;i++)
+      if(this.sockets[i].controllers.indexOf(controller)!=1)
+        this.sockets[i].emit(controller.name, {action: event, body: data});
   }
 
 

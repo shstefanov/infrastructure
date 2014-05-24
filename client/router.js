@@ -1,10 +1,9 @@
 
-module.exports = App.Router.extend("Router", {
+module.exports = App.Router.extend("AdvancedRouter", {
   
   constructor: function(){
     App.Router.apply(this, arguments);
-    console.log("appending: ", this.layout);
-    this.layout.append(_.values(this.views));    
+    this.layout.append(_.values(this.views));
   }
 
 }, {
@@ -15,13 +14,11 @@ module.exports = App.Router.extend("Router", {
    
     for(key in approuter){ var View = approuter[key];
       if(key.indexOf("/") === 0){
-        if(View.prototype.controller && _.has(approuter.controllers, View.prototype.controller)){
-          View.prototype.controller = approuter.controllers[View.prototype.controller];
-        }
         // Asuming value is view prototype
         (function(viewRoot){
-          var full_root = "/"+approuter.settings.root+viewRoot;
+          var controller;
 
+          var full_root = "/"+approuter.settings.root+viewRoot;
           var view = views[full_root] = new View({ urlRoot: full_root });
           function switchView(view){
             

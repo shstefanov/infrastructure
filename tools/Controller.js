@@ -14,19 +14,11 @@ module.exports = EventedClass.extend("Controller", {
       return this.trigger("socket", socket);
   },
 
-  send: function(action, data){
-    return {
-      controller: this,
-      action:     action,
-      body:       data
-    };
-  },
-
-  handle: function(socket){ 
+  handle: function(subject, socket){
     // binds socket to listen for this controller's events
     var self = this;
     socket.on(this.name, function(data, cb){
-      if(self.methods.indexOf(data.action)!=-1) self[data.action](data.body, cb);
+      if(self.methods.indexOf(data.action)!=-1) self[data.action](data.body, subject, cb);
       else cb("Error: Can't find method "+data.action);
     });
   }

@@ -7,15 +7,18 @@ Backbone.$                      = $;
 
 require("./mixins");
 
+function set_app (){ app = this; Backbone.Router.apply(this, arguments); }
+var Router                      = Backbone.Router.extend({constructor:set_app});
+
 var Class                       = require("../tools/Class");
 Backbone.Model.__className      = "Class_Model";
 Backbone.Collection.__className = "Class_Collection";
 Backbone.View.__className       = "Class_View";
-Backbone.Router.__className     = "Class_Router";
+Router.__className              = "Class_Router";
 Backbone.Model.extend           = Class.extend;
 Backbone.Collection.extend      = Class.extend;
 Backbone.View.extend            = Class.extend;
-Backbone.Router.extend          = Class.extend;
+Router.extend                   = Class.extend;
 
 _.extend(App, {
   Class:                        Class,
@@ -23,7 +26,7 @@ _.extend(App, {
   Model:                        Backbone.Model,
   Collection:                   Backbone.Collection,
   View:                         Backbone.View,
-  Router:                       Backbone.Router
+  Router:                       Router
 });
 
 _.extend(App, {
@@ -46,6 +49,7 @@ App.run = function(Router, cb){
   Router.prototype.settings = Router.settings = window.settings;
   
   function start(){
+    app= Router.prototype;
     Router.prototype.layout = new (Router.prototype.layout || App.Layout)();
     if(typeof Router.build === "function") Router.build();
     app = new Router();

@@ -5,6 +5,8 @@ module.exports = function(cb){
   var _ = require("underscore");
   var returnArg = function(a){return a;};
 
+  var SocketsCollection = require("../tools/SocketsCollection");
+
   var getMethods = function(controllers){
     var result = {};
     for(var i = 0;i<controllers.length;i++) result[controllers[i].name] = controllers[i].methods;
@@ -23,24 +25,24 @@ module.exports = function(cb){
         var page = env.pages[namespace];
 
         // Finding the subject
-        page.subject(session, function(err, subject){
+        page.getSubject(session, function(err, subject){
           
           if(err){ cb(err); return socket.disconnect(); }
 
           subject.session = session;
           
           // create or get sockets collection and set it to subject
-          if(!subject.sockets) subject.sockets = new env.SocketsCollection();
-
+          if(!subject.sockets) subject.sockets = new SocketsCollection(subject);
+          subject.sockets.add(socket);
           socket.controllers = _.invoke(page.controllers, "addSubject", subject, socket).filter(returnArg);
-          _.invoke(socket.controllers, "handle", socket);
+          _.invoke(socket.controllers, "handle", subject, socket);
 
           cb(null, getMethods(socket.controllers));
 
         });
       }
       else{
-        console.log("!!!!!!!!!!!!!!!11");
+        console.log("Wrong namespace - disconnecting socket");
         socket.disconnect();
       }
     });

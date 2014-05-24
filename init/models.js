@@ -21,17 +21,32 @@ module.exports = function(cb){
   // this._.debug(null, 1, "red", "MODELS");
   //////////////////////////////////////
   function go(err){
-    env.Models = {};
     if(err) return cb(err);
-    fs.readdirSync(modelsDir).filter(function(filename){
-      return filename !== "init.js";
-    }).forEach(function(filename){
-      var ModelBuilder = require(path.join(modelsDir, filename));
-      var Model = Model.apply(env);
-      var modelName = filename.replace(/(\.js|\.coffee)$/, "");
-      env.Models[modelName] = Model;
+    var modelsDir = path.join(config.rootDir, config.models);
+    var Models = env.Models = {};
+    var modelsFiles = fs.readdirSync(modelsDir);
+
+    var chain = [];
+
+    modelsFiles.forEach(function(filename){
+      if(filename === "init.js") return;
+      var fn = require(path.join(modelsDir, filename));
+      var ModelPrototype = fn.call(env);
+      var name = ModelPrototype.collectionName;
+      Models[name] = ModelPrototype;
+      chain.push(ModelPrototype.build);
     });
-    cb();
+
+    var exec = env._.chain(chain);
+    exec(function(err){
+      if(err) return cb(err);
+
+      // Build relations here
+
+      cb();
+
+    });
+
   }
   
 
