@@ -1,12 +1,11 @@
 
-var Class = require("../tools/Class");
-
-var path = require("path");
-var _ = require("underscore");
+var EventedClass = require("../tools/EventedClass");
+var path  = require("path");
+var _     = require("underscore");
 
 var env;
 
-var Page = Class.extend("Page", {
+var Page = EventedClass.extend("Page", {
 
   constructor: function(_env){
     env = _env;
@@ -17,11 +16,14 @@ var Page = Class.extend("Page", {
     var root = this.root;
     var app = env.app;
 
+    if(!this.config) this.config = {root:root};
+    else this.config.root = root;
+
     if(page.pre) app[page.method || "get"]("/"+root+"*", _.bind(page.pre, page));
 
     for(key in page){
-      if(/(^\/|^[*]|^get\s*?|^post\s*?|^put\s*?|^delete\s*?)/i.test(key)){
-        var route = key.match(/(^\/|^[*]|^get\s*?|^post\s*?|^put\s*?|^delete\s*?)/i);
+      if(/(^\/|^[*]|^get\s|^post\s|^put\s|^delete\s)/i.test(key)){
+        var route = key.match(/(^\/|^[*]|^get\s|^post\s|^put\s|^delete\s)/i);
         if(route.indexOf("/") == 0 || route.indexOf("*") == 0){
           var method = (page.method || "get").toLowerCase();
           var url = route[1];
@@ -29,22 +31,22 @@ var Page = Class.extend("Page", {
         }
         else{
           var method = route[1].replace(/\s$/, "").toLowerCase();
-          var url = key.replace(/(^get\s*?|^post\s*?|^put\s*?|^delete\s*?)/i, "");
+          var url = key.replace(/(^get\s|^post\s|^put\s|^delete\s)/i, "");
         }
         url = path.join(root.trim(), url.trim()).replace(/\\/g, "/");
         url = url.replace("/*", "*");
-        // env._.debug("/"+url, 2, "green", "PAGE URL");
+        console.log("Set up route: ", "/"+url);
         app[method]("/"+url, _.bind(page[key], page)); 
       }
     }
 
     if(page.after) env.app[page.method || "get"]("/"+root+"*", _.bind(page.after, page));
     
-    if(page.app) {
-      var mountPoint = env.registerBundle(page);
-      if(!this.javascripts) this.javascripts = [mountPoint];
-      else this.javascripts.push(mountPoint);
-    }
+    // if(page.app) {
+    //   var mountPoint = env.registerBundle(page);
+    //   if(!this.javascripts) this.javascripts = [mountPoint];
+    //   else this.javascripts.push(mountPoint);
+    // }
   },
 
   render: function(req, res){
@@ -55,12 +57,10 @@ var Page = Class.extend("Page", {
   assets: function(data){
     data = data||{};
     data.meta           = _.extend({},this.meta||{},data.meta||{});
-    data.config         = JSON.stringify(this.config || {});
+    data.javascripts    = _.union(this.javascripts || [], data.javascripts || [], this.apps||[]);
     data.styles         = _.union(this.styles || [], data.styles || []);
     data.settings       = JSON.stringify(_.extend({root:this.root}, this.settings, data.settings));
     data.title          = data.title || (typeof this.title === "function"?this.title(data) : this.title);
-    data.javascripts    = _.union(this.javascripts || [], data.javascripts || []);
-    if(this.mountPoint) data.javascripts.push(this.mountPoint);
     return data;
   },
 

@@ -54,43 +54,55 @@ module.exports = function(cb){
   var vars_prepend = (config.debug? global_vars : local_vars)+_vars+"\n"+(config.globals || "");
   var new_line = "\n";
 
-  env.registerBundle = function(page){
-    var root = page.root, filepath = page.app;
-    var entryPoint = path.join(env.config.rootDir, env.config.bundles, filepath);
-    var mountPoint = path.join(_bundles, root+js_ext);
-    mountPoint = mountPoint.replace(backslash_repl_re, _slash);
-    var bundler = browserify({
-      mount:        mountPoint,
-      watch:        config.bundlesOptions.watch,
-      cache:        config.bundlesOptions.cache
+  env.registerBundle  = function(page){
+    
+    var root          = page.root, filepath = page.app;
+    var entryPoint    = path.join(
+      config.rootDir || process.cwd(), 
+      config.bundles, 
+      page.app
+    );
+    
+    
+    var mountPoint    = path.join(config.bundlesOptions.prefix || _bundles,  page.app);
+    mountPoint        = mountPoint.replace(backslash_repl_re, _slash);
+    
+    var    bundler    = browserify({
+      mount:    mountPoint,
+      watch:    config.bundlesOptions.watch,
+      cache:    config.bundlesOptions.cache
     });
+    
     bundler.register(jade_ext, parse_jade);
     
-    for(key in page){
-      key.indexOf(".")===1 && bundler.register(key, page[key]);
-    }
+    for(key in page) key.indexOf(".")===0 && bundler.register(key, page[key]);
     
-    vars_prepend+="\nvar settings = "+JSON.stringify(page.settings)+";\n";
     
-    bundler.prepend( vars_prepend );
-
     page.settings.root = root;
+    var additional_prepend="\nvar config = "+JSON.stringify(page.config)+";\n";
+    
+    bundler.prepend( vars_prepend+additional_prepend );
+
     page.bundler = bundler;
+    page.apps = page.apps?page.apps.concat([mountPoint]):[mountPoint];
     // Adding the core app
     bundler.addEntry(path.join(__dirname, "../client/app.js"));
-
+    if(config.bundlesOptions.plugins) config.bundlesOptions.plugins.forEach(function(plugin){
+      bundler.addEntry(plugin);
+    });
+      //throw new Error("Entry: "+entryPoint);
     bundler.addEntry(entryPoint);
     if(config.bundlesOptions.cache === true){
-      var bundlePath = path.join(config.rootDir, mountPoint);
+      var bundlePath = path.join(config.rootDir||process.cwd(), mountPoint);
       console.log("Writing bundle: ", bundlePath);
-      fs.writeFileSync(bundlePath, bundler.bundle());
+      //fs.writeFileSync(bundlePath, bundler.bundle());
     }
     else{
       app.use(bundler);
     }
-    return mountPoint;
+    return bundler;
   }
 
-  cb(null);
+  cb && cb(null);
 
 }

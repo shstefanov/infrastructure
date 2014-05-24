@@ -44,9 +44,10 @@ _.extend(App, {
 
 App.run = function(Router, cb){
 
-  // router.settings = window.settings, router.config = window.config;
+  // router.settings = window.settings, 
+  Router.prototype.config      = config;
   Router.prototype.controllers = {};
-  Router.prototype.settings = Router.settings = window.settings;
+  Router.prototype.settings    = window.settings;
   
   function start(){
     app= Router.prototype;
@@ -61,7 +62,7 @@ App.run = function(Router, cb){
       socket.emit("init", settings.root, function(err, initData){
         if(err) return alert(err);
         // {
-        //   "controllerName": [... methods ...];
+        //   "controllerName": [... methods ...]
         // }
         for(name in initData){ var methods = initData[name];
           if(methods.error) { console.log(init.error); continue; }

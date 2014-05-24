@@ -11,14 +11,13 @@ module.exports = function(cb){
   var pages = env.pages = {};
   
   env.buildPage = function(root, PageClass){
-    var firstLetter = root[0];
-    var className = root.replace(firstLetter, firstLetter.toUpperCase());
-
     PageClass.prototype.root = root;
     PageClass.prototype.env  = env;
 
     var page = pages[root] = new PageClass(env);
+    
     if(env.controllers && page.controllers) page.getControllers(env);
+    return page;
   }
 
   if(!env.plasma){
@@ -30,13 +29,13 @@ module.exports = function(cb){
     }
     else go();
   }
-  else return cb();
+  else return cb && cb();
 
 
   function go(err){
-    if(err) return cb(err);
-    var routesDir = path.join(config.rootDir, config.routes);
+    if(err) return cb && cb(err);
     
+    var routesDir  = path.join(config.rootDir, config.routes);
     var routeFiles = fs.readdirSync(routesDir);
 
     routeFiles.forEach(function(filename){
@@ -52,7 +51,7 @@ module.exports = function(cb){
 
     //this._.debug("", 2, "green", "PAGES END");
 
-    cb(null);
+    cb && cb(null);
   }
   
 
