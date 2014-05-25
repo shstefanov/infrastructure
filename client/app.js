@@ -49,7 +49,14 @@ App.run = function(Router, cb){
   Router.prototype.config      = _.clone(window.config);
   Router.prototype.settings    = settings;
   
+  // initData == { "controllerName": ["method1", "method2", ...], ... }
+  var initData;
   var start = _.once(function(){
+    var controllers = app.controllers = Router.prototype.controllers = {};
+    for(name in initData){ var methods = initData[name];
+      if(methods.error) { console.log(init.error); continue; }
+      Router.prototype.controllers[name] = new App.Controller(name, methods);
+    }
     Router.prototype.layout = new (Router.prototype.layout || App.Layout)();
     if(typeof Router.build === "function") Router.build();
     app = new Router();
@@ -59,18 +66,11 @@ App.run = function(Router, cb){
 
   socket = io.connect().on("connect", function(){
     setTimeout(function(){
-      socket.emit("init", config.root, function(err, initData){
+      socket.emit("init", config.root, function(err, data){
         if(err) return console.log(err);
         console.log("Socket connected");
-        // initData == { "controllerName": ["method1", "method2", ...], ... }
-        var controllers = app.controllers = Router.prototype.controllers = {};
-        for(name in initData){ var methods = initData[name];
-          if(methods.error) { console.log(init.error); continue; }
-          Router.prototype.controllers[name] = new App.Controller(name, methods);
-        }
-        
+        initData = data;
         $(start);
-        
       });
     }, 100);
   });
