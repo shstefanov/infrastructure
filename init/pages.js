@@ -17,20 +17,19 @@ module.exports = function(cb){
     var page = pages[root] = new PageClass(env);
     
     if(env.controllers && page.controllers) page.getControllers(env);
-    if(!env.plasma && page.app) env.registerBundle(page);
+    if(!env.skipLoading) env.registerBundle(page);
     return page;
   }
 
-  if(!env.plasma){
-    if(!config.routes || !fs.existsSync(path.join(config.rootDir, config.routes))) return cb();
-    
-    if(fs.existsSync(path.join(config.rootDir, config.routes, "init.js"))){
-      var initializer = require(path.join(config.rootDir, config.routes, "init.js"));
-      initializer.call(env, go);
-    }
-    else go();
+  if(env.skipLoading === true) return cb && cb();
+  if(!config.routes || !fs.existsSync(path.join(config.rootDir, config.routes))) return cb();
+  
+  if(fs.existsSync(path.join(config.rootDir, config.routes, "init.js"))){
+    var initializer = require(path.join(config.rootDir, config.routes, "init.js"));
+    initializer.call(env, go);
   }
-  else return cb && cb();
+  else go();
+
 
 
   function go(err){

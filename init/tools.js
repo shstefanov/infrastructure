@@ -10,7 +10,6 @@ module.exports = function(cb){
   
   Backbone.Model.__className = "Class_Model";
   Backbone.Model.extend = Class.extend;
-  console.log(1);
   Backbone.Collection.__className = "Class_Collection";
   Backbone.Collection.extend = Class.extend;
 

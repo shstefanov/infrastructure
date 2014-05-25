@@ -65,7 +65,7 @@ var Page = EventedClass.extend("Page", {
   },
 
   getControllers: function(env){
-    this.controllers = _.pick(env.controllers, this.controllers || []);
+    this.controllers = _.pick(env.controllers, this.controllers);
     env._.cleanObject(this.controllers);
   },
 
