@@ -14,13 +14,18 @@ module.exports = function(cb){
   }
 
   var n = 0;
-  function report(n){console.log("Sockets connected: ".yellow+n);}
+  function report(n){console.log("Sockets connected: "+n);}
   this.socketConnection = function(err, socket, session){
     if(err) throw err;
     socket.on("disconnect", function(){report(--n)});
     report(++n);
+
+    var t = setTimeout(function(){
+      socket.disconnect();
+    }, env.config.SocketIdleDisconnectTime || 1000*60);
+
     socket.on("init", function(namespace, cb){
-      
+      clearTimeout(t);
       if(env.pages && _.has(env.pages, namespace)){
         var page = env.pages[namespace];
 
@@ -48,8 +53,5 @@ module.exports = function(cb){
     });
   };
 
-
-
-
-  cb(null);
+  cb&&cb(null);
 };
