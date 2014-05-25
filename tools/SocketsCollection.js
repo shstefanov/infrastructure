@@ -2,7 +2,6 @@
 var EventedClass = require("./EventedClass");
 var _ = require("underscore");
 
-
 module.exports = EventedClass.extend("Sockets", {
   constructor: function(subject){
     this.subject = subject;
@@ -26,8 +25,6 @@ module.exports = EventedClass.extend("Sockets", {
       if(this.sockets[i].controllers.indexOf(controller)!=1)
         this.sockets[i].emit(controller.name, {action: event, body: data});
   }
-
-
 
 });
 

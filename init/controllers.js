@@ -18,11 +18,10 @@ module.exports = function(cb){
   };
   if(env.skipLoading === true) return;
 
-
-
   var path = require("path");
   var fs = require("fs");
   var config = env.config;
+
   if(!config.controllers || !fs.existsSync(path.join(config.rootDir, config.controllers))) return cb();
   
   var controllersPath = path.join(config.rootDir, config.controllers);
@@ -34,16 +33,16 @@ module.exports = function(cb){
   else go();
 
   function go(err){
-    if(err) return cb(err);
+    if(err) return cb&&cb(err);
     env.controllers = env._.dirToObject(controllersPath, function(name, stuff, module){
       if(name === "init") return;
       var Prototype = module.apply(env);
       var name = Prototype.prototype.name||name;
       var controller = env.createController(name, Prototype);
-      env.controllers[name] = controller;
+      return controller;
     });
     // env._.debug(env.controllers, 2, "green", "env.controllers:");
-    cb();
+    cb&&cb();
   }
 
 }

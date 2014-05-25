@@ -182,8 +182,8 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
   },
 
   getBy: function(arg1, arg2){
-    if(typeof arg2 === "undefined") return Backbone.Collection.prototype.add.apply(this, arguments);
-    else return this._index[name][arg2];
+    if(typeof arg2 === "undefined") return this.get(arg1);
+    else return this._index[arg1]?this._index[arg1][arg2]:undefined;
   }
 
 });

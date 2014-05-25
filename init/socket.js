@@ -32,7 +32,11 @@ module.exports = function(cb){
         // Finding the subject
         page.getSubject(session, function(err, subject){
           
-          if(err){ cb(err); return socket.disconnect(); }
+          if(err){ 
+            cb(err); 
+            socket.disconnect(); 
+            return;
+          }
 
           subject.session = session;
           
@@ -43,7 +47,7 @@ module.exports = function(cb){
           _.invoke(socket.controllers, "handle", subject, socket);
 
           cb(null, getMethods(socket.controllers));
-
+          return subject;
         });
       }
       else{
