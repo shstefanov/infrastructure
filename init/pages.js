@@ -17,6 +17,7 @@ module.exports = function(cb){
     var page = pages[root] = new PageClass(env);
     
     if(env.controllers && page.controllers) page.getControllers(env);
+    if(!env.plasma && page.app) env.registerBundle(page);
     return page;
   }
 

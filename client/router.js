@@ -18,7 +18,7 @@ module.exports = App.Router.extend("AdvancedRouter", {
         (function(viewRoot){
           var controller;
 
-          var full_root = "/"+approuter.settings.root+viewRoot;
+          var full_root = "/"+approuter.config.root+viewRoot;
           var view = views[full_root] = new View({ urlRoot: full_root });
           function switchView(view){
             

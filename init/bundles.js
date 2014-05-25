@@ -77,9 +77,7 @@ module.exports = function(cb){
     
     for(key in page) key.indexOf(".")===0 && bundler.register(key, page[key]);
     
-    
-    page.settings.root = root;
-    var additional_prepend="\nvar config = "+JSON.stringify(page.config)+";\n";
+    var additional_prepend="\nvar settings = "+JSON.stringify(page.settings||{})+";\n";
     
     bundler.prepend( vars_prepend+additional_prepend );
 

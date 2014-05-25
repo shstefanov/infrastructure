@@ -45,9 +45,9 @@ _.extend(App, {
 App.run = function(Router, cb){
 
   // router.settings = window.settings, 
-  Router.prototype.config      = config;
+  Router.prototype.config      = _.clone(window.config);
   Router.prototype.controllers = {};
-  Router.prototype.settings    = window.settings;
+  Router.prototype.settings    = settings;
   
   function start(){
     app= Router.prototype;
@@ -57,21 +57,21 @@ App.run = function(Router, cb){
   };
 
   socket = io.connect().on("connect", function(){
-    var settings = _.clone(window.settings);
     setTimeout(function(){
-      socket.emit("init", settings.root, function(err, initData){
+      socket.emit("init", config.root, function(err, initData){
         if(err) return alert(err);
         // {
         //   "controllerName": [... methods ...]
         // }
+        console.log("Socket connected");
         for(name in initData){ var methods = initData[name];
           if(methods.error) { console.log(init.error); continue; }
           Router.prototype.controllers[name] = new App.Controller(name, methods);
         }
         
         $(start);
-       
         app.trigger("start");
+        
         Backbone.history.start({pushState:true});
 
       });

@@ -59,7 +59,7 @@ var Page = EventedClass.extend("Page", {
     data.meta           = _.extend({},this.meta||{},data.meta||{});
     data.javascripts    = _.union(this.javascripts || [], data.javascripts || [], this.apps||[]);
     data.styles         = _.union(this.styles || [], data.styles || []);
-    data.settings       = JSON.stringify(_.extend({root:this.root}, this.settings, data.settings));
+    data.config         = JSON.stringify(_.extend({root:this.root}, this.config, data.config));
     data.title          = data.title || (typeof this.title === "function"?this.title(data) : this.title);
     return data;
   },

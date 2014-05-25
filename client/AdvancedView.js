@@ -145,10 +145,10 @@ var View = App.View.extend("AdvancedView", {
   },
 
   url: function(str){ return (this.urlRoot || "") + (str||"");  },
-  URL: function(str){ return this.settings.root + (str||""); },
+  URL: function(str){ return this.config.root + (str||""); },
   
   config:   _.clone(window.config),
-  settings: _.clone(window.settings),
+  settings: _.clone(settings),
 
   render: function(){
     this.template && this.$el.html(this.template(this));
