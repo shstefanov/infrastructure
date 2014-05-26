@@ -25,6 +25,8 @@ var getConfig = function(folderPath){
 };
 
 module.exports = function findApp(folderPath, options){
+  folderPath = folderPath||process.argv[2]||process.cwd();
+  options = options||{};
   if(hasConfig(folderPath))    loadApp(folderPath, getConfig(folderPath), options || {});
   else{
     console.log("config not found");

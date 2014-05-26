@@ -1,6 +1,6 @@
 {
   "name": "infrastructure",
-  "version": "0.3.19",
+  "version": "0.3.20",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
@@ -33,12 +33,12 @@
   "devDependencies": {
     "jasmine-node": "latest"
   },
-  "_id": "infrastructure@0.3.19",
+  "_id": "infrastructure@0.3.20",
   "_from": "infrastructure@latest",
   "repositories"  : [
     {
       "type": "git",
       "url": "git@github.com:shstefanov/infrastructure.git"
     }
-  ],
+  ]
 }

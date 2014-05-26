@@ -5,9 +5,13 @@ var _     = require("underscore");
 
 var env;
 
+var renderTemplate = function(template, options){
+  return function(req, res){ res.render(template, _.extend({req:req}, options||{})); };
+}
+
 var Page = EventedClass.extend("Page", {
 
-  constructor: function(_env){
+  constructor: function(_env, options){
     env = _env;
     if(!this.settings) this.settings = {};
     // env._.debug(env._.debug, 2, "green", "OOOOOOO");
@@ -23,11 +27,16 @@ var Page = EventedClass.extend("Page", {
 
     for(key in page){
       if(/(^\/|^[*]|^get\s|^post\s|^put\s|^delete\s)/i.test(key)){
+        var bind = true;
+        if(typeof page[key]==="string") {
+          bind = false;
+          page[key] = renderTemplate(page[key], options);
+        }
+        else if(typeof page[key]!="function") return;
         var route = key.match(/(^\/|^[*]|^get\s|^post\s|^put\s|^delete\s)/i);
         if(route.indexOf("/") == 0 || route.indexOf("*") == 0){
           var method = (page.method || "get").toLowerCase();
-          var url = route[1];
-          if(url == "/") url = "";
+          var url = key;
         }
         else{
           var method = route[1].replace(/\s$/, "").toLowerCase();
@@ -35,8 +44,9 @@ var Page = EventedClass.extend("Page", {
         }
         url = path.join(root.trim(), url.trim()).replace(/\\/g, "/");
         url = url.replace("/*", "*");
-        console.log("Set up route: ", "/"+url);
-        app[method]("/"+url, _.bind(page[key], page)); 
+        route = url.replace(/(\/*)?/, "/");
+        console.log("Set up route: ", route);
+        app[method](route, bind?_.bind(page[key], page):page[key]);
       }
     }
 

@@ -10,12 +10,12 @@ module.exports = function(cb){
   var app = env.app;
   var pages = env.pages = {};
   
-  env.buildPage = function(root, PageClass){
-    PageClass.prototype.root = root;
+  env.buildPage = function(root, PageClass, options){
+    PageClass.prototype.root = root || "/";
     PageClass.prototype.env  = env;
-
-    var page = pages[root] = new PageClass(env);
     
+    var page = pages[root] = new PageClass(env, options);
+
     if(env.controllers && page.controllers) page.getControllers(env);
     if(!env.skipLoading) env.registerBundle(page);
     return page;
