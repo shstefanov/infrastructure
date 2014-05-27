@@ -1,4 +1,3 @@
-
 var EventedClass = require("../tools/EventedClass");
 var path  = require("path");
 var _     = require("underscore");
@@ -13,15 +12,15 @@ var Page = EventedClass.extend("Page", {
 
   constructor: function(_env, options){
     env = _env;
-    if(!this.settings) this.settings = {};
-    // env._.debug(env._.debug, 2, "green", "OOOOOOO");
-    var _ = require("underscore");
-    var page = this;
-    var root = this.root;
     var app = env.app;
-
+    var root = this.root;
+    
+    if(!this.settings) this.settings = {};
+    
     if(!this.config) this.config = {root:root};
     else this.config.root = root;
+    
+    var page = this;
 
     if(page.pre) app[page.method || "get"]("/"+root+"*", _.bind(page.pre, page));
 
@@ -29,10 +28,16 @@ var Page = EventedClass.extend("Page", {
       if(/(^\/|^[*]|^get\s|^post\s|^put\s|^delete\s)/i.test(key)){
         var bind = true;
         if(typeof page[key]==="string") {
-          bind = false;
-          page[key] = renderTemplate(page[key], options);
+          if(page.app) {
+            if(typeof page[page[key]] === "function") page[key] = page[page[key]];
+            else page[key] = page.render;
+          }  
+          else{
+            bind = false;
+            page[key] = renderTemplate(page[key], options);
+          }
         }
-        else if(typeof page[key]!="function") return;
+        else if(typeof page[key]!="function") return this;
         var route = key.match(/(^\/|^[*]|^get\s|^post\s|^put\s|^delete\s)/i);
         if(route.indexOf("/") == 0 || route.indexOf("*") == 0){
           var method = (page.method || "get").toLowerCase();
@@ -44,7 +49,8 @@ var Page = EventedClass.extend("Page", {
         }
         url = path.join(root.trim(), url.trim()).replace(/\\/g, "/");
         url = url.replace("/*", "*");
-        route = url.replace(/(\/*)?/, "/");
+        route = url.replace(/(\/*)?/, "/").replace(/\/$/, "").replace(/\s/g,"");
+        if(route==="") route = "/"
         console.log("Set up route: ", route);
         app[method](route, bind?_.bind(page[key], page):page[key]);
       }
@@ -60,8 +66,7 @@ var Page = EventedClass.extend("Page", {
   },
 
   render: function(req, res){
-    res.data = this.assets(res.data);
-    res.render(this.template, res.data);
+    res.render(this.template, this.assets(res.data));
   },
 
   assets: function(data){

@@ -10,14 +10,16 @@ module.exports = function(cb){
   var app = env.app;
   var pages = env.pages = {};
   
-  env.buildPage = function(root, PageClass, options){
-    PageClass.prototype.root = root || "/";
+  env.buildPage = function(PageClass, options){
+    if(!PageClass.prototype.root)
+      PageClass.prototype.root = options?(options.root || "/"):"/";
     PageClass.prototype.env  = env;
     
     var page = pages[root] = new PageClass(env, options);
 
     if(env.controllers && page.controllers) page.getControllers(env);
     if(!env.skipLoading) env.registerBundle(page);
+    pages[page.root] = page;
     return page;
   }
 
@@ -40,13 +42,24 @@ module.exports = function(cb){
 
     routeFiles.forEach(function(filename){
       if(filename === "init.js") return;
-      var pageObj, PageClass = env.Page;
-      var page = require(path.join(routesDir, filename));
-      var root = page.root || filename.replace(/(\.js|\.coffee|\.json)$/i, "");
-
-      PageClass = page.apply(env);
-      env.buildPage(root, PageClass);
-
+      var fileroot = "/"+filename.replace(/(\.js|\.coffee|\.json)$/i, "");
+      var PageClass = require(path.join(routesDir, filename)).apply(env);
+      if(typeof PageClass != "function"){
+        if(_.isArray(PageClass)) 
+          return PageClass.map(function(page){
+            page.root = page.root || fileroot;
+            return env.Page.extend("page", page);
+          }).forEach(function(page){
+            env.buildPage(page, page);
+          });
+        else if(_.isObject(PageClass)) 
+          return env.buildPage(env.Page.extend("page", PageClass), PageClass);
+        else return;
+      }
+      else{
+        if(!PageClass.prototype.root) PageClass.prototype.root = fileroot;
+        env.buildPage(PageClass);
+      }
     });
 
     //this._.debug("", 2, "green", "PAGES END");

@@ -44,14 +44,25 @@ module.exports = function(cb){
           if(!subject.sockets) subject.sockets = new SocketsCollection(subject);
           subject.sockets.add(socket);
           socket.controllers = _.invoke(page.controllers, "addSubject", subject, socket).filter(returnArg);
-          _.invoke(socket.controllers, "handle", subject, socket);
+          if(socket.controllers.length>0){
+            _.invoke(socket.controllers, "handle", subject, socket);
+            cb(null, getMethods(socket.controllers));
+          }
+          else{
+            // Disconnecting subjects with no controllers and sending all 
+            // controllers functions to them to prevent call functions of 
+            // undefined controllers (there is no listeners on serverside)
+            cb(null, env._.mapObject(env.controllers, function(name, controller){
+              return controller.methods;
+            }))
+            socket.disconnect();
+          }
 
-          cb(null, getMethods(socket.controllers));
           return subject;
         });
       }
       else{
-        console.log("Wrong namespace - disconnecting socket");
+        console.log("Wrong page - disconnecting socket");
         socket.disconnect();
       }
     });
