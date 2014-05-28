@@ -42,11 +42,18 @@ function createElements(view){
   //view.el = $.apply(window, els);
 }
 
-var renderMultiple = function(){
+var renderMultiple = function($view){
   for(key in this.elements){ 
-    var $el = this.elements[key];
     var template = this.templates[key];
-    $el.html(template.call(this, this));
+    var $el = this.elements[key];
+    if($view){
+      if($view===$el) {
+        $view.html(template.call(this, this));
+        this.trigger("render");
+        return this;
+      }
+    }
+    else $el.html(template.call(this, this));
   }
   this.trigger("render");
   return this;
@@ -59,7 +66,7 @@ var emptyObj = {};
 var View = App.View.extend("AdvancedView", {
 
   constructor: function(options){
-
+    
     if(this.controller && typeof this.controller === "string")
       this.controller = app.controllers[this.controller]
 
@@ -144,7 +151,8 @@ var View = App.View.extend("AdvancedView", {
       Infrastructure[name].infrastructure(this, options || emptyObj)
   },
 
-  url: function(str){ return (this.urlRoot || "") + (str||"");  },
+  url: function(str){ 
+    return (this.urlRoot || "") + (str||"");  },
   URL: function(str){ return this.config.root + (str||""); },
   
   config:   _.clone(window.config),

@@ -3,20 +3,18 @@
 module.exports = function(cb){
 
   var _ = require("underscore");
-  var baseMethods = _.methods(this.Controller.prototype);
-  this.createController = function(name, ControllerClass){
-    _.extend(ControllerClass.prototype, {
-      methods: _.difference(_.methods(ControllerClass.prototype), baseMethods),
-      name: name
-    });
+  var base = _.methods(this.Controller.prototype);
+  this.createController = function(name, Controller){
+    
+    var pr = Controller.prototype;
+    _.extend(pr, {name: name, methods: _.difference(_.methods(pr), base)});
+    pr.private?_.extend(pr, pr.private):null;
+    delete pr.private;
 
-    if(ControllerClass.prototype.private) {
-      _.extend(ControllerClass.prototype, ControllerClass.prototype.private);
-      delete ControllerClass.prototype.private;
-    }
+    return new Controller();
     console.log("Set up controller: "+name);
-    return new ControllerClass();
   };
+
   if(this.skipLoading === true) return cb&&cb();
 
   var env    = this;
@@ -36,7 +34,7 @@ module.exports = function(cb){
 
   function go(err){
     if(err) return cb&&cb(err);
-    env.controllers = env._.dirToObject(controllersPath, function(name, stuff, module){
+    env.controllers = env._.dirToObject(controllersPath, function(name, folderName, module){
       if(name === "init") return;
       var Prototype = module.apply(env);
       var name = Prototype.prototype.name||name;

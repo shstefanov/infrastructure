@@ -1,16 +1,11 @@
-
-
 module.exports = App.AdvancedView.extend("Layout", {
   el: "body",
-  events: {
-    "click a": "navigate"
-  },
+  events: { "click a": "navigate" },
 
   navigate: function(event){
     var href = $(event.currentTarget).attr("href") || "";
-    if(!href.match(/^(https?:\/\/|ftp:\/\/|mailto:\/\/|javascript:)/) ){
-      event.preventDefault();
-      app.navigate(href, true);
+    if(href.indexOf(config.root)===0){
+      app.navigate(href, !event.preventDefault());
     }
   }
 });

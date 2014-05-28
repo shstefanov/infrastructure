@@ -41,12 +41,13 @@ _.extend(App, {
   Controls:                     require("./controls"),
   Controller:                   require("./controller")
 });
-console.log("here")
+
+var config = _.clone(window.config);
 App.run = function(Router, cb){
   app = Router.prototype;
 
   // router.settings = window.settings, 
-  Router.prototype.config      = _.clone(window.config);
+  Router.prototype.config      = config;
   Router.prototype.settings    = settings;
   
   // initData == { "controllerName": ["method1", "method2", ...], ... }
@@ -57,7 +58,7 @@ App.run = function(Router, cb){
       if(methods.error) { console.log(init.error); continue; }
       Router.prototype.controllers[name] = new App.Controller(name, methods);
     }
-    Router.prototype.layout = new (Router.prototype.layout || App.Layout)().render();
+    Router.prototype.layout = new (Router.prototype.layout)().render();
     if(typeof Router.build === "function") Router.build();
     app = new Router();
     app.trigger("start");
@@ -70,13 +71,10 @@ App.run = function(Router, cb){
       socket.emit("init", config.root, function(err, data){
         if(err) return console.log(err);
         console.log("Socket connected");
-        console.log("Controllers: ", data);
         initData = data;
         $(start);
       });
-    }, 100);
+    }, 10);
   });
-
-
 
 };
