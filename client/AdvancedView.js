@@ -187,7 +187,6 @@ var View = App.View.extend("AdvancedView", _.extend(st, {
       return this;
     }
     if(view.templates) return this.appendMulti(view);
-
     this.getContainer().append(view.render().$el);
     return this;
 

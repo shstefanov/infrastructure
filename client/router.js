@@ -3,7 +3,7 @@ module.exports = App.Router.extend("AdvancedRouter", {
   
   constructor: function(){
     App.Router.apply(this, arguments);
-    this.layout.append(_.invoke(_.values(this.views), "render"));
+    this.layout.append(_.values(this.views));
   }
 
 }, {
@@ -19,9 +19,9 @@ module.exports = App.Router.extend("AdvancedRouter", {
         (function(viewRoot){
           var controller;
 
-          var full_root = approuter.config.root+viewRoot;//
-          var view = views[full_root] = new View({ urlRoot: full_root });//
-          view.hide?view.hide():view.$el.hide();//
+          var full_root = approuter.config.root+viewRoot;
+          var view = views[full_root] = new View({ urlRoot: full_root });
+          view.hide?view.hide():view.$el.hide();
           
 
           function switchView(view){
