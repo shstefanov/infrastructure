@@ -63,7 +63,12 @@ var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
 var emptyObj = {};
 
-var View = App.View.extend("AdvancedView", {
+var st = {};
+["show", "hide", "fadeIn", "fadeOut", "css", "animate"].forEach(function(s){
+  st[s] = function(){this.chState(s, arguments);};
+});
+
+var View = App.View.extend("AdvancedView", _.extend(st, {
 
   constructor: function(options){
     
@@ -71,14 +76,21 @@ var View = App.View.extend("AdvancedView", {
       this.controller = app.controllers[this.controller]
 
     this.infrastructure = {};
+    if(options){
+      if(options.templates)    {
+        this.templates = options.templates;
+        delete this.template;
+      }
+      else if(options.template) this.template = options.template;
+
+      if(options && options.urlRoot) {
+        this.urlRoot = options.urlRoot;
+      }
+    }
 
     if(this.templates){
       createElements(this);
       this.render = renderMultiple;
-    }
-
-    if(options && options.urlRoot) {
-      this.urlRoot = options.urlRoot;
     }
     // Also, call of initialize goes here
     App.View.apply(this, arguments);
@@ -242,9 +254,15 @@ var View = App.View.extend("AdvancedView", {
 
     return liveID;
 
-  }
+  },
 
-}, { 
+  chState: function(meth, args){ var self = this;
+    _.each(this.elements||[this.$el], function(el){el[meth].apply(el, args)});
+  },
+
+  
+
+}), { 
 
   // Class methods
   extend: function(){

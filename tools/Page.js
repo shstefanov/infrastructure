@@ -17,12 +17,16 @@ var Page = EventedClass.extend("Page", {
     
     if(!this.settings) this.settings = {};
     
-    if(!this.config) this.config = {root:root};
-    else this.config.root = root;
+    // This config will be sent to client app to help for organizing frontend routes.
+    if(!this.config) this.config     = {root:root};
+    else this.config.root            = root;
     
     var page = this;
 
-    if(page.pre) app[page.method || "get"]("/"+root+"*", _.bind(page.pre, page));
+    if(page.pre) {
+      console.log("Set up route: ? ", root+"*")
+      app[page.method || "get"](root+"*", _.bind(page.pre, page));
+    }
 
     for(key in page){
       if(/(^\/|^[*]|^get\s|^post\s|^put\s|^delete\s)/i.test(key)){
@@ -56,13 +60,11 @@ var Page = EventedClass.extend("Page", {
       }
     }
 
-    if(page.after) env.app[page.method || "get"]("/"+root+"*", _.bind(page.after, page));
-    
-    // if(page.app) {
-    //   var mountPoint = env.registerBundle(page);
-    //   if(!this.javascripts) this.javascripts = [mountPoint];
-    //   else this.javascripts.push(mountPoint);
-    // }
+    if(page.after){
+      console.log("Set up route: ?? ", root+"*")
+      env.app[page.method || "get"](root+"*", _.bind(page.after, page));
+    }
+   
   },
 
   render: function(req, res){

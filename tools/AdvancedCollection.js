@@ -11,6 +11,7 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
     this._eventMarkers = {};
 
     var index = {}, groups = {};
+
     if(this.index) _.extend(index, this.index);
     if(options && options.index) _.extend(index, options.index);
     if(this.group) _.extend(groups, this.group);

@@ -1,6 +1,6 @@
 {
   "name": "infrastructure",
-  "version": "0.3.22",
+  "version": "0.3.23",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
@@ -33,7 +33,7 @@
   "devDependencies": {
     "jasmine-node": "latest"
   },
-  "_id": "infrastructure@0.3.22",
+  "_id": "infrastructure@0.3.23",
   "_from": "infrastructure@latest",
   "repositories"  : [
     {
