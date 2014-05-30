@@ -24,7 +24,7 @@ var Page = EventedClass.extend("Page", {
     var page = this;
 
     if(page.pre) {
-      console.log("Set up route: ? ", root+"*")
+      console.log("Set up route: ", root+"*")
       app[page.method || "get"](root+"*", _.bind(page.pre, page));
     }
 
@@ -61,7 +61,7 @@ var Page = EventedClass.extend("Page", {
     }
 
     if(page.after){
-      console.log("Set up route: ?? ", root+"*")
+      console.log("Set up route: ", root+"*")
       env.app[page.method || "get"](root+"*", _.bind(page.after, page));
     }
    
