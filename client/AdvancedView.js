@@ -75,8 +75,11 @@ var View = App.View.extend("AdvancedView", _.extend(st, {
     if(this.controller && typeof this.controller === "string")
       this.controller = app.controllers[this.controller]
 
+
+
     this.infrastructure = {};
     if(options){
+      this.urlRoot = options.urlRoot;
       if(options.templates)    {
         this.templates = options.templates;
         delete this.template;
