@@ -1,7 +1,7 @@
 var EventedClass = require("../tools/EventedClass");
 var path  = require("path");
 var _     = require("underscore");
-
+require("colors");
 var env;
 
 var renderTemplate = function(template, options){
@@ -10,8 +10,8 @@ var renderTemplate = function(template, options){
 
 var Page = EventedClass.extend("Page", {
 
-  constructor: function(_env, options){
-    env = _env;
+  constructor: function(env, options){
+
     var app = env.app;
     var root = this.root;
     
@@ -20,13 +20,12 @@ var Page = EventedClass.extend("Page", {
     // This config will be sent to client app to help for organizing frontend routes.
     if(!this.config) this.config     = {root:root};
     else this.config.root            = root;
-    
     var page = this;
 
-    if(page.pre) {
-      console.log("Set up route: ", root+"*")
-      app[page.method || "get"](root+"*", _.bind(page.pre, page));
-    }
+    var globMeths = {}; 
+    var handlers = [];
+    var queue = [];
+    var glob = !!page.pre || !!page.after || false;
 
     for(key in page){
       if(/(^\/|^[*]|^get\s|^post\s|^put\s|^delete\s)/i.test(key)){
@@ -55,16 +54,47 @@ var Page = EventedClass.extend("Page", {
         url = url.replace("/*", "*");
         route = url.replace(/(\/*)?/, "/").replace(/\/$/, "").replace(/\s/g,"");
         if(route==="") route = "/"
-        console.log("Set up route: ", route);
-        app[method](route, bind?_.bind(page[key], page):page[key]);
+        
+        if(page.pre && !globMeths[method]) {
+          globMeths[method] = true;
+          handlers.unshift({
+            method: method,
+            route: page.root+"*",
+            handler: page.pre
+          })
+        }
+        
+        if(typeof page[key]!=="function") {
+          if(!_.isArray(page[key]))
+            page[key] = renderTemplate(key.replace(/^\//,""), options);
+        }
+
+        handlers.push({
+          method: method,
+          route: route.trim(),
+          handler: page[key]
+        })
+
+        if(page.after && !globMeths[method]) {
+          globMeths[method] = true;
+          queue.push({
+            method: method,
+            route: page.root+"*",
+            handler: page.after
+          })
+        }
       }
     }
-
-    if(page.after){
-      console.log("Set up route: ", root+"*")
-      env.app[page.method || "get"](root+"*", _.bind(page.after, page));
-    }
-   
+    
+    handlers.concat(queue).forEach(function(obj){
+      console.log("Setting up route: ", obj.method.toUpperCase()+"\t", obj.route);
+      if(_.isArray(obj.handler)){
+        obj.handler.forEach(function(h){
+          app[obj.method](obj.route, h.bind(page));
+        })
+      }
+      else app[obj.method](obj.route, obj.handler.bind(page));
+    })
   },
 
   render: function(req, res){
