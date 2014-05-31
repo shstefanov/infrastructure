@@ -42,6 +42,11 @@ _.extend(App, {
   Controller:                   require("./controller")
 });
 
+_.extend(App, {
+  LocalModel:                   require("./LocalModel"),
+  LocalCollection:              require("./LocalCollection")
+});
+
 var config = _.clone(window.config);
 App.run = function(Router, cb){
   app = Router.prototype;
