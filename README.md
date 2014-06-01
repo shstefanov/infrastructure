@@ -1,1 +1,1 @@
-[Docs](http://cryptic-cliffs-8417.herokuapp.com/home) (not finished)
+[Docs](http://cryptic-cliffs-8417.herokuapp.com/home/documentation) (not finished)
