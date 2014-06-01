@@ -1,6 +1,6 @@
 {
   "name": "infrastructure",
-  "version": "0.3.26",
+  "version": "0.3.27",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
@@ -12,7 +12,7 @@
     "express": "latest",
     "connect-mongo": "latest",
     "session.socket.io": "latest",
-    "socket.io": "latest",
+    "socket.io": "0.9.16",
     "socket.io-client": "latest",
     "walk": "latest",
     "async": "latest",
@@ -33,7 +33,7 @@
   "devDependencies": {
     "jasmine-node": "latest"
   },
-  "_id": "infrastructure@0.3.26",
+  "_id": "infrastructure@0.3.27",
   "_from": "infrastructure@latest",
   "repositories"  : [
     {
