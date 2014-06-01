@@ -22,7 +22,12 @@ var Page = EventedClass.extend("Page", {
     else this.config.root            = root;
     var page = this;
 
-    var globMeths = {}; 
+    var globMeths = {
+      get:0,
+      post:0,
+      put:0,
+      "delete":0
+    }; 
     var handlers = [];
     var queue = [];
     var glob = !!page.pre || !!page.after || false;
@@ -55,13 +60,16 @@ var Page = EventedClass.extend("Page", {
         route = url.replace(/(\/*)?/, "/").replace(/\/$/, "").replace(/\s/g,"");
         if(route==="") route = "/"
         
-        if(page.pre && !globMeths[method]) {
-          globMeths[method] = true;
-          handlers.unshift({
-            method: method,
-            route: page.root+"*",
-            handler: page.pre
-          })
+        if(page.pre) {
+          if(!globMeths[method+"_pre"]){
+            handlers.unshift({
+              method: method,
+              route: page.root+"*",
+              handler: page.pre,
+              action: "pre"
+            })
+            globMeths[method+"_pre"] = true;
+          }
         }
         
         if(typeof page[key]!=="function") {
@@ -75,19 +83,22 @@ var Page = EventedClass.extend("Page", {
           handler: page[key]
         })
 
-        if(page.after && !globMeths[method]) {
-          globMeths[method] = true;
-          queue.push({
-            method: method,
-            route: page.root+"*",
-            handler: page.after
-          })
+        if(page.after) {
+          if(!globMeths[method+"_after"]){
+            queue.push({
+              method: method,
+              route: page.root+"*",
+              handler: page.after,
+              action: "after"
+            })
+            globMeths[method+"_after"] = true;
+          }
         }
       }
     }
-    
-    handlers.concat(queue).forEach(function(obj){
-      console.log("Setting up route: ", obj.method.toUpperCase()+"\t", obj.route);
+
+    handlers.concat(queue).forEach(function(obj, i){
+      console.log("Setting up route: "+i, obj.method.toUpperCase()+"\t", obj.route);
       if(_.isArray(obj.handler)){
         obj.handler.forEach(function(h){
           app[obj.method](obj.route, h.bind(page));
