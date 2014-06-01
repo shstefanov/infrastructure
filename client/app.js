@@ -63,7 +63,7 @@ App.run = function(Router, cb){
       if(methods.error) { console.log(init.error); continue; }
       Router.prototype.controllers[name] = new App.Controller(name, methods);
     }
-    Router.prototype.layout = new (Router.prototype.layout)().render();
+    Router.prototype.layout = new (Router.prototype.layout||App.Layout)().render();
     if(typeof Router.build === "function") Router.build();
     app = new Router();
     app.trigger("start");
@@ -71,15 +71,17 @@ App.run = function(Router, cb){
   });
 
   socket = io.connect().on("connect", function(){
+    console.log("connect")
     setTimeout(function(){
       
       socket.emit("init", config.root, function(err, data){
+        console.log("init", initData);
         if(err) return console.log(err);
         console.log("Socket connected");
         initData = data;
         $(start);
       });
-    }, 10);
+    }, 100);
   });
 
 };
