@@ -4,13 +4,13 @@ var _     = require("underscore");
 require("colors");
 var env;
 
-var renderTemplate = function(template, options){
-  return function(req, res){ res.render(template, _.extend({req:req}, options||{})); };
+var renderTemplate = function(template){
+  return function(req, res){ res.render(template, res.data||{}); };
 }
 
 var Page = EventedClass.extend("Page", {
 
-  constructor: function(env, options){
+  constructor: function(env){
 
     var app = env.app;
     var root = this.root;
@@ -42,7 +42,7 @@ var Page = EventedClass.extend("Page", {
           }  
           else{
             bind = false;
-            page[key] = renderTemplate(page[key], options);
+            page[key] = renderTemplate(page[key]);
           }
         }
         else if(typeof page[key]!="function") return this;
