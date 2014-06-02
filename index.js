@@ -6,14 +6,9 @@ require("colors");
 
 var init = require("./init");
 
-var loadApp = function(rootDir, config, options){
+var loadApp = function(rootDir, config, options, cb){
   config.rootDir = rootDir;
-  init(_.extend({config: config}, options), function(err){
-    if(err) {
-      console.log("ERROR::", err);
-      throw err;
-    }
-  });
+  init(_.extend({config: config}, options), cb);
 };
 
 var hasConfig = function(folderPath){
@@ -24,10 +19,10 @@ var getConfig = function(folderPath){
   return require(path.join(folderPath, "config"));
 };
 
-module.exports = function findApp(folderPath, options){
+module.exports = function findApp(folderPath, options, cb){
   folderPath = folderPath||process.argv[2]||process.cwd();
   options = options||{};
-  if(hasConfig(folderPath))    loadApp(folderPath, getConfig(folderPath), options || {});
+  if(hasConfig(folderPath))    loadApp(folderPath, getConfig(folderPath), options || {}, cb);
   else{
     console.log("config not found");
     console.log("try to find multiple apps in folder: TODO");

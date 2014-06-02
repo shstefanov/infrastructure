@@ -4,82 +4,14 @@
 module.exports = function(env){
 
   var _ = require("underscore");
-  var safe = {safe: true};
-  var MongoCollection = env.AdvancedCollection.extend("MongoCollection", {
-    
+  
+  var MongoCollection = env.MongoCollection = env.AdvancedCollection.extend("MongoCollection", {
+
   });
-
-
-  var Cursor         = env.MongoDB.Cursor;
-  Cursor.extend      = env.Class.extend;
-  Cursor.__className = "Class_Cursor";
-
-  var BackboneCursor = Cursor.extend("BackboneCursor", {
-
-    toModel: function(model, cb){
-      var Model = this.Model;
-      if(typeof model === "function" && !cb){
-        cb = model, 
-        model = new Model();
-      }
-      this.each(function(err, doc){
-        if(err) {
-          model.trigger("error", err); 
-          return cb&&cb(err);
-        }
-        if(doc === null){
-           model.trigger("error", "Can't find model");
-           return cb&&cb("Can't find model");}
-        var error = model.validate(doc);
-        if(error){
-          model.trigger("error", error);
-          return cb&&cb(error);
-        }
-        model.set(doc);
-        return cb&&cb(null, model);
-      });
-      return model;
-    },
-
-    toCollection: function(collection, cb){
-      var Collection = this.Collection;
-      if(typeof collection === "function" && !cb){
-        cb = collection, 
-        collection = new Collection();
-      }
-      this.toArray(function(err, doc){
-        if(err) {
-          collection.trigger("error", err); 
-          return cb&&cb(err);
-        }
-        if(doc.length === 0){
-          return cb&&cb(null, collection);}
-        var errors = collection.validate(docs);
-        if(errors){
-          collection.trigger("error", errors);
-          return cb&&cb(errors);
-        }
-        collection.reset(docs);
-        return cb&&cb(null, collection);
-      });
-      return collection;
-    }
-  });
-
-
-
-
-
-
-
-
-
-
-
-
-  var MongoModel = env.AdvancedModel.extend("MongoModel", {
+ 
+  env.MongoModel = env.AdvancedModel.extend("MongoModel", {
     idAttribute: "_id",
-
+    findModel: function(name){return env.Models[name];},
   },
 
   {
@@ -96,19 +28,14 @@ module.exports = function(env){
             {model:    Model     },
             {coll:     collection}
           );
-          Model.Cursor = BackboneCursor.extend(name, {
-            Model:      Model,
-            Collection: Model.Collection
-          });
-
-
-
           if(Model.index){
-            var index = _.isArray(Model.index)? Model.index : [Model.index];
             var ch = [];
-            index.forEach(function(i){ch.push(function(cb){ Model.db.ensureIndex(i, cb); });});
-            var chain = env._.chain(ch);
-            chain(cb);
+            Model.index.forEach(function(i){
+              ch.push(function(cb){ 
+                Model.db.ensureIndex(i.index,i.options||{}, cb); 
+              });
+            });
+            env._.chain(ch)(cb);
           }
           else cb();
         });
@@ -119,59 +46,50 @@ module.exports = function(env){
       return Model;
     },
 
-    createCursor: function(){
-      //function Cursor(db, collection, selector, fields, options) {
-      return new this.Cursor(
-        this.db,
-        this.coll,
-        arguments[0],
-        arguments[1],
-        arguments[2]
-      );
+    queryGenerator: function(modelName, query, options){
+      var defaults = Array.prototype.slice.call(arguments);
+      defaults.shift();//Remove modelName
+      return function(){
+        var Model = this.findModel(modelName); //object must have find remote model by modelName
+        if(!Model) throw new Error("")
+        var args = parseArgs(
+          sl.apply(arguments), 
+          defaults.slice(),
+          typeof this.contextPattern === "function"? this.contextPattern(modelName, options) : this.contextPattern
+        );
+        console.log("running query: ", args);
+        Model.coll.find.apply(Model, args);
+        return this;
+      }
     },
 
-    // //Methods returning null
-    // insert
-    // remove
-
-    // // Methods returning cursor
-    // save
-
-    // // Methods returning number
-    // update
-    // count
-
-
-    // rename
-    // distinct
-    // drop
-    // findAndModify
-    // findAndRemove
-    // find
-    // findOne
-    // createIndex
-    // ensureIndex
-    // indexInformation
-    // dropIndex
-    // dropAllIndexes
-    // reIndex
-    // mapReduce
-    // group
-    // options
-    // isCapped
-    // indexExists
-    // geoNear
-    // geoHaystackSearch
-    // indexes
-    // aggregate
-    // stats
-
-
+  
   });
 
-  
+  MongoCollection.prototype.model = env.MongoModel;
+  // findGenerator helpers
+  var sl = Array.prototype.slice;
+  var ra = function(a){return a};
+   
+  // contextPattern examples:
+  // initialize:     function(options){
+  //   this.contextPattern = {"company.$id": this.get("_id")};
+  // },
 
 
-  return MongoModel;
 
+  var parseArgs = function(args, defaults, contextPattern){
+    var num = args.length>=defaults.length? args.length : defaults.length;
+    var result = [], q;
+    for(var i=0;i<num;i++) {
+      if(typeof args[i]==="function") q = args[i], result[i] = defaults[i];
+      else      result[i] = _.extend({}, args[i], defaults[i])
+   
+      //TODO - write two functions and move this if to findGenerator generated function
+      if(i===0&&contextPattern) result[i] = _.extend(result[i]||{}, contextPattern);
+    }
+    q&&result.push(q);
+    return (result = result.filter(ra));
+  };
 }
+

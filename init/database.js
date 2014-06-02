@@ -23,7 +23,6 @@ module.exports = function(cb){
     if(err) return cb(err);
     env.db = db;
     env.MongoDB = mongodb;
-    env.MongoModel = require("../tools/MongoModel")(env),
     cb();
   });
 

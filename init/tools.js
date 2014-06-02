@@ -40,6 +40,5 @@ module.exports = function(cb){
 
   });
 
-
   cb&&cb();
 }

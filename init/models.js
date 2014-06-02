@@ -3,7 +3,6 @@ var path = require("path");
 var fs = require("fs");
 var _ = require("underscore");
 
-var ModelFactory = require("../lib/ModelFactory");
 
 module.exports = function(cb){
   var env = this;
@@ -11,15 +10,14 @@ module.exports = function(cb){
   if(!config.models || !fs.existsSync(path.join(config.rootDir, config.models))) return cb();
   
   var modelsDir = path.join(config.rootDir, config.models);
-  
+  require("../tools/MongoModel")(env);
   if(fs.existsSync(path.join(config.rootDir, config.models, "init.js"))){
     var initializer = require(path.join(config.rootDir, config.models, "init.js"));
     initializer.call(env, go);
   }
+
   else go();
-  //////////////////////////////////////
-  // this._.debug(null, 1, "red", "MODELS");
-  //////////////////////////////////////
+
   function go(err){
     if(err) return cb(err);
     var modelsDir = path.join(config.rootDir, config.models);
@@ -32,7 +30,7 @@ module.exports = function(cb){
       if(filename === "init.js") return;
       var fn = require(path.join(modelsDir, filename));
       var ModelPrototype = fn.call(env);
-      var name = ModelPrototype.collectionName;
+      var name = ModelPrototype.collectionName||filename.split(".").slice(0, -1).join(".");
       Models[name] = ModelPrototype;
       chain.push(ModelPrototype.build);
     });
@@ -42,7 +40,7 @@ module.exports = function(cb){
       if(err) return cb(err);
 
       // Build relations here
-
+      
       cb();
 
     });
@@ -51,3 +49,4 @@ module.exports = function(cb){
   
 
 };
+

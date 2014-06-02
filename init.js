@@ -17,6 +17,6 @@ module.exports = function(env, cb){
     require("./init/bundles"      ),
     require("./init/controllers"  ),
     require("./init/pages"        )
-  ])(cb, env);
+  ])(function(err){ cb(err, env)  }, env);
 
 }; 
