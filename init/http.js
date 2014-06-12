@@ -43,18 +43,16 @@ module.exports = function(cb){
   }
   app.use(bodyParser());
   app.use(methodOverride());
-  var cookieParser = CookieParser(config.session.cookie.name);
+  var cookieParser = CookieParser(config.sessionCookie);
   app.use(cookieParser);
   
   // https://github.com/expressjs/cookie-session
   var sessionStore = new MongoStore(_.extend({db:env.db}, config.session));
+
   app.use(session({
-    secret: config.session.cookie.name,
+    secret: config.sessionCookie,
     store: sessionStore
   }));
-  
-  // Deprecated
-  //app.use(app.router);
   
   for(route in config.public){
     var folderpath = config.public[route];

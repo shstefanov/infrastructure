@@ -21,6 +21,7 @@ module.exports = function(env){
       var Model = env.AdvancedModel.extend.apply(this, arguments);
       Model.collectionName = name;
       Model.build = function(cb){
+
         Model.db.createCollection(name, Model.options || {}, function(err, collection){
           if(err) return cb(err);
           Model.coll       = Model.prototype.coll = collection;
@@ -31,8 +32,10 @@ module.exports = function(env){
           if(Model.index){
             var ch = [];
             Model.index.forEach(function(i){
-              ch.push(function(cb){ 
-                Model.db.ensureIndex(i.index,i.options||{}, cb); 
+              ch.push(function(cb){
+                Model.db.ensureIndex(i.index,i.options||{}, function(){
+                  cb();
+                }); 
               });
             });
             env._.chain(ch)(cb);

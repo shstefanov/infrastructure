@@ -24,6 +24,10 @@ module.exports = EventedClass.extend("Sockets", {
     for(var i = 0; i<this.sockets.length;i++)
       if(this.sockets[i].controllers.indexOf(controller)!=1)
         this.sockets[i].emit(controller.name, {action: event, body: data});
+  },
+  disconnect: function(){
+    for(var i = 0; i<this.sockets.length;i++)
+      this.sockets[i].disconnect();
   }
 
 });
