@@ -12,6 +12,7 @@ var Page = EventedClass.extend("Page", {
 
   constructor: function(env){
 
+    this.env = env;
     var app = env.app;
     var root = this.root;
     
@@ -128,18 +129,19 @@ var Page = EventedClass.extend("Page", {
   },
 
   getSubject: function(session, cb){
-
+    var self = this;
     var save = false;
     if(!session._id) {save = true; session._id = _.uniqueId("s_");}
-    var subject = env.subjects.add({_id: session._id});
+    var subject = this.env.subjects.add({_id: session._id});
     if(!save) {
       cb(null, subject );
-      subject.sockets.once("disconnect", env.subjects.remove, env.subjects);
+      // Not needed - already bound
+      //subject.sockets.once("disconnect", this.env.subjects.remove, this.env.subjects);
     }
     else session.save(function(err){
       if(err) return cb(err); 
       cb(null, subject);
-      subject.sockets.once("disconnect", env.subjects.remove, env.subjects);
+      subject.sockets.once("disconnect", self.env.subjects.remove, self.env.subjects);
     });
   }
 
