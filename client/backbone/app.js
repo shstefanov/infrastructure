@@ -10,7 +10,7 @@ require("./mixins");
 function set_app (){ app = this; Backbone.Router.apply(this, arguments); }
 var Router                      = Backbone.Router.extend({constructor:set_app});
 
-var Class                       = require("../tools/Class");
+var Class                       = require("../../tools/Class");
 Backbone.Model.__className      = "Class_Model";
 Backbone.Collection.__className = "Class_Collection";
 Backbone.View.__className       = "Class_View";
@@ -22,7 +22,7 @@ Router.extend                   = Class.extend;
 
 _.extend(App, {
   Class:                        Class,
-  EventedClass:                 require("../tools/EventedClass"),
+  EventedClass:                 require("../../tools/EventedClass"),
   Model:                        Backbone.Model,
   Collection:                   Backbone.Collection,
   View:                         Backbone.View,
@@ -30,7 +30,7 @@ _.extend(App, {
 });
 
 _.extend(App, {
-  AdvancedCollection:           require("../tools/AdvancedCollection"),
+  AdvancedCollection:           require("../../tools/AdvancedCollection"),
   AdvancedView:                 require("./AdvancedView"),
   AdvancedRouter:               require("./router")  
 });
