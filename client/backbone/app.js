@@ -1,5 +1,5 @@
 jade                            = require("jade/lib/runtime");
-io                              = require("./socket");
+io                              = require("../socket");
 _                               = require("underscore");
 $                               = require("./jquery");
 Backbone                        = require("backbone");

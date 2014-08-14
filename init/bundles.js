@@ -31,6 +31,7 @@ module.exports = function(cb){
   var indent_size = 2;
 
   var parse_jade = function(body, filepath){
+
     var code =  jade.compileClient(fs.readFileSync(filepath, _utf8).toString(), {
       debug: false,
       filename: filepath
@@ -52,17 +53,10 @@ module.exports = function(cb){
 
   var parse_html = function(body, filepath){
     var js_html = "";
-
-    js_html = body.replace(/"/g, "'");
-
-
-
-    console.log(js_html);
-    return "module.exports = '<div>I'm not real html</div>';";
-
+    js_html = body;//.replace(/"/g, "\"");
+    js_html = "module.exports = "+JSON.stringify(js_html.split("\n"))+".join(\"\\n\");";
+    return js_html;
   }
-
-  
 
   var bundleBase;
   function getBundleBase(base){
@@ -79,12 +73,12 @@ module.exports = function(cb){
 
   }
 
-  bundleBase = getBundleBase(config.bundlesOptions.base) || "none";
+  bundleBase = getBundleBase(config.bundlesOptions.codeBase) || "none";
 
 
   var global_vars = "" , local_vars = "var ";
   var backbone_vars = "App = {}, Backbone = undefined; Infrastructure = {}, app = undefined, jade = undefined, io = undefined, socket = undefined, $ = undefined; _ = undefined";
-  var angular_vars = "";
+  var angular_vars = "App = {}, app = undefined, angular = undefined, ng = undefined, socket = undefined;";
   var new_line = "\n";
 
 
@@ -92,7 +86,7 @@ module.exports = function(cb){
 
   env.registerBundle  = function(page){
 
-    var pageBundleBase = getBundleBase(page.base) || bundleBase;
+    var pageBundleBase = getBundleBase(page.codeBase) || bundleBase;
     
     var root          = page.root, filepath = page.app;
     var entryPoint    = path.join(
@@ -126,10 +120,10 @@ module.exports = function(cb){
     var additional_prepend="\nvar settings = "+JSON.stringify(page.settings||{})+";\n";
 
     bundler.prepend( vars_prepend+additional_prepend );
-
     page.bundler = bundler;
     page.apps = page.apps?page.apps.concat([mountPoint]):[mountPoint];
     // Adding the core app
+
     if(pageBundleBase !== "none"){
       if(pageBundleBase==="backbone")
         bundler.addEntry(path.join(__dirname, "../client/backbone/app.js"));
@@ -144,7 +138,7 @@ module.exports = function(cb){
     bundler.addEntry(entryPoint);
     if(config.bundlesOptions.cache === true){
       var bundlePath = path.join(config.rootDir||process.cwd(), mountPoint);
-      console.log("Writing bundle: ", bundlePath);
+      console.log("Writing bundle: ", bundlePath, pageBundleBase);
       //fs.writeFileSync(bundlePath, bundler.bundle());
     }
     else{
