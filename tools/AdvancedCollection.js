@@ -6,11 +6,12 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
 
   constructor: function(models, options){
     
-    this._index = {};
-    this._groups = {};
+    this._index        = {};
+    this._groups       = {};
     this._eventMarkers = {};
 
-    var index = {}, groups = {};
+    var index          = {};
+    var groups         = {};
 
     if(this.index) _.extend(index, this.index);
     if(options && options.index) _.extend(index, options.index);
@@ -22,8 +23,10 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
     
   },
 
-  fire: function(evt, arg1, arg2, arg3){
-    this.invoke("trigger", evt, arg1, arg2, arg3);
+  fire: function(){
+    var args = Array.prototype.slice.call(arguments);
+    args.unshift("trigger");
+    this.invoke.apply(this, args);
     return this;
   },
 
@@ -37,15 +40,15 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
     }
     var itr;
     var index = this._index[name] = {};
+    if(typeof iterator == "undefined") iterator = name;
+
     if(typeof iterator == "string") 
       itr = function(model){return model.get(iterator);};
     else if(Array.isArray(iterator))
       itr = function(model){
-        var index = iterator.map(function(stuff){
-          var part = model.get(stuff);
-          if(typeof part === "undefined") return stuff;
-          else return part;
-        }).join("");
+        return iterator.map(function(stuff){
+          return model.get(stuff).toString();
+        }).join("_");
       };
     else itr = iterator;
     var self = this;
@@ -165,7 +168,7 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
 
   bindAll: function(evt, method, ctx){
     var marker = this._eventMarkers[evt] = {};
-    var bind =   function(model){ model.on (evt, method, ctx || model) };
+    var bind   = function(model){ model.on (evt, method, ctx || model) };
     var unbind = function(model){ model.off(evt, method, ctx || model) };
     this.on("add", bind, marker).on("remove", unbind, marker);
     this.each(bind);
@@ -183,8 +186,7 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
   },
 
   getBy: function(arg1, arg2){
-    if(typeof arg2 === "undefined") return this.get(arg1);
-    else return this._index[arg1]?this._index[arg1][arg2]:undefined;
+    return this._index[arg1]?this._index[arg1][arg2]:undefined;
   }
 
 });
