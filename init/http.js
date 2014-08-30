@@ -43,14 +43,14 @@ module.exports = function(cb){
   }
   app.use(bodyParser());
   app.use(methodOverride());
-  var cookieParser = CookieParser(config.sessionCookie);
+  var cookieParser = CookieParser(config.session.secret);
   app.use(cookieParser);
   
   // https://github.com/expressjs/cookie-session
   var sessionStore = new MongoStore(_.extend({db:env.db}, config.session));
 
   app.use(session({
-    secret: config.sessionCookie,
+    secret: config.session.secret,
     store: sessionStore
   }));
   
@@ -64,7 +64,7 @@ module.exports = function(cb){
     if(err) return cb(err);
     var io = socketio.listen(server);
     io.set('log level', config.log || 0);
-    var sio = new SessionSockets(io, sessionStore, cookieParser);
+    var sio = new SessionSockets(io, sessionStore, cookieParser, config.session.secret);
     sio.on("connection", env.socketConnection);
 
     console.log('Express server listening on port ' + app.get('port'));
