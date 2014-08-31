@@ -64,7 +64,7 @@ module.exports = function(cb){
     if(err) return cb(err);
     var io = socketio.listen(server);
     io.set('log level', config.log || 0);
-    var sio = new SessionSockets(io, sessionStore, cookieParser, config.session.secret);
+    var sio = new SessionSockets(io, sessionStore, cookieParser);
     sio.on("connection", env.socketConnection);
 
     console.log('Express server listening on port ' + app.get('port'));

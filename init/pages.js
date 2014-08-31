@@ -18,12 +18,12 @@ module.exports = function(cb){
     var page = pages[root] = new PageClass(env, options);
 
     if(env.controllers && page.controllers) page.getControllers(env);
-    if(!env.skipLoading) env.registerBundle(page);
+    if(page.app && typeof page.app==="string") env.registerBundle(page);
     pages[page.root] = page;
     return page;
   }
 
-  if(env.skipLoading === true) return cb && cb();
+  // if(env.skipLoading === true) return cb && cb();
   if(!config.routes || !fs.existsSync(path.join(config.rootDir, config.routes))) return cb();
   
   if(fs.existsSync(path.join(config.rootDir, config.routes, "init.js"))){
