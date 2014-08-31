@@ -8,10 +8,11 @@ module.exports = function(cb){
   var Class = require("../tools/Class");
   var Backbone = require("backbone");
   
-  Backbone.Model.__className = "Class_Model";
-  Backbone.Model.extend = Class.extend;
+  Backbone.Model.__className      = "Class_Model";
   Backbone.Collection.__className = "Class_Collection";
-  Backbone.Collection.extend = Class.extend;
+  
+  Backbone.Model.extend           = Class.extend;
+  Backbone.Collection.extend      = Class.extend;
 
   _.extend(env, {
 
@@ -25,18 +26,10 @@ module.exports = function(cb){
     AdvancedCollection: require("../tools/AdvancedCollection"),
     
     Controller:         require("../tools/Controller"),
+    
     Page:               require("../tools/Page"),
-
-    helpers:{
-      
-      isInstanceOf:       function(protos){
-        if(_.isArray(protos)) 
-          return function(v){ return _.some(protos, function(P){return v instanceof P;});};
-        else 
-          return function(val){return val instanceof protos;};
-      }
-
-    }
+    Api:                require("../tools/Api"),
+    Widget:             require("../tools/Widget"),
 
   });
 
