@@ -71,17 +71,15 @@ App.run = function(Router, cb){
   });
 
   socket = io.connect().on("connect", function(){
-    console.log("connect")
+    
     setTimeout(function(){
-      
       socket.emit("init", config.root, function(err, data){
-        console.log("init", initData);
         if(err) return console.log(err);
-        console.log("Socket connected");
         initData = data;
         $(start);
       });
     }, 100);
+    
   });
 
 };
