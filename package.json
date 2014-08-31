@@ -8,38 +8,33 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "mongodb": "latest",
-    "express": "latest",
+    "angular": "^1.2.21",
+    "async": "latest",
+    "backbone": "latest",
+    "body-parser": "~1.2.0",
+    "browserify": "1.17.3",
+    "coffee-script": "latest",
+    "colors": "latest",
     "connect-mongo": "latest",
+    "cookie-parser": "~1.1.0",
+    "express": "latest",
+    "express-session": "latest",
+    "jade": "latest",
+    "js-beautify": "latest",
+    "method-override": "~1.0.1",
+    "mongodb": "latest",
+    "morgan": "latest",
+    "serve-favicon": "~2.0.0",
     "session.socket.io": "latest",
     "socket.io": "0.9.16",
     "socket.io-client": "latest",
-    "walk": "latest",
-    "async": "latest",
-    "coffee-script": "latest",
-    "colors": "latest",
     "underscore": "latest",
-    "backbone": "latest",
-    "jade": "latest",
-    "js-beautify": "latest",
-    "browserify": "1.17.3",
-    "express-session": "latest",
-    "cookie-parser": "~1.1.0",
-    "serve-favicon": "~2.0.0",
-    "body-parser": "~1.2.0",
-    "method-override": "~1.0.1",
-    "morgan":"latest"
+    "walk": "latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"
   },
   "_id": "infrastructure@0.3.34",
   "_from": "infrastructure@latest",
-  "repository": "git://github.com/shstefanov/infrastructure",
-  "repositories"  : [
-    {
-      "type": "git",
-      "url": "git@github.com:shstefanov/infrastructure.git"
-    }
-  ]
+  "repository": "git://github.com/shstefanov/infrastructure"
 }
