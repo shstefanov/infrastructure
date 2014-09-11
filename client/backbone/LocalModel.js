@@ -3,13 +3,19 @@ module.exports = App.Model.extend("LocalModel", {
   idAttribute: "_id",
   
   save: function(){
-    if(this.isNew) this.set(this.setId())
+    if(this.isNew()) this.set({_id: this.setId()});
     localStorage[root+this.collection.prefix+"/"+this.id] = JSON.stringify(this.toJSON());
+    return this;
   },
   
   load: function(id, options){
     var data = localStorage[root+this.collection.prefix+"/"+this.id];
     data && this.set(JSON.parse(data), options);
+  },
+
+  destroy: function(){
+    if(!this.isNew()) delete localStorage[root+this.collection.prefix+"/"+this.id];
+    if(this.collection) this.collection.remove(this);
   },
 
   getId: function(){

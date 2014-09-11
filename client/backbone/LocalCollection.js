@@ -17,7 +17,6 @@ module.exports = App.AdvancedCollection.extend("LocalCollection", {
   load: function(){
     var len = this.length, results = [];
     for(key in localStorage){
-      //console.log(key,":",localStorage[key]);
       if(key.indexOf(config.root+this.prefix)===0){
         results.push(JSON.parse(localStorage[key]));
       }
