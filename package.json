@@ -1,6 +1,6 @@
 {
   "name": "infrastructure",
-  "version": "0.3.34",
+  "version": "0.3.35",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
@@ -8,7 +8,6 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "angular": "^1.2.21",
     "async": "latest",
     "backbone": "latest",
     "body-parser": "~1.2.0",
