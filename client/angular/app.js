@@ -3,7 +3,13 @@ io = require("../socket");
 App.EventedClass = require("../../tools/EventedClass");
 App.Controller   = require("../backbone/controller.js");
 
-socket = io.connect();
+if(window.config && window.config.websocket){
+  socket = io.connect(window.location.origin, config.websocket);
+}
+else{
+  socket = io.connect();    
+
+}
 
 var initData;
 App.run = function(props){

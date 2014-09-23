@@ -2,6 +2,11 @@
 var mixins = require("./lib/mixins");
 module.exports = function(env, cb){
   mixins.apply(env);
+
+  if(env.config.clusterMode===true){
+    var initCluster = require("./initCluster");
+    return initCluster(env, cb);
+  }
   
   var proxy = function(cb){
     env._.debug("", 2, "green", "PROXY IN INIT");

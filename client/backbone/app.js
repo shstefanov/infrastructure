@@ -70,7 +70,15 @@ App.run = function(Router, cb){
     Backbone.history.start({pushState:true});
   });
 
-  socket = io.connect().on("connect", function(){
+
+  if(config.websocket){
+    socket = io.connect(window.location.origin, config.websocket);
+  }
+  else{
+    socket = io.connect();    
+  }
+
+  socket.on("connect", function(){
     
     setTimeout(function(){
       socket.emit("init", config.root, function(err, data){
