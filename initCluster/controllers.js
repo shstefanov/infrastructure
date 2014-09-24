@@ -2,8 +2,10 @@
 
 module.exports = function(cb){
   
-  var _ = require("underscore");
+  var _          = require("underscore");
   var Addresator = require("addresator");
+  var CloneRPC   = require("clone-rpc" );
+
   var base = _.methods(this.Controller.prototype);
   this.createController = function(name, Controller){
     
@@ -65,24 +67,49 @@ module.exports = function(cb){
       return result;
     }
 
+    var getter;
+    var ControllerFactory = new CloneRPC({
+      getData:  function(fn  ){ getter = fn; },
+      sendData: function(data){
+        env.node.send(["core", "pigeonry"], {
+          type: "controller",
+          body: data
+        });
+      },
+      onClone: function(){}
+    });
+
     env.node.onMessage = function(data, cb, remote_addr){
-      switch(data.type){
-        case "getControllers":
-          var controllers = _.map(data.body, function(controllerName){
-            return _.pick(env.controllers[controllerName], ["name", "methods"]);
-          });
-          cb(null, getMethods(controllers));
-          break;
+      if(data.type==="controller") return ControllerFactory.onMessage(data.body);
+    };
+    console.log("SENDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+    env.node.send(["core", "pigeonry"], {
+      type:       "controller",
+      initialize: true
+    }, function(){
+      ControllerFactory.build(env.address, {}, function(){
+        for(var name in env.controllers){
+          (function(name){
+            var controller = env.controllers[name];
+            ControllerFactory.clone(function(controller_clone){
+              controller_clone.setOptions({context: controller});
+              var controllerData = _.pick(controller, controller.methods);
+              controllerData.availableMethods = controller.methods;
+              controller_clone.build(name, controllerData, function(){
+                console.log("Controller built !!!!", name);
+              });
+            });
+            
+          })(name)
+        }
 
 
-
-        default:
-          break;
-      }
-    },
+        cb&&cb(null);
+      });
+    });
 
 
-    cb&&cb();
+    //cb&&cb();
   }
 
 }

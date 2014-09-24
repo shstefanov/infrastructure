@@ -34,11 +34,11 @@ module.exports = function(cb){
   });
 
 
-  function setSessionProps(arr, cb){
+  function unsetSessionProps(arr, cb){
     for(var i in arr) delete this[arr[i]];
     this.save(cb);
   }
-  function unsetSessionPrpps(props_array, cb){
+  function setSessionPrpps(props_array, cb){
     for(var key in obj) this[key] = obj[key];
   }
 

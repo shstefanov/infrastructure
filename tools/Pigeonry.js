@@ -42,58 +42,56 @@ module.exports = function(core){
 
   function handleSocket(socket){
     var data = socket.id;
-    pigeonryAddresator.send(["core", "controller_0"], {
-      type: "getControllers",
-      body: data.controllers || []
-    }, function(err, controllers){
-      if(err) throw err;
-      socket.controllers = _.keys(controllers);
-      socket.initData = controllers;
-      Pigeonry.addObject("socket", socket, data.session);
-    })
+
+    // Check if sheaf exists
+    var sheaf = Pigeonry.get(data.session._id);
+    if(sheaf){
+
+    }
+    else{
+      pigeonryAddresator.send(["core", "controller_0"], {
+        type: "getControllers",
+        body: data.controllers || []
+      }, function(err, controllers){
+        if(err) throw err;
+        console.log("controllers:::", controllers);
+        socket.controllers = _.keys(controllers);
+        socket.initData = controllers;
+        Pigeonry.addObject("socket", socket, data.session);
+      });
+    }
+
   }
 
   function handleSession(session){
     var sheaf = Pigeonry.get(session.id.session._id);
     if(!sheaf || sheaf.session.objects.length===0){
-      Pigeonry.addObject("session", clone);        
+      Pigeonry.addObject("session", session);        
     }
     else{
-      clone.__drop();
+      session.__drop();
     }
   }
 
-  function handlePigeon(clone){
+  function handleNewPigeon(clone){
     var data = clone.id;
-    if(data.type==="socket") handleSocket(clone);
-    
-    if(data.type==="session"){
-      console.log("we have session clone here", clone.id);
-      var sheaf = Pigeonry.get(clone.id.session._id);
-      if(sheaf.session.objects.length===0){
-        Pigeonry.addObject("session", clone);        
-      }
-      else{
-        clone.__drop();
-      }
-    }
+    if(data.type==="socket")  handleSocket(clone);
+    if(data.type==="session") handleSession(clone);
   }
 
 
-  var getters   = {};
-  var factories = {};
+  var pigeon_getters   = {};
+  var pigeon_factories = {};
   function createPigeonFactory(remote_addr, cb){
     var remote_id = remote_addr.slice(-1).pop();
-    factories[remote_id] = new CloneRPC({
+    pigeon_factories[remote_id] = new CloneRPC({
       sendData: function(data)  {
         pigeonryAddresator.send(remote_addr.slice(), {type:"pigeon", body: data});
       },
-      getData:  function(fn){ getters[remote_id] = function(data){
-        fn(data);
-      }; },
-      onClone: handlePigeon
+      getData:  function(fn){ pigeon_getters[remote_id] = fn; },
+      onClone: handleNewPigeon
     });
-    factories[remote_id].build(remote_id, {}, function(){
+    pigeon_factories[remote_id].build(remote_id, {}, function(){
 
     });
     cb(null);
@@ -101,8 +99,8 @@ module.exports = function(core){
   }
 
   function destroyPigeonFactory(address){
-    delete getters[address];
-    delete factories[address];
+    delete pigeon_getters[address];
+    delete pigeon_factories[address];
   }
 
   function handlePigeonMessage(data, cb, remote_addr){
@@ -112,14 +110,64 @@ module.exports = function(core){
     }
     else{
       var remote_id = remote_addr.slice(-1).pop();
-      var getter = getters[remote_id];
+      var getter = pigeon_getters[remote_id];
       if(!getter) return cb && cb("Can't find facory: " + remote_id);
       getter(data.body);
     }
   }
 
-  function handleController(data, cb, remote_addr){
 
+
+
+
+
+
+
+
+
+
+
+
+
+  function handleController(controller){
+    controller.build(controller.id, {}, function(){
+      console.log("Controller built   ;;;)))", controller.id, controller);
+    })
+  }
+
+  var controllers           = {};
+  var controllers_getters   = {};
+
+  function createControllerFactory(remote_addr, cb){
+    var remote_id = remote_addr.slice(-1).pop();
+    var ControllerFactory = new CloneRPC({
+      sendData: function(data){
+        pigeonryAddresator.send(remote_addr.slice(), {type:"controller", body: data});
+      },
+      getData:  function(fn){ controllers_getters[remote_id] = fn; },
+      onClone: handleController
+    });
+    ControllerFactory.build(remote_id, {}, function(){
+
+    });
+    cb(null);
+  }
+
+  function destroyControllerFactory(){
+    throw new Error("TODO");
+  }
+
+  function handleControllerMessage(data, cb, remote_addr){
+    if(data.initialize===true) createControllerFactory(remote_addr, cb);
+    else if(data.destroy===true){
+      destroyControllerFactory(data.address);
+    }
+    else{
+      var remote_id = remote_addr.slice(-1).pop();
+      var getter = controllers_getters[remote_id];
+      if(!getter) return cb && cb("Can't find facory: " + remote_id);
+      getter(data.body);
+    }
   }
 
   var pigeonryAddresator = new Addresator({
@@ -131,7 +179,7 @@ module.exports = function(core){
           break;
 
         case "controller":
-          handleController(data, cb, remote_addr);
+          handleControllerMessage(data, cb, remote_addr);
           break;
       }
     },
