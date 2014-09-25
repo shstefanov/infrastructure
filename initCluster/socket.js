@@ -38,7 +38,7 @@ module.exports = function(cb){
     for(var i in arr) delete this[arr[i]];
     this.save(cb);
   }
-  function setSessionPrpps(props_array, cb){
+  function setSessionProps(props_array, cb){
     for(var key in obj) this[key] = obj[key];
   }
 
@@ -80,7 +80,7 @@ module.exports = function(cb){
             destroy: session.destroy,
             save:    session.save,
             set:     setSessionProps,
-            unset:   unsetSessionPrpps
+            unset:   unsetSessionProps
           }, function(){});
         });
       

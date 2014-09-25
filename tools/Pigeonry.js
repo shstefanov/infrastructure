@@ -18,6 +18,7 @@ module.exports = function(core){
     socket: {
       methods: ["on", "once", "disconnect", "initialize"],
       add : function(socket, session){
+        if(!session._id) console.error(new Error("We need subject id here!!!!").stack);
         return session._id;
         
       }
@@ -36,30 +37,32 @@ module.exports = function(core){
   });
 
   Pigeonry.on("ready", function(sheaf){
+    var initData = {};
+    console.log("Pigeon ready !!!");
     // Send initialize(null, initData)
   });
 
 
   function handleSocket(socket){
     var data = socket.id;
-
+    Pigeonry.addObject("socket", socket, data.session);
     // Check if sheaf exists
-    var sheaf = Pigeonry.get(data.session._id);
-    if(sheaf){
+    // var sheaf = Pigeonry.get(data.session._id);
+    // if(sheaf){
 
-    }
-    else{
-      pigeonryAddresator.send(["core", "controller_0"], {
-        type: "getControllers",
-        body: data.controllers || []
-      }, function(err, controllers){
-        if(err) throw err;
-        console.log("controllers:::", controllers);
-        socket.controllers = _.keys(controllers);
-        socket.initData = controllers;
-        Pigeonry.addObject("socket", socket, data.session);
-      });
-    }
+    // }
+    // else{
+    //   pigeonryAddresator.send(["core", "controller_0"], {
+    //     type: "getControllers",
+    //     body: data.controllers || []
+    //   }, function(err, controllers){
+    //     if(err) throw err;
+    //     //console.log("controllers:::", controllers);
+    //     socket.controllers = _.keys(controllers);
+    //     socket.initData = controllers;
+    //     Pigeonry.addObject("socket", socket, data.session);
+    //   });
+    // }
 
   }
 
@@ -130,9 +133,12 @@ module.exports = function(core){
 
 
   function handleController(controller){
-    controller.build(controller.id, {}, function(){
-      console.log("Controller built   ;;;)))", controller.id, controller);
-    })
+    if(controllers[controller.id.name]){
+      controller.__drop();
+      throw new Error("Controller "+controller.id.name+" exists");
+    }
+    controllers[controller.id.name] = controller;
+    controller.build(controller.id, {}, function(){});
   }
 
   var controllers           = {};

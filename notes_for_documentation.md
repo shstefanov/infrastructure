@@ -1,0 +1,3 @@
+
+
+1. Pages classes should have getSubject method. The default getSubject implementation is for use in single process mode only and just gets a model from env.subjects (instance of AdvancedCollection) which id equals to session._id or creates new model (not stored in database) with unique id, then updates session object before calling callback. In single process mode it can fetch a model using env.Models using id, stored in session object. In cluster mode Pigeonry needs _id property of the session that points to subject in database (user or temporary user). It can use dataLayer to find or create one.

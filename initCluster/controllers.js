@@ -82,7 +82,7 @@ module.exports = function(cb){
     env.node.onMessage = function(data, cb, remote_addr){
       if(data.type==="controller") return ControllerFactory.onMessage(data.body);
     };
-    console.log("SENDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+    
     env.node.send(["core", "pigeonry"], {
       type:       "controller",
       initialize: true
@@ -95,8 +95,11 @@ module.exports = function(cb){
               controller_clone.setOptions({context: controller});
               var controllerData = _.pick(controller, controller.methods);
               controllerData.availableMethods = controller.methods;
-              controller_clone.build(name, controllerData, function(){
-                console.log("Controller built !!!!", name);
+              controller_clone.build({
+                name: name,
+                methods: controller.methods
+              }, controllerData, function(){
+                
               });
             });
             
