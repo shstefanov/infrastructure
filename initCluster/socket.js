@@ -5,34 +5,17 @@ module.exports = function(cb){
   var env = this;
   var _ = require("underscore");
 
-  //var getter;
   var pigeonFactory = new CloneRPC({
-    sendData: function(data)  {
-      env.node.send(["core", "pigeonry"], {
-        type:       "pigeon",
-        body:       data
-      }, function(){
-
-      })
-    },
+    sendData: function(data)  { env.node.layers.pigeon.send([env.config.serverAddress, "pigeonry"], data); },
     getData:  function(fn){},
     onClone: function(){}
   });
-   
 
-  env.node.onMessage = function(data, cb, r_addr){
-    if(data.type==="pigeon") return pigeonFactory.onMessage(data.body);
-  }
+  env.node.layer("pigeon", function(data){ pigeonFactory.onMessage(data); });
 
-  env.node.send(["core", "pigeonry"], {
-    type:       "pigeon",
-    initialize: true
-  }, function(){
-    pigeonFactory.build(env.address, {}, function(){
-      cb&&cb(null);
-    });
+  env.node.layers.pigeon.send([env.config.serverAddress, "pigeonry"], { initialize: true }, function(){
+    pigeonFactory.build(env.address, {}, function(){ cb&&cb(null); });
   });
-
 
   function unsetSessionProps(arr, cb){
     for(var i in arr) delete this[arr[i]];

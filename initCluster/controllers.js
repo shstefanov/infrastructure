@@ -70,23 +70,13 @@ module.exports = function(cb){
     var getter;
     var ControllerFactory = new CloneRPC({
       getData:  function(fn  ){ getter = fn; },
-      sendData: function(data){
-        env.node.send(["core", "pigeonry"], {
-          type: "controller",
-          body: data
-        });
-      },
+      sendData: function(data){ env.layers.controller.send(["core", "pigeonry"], data); },
       onClone: function(){}
     });
 
-    env.node.onMessage = function(data, cb, remote_addr){
-      if(data.type==="controller") return ControllerFactory.onMessage(data.body);
-    };
+    env.node.layer("controller", function(data){ ControllerFactory.onMessage(data.body); });
     
-    env.node.send(["core", "pigeonry"], {
-      type:       "controller",
-      initialize: true
-    }, function(){
+    env.node.send(["core", "pigeonry"], { type: "controller", body: {initialize: true} }, function(){
       ControllerFactory.build(env.address, {}, function(){
         for(var name in env.controllers){
           (function(name){
