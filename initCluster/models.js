@@ -25,6 +25,7 @@ module.exports = function(cb){
     if(err) return cb(err);
     var modelsDir = path.join(config.rootDir, config.models);
     var Models = env.Models = {};
+    env.realModels = {};
     var modelsFiles = fs.readdirSync(modelsDir);
 
     var chain = [];
@@ -35,91 +36,90 @@ module.exports = function(cb){
       var ModelPrototype = fn.call(env);
       var name = ModelPrototype.collectionName||filename.split(".").slice(0, -1).join(".");
       Models[name] = ModelPrototype;
+      env.realModels = ModelPrototype;
       chain.push(ModelPrototype.build);
     });
 
     var exec = env._.chain(chain);
     exec(function(err){
       if(err) return cb(err);
-      console.log("Models built");
       // Build relations here
-      
+      modelsReady = true;
+      shedule.forEach(function(s){s();});
       cb();
-
     });
 
   }
 
-  var factories = {};
+  var modelsReady = false;
+  var shedule     = [];
+  var factories   = {};
 
-  env.node.layer("model", function(data, cb, remote_addr){
+  env.node.layer("modelMap", modelsRequest);
 
-  })
-
-  function destroyFactory(remote_id, cb){
-    delete factories[remote_id];
+  function modelsRequest(data, cb, remote_addr){
+    var layer = this;
+    if(modelsReady===false) return shedule.push(function(){ modelsRequest.call(layer, data, cb, remote_addr); });
+    cb(null, (data==="all")? Object.keys(env.Models) : data.filter(function(modelName){
+      return !!env.realModels[modelName];
+    }));
   }
 
-  function setUpFactory(remote_addr, cb){
+  env.node.layer("data", handleDataMessage);
+  function handleDataMessage(data, cb, remote_addr){
+    var layer = this;
+    if(modelsReady===false) return shedule.push(function(){ handleDataMessage.call(layer, data, cb, remote_addr); });
+    if(data.initialize===true) createModelFactory(remote_addr, data.models, layer, cb);
+    else if(data.destroy===true) destroyModelFactory(data.address);
+    else{
+      var remote_id = remote_addr.slice(-1).pop();
+      var factory = factories[remote_id];
+      if(!factory) return cb && cb("Can't find factory: " + remote_id);
+      factory.onMessage(data);
+    }
+  }
 
-    var remote_id = remote_addr.slice(-1).pop();
-    var ModelFactory = factories[remote_id] = new CloneRPC({
-      getData:  function(fn  ){ getters[remote_id] = fn; },
-      sendData: function(data){
-        env.node.send(remote_addr.slice(), { type: "data", body: data });
-      },
-      onClone: function(){}
-    });
+  function destroyModelFactory(address){
+    throw new Error("TODO - implement destroy model factory");
+  }
 
-    ModelFactory.build(remote_id, {}, function(){
-      // Clone and build here all available models
-      console.log("Model factory built !!!!!![][][][][][]");
-
-
-
-
-
-
-
-
-    });
-
-
-
-
-
-
-    return;
-    // ///////////////////////////////////////////////////////////
-
-    env.node.send(remote_addr, {
-      type:       "data",
-      initialize: true
-    }, function(){
-      ControllerFactory.build(env.address, {}, function(){
-        for(var name in env.controllers){
-          (function(name){
-            var controller = env.controllers[name];
-            ControllerFactory.clone(function(controller_clone){
-              controller_clone.setOptions({context: controller});
-              var controllerData = _.pick(controller, controller.methods);
-              controllerData.availableMethods = controller.methods;
-              controller_clone.build({
-                name: name,
-                methods: controller.methods
-              }, controllerData, function(){
-                
-              });
-            });
-            
-          })(name)
-        }
+  function createModelFactory(remote_addr, models, layer, cb){
+    if(!models) models = Object.keys(env.Models);
+    else{
+      models = models.filter(function(modelName){
+        return !!env.Models[modelName];
       });
+      if(models.length===0) return cb("Can't find models: "+models.join(", "));
+    }
+    var remote_id = remote_addr.slice(-1).pop();
+    var factory = factories[remote_id] = new CloneRPC({
+      sendData: function(data)  { layer.send(remote_addr.slice(), data); },
+      getData:  function(){},
+      onClone: handleNewPigeon
+    });
+    
+    factory.build(env.config.address, {}, function(){
+      cloneModels(factory, models);
     });
 
+    function cloneModels(factory, models){
+      models.forEach(function(modelName){
+        var Model = env.Models[modelName];
+        factory.clone(function(clone){
+          clone.setOptions({context:Model});
+          var methods = _.methods(Model);
+          clone.build(modelName, _.extend({availableMethods:methods},_.pick(Model, methods)), function(){
+            console.log("Model ", modelName, " built dataside");
+          });
+        });
+      });
+    }
+
+
+
+
+    cb(null);
   }
-
-
 
   
 

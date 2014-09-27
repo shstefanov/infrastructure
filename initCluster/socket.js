@@ -6,13 +6,17 @@ module.exports = function(cb){
   var _ = require("underscore");
 
   var pigeonFactory = new CloneRPC({
-    sendData: function(data)  { env.node.layers.pigeon.send([env.config.serverAddress, "pigeonry"], data); },
+    sendData: function(data)  {
+      console.log("socket send---> ", JSON.stringify(data));
+      env.node.layers.pigeon.send([env.config.serverAddress, "pigeonry"], data); 
+    },
     getData:  function(fn){},
     onClone: function(){}
   });
 
-  env.node.layer("pigeon", function(data){ pigeonFactory.onMessage(data); });
-
+  env.node.layer("pigeon", function(data){  pigeonFactory.onMessage(data); });
+  
+  //pigeonFactory.build(env.config.address, {}, function(){ cb&&cb(null); });
   env.node.layers.pigeon.send([env.config.serverAddress, "pigeonry"], { initialize: true }, function(){
     pigeonFactory.build(env.address, {}, function(){ cb&&cb(null); });
   });
@@ -74,6 +78,8 @@ module.exports = function(cb){
       }
     });
   };
+
+  cb(null);
 
   
 };

@@ -4,20 +4,8 @@ module.exports = function(env, cb){
   
   var _          = require("underscore");
   var Addresator = require("addresator");
+  var CloneRPC   = require("clone-rpc");
   var cluster    = require("cluster");
-
-  env.createLayer = function(name, getter){
-
-  }
-
-  env.setUpFactory = function(addr, name, options, objHandler){ // TODO !!!
-    // name will do send([], {type: name, body: ... })
-    // objHandler will be onClone
-    // options will be factory.build(options) for additional communication interface between nodes
-    // default - {}
-    // return new CloneRPC(...)
-  };
-
  
   if(cluster.isMaster){
 
@@ -25,11 +13,12 @@ module.exports = function(env, cb){
 
     var main = new Addresator({
       id: env.config.address,
-      onMessage: function(data, cb, remote_addr){
-        console.log("Server gets message: ", data);
-        console.log("Remote_address: ", remote_addr);
-        console.log("    ");
-      },
+      layers: true,
+      // onMessage: function(data, cb, remote_addr){
+      //   console.log("Server gets message: ", data);
+      //   console.log("Remote_address: ", remote_addr);
+      //   console.log("    ");
+      // },
       onError:   function(err, cb){
         console.log("Server addresator error:", err);
       }
@@ -46,9 +35,11 @@ module.exports = function(env, cb){
           worker.once("message", function(err){
             if(err) return handleError(err, worker, worker_config);
             main.branch(worker_config.address, function(addr_arr, data, cb_id){
+              console.log(">>>> core send to: ", worker_config.address, JSON.stringify(data));
               worker.send([addr_arr, data, cb_id]);
             });
             worker.on("message", function(data){
+              console.log(">>>> core get from: ", worker_config.address, JSON.stringify(data[1]));
               main.route.apply(main, data);
             });
           });
@@ -62,9 +53,11 @@ module.exports = function(env, cb){
     }
 
     var initializers = {};
+    var dataLayers = [], sheduleDataRequests = [], dataModelsReady = false;
     env.config.workers.forEach(function(worker_config){
       if(!_.has(initializers, worker_config.type)) initializers[worker_config.type] = createSpawner(worker_config.type);
       initializers[worker_config.type](worker_config);
+      if(worker_config.type===data) dataLayers.push(worker_config.address);
     });
 
 
@@ -74,39 +67,79 @@ module.exports = function(env, cb){
       console.log("Setup error: ", err, worker_config);
     }
 
-  }
+    main.layer("modelMap", function(data, cb, remote_addr){
+      env._.amap(dataLayers, function(addr, cb){
+        main.layers.modelMap.send([addr], data, function(err, models_arr){
+          if(err) return cb(err);
+          var result = {};
+          if(models_arr.length>0) result[addr] = models;
+          cb(null, result);
+        });
+        
+      }, function(err, results){
+        //[{node_addr:[model, model2,...]}, ...]
+        if(err) return cb(err);
+        var result = {};
+        results.forEach(function(r){
+          for(var key in r){
+            result[key] = r[key];
+          }
+        });
+        cb(null, result);
+      })
+    });
 
+  }
 
   else{
 
-    env.getModels = function(cb){
-      env.node.send([env.config.serverAddress], {type: "getDataNodes"}, function(err, dataNodes){
-        if(err) return cb(err);
-        if(env.config.type==="data"){ // Exclude me if i am of type data
-          dataNodes = dataNodes.filter(function(address){
-            return address!==env.config.address
-          });
-        }
 
-        env.Models    = {};
-        var factories = {};
-        var getters   = {};
-        env._.amap(dataNodes, function(nodeAddress, cb){
-          // For each node we must create a Model factory
-          env.node.send([env.config.serverAddress, nodeAddress], {type: "data", initialize: true}, function(err){
-            if(err) return cb(err);
-          });
-
-          var ModelFactory = factories[remote_id] = new CloneRPC({
-            getData:  function(fn  ){ getters[remote_id] = fn; },
-            sendData: function(data){
-              env.node.send(remote_addr.slice(), { type: "data", body: data });
-            },
-            onClone: function(){}
-          });
-        });
-
+    function handleModel(model){
+      model.build(model.id, {}, function(){
+        env.Models[model.id] = model;
       });
+    }
+
+    var factories = {};
+    function setUpFactory(node_addr, models){
+      var factory = factories[node_addr] = new CloneRPC({
+        sendData: function(data)  { env.node.layers.data.send([env.config.serverAddress, node_addr], data); },
+        getData:  function(){},
+        onClone: handleModel
+      });
+
+      env.node.layers.data.send([env.config.serverAddress, node_addr], {initialize:true, models: models}, function(err){
+        factory.build(env.config.address, {}, function(){
+
+        });
+      });
+    }
+
+    function handleModelMessage(data, cb, remote_addr){
+      var layer = this;
+      var remote_id = remote_addr.slice(-1).pop();
+      var factory = factories[remote_id];
+      if(!factory) return cb && cb("Can't find factory: " + remote_id);
+      factory.onMessage(data);
+    }
+
+    env.getModels = function(cb){
+      env.node.layer("modelMap", function(){/* We will not handle anything for now*/});
+      env.node.layer("data", handleModelMessage);
+      if(!env.Models) env.Models = {};
+      env.node.layer.modelMap.send([env.config.serverAddress], env.config.loadModels, function(err, map){
+        if(err) throw err;
+        load(map);
+      });
+
+      function load(obj){
+        //{node_id: [model, model2,...], ...}
+        for(var key in obj){
+          if(key===env.config.address) continue; // Do not load myself
+          var models = obj[key];
+          if(models.length>0) setUpFactory(key, models);
+        }
+      }
     }
     
     process.send("message");
@@ -123,8 +156,14 @@ module.exports = function(env, cb){
         id:        env.config.address,
         onError:   addresatorError
       });
-      env.node.branch(env.config.serverAddress, function(addr_arr, data, cb_id){ process.send([addr_arr, data, cb_id]); });
-      process.on("message", function(data){ env.node.route.apply(env.node, data); });
+      env.node.branch(env.config.serverAddress, function(addr_arr, data, cb_id){
+        console.log(">>>> node "+env.config.address+" sends to "+ env.config.serverAddress+ ": "+JSON.stringify(data));
+        process.send([addr_arr, data, cb_id]); 
+      });
+      process.on("message", function(data){ 
+        console.log(">>>> node "+env.config.address+" gets from to "+ env.config.serverAddress+ ": "+JSON.stringify(data[1]));
+        env.node.route.apply(env.node, data); 
+      });
       env._.chain(chain)(function(err){ cb(err, env)  }, env);
     }
 
@@ -132,27 +171,34 @@ module.exports = function(env, cb){
       console.log("Child addresator error("+env.config.type+" - "+env.config.type+"):", err);
     };
 
+    var proxy = function(place){
+      return function(cb){
+        console.log("Chain:: ", env.config.type, env.config.address, place);
+        cb();
+      }
+    }
+
     var initializers = {
 
       http: [
-        require("./initCluster/tools"        ),
-        require("./initCluster/database"     ),
-        require("./initCluster/socket"       ),
-        require("./initCluster/http"         ),
-        require("./initCluster/bundles"      ),
-        require("./initCluster/pages"        )
+        require("./initCluster/tools"        ),        proxy("tools"),
+        require("./initCluster/database"     ),        proxy("database"),
+        require("./initCluster/socket"       ),        proxy("socket"),
+        require("./initCluster/http"         ),        proxy("http"),
+        require("./initCluster/bundles"      ),        proxy("bundles"),
+        require("./initCluster/pages"        ),        proxy("pages"),
       ],
 
       controller: [
-        require("./initCluster/tools"        ),
-        require("./initCluster/database"     ),
-        require("./initCluster/controllers"  ),
+        require("./initCluster/tools"        ),        proxy("tools"),
+        require("./initCluster/database"     ),        proxy("database"),
+        require("./initCluster/controllers"  ),        proxy("controllers"),
       ],
 
       data: [
-        require("./initCluster/tools"        ),
-        require("./initCluster/database"     ),
-        require("./initCluster/models"       ),
+        require("./initCluster/tools"        ),        proxy("tools"),
+        require("./initCluster/database"     ),        proxy("database"),
+        require("./initCluster/models"       ),        proxy("models"),
       ],
 
       council: [],

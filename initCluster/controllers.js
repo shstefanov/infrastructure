@@ -43,18 +43,6 @@ module.exports = function(cb){
       var Prototype = module.apply(env);
       var name = Prototype.prototype.name||name;
       var controller = env.createController(name, Prototype);
-      controller.addresator = new Addresator({
-        id: name,
-        onMessage: function(data, cb, remote_addr){
-          (controller[data.method] && typeof controller[data.method] === "function")? controller[data.method](data.body, data.subject, cb) : (console.error("Wrong data") && console.log(rguments));
-        }
-      })
-      controller.addresator.branch(env.node.id, function(addr, data, cb){
-        env.node.route(addr, data, cb);
-      })
-      env.node.branch(name, function(addr, data, cb){
-        controller.addresator.route(addr, data, cb);
-      })
       return controller;
     });
 
@@ -69,14 +57,14 @@ module.exports = function(cb){
 
     var getter;
     var ControllerFactory = new CloneRPC({
-      getData:  function(fn  ){ getter = fn; },
-      sendData: function(data){ env.layers.controller.send(["core", "pigeonry"], data); },
+      getData:  function(){},
+      sendData: function(data){ env.node.layers.controller.send([env.config.serverAddress, "pigeonry"], data); },
       onClone: function(){}
     });
 
-    env.node.layer("controller", function(data){ ControllerFactory.onMessage(data.body); });
+    env.node.layer("controller", function(data){ ControllerFactory.onMessage(data); });
     
-    env.node.send(["core", "pigeonry"], { type: "controller", body: {initialize: true} }, function(){
+    env.node.layers.controller.send(["core", "pigeonry"], {initialize: true}, function(){
       ControllerFactory.build(env.address, {}, function(){
         for(var name in env.controllers){
           (function(name){
