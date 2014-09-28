@@ -2,6 +2,8 @@
 
 module.exports = function(cb){
   
+  console.log("++++ controllers init fn")
+
   var _          = require("underscore");
   var Addresator = require("addresator");
   var CloneRPC   = require("clone-rpc" );

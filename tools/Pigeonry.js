@@ -103,7 +103,7 @@ module.exports = function(core){
 
 
   function handleController(controller){
-    console.log("++++ controller clone", controller.id.name);
+    //console.log("++++ controller clone", controller.id.name);
     if(controllers[controller.id.name]){
       controller.__drop();
       throw new Error("Controller "+controller.id.name+" exists");
@@ -117,7 +117,7 @@ module.exports = function(core){
 
   function createControllerFactory(remote_addr, layer, cb){
     var remote_id = remote_addr.slice(-1).pop();
-    console.log("++++ building controller factory", remote_id);
+    //console.log("++++ building controller factory", remote_id);
     var ControllerFactory = factories[remote_id] = new CloneRPC({
       sendData: function(data){ layer.send(remote_addr.slice(), data); },
       // getData:  function(){},
@@ -134,7 +134,7 @@ module.exports = function(core){
   }
 
   function handleControllerMessage(data, cb, remote_addr){
-    console.log("++++ controller message", remote_addr.slice(-1)[0], JSON.stringify(data));
+    //console.log("++++ controller message", remote_addr.slice(-1)[0], JSON.stringify(data));
     var layer = this;
     if(data.initialize===true)   createControllerFactory(remote_addr, layer, cb);
     else if(data.destroy===true) destroyControllerFactory(data.address);

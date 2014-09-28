@@ -32,7 +32,7 @@ module.exports = function(cb){
       var ModelPrototype = fn.call(env);
       var name = ModelPrototype.collectionName||filename.split(".").slice(0, -1).join(".");
       Models[name] = ModelPrototype;
-      chain.push(ModelPrototype.build);
+      chain.push(ModelPrototype.buildModel);
     });
 
     var exec = env._.chain(chain);

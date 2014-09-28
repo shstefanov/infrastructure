@@ -80,8 +80,9 @@ module.exports = function(env){
       var Model = env.AdvancedModel.extend.apply(this, arguments);
       Model.collectionName = name;
       Model.prototype.getRef = createGetRef(name);
-      Model.build = function(cb){
-
+      Model.buildModel = function(cb){
+        if(typeof cb !== "function") throw new Error("Got you!!!!!!!!!!!!!!!!!!!!!");
+        console.log("++++ Mongomodel.build ", name);
         Model.db.createCollection(name, Model.options || {}, function(err, collection){
           if(err) return cb(err);
           Model.coll       = Model.prototype.coll = collection;
@@ -89,6 +90,7 @@ module.exports = function(env){
             {model:    Model     },
             {coll:     collection}
           );
+
           if(Model.index){
             var ch = [];
             Model.index.forEach(function(i){
@@ -101,7 +103,14 @@ module.exports = function(env){
             });
             env._.chain(ch)(cb);
           }
-          else cb();
+          else {
+            if(typeof cb==="string"){
+
+              return console.log("++++ MongoModel.build error:", cb);
+            }
+            cb();
+
+          }
         });
       }
 
@@ -128,19 +137,22 @@ module.exports = function(env){
     },
 
     find:    function(){
+
       var Self = this;
       var args = Array.prototype.slice.call(arguments);
       var cb = args.pop();
+      console.log("@@@@ ", "find", JSON.stringify(args));
       args.push(function(err, cursor){
         if(err) return cb(err);
         cursor.toArray(function(err, docs){
+          console.log("@@@@ ", "toArray", JSON.stringify(docs));
           if(err) return cb(err);
           cb(null, docs.map(function(doc){
             return new Self(doc);
           }));
         });
       });
-      this.coll.find.apply(this, args);
+      this.coll.find.apply(this.coll, args);
       return this;
     },
 
@@ -153,7 +165,7 @@ module.exports = function(env){
         var model = new Self(doc);
         cb(model.error, model);
       });
-      this.coll.findOne.apply(this, args);
+      this.coll.findOne.apply(this.coll, args);
       return this;
     },
 

@@ -7,7 +7,7 @@ module.exports = function(cb){
 
   var pigeonFactory = new CloneRPC({
     sendData: function(data)  {
-      console.log("socket send---> ", JSON.stringify(data));
+      //console.log("socket send---> ", JSON.stringify(data));
       env.node.layers.pigeon.send([env.config.serverAddress, "pigeonry"], data); 
     },
     getData:  function(fn){},

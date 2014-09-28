@@ -37,7 +37,7 @@ module.exports = function(cb){
       var name = ModelPrototype.collectionName||filename.split(".").slice(0, -1).join(".");
       Models[name] = ModelPrototype;
       env.realModels = ModelPrototype;
-      chain.push(ModelPrototype.build);
+      chain.push(ModelPrototype.buildModel);
     });
 
     var exec = env._.chain(chain);
@@ -95,7 +95,7 @@ module.exports = function(cb){
     var factory = factories[remote_id] = new CloneRPC({
       sendData: function(data)  { layer.send(remote_addr.slice(), data); },
       getData:  function(){},
-      onClone: handleNewPigeon
+      onClone: function(){}
     });
     
     factory.build(env.config.address, {}, function(){
@@ -109,7 +109,7 @@ module.exports = function(cb){
           clone.setOptions({context:Model});
           var methods = _.methods(Model);
           clone.build(modelName, _.extend({availableMethods:methods},_.pick(Model, methods)), function(){
-            console.log("Model ", modelName, " built dataside");
+            console.log("++++ Model ", modelName, " built dataside");
           });
         });
       });
