@@ -228,16 +228,16 @@ module.exports = function(env, cb){
       ],
 
       controller: [
-        require("./initCluster/tools"        ),        proxy("???? tools"),
-        require("./initCluster/database"     ),        proxy("???? database"),
-        require("./initCluster/controllers"  ),        proxy("???? controllers"),
-        function(cb){
-          console.log("@@@@ ", JSON.stringify(Object.keys(env.Models)));
-            env.Models.User.find({}, {password:false}, function(err, users){
-              console.log("@@@@ OOOOOYYYEEEEEE!!!!!", JSON.stringify(users));
-            })
-          cb();
-        }
+        require("./initCluster/tools"        ),        // proxy("???? tools"),
+        // require("./initCluster/database"     ),        // proxy("???? database"),
+        require("./initCluster/controllers"  ),        // proxy("???? controllers"),
+        // function(cb){
+        //   console.log("@@@@ ", JSON.stringify(Object.keys(env.Models)));
+        //     env.Models.User.find({}, {password:false}, function(err, users){
+        //       console.log("@@@@ OOOOOYYYEEEEEE!!!!!", JSON.stringify(users));
+        //     });
+        //   cb();
+        // }
       ],
 
       data: [
@@ -252,7 +252,7 @@ module.exports = function(env, cb){
         }
       ],
 
-      council: [],
+      // council: [], // For connection with other servers
       custom:  [],
 
     }
