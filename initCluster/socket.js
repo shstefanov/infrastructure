@@ -36,48 +36,55 @@ module.exports = function(cb){
     socket.on("disconnect", function(){report(--n)});
     report(++n);
 
-    var t = setTimeout(function(){
+    socket.t = setTimeout(function(){
       socket.disconnect();
     }, env.config.SocketIdleDisconnectTime || 1000*60);
 
     socket.once("init", function(namespace, cb){
-      clearTimeout(t);
       if(env.pages && _.has(env.pages, namespace)){
         var page = env.pages[namespace];
-        if(!page) throw new Error("no page - handle something here");
-        
-        // Create pigeons here
-        // socket
-        pigeonFactory.clone(function(p_socket){
-          p_socket.setOptions({context: socket});
-          p_socket.build({ type: "socket", session: session, controllers: page.controllers }, {
-            availableMethods: ["emit", "on", "once", "disconnect"],
-            listeners:        ["on"],
-            on: socket.on,
-            once: socket.once,
-            disconnect: socket.disconnect,
-            initialize: cb
-          }, function(){});
-        });
-        // session
-        pigeonFactory.clone(function(p_socket){
-          p_socket.setOptions({context: session});
-          p_socket.build({ type: "session", session: session }, {
-            availableMethods: ["destroy", "save"],
-            destroy: session.destroy,
-            save:    session.save,
-            set:     setSessionProps,
-            unset:   unsetSessionProps
-          }, function(){});
-        });
-      
+        page.getSubject(session, function(err, subject){
+          if(err) return cb(err);
+          socketInitialize(socket, session, subject, page.controllers);
+        })
       }
       else{
-        console.log("Wrong page - disconnecting socket");
+        cb("Wrong page - disconnecting socket");
         socket.disconnect();
       }
     });
   };
+
+  function socketInitialize(socket, session, subject, controllers){
+    clearTimeout(socket.t);
+    delete socket.t;
+
+    // Create pigeons here
+    // socket
+    pigeonFactory.clone(function(p_socket){
+      p_socket.setOptions({context: socket});
+      p_socket.build({ type: "socket", session: session, controllers: controllers }, {
+        availableMethods: ["emit", "on", "once", "disconnect"],
+        listeners:        ["on"],
+        on: socket.on,
+        once: socket.once,
+        disconnect: socket.disconnect,
+        initialize: cb
+      }, function(){});
+    });
+    // session
+    pigeonFactory.clone(function(p_socket){
+      p_socket.setOptions({context: session});
+      p_socket.build({ type: "session", session: session }, {
+        availableMethods: ["destroy", "save"],
+        destroy: session.destroy,
+        save:    session.save,
+        set:     setSessionProps,
+        unset:   unsetSessionProps
+      }, function(){});
+    });
+
+  }
 
   cb(null);
 

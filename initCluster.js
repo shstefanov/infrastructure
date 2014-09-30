@@ -3,6 +3,7 @@ var mixins = require("./lib/mixins");
 module.exports = function(env, cb){
   
   var _          = require("underscore");
+  var path       = require("path");
   var Addresator = require("addresator");
   var CloneRPC   = require("clone-rpc");
   var cluster    = require("cluster");
@@ -117,7 +118,7 @@ module.exports = function(env, cb){
 
     var factories = {};
     function setUpFactory(node_addr, models, countReady){
-      console.log("++++ setUpFactory for ", node_addr, JSON.stringify(models));
+      if(env.config.type==="custom") console.log("@@@@ setUpFactory", JSON.stringify(models));
       var factory = factories[node_addr] = new CloneRPC({
         sendData: function(data)  { env.node.layers.data.send([env.config.serverAddress, node_addr], data); },
         getData:  function(){},
@@ -140,15 +141,15 @@ module.exports = function(env, cb){
     }
 
     env.getModels = function(cb){
-      console.log("++++", "getModels begin");
+      //console.log("++++", "getModels begin");
       env.node.layer("modelMap", function(){/* We will not handle anything for now*/});
       env.node.layer("data", handleModelMessage);
       if(!env.Models) env.Models = {};
-      console.log("++++", "getModels layers.modelMap", [env.config.serverAddress]);
+      if(env.config.type==="custom") console.log("@@@@ loadModels ++++ env.node.layers.modelMap.send");
       env.node.layers.modelMap.send([env.config.serverAddress], env.config.loadModels, function(err, map){
-
+        if(env.config.type==="custom") console.log("@@@@ loadModels ++++ env.node.layers.modelMap.send CALLBACK", JSON.stringify(map));
         if(err) throw err;
-        console.log("++++", "getModels map??", JSON.stringify(map));
+        //console.log("++++", "getModels map??", JSON.stringify(map));
         load(map, cb);
       });
 
@@ -181,10 +182,19 @@ module.exports = function(env, cb){
         if(!_.has(initializers, config.type)) return process.send("Cant initialize worker type: "+config.type);
         _.extend(env.config, config);
         process.send(null);
-        initialize(initializers[config.type]);        
+        if(config.type==="custom"){
+          var chain = _.map(env.config.chain, function(dest){
+            return require(path.join(env.config.rootDir, dest));
+          });
+          console.log("@@@@ CHAIN::::::::::::", chain);
+          initialize(chain);   
+        }
+        else initialize(initializers[config.type]);     
+           
       });
 
       function initialize(chain){
+        if(env.config.type==="custom") console.log("@@@@ initialize");
         env.node = new Addresator({
           layers:    true,
           id:        env.config.address,
@@ -199,9 +209,13 @@ module.exports = function(env, cb){
           env.node.route.apply(env.node, data); 
         });
 
-        if(env.config.loadModels) env.getModels(function(){
-          env._.chain(chain)(function(err){ cb(err, env)  }, env);
-        });
+        if(env.config.loadModels) {
+          if(env.config.type==="custom") console.log("@@@@ loadModels ++++ before getModels");
+          env.getModels(function(){
+            if(env.config.type==="custom") console.log("@@@@ loadModels ++++ in cb");
+            env._.chain(chain)(function(err){ cb(err, env)  }, env);
+          });
+        }
         else env._.chain(chain)(function(err){ cb(err, env)  }, env);
 
       }

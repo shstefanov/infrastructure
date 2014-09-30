@@ -7,6 +7,7 @@ module.exports = function(env){
 
   var _       = require("underscore");
   var mongodb = require("mongodb");
+  var ObjectID = mongodb.ObjectID;
 
   function createGetRef(name){
     return function(){
@@ -182,6 +183,12 @@ module.exports = function(env){
         Self.coll.remove({_id: args[0].get("_id")}, cb);
       }
       return this;
+    },
+
+    findById: function(id, cb){
+      var pattern;
+      try{pattern = {_id: ObjectID(id)}}catch(err){return cb(err);}
+      this.findOne(pattern, cb);
     },
 
     update:  function(){

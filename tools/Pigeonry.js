@@ -11,26 +11,34 @@ module.exports = function(core){
     socket: {
       methods: ["on", "once", "disconnect", "initialize"],
       add : function(socket, session){
-        if(!session._id) console.error(new Error("We need subject id here!!!!").stack);
-        return session._id;
+        if(!session.user._id) console.error(new Error("We need subject id here!!!!").stack);
+        return session.user._id;
       }
     },
     session: {
       methods:["save", "destroy"],
-      add: function(session){
-        return session._id;
+      add: function(session, sessionData){
+        if(!sessionData.user._id) console.error(new Error("We need proper session id here!!!!").stack);
+        return sessionData.user._id;
+      }
+    },
+    subject: {
+      methods:[],
+      add: function(subject){
+        return subject._id;
       }
     }
   },
   {
+    // TODO - make it to trigger change event
     ready: function(sheaf){
-      if(sheaf.socket.objects.length>0 && sheaf.session.objects.lengh>0) return true;
+      if(sheaf.socket.objects.length>0 && sheaf.session.objects.length>0) return true;
     }
   });
 
   Pigeonry.on("ready", function(sheaf){
     var initData = {};
-    console.log("Pigeon ready !!!");
+    throw new Error("pigeon ready, continue from here !!!!");
     // Send initialize(null, initData)
   });
 
@@ -42,7 +50,7 @@ module.exports = function(core){
   function handleSession(session){
     var sheaf = Pigeonry.get(session.id.session._id);
     if(!sheaf || sheaf.session.objects.length===0){
-      Pigeonry.addObject("session", session);        
+      Pigeonry.addObject("session", session, session.id.session);        
     }
     else{
       session.__drop();
@@ -51,7 +59,7 @@ module.exports = function(core){
 
   function handleNewPigeon(clone){
     var data = clone.id;
-    console.log("---- pigeon ", data.type);
+    console.log("----------", data.type);
     if(data.type==="socket")  handleSocket(clone);
     if(data.type==="session") handleSession(clone);
   }

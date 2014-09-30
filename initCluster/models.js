@@ -36,7 +36,7 @@ module.exports = function(cb){
       var ModelPrototype = fn.call(env);
       var name = ModelPrototype.collectionName||filename.split(".").slice(0, -1).join(".");
       Models[name] = ModelPrototype;
-      env.realModels = ModelPrototype;
+      env.realModels[name] = ModelPrototype;
       chain.push(ModelPrototype.buildModel);
     });
 
@@ -60,7 +60,7 @@ module.exports = function(cb){
   function modelsRequest(data, cb, remote_addr){
     var layer = this;
     if(modelsReady===false) return shedule.push(function(){ modelsRequest.call(layer, data, cb, remote_addr); });
-    cb(null, (data==="all")? Object.keys(env.Models) : data.filter(function(modelName){
+    cb(null, (data==="all")? Object.keys(env.realModels) : data.filter(function(modelName){
       return !!env.realModels[modelName];
     }));
   }
@@ -109,7 +109,7 @@ module.exports = function(cb){
           clone.setOptions({context:Model});
           var methods = _.methods(Model);
           clone.build(modelName, _.extend({availableMethods:methods},_.pick(Model, methods)), function(){
-            console.log("++++ Model ", modelName, " built dataside");
+            // console.log("++++ Model ", modelName, " built dataside");
           });
         });
       });
