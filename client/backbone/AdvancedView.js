@@ -74,6 +74,8 @@ var View = App.View.extend("AdvancedView", _.extend(st, {
     
     if(this.controller && typeof this.controller === "string")
       this.controller = app.controllers[this.controller]
+    else if(options.controller) 
+      this.controller = options.controller
 
 
 
