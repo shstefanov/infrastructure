@@ -45,7 +45,7 @@ module.exports = function(cb){
         var page = env.pages[namespace];
         page.getSubject(session, function(err, subject){
           if(err) return cb(err);
-          socketInitialize(socket, session, subject, page.controllers);
+          socketInitialize(socket, session, subject, page.controllers, cb);
         })
       }
       else{
@@ -55,7 +55,7 @@ module.exports = function(cb){
     });
   };
 
-  function socketInitialize(socket, session, subject, controllers){
+  function socketInitialize(socket, session, subject, controllers, cb){
     clearTimeout(socket.t);
     delete socket.t;
 
@@ -64,7 +64,7 @@ module.exports = function(cb){
     pigeonFactory.clone(function(p_socket){
       p_socket.setOptions({context: socket});
       p_socket.build({ type: "socket", session: session, controllers: controllers }, {
-        availableMethods: ["emit", "on", "once", "disconnect"],
+        availableMethods: ["emit", "on", "once", "disconnect", "initialize"],
         listeners:        ["on"],
         on: socket.on,
         once: socket.once,

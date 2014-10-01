@@ -36,20 +36,22 @@ module.exports = function(cb){
   }
   else go();
 
-
-
   function go(err){
     if(err) return cb&&cb(err);
-    env.controllers = env._.dirToObject(controllersPath, function(name, folderName, module){
-      if(name === "init") return;
+
+    var controllersDir  = path.join(config.rootDir, config.controllers);
+    var controllerFiles = fs.readdirSync(controllersDir);
+
+    env.controllers = {};
+
+    controllerFiles.forEach(function(filename){
+      if(filename === "init.js") return;
+      var name = filename.replace(/\.js$/, "");
+      var module = require(path.join(controllersDir, filename));
       var Prototype = module.apply(env);
-      var name = Prototype.prototype.name||name;
-      var controller = env.createController(name, Prototype);
-      return controller;
+      name = Prototype.prototype.name||name;
+      env.controllers[name] = env.createController(name, Prototype);
     });
-
-
-
 
     var getMethods = function(controllers){
       var result = {};
@@ -68,13 +70,15 @@ module.exports = function(cb){
     
     env.node.layers.controller.send(["core", "pigeonry"], {initialize: true}, function(){
       ControllerFactory.build(env.address, {}, function(){
+        console.log(env.controllers);
         for(var name in env.controllers){
           (function(name){
             var controller = env.controllers[name];
             ControllerFactory.clone(function(controller_clone){
               controller_clone.setOptions({context: controller});
-              var controllerData = _.pick(controller, controller.methods);
-              controllerData.availableMethods = controller.methods;
+              var availableMethods = controller.methods.concat(["addSubject", "removeSubject", "handleMessage"]);
+              var controllerData = _.pick(controller, availableMethods);
+              controllerData.availableMethods = availableMethods;
               controller_clone.build({
                 name: name,
                 methods: controller.methods

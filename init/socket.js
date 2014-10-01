@@ -43,7 +43,7 @@ module.exports = function(cb){
           // create or get sockets collection and set it to subject
           if(!subject.sockets) subject.sockets = new SocketsCollection(subject);
           subject.sockets.add(socket);
-          socket.controllers = _.invoke(page.controllers, "addSubject", subject, socket).filter(returnArg);
+          socket.controllers = _.invoke(page.controllers, "addSubject", subject, session, socket).filter(returnArg);
           if(socket.controllers.length>0){
             _.invoke(socket.controllers, "handle", subject, socket);
             cb(null, getMethods(socket.controllers));

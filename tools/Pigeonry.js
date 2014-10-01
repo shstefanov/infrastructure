@@ -11,30 +11,79 @@ module.exports = function(core){
     socket: {
       methods: ["on", "once", "disconnect", "initialize"],
       add : function(socket, session){
-        if(!session.user._id) console.error(new Error("We need subject id here!!!!").stack);
-        return session.user._id;
+        if(!session.subject._id) return;
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add socket");
+        return session.subject._id;
       }
     },
     session: {
       methods:["save", "destroy"],
+      // TODO limit: 1,
       add: function(session, sessionData){
-        if(!sessionData.user._id) console.error(new Error("We need proper session id here!!!!").stack);
-        return sessionData.user._id;
+        if(!sessionData.subject._id) return; 
+        return sessionData.subject._id;
       }
     },
     subject: {
       methods:[],
-      add: function(subject){
-        return subject._id;
-      }
+       // TODO limit: 1,
+      add: function(subject){ return subject._id; }
     }
   },
   {
-    // TODO - make it to trigger change event
-    ready: function(sheaf){
-      if(sheaf.socket.objects.length>0 && sheaf.session.objects.length>0) return true;
+    events:{
+
+      "add:socket":  checkState,
+      "add:session": checkState,
+      "add:subject": checkState,
+
+      "setup:socket": function(socket, sheaf){
+        
+        var subject = sheaf.subject.objects[0];
+        var session = sheaf.session.objects[0];
+        env._.amap(_.keys(socket.controllers), function(controllerName, cb){
+          var controller = socket.controllers[controllerName];
+          controller.addSubject(subject, session, function(err, result){
+            if(err) throw err;
+            if(result===false){
+              delete socket.controllers[controllerName];
+              return cb(null, null);
+            }
+            cb(null, [controller.id.name, controller.id.methods]);
+            socket.on(controllerName, function(data, cb){
+              controller.handleMessage(data, subject, cb);
+            });
+          });
+        }, function(err, results){
+          var initData = {};
+          for(var i=0;i<results.length;i++){
+            if(results[i]===null) continue;
+            initData[results[i][0]] = results[i][1];
+          }
+          socket.initialize(null, initData);
+        });
+      },
+
+      "setup:all": function(sheaf){
+        for(var i=0;i<sheaf.socket.objects.length;i++){
+          this.trigger("setup:socket", sheaf.socket.objects[i], sheaf);
+        }
+      }
+
     }
   });
+
+  function checkState(obj, sheaf){
+    if(sheaf.isReady){
+      if(obj.id) {
+        return this.trigger("setup:"+obj.id.type, obj, sheaf);
+      }
+    }
+    else if(sheaf.subject.objects.length===1 && sheaf.session.objects.length===1) {
+      sheaf.isReady = true;
+      this.trigger("setup:all", sheaf);
+    }
+  }
 
   Pigeonry.on("ready", function(sheaf){
     var initData = {};
@@ -44,13 +93,16 @@ module.exports = function(core){
 
   function handleSocket(socket){
     var data = socket.id;
+    socket.controllers = _.pick(controllers, socket.id.controllers);
     Pigeonry.addObject("socket", socket, data.session);
   }
 
   function handleSession(session){
     var sheaf = Pigeonry.get(session.id.session._id);
     if(!sheaf || sheaf.session.objects.length===0){
-      Pigeonry.addObject("session", session, session.id.session);        
+      var sessionData = session.id.session;
+      Pigeonry.addObject("session", session, sessionData);
+      Pigeonry.addObject("subject", sessionData.subject);
     }
     else{
       session.__drop();
@@ -59,7 +111,6 @@ module.exports = function(core){
 
   function handleNewPigeon(clone){
     var data = clone.id;
-    console.log("----------", data.type);
     if(data.type==="socket")  handleSocket(clone);
     if(data.type==="session") handleSession(clone);
   }
@@ -111,7 +162,6 @@ module.exports = function(core){
 
 
   function handleController(controller){
-    //console.log("++++ controller clone", controller.id.name);
     if(controllers[controller.id.name]){
       controller.__drop();
       throw new Error("Controller "+controller.id.name+" exists");

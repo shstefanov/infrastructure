@@ -6,14 +6,31 @@ var EventedClass = require("./EventedClass");
 
 module.exports = EventedClass.extend("Controller", {
   
-  addSubject: function(subject, cb){ 
+  addSubject: function(subject, session, cb){ 
+    console.log("CONTROLLER.addSubject", "WTF?????");
     // returns controller, e.g. this, if access matches
     var accesKeys = _.keys(this.access || {});
-    var subjectAccess = _.pick(subject.session, accesKeys);
+    var subjectAccess = _.pick(session, accesKeys);
     if(_.isEqual(subjectAccess, _.result(this, "access"))){
+      console.log("CONTROLLER.addSubject", true)
       if(cb) cb(null, true);
       return this.trigger("subject", subject);
     }
+    else{
+      console.log("CONTROLLER.addSubject", false)
+      if(cb) cb(null, false);
+      return false;
+    }
+  },
+
+  removeSubject: function(subject, cb){
+    // TODO
+  },
+
+  handleMessage: function(data, subject, cb){
+    // if(data.event) return subject.sockets.trigger(data.event, subject, data.body, cb);
+    if(this.methods.indexOf(data.action)!=-1) this[data.action](data.body, subject, cb);
+    else cb("Error: Can't find method "+data.action);
   },
 
   handle: function(subject, socket){
