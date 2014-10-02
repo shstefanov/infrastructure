@@ -38,7 +38,7 @@ module.exports = function(core){
       "add:subject": checkState,
 
       "setup:socket": function(socket, sheaf){
-        
+        var self = this;
         var subject = sheaf.subject.objects[0];
         var session = sheaf.session.objects[0];
         env._.amap(_.keys(socket.controllers), function(controllerName, cb){
@@ -49,10 +49,19 @@ module.exports = function(core){
               delete socket.controllers[controllerName];
               return cb(null, null);
             }
+            if(!sheaf.controllers[controllerName]) {
+              sheaf.controllers[controllerName] = [socket];
+              self.trigger("bind:controller", controllerName, controller, sheaf);
+              controller.on(sheaf.id, function(data){
+                socket.emit(controllerName, data);
+              });
+            }
+            else sheaf.controllers[controllerName].push(socket);
             cb(null, [controller.id.name, controller.id.methods]);
             socket.on(controllerName, function(data, cb){
               controller.handleMessage(data, subject, cb);
             });
+
           });
         }, function(err, results){
           var initData = {};
@@ -61,13 +70,57 @@ module.exports = function(core){
             initData[results[i][0]] = results[i][1];
           }
           socket.initialize(null, initData);
+          socket.once("disconnect", function(){self.trigger("disconnect", socket, subject, sheaf);});
         });
       },
 
       "setup:all": function(sheaf){
+        sheaf.controllers = {};
         for(var i=0;i<sheaf.socket.objects.length;i++){
           this.trigger("setup:socket", sheaf.socket.objects[i], sheaf);
         }
+      },
+
+      "bind:controller": function(name, controller, sheaf){
+        controller.on(sheaf.id, function(data){
+          if(sheaf.controllers[name]){
+            sheaf.controllers[name].forEach(function(socket){
+              socket.emit(name, data);
+            });
+          }
+        });
+      },
+
+      "disconnect": function(socket, subject, sheaf){
+        socket.__drop();
+        var sockets = sheaf.socket.objects;
+        for(var i=0;i<sockets.length;i++){
+          if(sockets[i]===socket){
+            sockets.splice(i,1);
+            break;
+          }
+        }
+        for(var key in sheaf.controllers){
+          var controllerSockets = sheaf.controllers[key];
+          for(var j=0;j<controllerSockets.length;j++){
+            if(controllerSockets[j]===socket){
+              controllerSockets.splice(j,1);
+            }
+          }
+          if(controllerSockets.length===0){
+            socket.controllers[key].removeSubject(subject);
+            socket.controllers[key].off(sheaf.id);
+            delete sheaf.controllers[key];
+          }
+        }
+        if(sockets.length===0){
+          this.remove(sheaf.id);
+        }
+      },
+
+      "remove": function(sheaf){
+        // Cleanup here - session.drop and etc;
+        throw new Error("TODO - cleanup sheaf on remove");
       }
 
     }

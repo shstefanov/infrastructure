@@ -68,6 +68,7 @@ module.exports = function(cb){
         listeners:        ["on"],
         on: socket.on,
         once: socket.once,
+        emit: socket.emit,
         disconnect: socket.disconnect,
         initialize: cb
       }, function(){});
