@@ -10,7 +10,6 @@ module.exports = App.EventedClass.extend("Controller", {
 
     var self = this;
     socket.on(name, function(data){
-      console.log("ON ON ON DATA DATA", data);
       self.trigger(data.action, data.body);
     });
     socket.on("init", function(initData){

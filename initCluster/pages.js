@@ -76,13 +76,9 @@ module.exports = function(cb){
           )          
         }
 
-
         env.buildPage(PageClass);
       }
     });
-
-    //this._.debug("", 2, "green", "PAGES END");
-
     cb && cb(null);
   }
   

@@ -2,8 +2,6 @@
 
 module.exports = function(cb){
   
-  console.log("++++ controllers init fn")
-
   var _          = require("underscore");
   var Addresator = require("addresator");
   var CloneRPC   = require("clone-rpc" );
@@ -51,6 +49,7 @@ module.exports = function(cb){
       var Prototype = module.apply(env);
       name = Prototype.prototype.name||name;
       env.controllers[name] = env.createController(name, Prototype);
+      env.sys("controller", "Built:              "+name);
     });
 
     var getMethods = function(controllers){
@@ -70,7 +69,6 @@ module.exports = function(cb){
     
     env.node.layers.controller.send(["core", "pigeonry"], {initialize: true}, function(){
       ControllerFactory.build(env.address, {}, function(){
-        console.log(env.controllers);
         for(var name in env.controllers){
           (function(name){
             var controller = env.controllers[name];

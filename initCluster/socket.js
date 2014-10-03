@@ -7,7 +7,6 @@ module.exports = function(cb){
 
   var pigeonFactory = new CloneRPC({
     sendData: function(data)  {
-      //console.log("socket send---> ", JSON.stringify(data));
       env.node.layers.pigeon.send([env.config.serverAddress, "pigeonry"], data); 
     },
     getData:  function(fn){},
@@ -30,7 +29,7 @@ module.exports = function(cb){
   }
 
   var n = 0;
-  function report(n){console.log("Sockets connected: "+n);}
+  function report(n){env.log("socket", "open connections: "+n);}
   this.socketConnection = function(err, socket, session){
     if(err) throw err;
     socket.on("disconnect", function(){report(--n)});

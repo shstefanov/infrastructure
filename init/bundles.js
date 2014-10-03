@@ -1,9 +1,9 @@
-
 var browserify      = require("browserify");
 var path            = require("path");
 var fs              = require("fs");
 var jade            = require("jade");
 var beautify        = require('js-beautify').js_beautify;
+var mkdirp          = require("mkdirp");
 
 module.exports = function(cb){
 
@@ -138,8 +138,23 @@ module.exports = function(cb){
     bundler.addEntry(entryPoint);
     if(config.bundlesOptions.cache === true){
       var bundlePath = path.join(config.rootDir||process.cwd(), mountPoint);
-      console.log("Writing bundle: ", bundlePath, pageBundleBase);
-      //fs.writeFileSync(bundlePath, bundler.bundle());
+      var folderPath = bundlePath.split(path.sep).slice(0,-1).join(path.sep);
+      mkdirp(folderPath, function(){
+        bundler.on("bundle", function(){
+          
+          fs.writeFile(bundlePath, bundler.bundle(), function(err){
+            if(err) env.sys("error",  "Bundle error:            "+err)
+            else    env.sys("bundle", "Bundle writen:           "+bundlePath)
+            
+          });
+
+        });
+        fs.writeFile(bundlePath, bundler.bundle(), function(err){
+          if(err) env.sys("error",  "Bundle error:            "+err)
+          else    env.sys("bundle", "Bundle writen:           "+bundlePath)
+          
+        });        
+      });
     }
     else{
       app.use(bundler);

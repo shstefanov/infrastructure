@@ -14,7 +14,7 @@ module.exports = function(cb){
   }
 
   var n = 0;
-  function report(n){console.log("Sockets connected: "+n);}
+  function report(n){env.log("socket", "open connections: "+n);}
   this.socketConnection = function(err, socket, session){
     if(err) throw err;
     socket.on("disconnect", function(){report(--n)});

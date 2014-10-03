@@ -98,8 +98,9 @@ var Page = EventedClass.extend("Page", {
       }
     }
 
+    var line = "       ";
     handlers.concat(queue).forEach(function(obj){
-      console.log("Setting up route: ", obj.method.toUpperCase()+"\t", obj.route);
+      env.sys("HTTP", "Setting up route: "+ obj.method.toUpperCase()+line.slice(obj.method.length)+ obj.route);
       if(_.isArray(obj.handler)){
         obj.handler.forEach(function(h){
           app[obj.method](obj.route, h.bind(page));

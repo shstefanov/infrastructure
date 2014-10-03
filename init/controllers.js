@@ -12,7 +12,7 @@ module.exports = function(cb){
     delete pr.private;
 
     return new Controller();
-    console.log("Set up controller: "+name);
+    env.sys("controller", "Built: "+line.slice(name.length)+name);
   };
 
   if(this.skipLoading === true) return cb&&cb();

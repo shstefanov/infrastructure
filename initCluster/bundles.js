@@ -1,4 +1,3 @@
-
 var browserify      = require("browserify");
 var path            = require("path");
 var fs              = require("fs");
@@ -152,14 +151,18 @@ module.exports = function(cb){
       var folderPath = bundlePath.split(path.sep).slice(0,-1).join(path.sep);
       mkdirp(folderPath, function(){
         bundler.on("bundle", function(){
-          console.log("Writing bundle: ", arguments);
-          fs.writeFile(bundlePath, bundler.bundle(), function(){
-            console.log("Writing bundle: ", arguments);
+          
+          fs.writeFile(bundlePath, bundler.bundle(), function(err){
+            if(err) env.sys("error",  "Bundle error:            "+err)
+            else    env.sys("bundle", "Bundle writen:           "+bundlePath)
+            
           });
 
         });
-        fs.writeFile(bundlePath, bundler.bundle(), function(){
-          console.log("Writing bundle: ", arguments);
+        fs.writeFile(bundlePath, bundler.bundle(), function(err){
+          if(err) env.sys("error",  "Bundle error:            "+err)
+          else    env.sys("bundle", "Bundle writen:           "+bundlePath)
+          
         });        
       });
     }

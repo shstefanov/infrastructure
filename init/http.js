@@ -67,7 +67,7 @@ module.exports = function(cb){
     var sio = new SessionSockets(io, sessionStore, cookieParser);
     sio.on("connection", env.socketConnection);
 
-    console.log('Express server listening on port ' + app.get('port'));
+    env.sys("HTTP", 'Express server listening on port ' + app.get('port'));
     env.app = app;
     cb();
   });

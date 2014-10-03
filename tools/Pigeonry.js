@@ -12,7 +12,6 @@ module.exports = function(core){
       methods: ["on", "once", "disconnect", "initialize"],
       add : function(socket, session){
         if(!session.subject._id) return;
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add socket");
         return session.subject._id;
       }
     },
@@ -84,6 +83,7 @@ module.exports = function(core){
       "bind:controller": function(name, controller, sheaf){
         controller.on(sheaf.id, function(data){
           if(sheaf.controllers[name]){
+            env.log("event", "emit to "+sheaf.controllers[name].length+" sockets");
             sheaf.controllers[name].forEach(function(socket){
               socket.emit(name, data);
             });
@@ -228,10 +228,8 @@ module.exports = function(core){
 
   function createControllerFactory(remote_addr, layer, cb){
     var remote_id = remote_addr.slice(-1).pop();
-    //console.log("++++ building controller factory", remote_id);
     var ControllerFactory = factories[remote_id] = new CloneRPC({
       sendData: function(data){ layer.send(remote_addr.slice(), data); },
-      // getData:  function(){},
       onClone: handleController
     });
     ControllerFactory.build(remote_id, {}, function(){
@@ -245,7 +243,6 @@ module.exports = function(core){
   }
 
   function handleControllerMessage(data, cb, remote_addr){
-    //console.log("++++ controller message", remote_addr.slice(-1)[0], JSON.stringify(data));
     var layer = this;
     if(data.initialize===true)   createControllerFactory(remote_addr, layer, cb);
     else if(data.destroy===true) destroyControllerFactory(data.address);

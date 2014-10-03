@@ -8,7 +8,7 @@
       type: 'http',
       port: 3000,
       address: 'http_0',
-      bundler: true   // Otherwisw all of workers will build all javascript bundles
+      bundler: true   // Otherwise all of workers will build all javascript bundles
     }
   ]
   There is 'type' property. For now 'infrastructure' handles 3 types of sub-processes - 'http', 'controller', and 'data'

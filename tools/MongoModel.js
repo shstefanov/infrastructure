@@ -4,7 +4,7 @@
 
 
 module.exports = function(env){
-
+  var line = "                       ";
   var _       = require("underscore");
   var mongodb = require("mongodb");
   var ObjectID = mongodb.ObjectID;
@@ -21,59 +21,8 @@ module.exports = function(env){
  
   env.MongoModel = env.AdvancedModel.extend("MongoModel", {
     idAttribute: "_id",
-    findModel: function(name){return env.Models[name];},
-
-    validate: function(obj){ // all - true/false
-      delete this.error;
-      if(!obj) obj = this.attributes;
-      var error = {}, err = false, props, validation = this.validation;
-      for(var key in validation){
-        if(key==="_id" && this.isNew===true) continue;
-        if(!validation[key](obj[key])){
-          err = true;
-          error[key] = "invalid";
-        }
-      }
-      // Check for unwanted properties
-      for(var key in obj){
-
-        if(!validation[key]){
-          err = true;
-          error[key] = "unwanted";
-        }
-      }
-      if(err){
-        this.error = error;
-        return error;
-      }
-
-    },
-
-
-
-    toJSON: function(){
-      if(this.error) return {error: this.error};
-      return env.AdvancedModel.prototype.toJSON.call(this);
-    },
-
-    constructor: function(data){
-      if(!data){
-        this.error = "Can't find model";
-        return this;
-      }
-      else if(!_.isObject(data)){
-        this.error = "Model should be object";
-      }
-      var err = this.validate(data);
-      if(err){
-        this.error = err;
-        return env.AdvancedModel.apply(this, []);
-      }
-
-      return env.AdvancedModel.apply(this, arguments);
-    }
+    findModel: function(name){return env.Models[name];}, //Needed by queryGenerator
   },
-
   {
     db: env.db,
 
@@ -82,8 +31,6 @@ module.exports = function(env){
       Model.collectionName = name;
       Model.prototype.getRef = createGetRef(name);
       Model.buildModel = function(cb){
-        if(typeof cb !== "function") throw new Error("Got you!!!!!!!!!!!!!!!!!!!!!");
-        console.log("++++ Mongomodel.build ", name);
         Model.db.createCollection(name, Model.options || {}, function(err, collection){
           if(err) return cb(err);
           Model.coll       = Model.prototype.coll = collection;
@@ -98,24 +45,24 @@ module.exports = function(env){
               ch.push(function(cb){
                 //TODO - get collection indexes and drop removed if any
                 Model.coll.ensureIndex(i.index,i.options||{}, function(err){
+                  if(err) throw new Error("Strange error");
                   cb(err);
                 }); 
               });
             });
-            env._.chain(ch)(cb);
+            env._.chain(ch)(function(err){
+              if(err) return cb(err);
+              env.sys("model", "Model built:             "+name);
+              
+              cb();
+            });
           }
           else {
-            if(typeof cb==="string"){
-
-              return console.log("++++ MongoModel.build error:", cb);
-            }
+            env.sys("model", "Model built:             "+name);
             cb();
-
           }
         });
       }
-
-
 
       return Model;
     },
@@ -137,16 +84,14 @@ module.exports = function(env){
       Self.coll.insert(md.attributes)
     },
 
-    find:    function(){
+    find: function(){
 
       var Self = this;
       var args = Array.prototype.slice.call(arguments);
       var cb = args.pop();
-      console.log("@@@@ ", "find", JSON.stringify(args));
       args.push(function(err, cursor){
         if(err) return cb(err);
         cursor.toArray(function(err, docs){
-          console.log("@@@@ ", "toArray", JSON.stringify(docs));
           if(err) return cb(err);
           cb(null, docs.map(function(doc){
             return new Self(doc);

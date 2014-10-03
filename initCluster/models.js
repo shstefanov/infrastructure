@@ -43,7 +43,6 @@ module.exports = function(cb){
     var exec = env._.chain(chain);
     exec(function(err){
       if(err) return cb(err);
-      // Build relations here
       modelsReady = true;
       shedule.forEach(function(s){s();});
       cb();
@@ -109,7 +108,6 @@ module.exports = function(cb){
           clone.setOptions({context:Model});
           var methods = _.methods(Model);
           clone.build(modelName, _.extend({availableMethods:methods},_.pick(Model, methods)), function(){
-            // console.log("++++ Model ", modelName, " built dataside");
           });
         });
       });

@@ -118,7 +118,6 @@ module.exports = function(env, cb){
 
     var factories = {};
     function setUpFactory(node_addr, models, countReady){
-      if(env.config.type==="custom") console.log("@@@@ setUpFactory", JSON.stringify(models));
       var factory = factories[node_addr] = new CloneRPC({
         sendData: function(data)  { env.node.layers.data.send([env.config.serverAddress, node_addr], data); },
         getData:  function(){},
@@ -141,15 +140,11 @@ module.exports = function(env, cb){
     }
 
     env.getModels = function(cb){
-      //console.log("++++", "getModels begin");
       env.node.layer("modelMap", function(){/* We will not handle anything for now*/});
       env.node.layer("data", handleModelMessage);
       if(!env.Models) env.Models = {};
-      if(env.config.type==="custom") console.log("@@@@ loadModels ++++ env.node.layers.modelMap.send");
       env.node.layers.modelMap.send([env.config.serverAddress], env.config.loadModels, function(err, map){
-        if(env.config.type==="custom") console.log("@@@@ loadModels ++++ env.node.layers.modelMap.send CALLBACK", JSON.stringify(map));
         if(err) throw err;
-        //console.log("++++", "getModels map??", JSON.stringify(map));
         load(map, cb);
       });
 
@@ -186,7 +181,6 @@ module.exports = function(env, cb){
           var chain = _.map(env.config.chain, function(dest){
             return require(path.join(env.config.rootDir, dest));
           });
-          console.log("@@@@ CHAIN::::::::::::", chain);
           initialize(chain);   
         }
         else initialize(initializers[config.type]);     
@@ -194,7 +188,6 @@ module.exports = function(env, cb){
       });
 
       function initialize(chain){
-        if(env.config.type==="custom") console.log("@@@@ initialize");
         env.node = new Addresator({
           layers:    true,
           id:        env.config.address,
@@ -210,13 +203,24 @@ module.exports = function(env, cb){
         });
 
         if(env.config.loadModels) {
-          if(env.config.type==="custom") console.log("@@@@ loadModels ++++ before getModels");
           env.getModels(function(){
-            if(env.config.type==="custom") console.log("@@@@ loadModels ++++ in cb");
-            env._.chain(chain)(function(err){ cb(err, env)  }, env);
+            env._.chain(chain)(function(err){ 
+              if(err) {
+                return cb(err);
+              }
+              cb(err, env) 
+            }, env);
           });
         }
-        else env._.chain(chain)(function(err){ cb(err, env)  }, env);
+        else {
+          env._.chain(chain)(function(err){ 
+            if(err) {
+              return cb(err);
+            }
+            cb(err, env)  
+          }, env);
+        }
+
 
       }
 
@@ -225,7 +229,6 @@ module.exports = function(env, cb){
 
     var proxy = function(place){
       return function(cb){
-        console.log("Chain:: ", env.config.type, env.config.address, place);
         cb();
       }
     }
@@ -243,15 +246,7 @@ module.exports = function(env, cb){
 
       controller: [
         require("./initCluster/tools"        ),        // proxy("???? tools"),
-        // require("./initCluster/database"     ),        // proxy("???? database"),
         require("./initCluster/controllers"  ),        // proxy("???? controllers"),
-        // function(cb){
-        //   console.log("@@@@ ", JSON.stringify(Object.keys(env.Models)));
-        //     env.Models.User.find({}, {password:false}, function(err, users){
-        //       console.log("@@@@ OOOOOYYYEEEEEE!!!!!", JSON.stringify(users));
-        //     });
-        //   cb();
-        // }
       ],
 
       data: [
