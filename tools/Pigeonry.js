@@ -26,7 +26,9 @@ module.exports = function(core){
     subject: {
       methods:[],
        // TODO limit: 1,
-      add: function(subject){ return subject._id; }
+      add: function(subject){ 
+        return subject._id; 
+      }
     }
   },
   {
@@ -83,7 +85,6 @@ module.exports = function(core){
       "bind:controller": function(name, controller, sheaf){
         controller.on(sheaf.id, function(data){
           if(sheaf.controllers[name]){
-            env.log("event", "emit to "+sheaf.controllers[name].length+" sockets");
             sheaf.controllers[name].forEach(function(socket){
               socket.emit(name, data);
             });
@@ -137,12 +138,6 @@ module.exports = function(core){
       this.trigger("setup:all", sheaf);
     }
   }
-
-  Pigeonry.on("ready", function(sheaf){
-    var initData = {};
-    throw new Error("pigeon ready, continue from here !!!!");
-    // Send initialize(null, initData)
-  });
 
   function handleSocket(socket){
     var data = socket.id;
@@ -261,14 +256,14 @@ module.exports = function(core){
   var pigeonryAddresator = new Addresator({
     id: "pigeonry",
     layers: true,
-    onError:   function(err, cb){ console.log("pigeonryAddresator error:", err); }
+    onError:   function(err, cb){ env.log("pigeonryAddresator error:", err); }
   });
 
   pigeonryAddresator.layer("pigeon",     handlePigeonMessage);
   pigeonryAddresator.layer("controller", handleControllerMessage);
 
   core.branch("pigeonry", function(addr, data, cb){ pigeonryAddresator.route(addr, data, cb); });
-  pigeonryAddresator.branch("core", function(addr, data, cb){ core.route(addr, data, cb); });
+  pigeonryAddresator.branch(env.config.hostname, function(addr, data, cb){ core.route(addr, data, cb); });
 
   
 

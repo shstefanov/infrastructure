@@ -30,6 +30,7 @@ _.extend(App, {
 });
 
 _.extend(App, {
+  AdvancedModel:                require("../../tools/AdvancedModel"),
   AdvancedCollection:           require("../../tools/AdvancedCollection"),
   AdvancedView:                 require("./AdvancedView"),
   AdvancedRouter:               require("./router")  

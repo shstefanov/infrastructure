@@ -78,11 +78,15 @@ module.exports = function(env){
         validation: Self.prototype.validation,
         attributes: args[0]
       }
-      var error = Self.prototype.validate.apply(md);
+      var error = Self.prototype.validate.call(md);
       if(error) return cb(error);
-      args.push(function(err, doc){ cb(err, new Self(doc)); });
-      Self.coll.insert(md.attributes)
+      args.push(function(err, doc){ 
+        cb(err, doc); 
+      });
+      Self.coll.insert.apply(Self.coll, args);
+    
     },
+
 
     find: function(){
 
@@ -107,7 +111,8 @@ module.exports = function(env){
       var args = Array.prototype.slice.call(arguments);
       var cb = args.pop();
       args.push(function(err, doc){
-        if(err) return cb(err);
+        if(err)  return cb(err);
+        if(!doc) return cb(null, null);
         var model = new Self(doc);
         cb(model.error, model);
       });
@@ -131,6 +136,7 @@ module.exports = function(env){
     },
 
     findById: function(id, cb){
+      if(!id) return cb("MongomModel.findById error: id can not be null");
       var pattern;
       try{pattern = {_id: ObjectID(id)}}catch(err){return cb(err);}
       this.findOne(pattern, cb);

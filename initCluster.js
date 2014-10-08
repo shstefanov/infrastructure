@@ -13,34 +13,32 @@ module.exports = function(env, cb){
     var Pigeonry   = require("./tools/Pigeonry");
 
     var main = new Addresator({
-      id: env.config.address,
+      id: env.config.hostname,
       layers: true,
       // onMessage: function(data, cb, remote_addr){
       //   console.log("Server gets message: ", data);
       //   console.log("Remote_address: ", remote_addr);
       //   console.log("    ");
       // },
-      onError:   function(err, cb){
-        console.log("Server addresator error:", err);
-      }
+      onError:   function(err, addr){ env.log("Error:", err); }
     });
 
     Pigeonry.call(env, main);
 
     function createSpawner(name){
       return function(worker_config){
-        worker_config.serverAddress = env.config.address;
+        worker_config.serverAddress = env.config.hostname;
         var worker = cluster.fork();
         worker.once("message", function(){
           worker.send(worker_config);
           worker.once("message", function(err){
             if(err) return handleError(err, worker, worker_config);
             main.branch(worker_config.address, function(addr_arr, data, cb_id){
-              //console.log(">>>> core send to: ", worker_config.address, JSON.stringify(data));
+              env.log("@@ TO   ----> "+worker_config.address, JSON.stringify(data));
               worker.send([addr_arr, data, cb_id]);
             });
             worker.on("message", function(data){
-              //console.log(">>>> core get from: ", worker_config.address, JSON.stringify(data[1]));
+              env.log("@@ FROM ----> "+worker_config.address, JSON.stringify(data[1]));
               main.route.apply(main, data);
             });
           });
@@ -119,12 +117,12 @@ module.exports = function(env, cb){
     var factories = {};
     function setUpFactory(node_addr, models, countReady){
       var factory = factories[node_addr] = new CloneRPC({
-        sendData: function(data)  { env.node.layers.data.send([env.config.serverAddress, node_addr], data); },
+        sendData: function(data)  { env.node.layers.data.send([env.config.hostname, node_addr], data); },
         getData:  function(){},
         onClone: function(clone){handleModel(clone, countReady);}
       });
 
-      env.node.layers.data.send([env.config.serverAddress, node_addr], {initialize:true, models: models}, function(err){
+      env.node.layers.data.send([env.config.hostname, node_addr], {initialize:true, models: models}, function(err){
         factory.build(env.config.address, {}, function(){
 
         });
@@ -143,7 +141,7 @@ module.exports = function(env, cb){
       env.node.layer("modelMap", function(){/* We will not handle anything for now*/});
       env.node.layer("data", handleModelMessage);
       if(!env.Models) env.Models = {};
-      env.node.layers.modelMap.send([env.config.serverAddress], env.config.loadModels, function(err, map){
+      env.node.layers.modelMap.send([env.config.hostname], env.config.loadModels, function(err, map){
         if(err) throw err;
         load(map, cb);
       });
@@ -193,12 +191,12 @@ module.exports = function(env, cb){
           id:        env.config.address,
           onError:   addresatorError
         });
-        env.node.branch(env.config.serverAddress, function(addr_arr, data, cb_id){
-          //console.log(">>>> node "+env.config.address+" sends to "+ env.config.serverAddress+ ": "+JSON.stringify(data));
+        env.node.branch(env.config.hostname, function(addr_arr, data, cb_id){
+          //console.log(">>>> node "+env.config.address+" sends to "+ env.config.hostname+ ": "+JSON.stringify(data));
           process.send([addr_arr, data, cb_id]); 
         });
         process.on("message", function(data){ 
-          //console.log(">>>> node "+env.config.address+" gets from to "+ env.config.serverAddress+ ": "+JSON.stringify(data[1]));
+          //console.log(">>>> node "+env.config.address+" gets from to "+ env.config.hostname+ ": "+JSON.stringify(data[1]));
           env.node.route.apply(env.node, data); 
         });
 
@@ -255,7 +253,7 @@ module.exports = function(env, cb){
         require("./initCluster/models"       ),//        proxy("models"),
         function(cb){
           env.node.layer("reportDataLayerReady", function(){});
-          env.node.layers.reportDataLayerReady.send([env.config.serverAddress], true, function(err){
+          env.node.layers.reportDataLayerReady.send([env.config.hostname], true, function(err){
             cb();
           }); 
         }

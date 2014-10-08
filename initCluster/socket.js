@@ -43,7 +43,8 @@ module.exports = function(cb){
       if(env.pages && _.has(env.pages, namespace)){
         var page = env.pages[namespace];
         page.getSubject(session, function(err, subject){
-          if(err) return cb(err);
+          
+          if(err) { cb(err); return socket.disconnect(); }
           socketInitialize(socket, session, subject, page.controllers, cb);
         })
       }
@@ -55,8 +56,6 @@ module.exports = function(cb){
   };
 
   function socketInitialize(socket, session, subject, controllers, cb){
-    clearTimeout(socket.t);
-    delete socket.t;
 
     // Create pigeons here
     // socket
