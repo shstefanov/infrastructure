@@ -25,7 +25,7 @@ module.exports = function(cb){
     Collection:         Backbone.Collection,
     AdvancedCollection: require("../tools/AdvancedCollection"),
     
-    Controller:         require("../tools/Controller"),
+    Controller:         config.clusterMode? require("../tools/ClusterController") : require("../tools/Controller"),
     
     Page:               require("../tools/Page"),
     Api:                require("../tools/Api"),

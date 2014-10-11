@@ -13,7 +13,7 @@ module.exports = function(cb){
   if(!config.models || !fs.existsSync(path.join(config.rootDir, config.models))) return cb();
   
   var modelsDir = path.join(config.rootDir, config.models);
-  require("../tools/MongoModel")(env);
+  require("../tools/MongoClusterModel")(env);
   if(fs.existsSync(path.join(config.rootDir, config.models, "init.js"))){
     var initializer = require(path.join(config.rootDir, config.models, "init.js"));
     initializer.call(env, go);
