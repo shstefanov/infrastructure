@@ -72,19 +72,24 @@ module.exports = function(env){
     create:  function(){
       var Self = this;
       var args = Array.prototype.slice.call(arguments);
-      var cb = args.pop();
+      
+      var cb   = args.pop();
+      var data = args.shift();
+      var opts = args.length>0?args.pop():{};
+      if(opts.fromJSON===true) data = this.prototype.convertJSON(data);
+      
       var md = {
         isNew: true,
         validation: Self.prototype.validation,
-        attributes: args[0]
+        attributes: data
       }
       var error = Self.prototype.validate.call(md);
       if(error) return cb(error);
-      args.push(function(err, doc){ 
-        cb(err, doc); 
+      // args.push(function(err, doc){ cb(err, !err?doc[0]:null); });
+      Self.coll.insert.call(Self.coll, data, function(err, doc){ 
+        console.log("Create callback", arguments);
+        cb(err, !err?doc[0]:null); 
       });
-      Self.coll.insert.apply(Self.coll, args);
-    
     },
 
 

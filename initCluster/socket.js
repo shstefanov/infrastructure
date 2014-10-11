@@ -46,7 +46,7 @@ module.exports = function(cb){
           
           if(err) { cb(err); return socket.disconnect(); }
           socketInitialize(socket, session, subject, page.controllers, cb);
-        })
+        });
       }
       else{
         cb("Wrong page - disconnecting socket");
@@ -72,9 +72,9 @@ module.exports = function(cb){
       }, function(){});
     });
     // session
-    pigeonFactory.clone(function(p_socket){
-      p_socket.setOptions({context: session});
-      p_socket.build({ type: "session", session: session }, {
+    pigeonFactory.clone(function(p_session){
+      p_session.setOptions({context: session});
+      p_session.build({ type: "session", session: session }, {
         availableMethods: ["destroy", "save"],
         destroy: session.destroy,
         save:    session.save,

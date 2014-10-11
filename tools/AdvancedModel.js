@@ -17,7 +17,9 @@ var AdvancedModel = Backbone.Model.extend({
   convertJSON: function(data){
     var result = _.clone(data);
     var conv = this.fromJSON || {};
+    if(!conv) return result;
     for(var key in result) if(conv[key]) {
+      if(!conv[key]) continue;
       result[key] = Array.isArray(data[key])? data[key].map(conv[key]) : conv[key](data[key]);
     }
     return result;

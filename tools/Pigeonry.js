@@ -53,9 +53,6 @@ module.exports = function(core){
             if(!sheaf.controllers[controllerName]) {
               sheaf.controllers[controllerName] = [socket];
               self.trigger("bind:controller", controllerName, controller, sheaf);
-              controller.on(sheaf.id, function(data){
-                socket.emit(controllerName, data);
-              });
             }
             else sheaf.controllers[controllerName].push(socket);
             cb(null, [controller.id.name, controller.id.methods]);
@@ -82,16 +79,26 @@ module.exports = function(core){
         }
       },
 
+
+      // This event is triggered only once for every controller
+      // If new socket connection is established, this event will be called only for
+      // controllers, that are not active for other sockets
+      // For example - different apps can handle different sets of controllers
       "bind:controller": function(name, controller, sheaf){
-        controller.on(sheaf.id, function(data){
+        controller.listen(sheaf.id, function(data){
           if(sheaf.controllers[name]){
             sheaf.controllers[name].forEach(function(socket){
               socket.emit(name, data);
             });
           }
+          else{
+            controller.removeSubject(sheaf.subject.objects[0]);
+          }
         });
       },
 
+
+      //Handle single socket disconnection
       "disconnect": function(socket, subject, sheaf){
         socket.__drop();
         var sockets = sheaf.socket.objects;
@@ -120,8 +127,7 @@ module.exports = function(core){
       },
 
       "remove": function(sheaf){
-        // Cleanup here - session.drop and etc;
-        throw new Error("TODO - cleanup sheaf on remove");
+        sheaf.session.objects[0].__drop();
       }
 
     }

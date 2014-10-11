@@ -74,7 +74,7 @@ module.exports = function(cb){
             var controller = env.controllers[name];
             ControllerFactory.clone(function(controller_clone){
               controller_clone.setOptions({context: controller});
-              var availableMethods = controller.methods.concat(["on", "once", "off", "addSubject", "removeSubject", "handleMessage"]);
+              var availableMethods = controller.methods.concat(["listen", "once", "off", "addSubject", "removeSubject", "handleMessage"]);
               var controllerData = _.pick(controller, availableMethods);
               controllerData.listeners = ["on"];
               controllerData.availableMethods = availableMethods;
