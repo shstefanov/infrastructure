@@ -113,6 +113,14 @@ module.exports = function(env){
       return this;
     },
 
+    count: function(pattern, cb){
+      console.log("count????/", JSON.stringify(pattern))
+      this.coll.count(pattern, function(err, number){
+        if(err) return cb(err);
+        cb(null, number)
+      });
+    },
+
     findOne: function(){
       var Self = this;
       var args = Array.prototype.slice.call(arguments);
