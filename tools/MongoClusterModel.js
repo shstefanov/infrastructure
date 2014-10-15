@@ -70,7 +70,6 @@ module.exports = function(env){
 
     // DB methods
     create:  function(){
-      console.log("MongoClusterModel")
       var Self = this;
       var args = Array.prototype.slice.call(arguments);
       
@@ -87,7 +86,6 @@ module.exports = function(env){
       var error = Self.prototype.validate.call(md);
       if(error) return cb(error);
       Self.coll.insert.call(Self.coll, data, function(err, doc){ 
-        console.log("Create callback", arguments);
         cb(err, !err?doc[0]:null); 
       });
     },
@@ -100,7 +98,8 @@ module.exports = function(env){
       var cb      = args.pop();
       var query   = args.shift();
       var options = args.shift()||{};
-      args.push(function(err, cursor){
+      var options = args.shift()||{};
+      this.coll.find.call(this.coll, query, options, function(err, cursor){
         if(err) return cb(err);
         cursor.toArray(function(err, docs){
           if(err) return cb(err);
@@ -109,12 +108,10 @@ module.exports = function(env){
           }));
         });
       });
-      this.coll.find.apply(this.coll, args);
       return this;
     },
 
     count: function(pattern, cb){
-      console.log("count????/", JSON.stringify(pattern))
       this.coll.count(pattern, function(err, number){
         if(err) return cb(err);
         cb(null, number)
