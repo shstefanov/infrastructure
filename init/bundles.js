@@ -81,9 +81,6 @@ module.exports = function(cb){
   var angular_vars = "App = {}, app = undefined, angular = undefined, ng = undefined, socket = undefined;";
   var new_line = "\n";
 
-
-
-
   env.registerBundle  = function(page){
 
     var pageBundleBase = getBundleBase(page.codeBase) || bundleBase;
@@ -94,8 +91,7 @@ module.exports = function(cb){
       config.bundles, 
       page.app
     );
-    
-    
+        
     var mountPoint    = path.join(config.bundlesOptions.prefix || _bundles,  page.app);
     mountPoint        = mountPoint.replace(backslash_repl_re, _slash);
     
@@ -107,6 +103,8 @@ module.exports = function(cb){
     
     if(pageBundleBase==="backbone") bundler.register(jade_ext, parse_jade);
     if(pageBundleBase==="angular")  bundler.register(html_ext, parse_html);
+
+    if(env.browserifyIncludes) for(key in env.browserifyIncludes) key.indexOf(".")===0 && bundler.register(key, env.browserifyIncludes[key]);
     
     for(key in page) key.indexOf(".")===0 && bundler.register(key, page[key]);
 

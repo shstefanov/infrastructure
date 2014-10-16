@@ -117,6 +117,8 @@ module.exports = function(cb){
     
     if(pageBundleBase==="backbone") bundler.register(jade_ext, parse_jade);
     if(pageBundleBase==="angular")  bundler.register(html_ext, parse_html);
+
+    if(env.browserifyIncludes) for(key in env.browserifyIncludes) key.indexOf(".")===0 && bundler.register(key, env.browserifyIncludes[key]);
     
     for(key in page) key.indexOf(".")===0 && bundler.register(key, page[key]);
 

@@ -30,3 +30,6 @@
   If 'loadModels' property is set in worker configuration, a env.Models namespace will be filled with clones of cpecified Models.
   Possible values are "all", which will load all available models or array with model names.
   If data worker tries to load models, it will avoid it's own models and will setup only these from other data workers
+
+
+  3. Adding env.browserifyIncludes ({".ext": function(body, fullFilePath), ...}) causes browserify to register a extension for the bundles
