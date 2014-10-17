@@ -32,4 +32,4 @@
   If data worker tries to load models, it will avoid it's own models and will setup only these from other data workers
 
 
-  3. Adding env.browserifyIncludes ({".ext": function(body, fullFilePath), ...}) causes browserify to register a extension for the bundles
+  3. Adding env.browserifyIncludes ({".ext": function(body, fullFilePath){ ...}) causes browserify to register a extension for the bundles
