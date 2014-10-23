@@ -130,20 +130,7 @@ var Page = EventedClass.extend("Page", {
   },
 
   getSubject: function(session, cb){
-    var self = this;
-    var save = false;
-    if(!session._id) {save = true; session._id = _.uniqueId("s_");}
-    var subject = this.env.subjects.add({_id: session._id});
-    if(!save) {
-      cb(null, subject );
-      // Not needed - already bound
-      //subject.sockets.once("disconnect", this.env.subjects.remove, this.env.subjects);
-    }
-    else session.save(function(err){
-      if(err) return cb(err); 
-      cb(null, subject);
-      subject.sockets.once("disconnect", self.env.subjects.remove, self.env.subjects);
-    });
+    cb("getSubject not implemented!!!");
   }
 
 });
