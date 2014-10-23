@@ -16,6 +16,13 @@ module.exports = EventedClass.extend("Controller", {
       cb("Invalid subject");
       return false;
     }
+
+    console.log("session: ", session);
+    throw new Error("This session should be 'alive'");
+
+
+
+
     // returns controller, e.g. this, if access matches
     var accesKeys = _.keys(this.access || {});
     var subjectAccess = _.pick(session, accesKeys);
