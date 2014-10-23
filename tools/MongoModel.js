@@ -22,31 +22,37 @@ module.exports = function(env){
     idAttribute: "_id",
     findModel: function(name){return env.Models[name];},
 
-    validate: function(obj){ // all - true/false
-      delete this.error;
-      if(!obj) obj = this.attributes;
-      var error = {}, err = false, props, validation = this.validation;
-      for(var key in validation){
-        if(key==="_id" && this.isNew===true) continue;
-        if(!validation[key](obj[key])){
-          err = true;
-          error[key] = "invalid";
-        }
-      }
-      // Check for unwanted properties
-      for(var key in obj){
+    // validate: function(obj){ // all - true/false
 
-        if(!validation[key]){
-          err = true;
-          error[key] = "unwanted";
-        }
-      }
-      if(err){
-        this.error = error;
-        return error;
-      }
 
-    },
+    //   console.log("validate::::", obj);
+
+
+
+    //   delete this.error;
+    //   if(!obj) obj = this.attributes;
+    //   var error = {}, err = false, props, validation = this.validation;
+    //   for(var key in validation){
+    //     if(key==="_id" && this.isNew===true) continue;
+    //     if(!validation[key](obj[key])){
+    //       err = true;
+    //       error[key] = "invalid";
+    //     }
+    //   }
+    //   // Check for unwanted properties
+    //   for(var key in obj){
+
+    //     if(!validation[key]){
+    //       err = true;
+    //       error[key] = "unwanted";
+    //     }
+    //   }
+    //   if(err){
+    //     this.error = error;
+    //     return error;
+    //   }
+
+    // },
 
 
 
@@ -56,6 +62,8 @@ module.exports = function(env){
     },
 
     constructor: function(data){
+      console.log("constructor::", data);
+
       if(!data){
         this.error = "Can't find model";
         return this;
@@ -80,7 +88,7 @@ module.exports = function(env){
       var Model = env.AdvancedModel.extend.apply(this, arguments);
       Model.collectionName = name;
       Model.prototype.getRef = createGetRef(name);
-      Model.build = function(cb){
+      Model.buildModel = function(cb){
 
         Model.db.createCollection(name, Model.options || {}, function(err, collection){
           if(err) return cb(err);
@@ -153,6 +161,7 @@ module.exports = function(env){
         var model = new Self(doc);
         cb(model.error, model);
       });
+      console.log("findOne:", args);
       this.coll.findOne.apply(this, args);
       return this;
     },
