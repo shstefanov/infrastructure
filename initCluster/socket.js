@@ -72,9 +72,11 @@ module.exports = function(cb){
       }, function(){});
     });
     // session
+    var sessionData = _.clone(session);
+    sessionData.id = session.id;
     pigeonFactory.clone(function(p_session){
       p_session.setOptions({context: session});
-      p_session.build({ type: "session", session: session }, {
+      p_session.build({ type: "session", session: sessionData }, {
         availableMethods: ["destroy", "save"],
         destroy: session.destroy,
         save:    session.save,

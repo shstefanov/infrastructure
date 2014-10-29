@@ -56,6 +56,8 @@ module.exports = function(core){
             }
             else sheaf.controllers[controllerName].push(socket);
             cb(null, [controller.id.name, controller.id.methods]);
+
+            // TODO Find way to drop the listener on disconnect
             socket.on(controllerName, function(data, cb){
               controller.handleMessage(data, subject, cb);
             });
@@ -85,7 +87,8 @@ module.exports = function(core){
       // controllers, that are not active for other sockets
       // For example - different apps can handle different sets of controllers
       "bind:controller": function(name, controller, sheaf){
-        controller.listen(sheaf.id, function(data){
+        var subject = sheaf.subject.objects[0];
+        controller.createSocket(subject, function(data){
           if(sheaf.controllers[name]){
             sheaf.controllers[name].forEach(function(socket){
               socket.emit(name, data);
@@ -94,6 +97,12 @@ module.exports = function(core){
           else{
             controller.removeSubject(sheaf.subject.objects[0]);
           }
+        });
+        var session = sheaf.session;
+        var sessionData = session.objects[0].id.session.id;
+        controller.createSession(subject, sessionData, function(action, data, cb){
+          // action should be 'save' or 'destroy, session method
+
         });
       },
 
@@ -153,13 +162,46 @@ module.exports = function(core){
 
   function handleSession(session){
     var sheaf = Pigeonry.get(session.id.session._id);
+    var sessionData = session.id.session;
+    // We need only one subject
     if(!sheaf || sheaf.session.objects.length===0){
-      var sessionData = session.id.session;
-      Pigeonry.addObject("session", session, sessionData);
       Pigeonry.addObject("subject", sessionData.subject);
     }
+    // { 
+    //   cookie: {
+    //     originalMaxAge: null,
+    //     expires:        null,
+    //     secure:         null,
+    //     httpOnly:       true,
+    //     domain:         null,
+    //     path:           '/' 
+    //   },
+    //   id:   "ksjdhfkh fksj hdfkjshdfkjshfkj " ???
+    //   subject: { 
+    //       _id:         '54480e1d40d806000d2dd3dd',
+    //       username:    'anonymous_349246099963061',
+    //       email:       'anonymous_349246099963061',
+    //       created:     '2014-10-22T20:05:49.246Z' 
+    //   } 
+    // }
+
+    var sheaf = Pigeonry.get(sessionData.subject._id);
+    if(sheaf){
+      var sessions = sheaf.session, exists = false;
+      for(var i=0;i<sessions.objects.length;i++){
+        var obj_sess = sessions.objects[i];
+        if(obj_sess.id.session.id === sessionData.id){
+          exists = true; break;
+        }
+      }
+      if(!exists){
+        Pigeonry.addObject("session", session, sessionData);
+      }
+      else session.__drop(); // We do not need the same session twice
+    }
+    //var sessionID = sessionData.id;
     else{
-      session.__drop();
+      Pigeonry.addObject("session", session, sessionData);
     }
   }
 

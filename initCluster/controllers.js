@@ -76,7 +76,7 @@ module.exports = function(cb){
               controller_clone.setOptions({context: controller});
               var availableMethods = controller.methods.concat(["listen", "once", "off", "addSubject", "removeSubject", "handleMessage"]);
               var controllerData = _.pick(controller, availableMethods);
-              controllerData.listeners = ["on"];
+              controllerData.listeners = ["on", "createSocket", "createSession"];
               controllerData.availableMethods = availableMethods;
               controller_clone.build({
                 name: name,
