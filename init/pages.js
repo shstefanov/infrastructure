@@ -18,7 +18,7 @@ module.exports = function(cb){
     var page = pages[root] = new PageClass(env, options);
 
     if(env.controllers && page.controllers) page.getControllers(env);
-    if(page.app && typeof page.app==="string") env.registerBundle(page);
+    //if(page.app && typeof page.app==="string") env.registerBundle(page);
     pages[page.root] = page;
     return page;
   }

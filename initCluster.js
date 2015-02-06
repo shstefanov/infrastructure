@@ -7,102 +7,112 @@ module.exports = function(env, cb){
   var Addresator = require("addresator");
   var CloneRPC   = require("clone-rpc");
   var cluster    = require("cluster");
- 
+
+
+
   if(cluster.isMaster){
 
-    var Pigeonry   = require("./tools/Pigeonry");
 
-    var main = new Addresator({
-      id: env.config.hostname,
-      layers: true,
-      // onMessage: function(data, cb, remote_addr){
-      //   console.log("Server gets message: ", data);
-      //   console.log("Remote_address: ", remote_addr);
-      //   console.log("    ");
-      // },
-      onError:   function(err, addr){ env.log("Error:", err); }
-    });
-
-    Pigeonry.call(env, main);
-
-    function createSpawner(name){
-      return function(worker_config){
-        worker_config.serverAddress = env.config.hostname;
-        var worker = cluster.fork();
-        worker.once("message", function(){
-          worker.send(worker_config);
-          worker.once("message", function(err){
-            if(err) return handleError(err, worker, worker_config);
-            main.branch(worker_config.address, function(addr_arr, data, cb_id){
-              env.log("@@ TO   ----> "+worker_config.address, JSON.stringify(data));
-              worker.send([addr_arr, data, cb_id]);
-            });
-            worker.on("message", function(data){
-              env.log("@@ FROM ----> "+worker_config.address, JSON.stringify(data[1]));
-              main.route.apply(main, data);
-            });
-          });
-          worker.on("exit", function(){
-            main.send(["pigeonry"], {destroy:true, address: worker_config.address});
-            main.dropBranch(worker_config.address);
-            initializers[name](worker_config);
-          });
-        });
-      };
-    }
-
-    var initializers = {};
-    var dataLayers = [], sheduleDataRequests = [], dataModelsReady = false, dataLayersCount = 0;
-    env.config.workers.forEach(function(worker_config){
-      if(!_.has(initializers, worker_config.type)) initializers[worker_config.type] = createSpawner(worker_config.type);
-      initializers[worker_config.type](worker_config);
-      if(worker_config.type==="data") {
-        dataLayersCount++;
-        dataLayers.push(worker_config.address);
-      }
-    });
-
-    main.layer("reportDataLayerReady", function(data, cb){
-      dataLayersCount--;
-      cb(null);
-      if(dataLayersCount===0){
-        dataModelsReady = true;
-        sheduleDataRequests.forEach(function(f){f();});
-        sheduleDataRequests = [];
-      }
-    });
-
-    // Here comes in case of initialization error
-    // TODO - think what to do - start again or something else ?!?!!?
-    function handleError(err, worker, worker_config){
-      console.log("Setup error: ", err, worker_config);
-    }
-
-    main.layer("modelMap", getModelMap);
-    function getModelMap(data, cb, remote_addr){
-      if(dataModelsReady===false) return sheduleDataRequests.push(function(){getModelMap(data, cb, remote_addr);})
-      env._.amap(dataLayers, function(addr, cb){
-        main.layers.modelMap.send([addr], data, function(err, models_arr){
-          if(err) return cb(err);
-          var result = {};
-          if(models_arr.length>0) result[addr] = models_arr;
-          cb(null, result);
-        });
-        
-      }, function(err, results){
-        //[{node_addr:[model, model2,...]}, ...]
-        if(err) return cb(err);
-        var result = {};
-        results.forEach(function(r){
-          for(var key in r){
-            result[key] = r[key];
-          }
-        });
-        cb(null, result);
-      })
-    }
-
+    
   }
+
+
+ 
+  // if(cluster.isMaster){
+
+  //   var Pigeonry   = require("./tools/Pigeonry");
+
+  //   var main = new Addresator({
+  //     id: env.config.hostname,
+  //     layers: true,
+  //     // onMessage: function(data, cb, remote_addr){
+  //     //   console.log("Server gets message: ", data);
+  //     //   console.log("Remote_address: ", remote_addr);
+  //     //   console.log("    ");
+  //     // },
+  //     onError:   function(err, addr){ env.log("Error:", err); }
+  //   });
+
+  //   Pigeonry.call(env, main);
+
+  //   function createSpawner(name){
+  //     return function(worker_config){
+  //       worker_config.serverAddress = env.config.hostname;
+  //       var worker = cluster.fork();
+  //       worker.once("message", function(){
+  //         worker.send(worker_config);
+  //         worker.once("message", function(err){
+  //           if(err) return handleError(err, worker, worker_config);
+  //           main.branch(worker_config.address, function(addr_arr, data, cb_id){
+  //             env.log("@@ TO   ----> "+worker_config.address, JSON.stringify(data));
+  //             worker.send([addr_arr, data, cb_id]);
+  //           });
+  //           worker.on("message", function(data){
+  //             env.log("@@ FROM ----> "+worker_config.address, JSON.stringify(data[1]));
+  //             main.route.apply(main, data);
+  //           });
+  //         });
+  //         worker.on("exit", function(){
+  //           main.send(["pigeonry"], {destroy:true, address: worker_config.address});
+  //           main.dropBranch(worker_config.address);
+  //           initializers[name](worker_config);
+  //         });
+  //       });
+  //     };
+  //   }
+
+  //   var initializers = {};
+  //   var dataLayers = [], sheduleDataRequests = [], dataModelsReady = false, dataLayersCount = 0;
+  //   env.config.workers.forEach(function(worker_config){
+  //     if(!_.has(initializers, worker_config.type)) initializers[worker_config.type] = createSpawner(worker_config.type);
+  //     initializers[worker_config.type](worker_config);
+  //     if(worker_config.type==="data") {
+  //       dataLayersCount++;
+  //       dataLayers.push(worker_config.address);
+  //     }
+  //   });
+
+  //   main.layer("reportDataLayerReady", function(data, cb){
+  //     dataLayersCount--;
+  //     cb(null);
+  //     if(dataLayersCount===0){
+  //       dataModelsReady = true;
+  //       sheduleDataRequests.forEach(function(f){f();});
+  //       sheduleDataRequests = [];
+  //     }
+  //   });
+
+  //   // Here comes in case of initialization error
+  //   // TODO - think what to do - start again or something else ?!?!!?
+  //   function handleError(err, worker, worker_config){
+  //     console.log("Setup error: ", err, worker_config);
+  //   }
+
+  //   main.layer("modelMap", getModelMap);
+  //   function getModelMap(data, cb, remote_addr){
+  //     if(dataModelsReady===false) return sheduleDataRequests.push(function(){getModelMap(data, cb, remote_addr);})
+  //     env._.amap(dataLayers, function(addr, cb){
+  //       main.layers.modelMap.send([addr], data, function(err, models_arr){
+  //         if(err) return cb(err);
+  //         var result = {};
+  //         if(models_arr.length>0) result[addr] = models_arr;
+  //         cb(null, result);
+  //       });
+        
+  //     }, function(err, results){
+  //       //[{node_addr:[model, model2,...]}, ...]
+  //       if(err) return cb(err);
+  //       var result = {};
+  //       results.forEach(function(r){
+  //         for(var key in r){
+  //           result[key] = r[key];
+  //         }
+  //       });
+  //       cb(null, result);
+  //     })
+  //   }
+
+  // }
 
   else{
     // This code will be executed in child process
