@@ -130,8 +130,8 @@ module.exports = function(env){
       }
       var error = Self.prototype.validate.apply(md);
       if(error) return cb(error);
-      args.push(function(err, doc){ cb(err, new Self(doc)); });
-      Self.coll.insert(md.attributes)
+      args.push(function(err, docs){ cb(err, new Self(docs[0])); });
+      Self.coll.insert.apply(Self.coll, args);
     },
 
     find:    function(){
