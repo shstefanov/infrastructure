@@ -62,7 +62,6 @@ module.exports = function(env){
     },
 
     constructor: function(data){
-      console.log("constructor::", data);
 
       if(!data){
         this.error = "Can't find model";
@@ -210,12 +209,14 @@ module.exports = function(env){
       defaults.shift();//Remove modelName
       return function(){
         var Model = this.findModel(modelName); //object must have find remote model by modelName
-        if(!Model) throw new Error("")
+        if(!Model) throw new Error("");
         var args = parseArgs(
           sl.apply(arguments), 
           defaults.slice(),
           typeof this.contextPattern === "function"? this.contextPattern(modelName, options) : this.contextPattern
         );
+        var cb = args.pop();
+        args.push(function(err,cursor){err?cb(err):cursor.toArray(cb);})
         Model.coll.find.apply(Model, args);
         return this;
       }
