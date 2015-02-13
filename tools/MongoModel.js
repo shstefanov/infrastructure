@@ -157,11 +157,11 @@ module.exports = function(env){
       var cb = args.pop();
       args.push(function(err, doc){
         if(err) return cb(err);
+        if(doc === null) return cb(null, null);
         var model = new Self(doc);
         cb(model.error, model);
       });
-      console.log("findOne:", args);
-      this.coll.findOne.apply(this, args);
+      this.coll.findOne.apply(this.coll, args);
       return this;
     },
 
