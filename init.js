@@ -51,15 +51,24 @@ module.exports = function(env, cb){
                                       require("./init/controllers"),
           ];
         },
+
+
+        // Model worker dependencies
         model:          function(){
-          require("./tools/MongoModel")(env);
           _.extend(env, {
-            Page:               require("./tools/Page"),
-            Api:                require("./tools/Api"),
-            Widget:             require("./tools/Widget"),
+            AdvancedModel:               require("./tools/AdvancedModel"),
+            AdvancedCollection:          require("./tools/AdvancedCollection"),
           });
+          require("./tools/MongoModel")(env);
+          // _.extend(env, {
+          //   Page:               require("./tools/Page"),
+          //   Page:               require("./tools/Page"),
+          //   Api:                require("./tools/Api"),
+          //   Widget:             require("./tools/Widget"),
+          // });
           return [
-            
+              require("./init/database"),
+              require("./init/models"),
           ];
         },
         front:          function(){
@@ -89,6 +98,28 @@ module.exports = function(env, cb){
 
       var config = env.config;
       var chain  = env.chain;
+
+      env.call = function(address, data, cb){
+        // address - string with dot notation
+        // data - custom object, string, number, boolean or array
+
+        console.log(address+" proceeding ........");
+        setTimeout(function(){
+          console.log(address+" [ready]");
+          cb(null, JSON.parse("{\""+address+"\":"+Date.now()+"}"));
+        }, 4000);
+      };
+
+      env.fire = function(event, data){
+        // Send this to main process
+      };
+
+      env.dropCallback = function(cb){
+        console.log("TODO: drop callback");
+      };
+
+
+
       process.send("message");
       process.once("message", function(nodeConfig){
         _.extend(config, nodeConfig);
