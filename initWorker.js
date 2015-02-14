@@ -20,18 +20,49 @@ var workers = {
 };
 
 
+var server = new Addresator({
+  id:         "server",
+  onMessage:  function(data, cb){},
+  onError:    function(err, cb){}
+});
 
+
+// This object will hold addresators for all types of workers
+var workers = {
+  // type: worker || [worker, worker]
+
+};
+
+function sendTo(type, data, cb){
+  var obj = workers[type]
+  var current = obj;
+  if(_.isArray(obj)){
+    var current = obj.shift();
+
+  }
+}
 
 
 module.exports = function(env, type, config, cb){
+
+  // config can ba array
   
-  console.log("initializing worker: ", [type, config]);
-
-
   var worker = cluster.fork();
-
   worker.once("message", function(){
     worker.send(config);
+
+
+
+
+
+
+
+
+
+
+
+
+
     cb(null, worker);
   });
 

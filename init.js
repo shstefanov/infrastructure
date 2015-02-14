@@ -14,7 +14,6 @@ module.exports = function(env, cb){
         initWorker(env, key, nc, function(err, node){
           if(err) return console.log("Error:", err);
           node.config = nc;
-          //console.log("Success: ");
         });        
       }
       var nodeConfig = nodes[key];
@@ -40,16 +39,25 @@ module.exports = function(env, cb){
           });
           return [
                                 require("./init/database"),
-                                require("./init/http.js"),
+                                require("./init/http"),
                                 require("./init/pages"),
           ];
         },
         controller:     function(){
+          _.extend(env, {
+            Controller:               require("./tools/ClusterController"),
+          });
           return [
-           
+                                      require("./init/controllers"),
           ];
         },
         model:          function(){
+          require("./tools/MongoModel")(env);
+          _.extend(env, {
+            Page:               require("./tools/Page"),
+            Api:                require("./tools/Api"),
+            Widget:             require("./tools/Widget"),
+          });
           return [
             
           ];
@@ -98,9 +106,10 @@ module.exports = function(env, cb){
         env._.chain(chain)(function(err){
           if(err) {
             throw err;
-            return console.log("error: ", err);}
+            return console.log("error: ", err);
+          }
 
-          console.log("initializer ready", config.type);
+          //console.log("initializer ready", config.type);
         }, env);
 
       });
