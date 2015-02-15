@@ -1,18 +1,10 @@
 var Class = require("../tools/Class");
 var path  = require("path");
 var _     = require("underscore");
-//require("colors");
-// var env;
 
 var line = "       ";
 
-var renderTemplate = function(template){
-  return function(req, res){ res.render(template, res.data||{}); };
-}
-
 var Page = Class.extend("Page", {
-
-
 
   constructor: function(env){
     var self = this, app = env.app;
