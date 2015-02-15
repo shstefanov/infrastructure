@@ -33,24 +33,26 @@ module.exports = function(env, cb){
 
         http:           function(){
           _.extend(env, {
-            Page:               require("./tools/Page"),
-            Api:                require("./tools/Api"),
-            Widget:             require("./tools/Widget"),
+            Page:             require("./tools/Page"),
+            Api:              require("./tools/Api"),
+            Widget:           require("./tools/Widget"),
           });
           return [
-                                require("./init/database"),
-                                require("./init/http"),
-                                require("./init/pages"),
+                              require("./init/mongodb"),
+                              require("./init/http"),
+                              require("./init/pages"),
           ];
         },
+        
         controllers:     function(){
           _.extend(env, {
-            Controller:               require("./tools/ClusterController"),
+            Controller:       require("./tools/ClusterController"),
           });
           return [
-                                      require("./init/controllers"),
+                              require("./init/controllers"),
           ];
         },
+
         // Model worker dependencies
         models:          function(){
           _.extend(env, {
@@ -58,17 +60,19 @@ module.exports = function(env, cb){
             AdvancedCollection:          require("./tools/AdvancedCollection"),
           });
           require("./tools/MongoModel")(env);
-          // _.extend(env, {
-          //   Page:               require("./tools/Page"),
-          //   Page:               require("./tools/Page"),
-          //   Api:                require("./tools/Api"),
-          //   Widget:             require("./tools/Widget"),
-          // });
-          return [
-              require("./init/database"),
+
+          var chain = [
+              require("./init/mongodb"),
               require("./init/models"),
           ];
+          if(config.mysql) {
+            require("./tools/MySQLModel")(env);
+            chain.unshift(require("./init/mysql"));
+          }
+
+          return chain;
         },
+
         front:          function(){
           return [
             

@@ -2,36 +2,10 @@
 var mixins     = require("./lib/mixins");
 var _          = require("underscore");
 var path       = require("path");
-var CloneRPC   = require("clone-rpc");
 var cluster    = require("cluster");
 
-
-// var workers = {
-
-//   http:           require("./workers/http.js"),
-//   controller:     require("./workers/controller.js"),
-//   model:          require("./workers/model.js"),
-//   front:          require("./workers/front.js"),
-//   system:         require("./workers/system.js"),
-//   controlPanel:   require("./workers/controlPanel.js"),
-//   remote:         require("./workers/remote.js")
-
-// };
-
-
-// var Addresator = require("addresator");
-// var server = new Addresator({
-//   id:         "server",
-//   onMessage:  function(data, cb){},
-//   onError:    function(err, cb){}
-// });
-
-
 // This object will hold addresators for all types of workers
-var workers = {
-
-
-};
+var workers = {};
 
 var msgTypes = {
   // call:  { 
