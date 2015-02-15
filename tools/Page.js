@@ -32,7 +32,6 @@ var Page = Class.extend("Page", {
               else if(_.isString(t)) app[method](route, self.createCallFromString(t, index!==(arr.length-1)));
               else if(_.isObject(t)) app[method](route, self.createParallelCall(t, index!==(arr.length-1)));
             });
-
           }
           else if(_.isObject(target)){
             app[method](route, self.createParallelCall(target));
@@ -53,8 +52,8 @@ var Page = Class.extend("Page", {
   // Strip them from request object and send them to remote method
   callAttributes: ["params", "query", "body", "session"],
 
-
   createCallFromString: function(target, multi){
+    var self = this, env = this.env;
     var customAttributes;
     if(target.indexOf("|")!==-1){
       var parts = target.split("|").map(function(p){return p.trim();});
@@ -67,7 +66,6 @@ var Page = Class.extend("Page", {
       : function(req, res){res.render(target, res.data||{})} 
     }
     else{
-      var self = this, env = this.env;
       var getAttributes;
       if(customAttributes){
         getAttributes = function(req){
