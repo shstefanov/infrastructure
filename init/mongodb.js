@@ -26,6 +26,7 @@ module.exports = function(cb){
     if(err) return cb(err);
     env.db = db;
     env.MongoDB = mongodb;
+    env.sys("init", "Connected to MongoDB on "+(config.mongodb.host || "localhost")+":"+(config.mongodb.port||27017));
     cb();
   });
 

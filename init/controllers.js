@@ -2,20 +2,15 @@
 
 module.exports = function(cb){
 
-  var _ = require("underscore");
-  var base = _.methods(this.Controller.prototype);
+  var _      = require("underscore");
+  var base   = _.methods(this.Controller.prototype);
   this.createController = function(name, Controller){
-    
     var pr = Controller.prototype;
-    _.extend(pr, {name: name, methods: _.difference(_.methods(pr), base)});
+    _.extend(pr, {env:env, name: name, methods: _.difference(_.methods(pr), base)});
     pr.private?_.extend(pr, pr.private):null;
     delete pr.private;
-
     return new Controller();
-    env.sys("controller", "Built: "+line.slice(name.length)+name);
   };
-
-  if(this.skipLoading === true) return cb&&cb();
 
   var env    = this;
   var path   = require("path");
@@ -25,9 +20,10 @@ module.exports = function(cb){
   if(!config.controllers || !fs.existsSync(path.join(config.rootDir, config.controllers))) return cb();
   
   var controllersPath = path.join(config.rootDir, config.controllers);
-  
-  if(fs.existsSync(path.join(config.rootDir, config.controllers, "init.js"))){
-    var initializer = require(path.join(config.rootDir, config.controllers, "init.js"));
+  var initPath        = path.join(controllersPath, "init.js");
+  var finalPath       = path.join(controllersPath, "final.js");
+  if(fs.existsSync(initPath) ){
+    var initializer = require(initPath);
     initializer.call(env, go);
   }
   else go();
@@ -38,11 +34,16 @@ module.exports = function(cb){
       if(name === "init") return;
       var Prototype = module.apply(env);
       var name = Prototype.prototype.name||name;
-      var controller = env.createController(name, Prototype);
-      return controller;
+      return env.createController(name, Prototype);
     });
-    // env._.debug(env.controllers, 2, "green", "env.controllers:");
-    cb&&cb();
+
+    if( fs.existsSync(finalPath) ){
+      var finalizer = require(finalPath);
+      finalizer.call(env, cb);
+    }
+    else{
+      cb();
+    }
   }
 
 }

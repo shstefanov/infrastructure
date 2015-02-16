@@ -9,12 +9,8 @@ var EventedClass = Class.extend("EventedClass", _.extend(Backbone.Events, {
   // EventedClass's constructor handles props like:
   // events:{
   //   "event_name": "method name",
-  //   "evt": ["method1", "method2"],
+  //   "evt": ["method1", "method2", function(){}],
   //   "event": function(){ ... }
-  //   "evt_name": {
-  //     "method_name": function(args){ return some_modifier(args); },
-  //     "other_method": function(args){ return other_modifier(args); }
-  //   }
   // }
 
   constructor: function(){
@@ -32,18 +28,11 @@ var EventedClass = Class.extend("EventedClass", _.extend(Backbone.Events, {
             if(_.isString(meth) && _.isFunction(this[meth])){
               this.on(event, this[meth], this);
             }
-          }
-        }
-        
-        else if(_.isObject(evt)){
-          var self = this;
-          for(meth in evt){
-            if(_.isFunction(this[meth]) && _.isFunction(evt[key])){
-              this.on(event, _.compose(self[meth], evt[meth]), this);
+            else if(_.isFunction(meth)){
+              this.on(event, meth, this);
             }
           }
         }
-        
       }
     }
     Class.apply(this, arguments);

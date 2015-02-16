@@ -11,7 +11,7 @@ var Page = Class.extend("Page", {
     this.env = env;
     if(this.pre) {
       env.app.all(this.root+"*", function(req,res,next){self.pre(req,res,next);});
-      env.sys("HTTP", "Setting up route: ALL"+line.slice("ALL".length)+ this.root+"*");
+      env.sys(this.root, "Setting up route: ALL"+line.slice("ALL".length)+ this.root+"*");
     }
     for(var key in this){
       if(key.match(/^GET\s|^POST\s|^PUT\s|^DELETE\s|^ALL\s/)){
@@ -37,7 +37,7 @@ var Page = Class.extend("Page", {
             app[method](route, self.createParallelCall(target));
           }
 
-          env.sys("HTTP", "Setting up route: "+ method.toUpperCase()+line.slice(method.length)+ route);
+          env.sys(self.root, "Setting up route: "+ method.toUpperCase()+line.slice(method.length)+ route);
 
         })(key);
 
@@ -45,7 +45,7 @@ var Page = Class.extend("Page", {
     }
     if(this.after) {
       env.app.all(this.root+"*", function(req,res,next){self.after(req,res,next);});
-      env.sys("HTTP", "Setting up route: ALL"+line.slice("ALL".length)+ this.root+"*");
+      env.sys(this.root, "Setting up route: ALL"+line.slice("ALL".length)+ this.root+"*");
     }
   },
 

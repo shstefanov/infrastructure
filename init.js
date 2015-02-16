@@ -46,7 +46,7 @@ module.exports = function(env, cb){
         
         controllers:     function(){
           _.extend(env, {
-            Controller:       require("./tools/ClusterController"),
+            Controller:       require("./tools/Controller"),
           });
           return [
                               require("./init/controllers"),
@@ -153,41 +153,46 @@ module.exports = function(env, cb){
             cb:   data.cb,
             error:"Can't find target: "+name
           });
+
+          var callback = function(err, result){
+            if(err) return env.callback({
+              type:     "cb",
+              cb:       data.cb,
+              error:    err
+            });
+
+            else env.callback({
+              type:     "cb",
+              cb:       data.cb,
+              error:    err,
+              result:   result
+            });
+          }
+
+          var args;
+          if(object.handle && _.isFunction(object.handle)){
+            var arg = object.handle(data, callback);
+            if(arg===false) return;
+            args = [data, arg, callback];
+          }
+          else{
+            args = [data, callback];
+          }
+
+
           if(object.methods){
             if(object.methods.indexOf(method) != -1 && _.isFunction(object[method])){
-              object[method](_.isFunction(object.call)?object.call(data.data):data.data, function(err, result){
-                env.callback({
-                  type:     "cb",
-                  cb:       data.cb,
-                  error:    err,
-                  result:   result
-                });
-              });
+              object[method].apply(object,args);
             }
             else{
-              env.callback({
-                type:     "cb",
-                cb:       data.cb,
-                error:    "Can't find method "+method
-              });
+              return callback("Can't find method "+method);
             }
           }
           else if(_.isFunction(object[method])){
-            object.method(_.isFunction(object.call)?object.call(data.data):data.data, function(err, result){
-              env.callback({
-                type:     "cb",
-                cb:       data.cb,
-                error:    err,
-                result:   result
-              });
-            });
+            object.method.apply(object, args);
           }
           else{
-            env.callback({
-              type:     "cb",
-              cb:       data.cb,
-              error:    "Unspecified call error"
-            });
+            return callback("Unspecified call error");
           }
         },
 
