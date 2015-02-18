@@ -35,14 +35,18 @@ module.exports = function(cb){
   function go(err){
     if(err) return cb&&cb(err);
     env.controllers = env._.dirToObject(controllersPath, function(name, folderName, module){
-      if(name === "init") return;
+      if(name === "init" || name === "final" || folderName !== undefined || name.indexOf("_")===0) return;
       var Prototype = module.apply(env);
       var name = Prototype.prototype.name||name;
       var controller = env.createController(name, Prototype);
       return controller;
     });
-    // env._.debug(env.controllers, 2, "green", "env.controllers:");
-    cb&&cb();
+    if(fs.existsSync(path.join(config.rootDir, config.controllers, "final.js"))){
+      var finalizer = require(path.join(config.rootDir, config.controllers, "final.js"));
+      finalizer.call(env, cb);
+    }else{
+      cb();
+    }
   }
 
 }

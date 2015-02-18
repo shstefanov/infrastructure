@@ -76,7 +76,7 @@ var View = App.View.extend("AdvancedView", _.extend(st, {
       this.controller = app.controllers[this.controller]
     else if(options&&options.controller)
       this.controller = options.controller
-
+    if(this.controller) this.initController();
 
 
     this.infrastructure = {};
@@ -115,6 +115,17 @@ var View = App.View.extend("AdvancedView", _.extend(st, {
         var options = this.match[name];
         if(Infrastructure[name] && Infrastructure[name].infrastructure) 
           Infrastructure[name].infrastructure(self, options)
+      }
+    }
+  },
+
+  initController: function(){
+    if(this.controllerEvents){
+      for(var key in this.controllerEvents){
+        var meth = this.controllerEvents[key];
+        if(_.isString(meth) && _.isFunction(this[meth])) meth = this[meth];
+        else if(!_.isFunction(meth)) continue;
+        this.controller.on(key, meth, this);
       }
     }
   },
