@@ -8,9 +8,12 @@ module.exports = EventedClass.extend("Controller", {
   addSubject: function(subject, socket){ 
     // returns controller, e.g. this, if access matches
     var accesKeys = _.keys(this.access || {});
-    var subjectAccess = _.pick(subject.session, accesKeys);
+    var subjectAccess = _.pick(subject.session.sessionData, accesKeys);
+    console.log(this.name+" (addSubject): ", subjectAccess, this.access);
     if(_.isEqual(subjectAccess, _.result(this, "access")))
       return this.trigger("subject", subject);
+    else{
+    }
   },
 
   handle: function(subject, socket){

@@ -5,7 +5,8 @@ module.exports = function(cb){
   var _ = require("underscore");
   var returnArg = function(a){return a;};
 
-  var SocketsCollection = require("../tools/SocketsCollection");
+  var SocketsCollection  = require("../tools/SocketsCollection");
+  var SessionsCollection = require("../tools/SessionsCollection");
 
   var getMethods = function(controllers){
     var result = {};
@@ -38,11 +39,14 @@ module.exports = function(cb){
             return;
           }
 
-          subject.session = session;
+          // subject.session = session;
           
           // create or get sockets collection and set it to subject
-          if(!subject.sockets) subject.sockets = new SocketsCollection(subject);
-          subject.sockets.add(socket);
+          if(!subject.sockets) subject.socket  = new SocketsCollection (subject);
+          if(!subject.session) subject.session = new SessionsCollection(subject);
+          subject.socket.add(socket);
+          subject.session.add(session);
+          
           socket.controllers = _.invoke(page.controllers, "addSubject", subject, session, socket).filter(returnArg);
           if(socket.controllers.length>0){
             _.invoke(socket.controllers, "handle", subject, socket);
