@@ -45,8 +45,6 @@ module.exports = function(cb){
             return;
           }
 
-          console.log("socket.js", subject.toJSON(), subject.socket? subject.socket.sockets.length: "none");
-            
           // create or get sockets collection and set it to subject
           if(!subject.socket) subject.socket   = new SocketsCollection (subject);
           if(!subject.session) subject.session = new SessionsCollection(subject);
