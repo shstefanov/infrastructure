@@ -17,7 +17,6 @@ module.exports = EventedClass.extend("SocketsCollection", {
 
   remove: function(socket){
     this.sockets.splice(this.sockets.indexOf(socket),1);
-    console.log("socket disconnected");
     if(this.sockets.length == 0) {this.subject.trigger("disconnect", this.subject); console.log("subject disconnected"); }
   },
 
