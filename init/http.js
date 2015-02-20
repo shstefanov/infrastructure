@@ -1,24 +1,17 @@
-
-
-var express = require('express');
-
-var http = require('http');
-var path = require('path');
-
-var express = require("express");
-
+var express        = require('express');
+var http           = require('http');
+var path           = require('path');
+var express        = require("express");
 var methodOverride = require('method-override')
-var bodyParser = require('body-parser')
-var favicon = require('serve-favicon');
-var CookieParser = require('cookie-parser');
-var session = require('express-session');
-var morgan  = require('morgan');
-var MongoStore = require('connect-mongo')(session);
-
-var socketio = require("socket.io");
+var bodyParser     = require('body-parser')
+var favicon        = require('serve-favicon');
+var CookieParser   = require('cookie-parser');
+var session        = require('express-session');
+var morgan         = require('morgan');
+var MongoStore     = require('connect-mongo')(session);
+var socketio       = require("socket.io");
 var SessionSockets = require('session.socket.io');
-
-var _ = require("underscore");
+var _              = require("underscore");
 
 
 // all environments

@@ -16,16 +16,16 @@ module.exports = function(cb){
 
   var n = 0;
   function report(n){env.log("socket", "open connections: "+n);}
+  function decreaseConnections (){report(--n);}
+  function socketError(err){console.log("socket error: ", err, err.stack)}
   this.socketConnection = function(err, socket, session){
-
-    socket.disconnect = function(){throw new Error("Got you!!!")};
-
+    
     if(err) throw err;
+
+    socket.on("error", socketError);
+    socket.on("disconnect", decreaseConnections);
+
     report(++n);
-    socket.on("disconnect", function(){
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111");
-      report(--n);
-    });
 
     var t = setTimeout(function(){
       socket.disconnect();
@@ -45,28 +45,26 @@ module.exports = function(cb){
             return;
           }
 
-          // subject.session = session;
-          
+          console.log("socket.js", subject.toJSON(), subject.socket? subject.socket.sockets.length: "none");
+            
           // create or get sockets collection and set it to subject
-          if(!subject.sockets) subject.socket  = new SocketsCollection (subject);
+          if(!subject.socket) subject.socket   = new SocketsCollection (subject);
           if(!subject.session) subject.session = new SessionsCollection(subject);
           subject.socket.add(socket);
           subject.session.add(session);
 
           socket.controllers = _.invoke(page.controllers, "addSubject", subject, session, socket).filter(returnArg);
           if(socket.controllers.length>0){
-            console.log(888888);
             _.invoke(socket.controllers, "handle", subject, socket);
             cb(null, getMethods(socket.controllers));
           }
           else{
-            console.log(9999999);
             // Disconnecting subjects with no controllers and sending all 
             // controllers functions to them to prevent call functions of 
             // undefined controllers (there is no listeners on serverside)
             cb(null, env._.mapObject(env.controllers, function(name, controller){
               return controller.methods;
-            }))
+            }));
             socket.disconnect();
           }
 
@@ -74,7 +72,6 @@ module.exports = function(cb){
         });
       }
       else{
-        console.log("Wrong page - disconnecting socket");
         socket.disconnect();
       }
     });

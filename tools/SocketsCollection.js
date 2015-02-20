@@ -11,16 +11,14 @@ module.exports = EventedClass.extend("SocketsCollection", {
   add: function(socket){
     var self = this;
     this.sockets.push(socket);
-    console.log("add socket");
-    socket.on("disconnect", function(){ console.log("WTF??"); self.remove(socket); });
-    this.trigger("add", socket);
+    socket.on("disconnect", function(){self.remove(socket); });
     return this;
   },
 
   remove: function(socket){
-    this.trigger("remove", this.sockets.splice(this.sockets.indexOf(socket),1)[0]);
+    this.sockets.splice(this.sockets.indexOf(socket),1);
     console.log("socket disconnected");
-    if(this.sockets.length == 0) this.subject.trigger("disconnect", this.subject);    
+    if(this.sockets.length == 0) {this.subject.trigger("disconnect", this.subject); console.log("subject disconnected"); }
   },
 
   emit: function(controller, event, data){
@@ -28,6 +26,7 @@ module.exports = EventedClass.extend("SocketsCollection", {
       if(this.sockets[i].controllers.indexOf(controller)!=1)
         this.sockets[i].emit(controller.name, {action: event, body: data});
   },
+
   disconnect: function(){
     for(var i = 0; i<this.sockets.length;i++)
       this.sockets[i].disconnect();
