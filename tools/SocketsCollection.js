@@ -11,13 +11,15 @@ module.exports = EventedClass.extend("SocketsCollection", {
   add: function(socket){
     var self = this;
     this.sockets.push(socket);
-    socket.on("disconnect", function(){ self.remove(socket); });
+    console.log("add socket");
+    socket.on("disconnect", function(){ console.log("WTF??"); self.remove(socket); });
     this.trigger("add", socket);
     return this;
   },
 
   remove: function(socket){
     this.trigger("remove", this.sockets.splice(this.sockets.indexOf(socket),1)[0]);
+    console.log("socket disconnected");
     if(this.sockets.length == 0) this.subject.trigger("disconnect", this.subject);    
   },
 

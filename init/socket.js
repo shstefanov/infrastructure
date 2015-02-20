@@ -17,9 +17,15 @@ module.exports = function(cb){
   var n = 0;
   function report(n){env.log("socket", "open connections: "+n);}
   this.socketConnection = function(err, socket, session){
+
+    socket.disconnect = function(){throw new Error("Got you!!!")};
+
     if(err) throw err;
-    socket.on("disconnect", function(){report(--n)});
     report(++n);
+    socket.on("disconnect", function(){
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111");
+      report(--n);
+    });
 
     var t = setTimeout(function(){
       socket.disconnect();
@@ -46,13 +52,15 @@ module.exports = function(cb){
           if(!subject.session) subject.session = new SessionsCollection(subject);
           subject.socket.add(socket);
           subject.session.add(session);
-          
+
           socket.controllers = _.invoke(page.controllers, "addSubject", subject, session, socket).filter(returnArg);
           if(socket.controllers.length>0){
+            console.log(888888);
             _.invoke(socket.controllers, "handle", subject, socket);
             cb(null, getMethods(socket.controllers));
           }
           else{
+            console.log(9999999);
             // Disconnecting subjects with no controllers and sending all 
             // controllers functions to them to prevent call functions of 
             // undefined controllers (there is no listeners on serverside)
