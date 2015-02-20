@@ -24,34 +24,12 @@ module.exports = function(env, cb){
 
     }
 
-    return cb();
+    return cb(null, env);
   }
 
   else{
 
       var initializers = {
-
-        http:           function(){
-          _.extend(env, {
-            Page:             require("./tools/Page"),
-            Api:              require("./tools/Api"),
-            Widget:           require("./tools/Widget"),
-          });
-          return [
-                              require("./init/mongodb"),
-                              require("./init/http"),
-                              require("./init/pages"),
-          ];
-        },
-        
-        controllers:     function(){
-          _.extend(env, {
-            Controller:       require("./tools/Controller"),
-          });
-          return [
-                              require("./init/controllers"),
-          ];
-        },
 
         // Model worker dependencies
         models:          function(){
@@ -72,6 +50,34 @@ module.exports = function(env, cb){
 
           return chain;
         },
+
+
+        http:           function(){
+          _.extend(env, {
+            Page:             require("./tools/Page"),
+            Api:              require("./tools/Api"),
+            Widget:           require("./tools/Widget"),
+          });
+          //require("./tools/ShallowModel")(env);
+          return [
+                              require("./init/mongodb"),
+                              require("./init/shallowModels"),
+                              require("./init/http"),
+                              require("./init/pages"),
+          ];
+        },
+        
+        controllers:     function(){
+          _.extend(env, {
+            Controller:       require("./tools/Controller"),
+          });
+          //require("./tools/ShallowModel")(env);
+          return [
+                              require("./init/shallowModels"),
+                              require("./init/controllers"),
+          ];
+        },
+
 
         front:          function(){
           return [
@@ -142,6 +148,8 @@ module.exports = function(env, cb){
       };
 
       var access;
+
+      // Incoming messages
       var msgTypes = {
         call: function(data){
           var parts  = data.address.split(".");
@@ -198,7 +206,7 @@ module.exports = function(env, cb){
 
         cb: function(data){
           var callback = callbacks[data.cb];
-          if(cb) {
+          if(callback) {
             delete callbacks[data.cb];
             callback(data.error, data.result);
           }
@@ -238,7 +246,7 @@ module.exports = function(env, cb){
           env.handleMessage = handleMessage;
           msgCache.forEach(handleMessage);
           msgCache = [];
-          cb();
+          cb(null, env);
           //console.log("initializer ready", config.type);
         }, env);
 

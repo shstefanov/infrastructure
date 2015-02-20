@@ -5,8 +5,10 @@ var _ = require("underscore");
 
 
 module.exports = function(cb){
+  
   var env = this;
   var config = env.config;
+  
   if(!config.models || !fs.existsSync(path.join(config.rootDir, config.models))) return cb();
   
   var modelsDir = path.join(config.rootDir, config.models);
@@ -19,13 +21,13 @@ module.exports = function(cb){
   else go();
 
   function go(err){
+
     if(err) return cb(err);
     var modelsDir = path.join(config.rootDir, config.models);
-    var Models = env.Models = {};
+    var Models = env.models = {};
     var modelsFiles = fs.readdirSync(modelsDir);
 
     var chain = [];
-
     modelsFiles.forEach(function(filename){
       if(filename === "init.js") return;
       var fn = require(path.join(modelsDir, filename));
@@ -38,11 +40,7 @@ module.exports = function(cb){
     var exec = env._.chain(chain);
     exec(function(err){
       if(err) return cb(err);
-
-      // Build relations here
-      
       cb();
-
     });
 
   }
