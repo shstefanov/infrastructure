@@ -7,6 +7,7 @@ module.exports = function(cb){
     return "mongodb://"+cr+(conf.host||"localhost")+":"+(conf.port||"27017")+"/"+(conf.database||conf.db);
   };
 
+  var _            = require("underscore");
   var env          = this;
   var config       = this.config;
   var mongodb      = env.MongoDB   = require("mongodb");
@@ -17,10 +18,15 @@ module.exports = function(cb){
   env.DBRef        = mongodb.DBRef;
   env._.isObjectID = function(val){ return val instanceof env.ObjectID; };
   env._.isDBRef    = function(val){ return val instanceof DBRef;        };
-  
+  env._.objectify = function(val){
+    return _.isArray(val)? val.map(env.ObjectID) : env.ObjectID(val);
+  };
+
+
   env.createMongoConnection = function(cfg, callback){
     MongoClient.connect(createURL(cfg), cfg.options || {}, callback);
   };
+
 
   env.createMongoConnection(config.mongodb, function(err, db){
     if(err) return cb(err);

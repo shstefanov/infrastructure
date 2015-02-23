@@ -5,12 +5,12 @@ var _ = require("underscore");
 
 
 module.exports = function(cb){
-  
+
   var env = this;
   var config = env.config;
-  
+
   if(!config.models || !fs.existsSync(path.join(config.rootDir, config.models))) return cb();
-  
+
   var modelsDir = path.join(config.rootDir, config.models);
   require("../tools/MongoModel")(env);
   if(fs.existsSync(path.join(config.rootDir, config.models, "init.js"))){
@@ -37,6 +37,8 @@ module.exports = function(cb){
       chain.push(ModelPrototype.buildModel);
     });
 
+    if(env.relBuilders.length>0) _.invoke(env.relBuilders, "call");
+
     var exec = env._.chain(chain);
     exec(function(err){
       if(err) return cb(err);
@@ -44,7 +46,6 @@ module.exports = function(cb){
     });
 
   }
-  
+
 
 };
-

@@ -7,6 +7,10 @@ module.exports = function(env){
   var _       = require("underscore");
   var mongodb = require("mongodb");
 
+  env.MongoModel = env.AdvancedModel.extend("ShallowModel", {
+    
+  });
+
 };
 
 
@@ -27,11 +31,11 @@ module.exports = function(env){
 //       return new mongodb.DBRef(name, this.get("_id"));
 //     }
 //   }
-  
+
 //   var MongoCollection = env.MongoCollection = env.AdvancedCollection.extend("MongoCollection", {
 
 //   });
- 
+
 //   env.MongoModel = env.AdvancedModel.extend("MongoModel", {
 //     idAttribute: "_id",
 //     findModel: function(name){return env.Models[name];},
@@ -107,7 +111,7 @@ module.exports = function(env){
 //         Model.db.createCollection(name, Model.options || {}, function(err, collection){
 //           if(err) return cb(err);
 //           Model.coll       = Model.prototype.coll = collection;
-//           Model.Collection = MongoCollection.extend(name, 
+//           Model.Collection = MongoCollection.extend(name,
 //             {model:    Model     },
 //             {coll:     collection}
 //           );
@@ -118,7 +122,7 @@ module.exports = function(env){
 //                 //TODO - get collection indexes and drop removed if any
 //                 Model.coll.ensureIndex(i.index,i.options||{}, function(err){
 //                   cb(err);
-//                 }); 
+//                 });
 //               });
 //             });
 //             env._.chain(ch)(cb);
@@ -180,7 +184,7 @@ module.exports = function(env){
 //       return this;
 //     },
 
-//     remove:  function(){ 
+//     remove:  function(){
 //       var Self = this;
 //       var args = Array.prototype.slice.call(arguments);
 //       var cb = args.pop();
@@ -204,7 +208,7 @@ module.exports = function(env){
 //           var err = model.validate();
 //           if(err) return cb(err);
 //           Self.coll.update(
-//             {_id: model.get("_id")}, 
+//             {_id: model.get("_id")},
 //             model.omit("_id"),
 //             cb);
 //         }, cb);
@@ -226,7 +230,7 @@ module.exports = function(env){
 //         var Model = this.findModel(modelName); //object must have find remote model by modelName
 //         if(!Model) throw new Error("")
 //         var args = parseArgs(
-//           sl.apply(arguments), 
+//           sl.apply(arguments),
 //           defaults.slice(),
 //           typeof this.contextPattern === "function"? this.contextPattern(modelName, options) : this.contextPattern
 //         );
@@ -235,14 +239,14 @@ module.exports = function(env){
 //       }
 //     },
 
-  
+
 //   });
 
 //   MongoCollection.prototype.model = env.MongoModel;
 //   // findGenerator helpers
 //   var sl = Array.prototype.slice;
 //   var ra = function(a){return a};
-   
+
 //   // contextPattern examples:
 //   // initialize:     function(options){
 //   //   this.contextPattern = {"company.$id": this.get("_id")};
@@ -256,7 +260,7 @@ module.exports = function(env){
 //     for(var i=0;i<num;i++) {
 //       if(typeof args[i]==="function") q = args[i], result[i] = defaults[i];
 //       else      result[i] = _.extend({}, args[i], defaults[i])
-   
+
 //       //TODO - write two functions and move this if to findGenerator generated function
 //       if(i===0&&contextPattern) result[i] = _.extend(result[i]||{}, contextPattern);
 //     }

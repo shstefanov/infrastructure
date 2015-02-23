@@ -21,22 +21,47 @@ module.exports = function(env){
 
   var _       = require("underscore");
   var mongodb = require("mongodb");
+  env.relBuilders = [];
+
+  var relTypes = {
+    hasOne: function(Model, rel){
+      return function(){
+        var RelatedModel = env.Models[rel.model];
+        var field = rel.field;
+        Model.validation[field] = env._.isObjectID
+
+      }
+    },
+    hasMany: function(ModelName, rel){
+      return function(){}
+    },
+    belongsTo: function(ModelName, rel){
+      return function(){}
+    },
+    belongsToMany: function(ModelName, rel){
+      return function(){}
+    }
+  }
 
   function createGetRef(name){
     return function(){
       return new mongodb.DBRef(name, this.get("_id"));
     }
   }
-  
+
+  function objectify_id (model){
+    model._id = env.ObjectID(model._id);
+  }
+
   var MongoCollection = env.MongoCollection = env.AdvancedCollection.extend("MongoCollection", {
 
   });
- 
+
   env.MongoModel = env.AdvancedModel.extend("MongoModel", {
     idAttribute: "_id",
-   
 
-    
+
+
 
     toJSON: function(){
       if(this.error) return {error: this.error};
@@ -57,16 +82,17 @@ module.exports = function(env){
       var validation_keys = _.keys(this.validation);
       var object_keys     = _.keys(obj);
 
-      if(isNew) validation_keys = _.without(validation_keys, ["_id"]);
+      if(isNew) validation_keys = _.without(validation_keys, "_id");
 
       var missing    = _.difference(validation_keys, object_keys);
       var redundant  = _.difference(object_keys, validation_keys);
 
-      if(missing.length>0)   {errors.missing = missing; error = true;};
-      if(redundant.length>0) {errors.redundant = redundant; error = true;};
+      if(missing.length>0)   {errors.missing = missing;     error = true;}
+      if(redundant.length>0) {errors.redundant = redundant; error = true;}
 
       var for_check = _.without(_.intersection(object_keys, validation_keys), missing);
       var self = this, invalid = [];
+
       for(var i=0;i<for_check.length;i++){
         var field = for_check[i];
         var fn    = this.validation[field];
@@ -90,13 +116,15 @@ module.exports = function(env){
     extend:   function(name){
       var Model = env.AdvancedModel.extend.apply(this, arguments);
       Model.collectionName = name;
+      Model.objectifiers = [objectify_id];
+      if(Model.rels) Model.buildRels();
       Model.prototype.getRef = createGetRef(name);
       Model.buildModel = function(cb){
 
         Model.db.createCollection(name, Model.options || {}, function(err, collection){
           if(err) return cb(err);
           Model.coll       = Model.prototype.coll = collection;
-          Model.Collection = MongoCollection.extend(name, 
+          Model.Collection = MongoCollection.extend(name,
             {model:    Model     },
             {coll:     collection}
           );
@@ -107,25 +135,40 @@ module.exports = function(env){
                 //TODO - get collection indexes and drop removed if any
                 Model.coll.ensureIndex(i.index,i.options||{}, function(err){
                   cb(err);
-                }); 
+                });
               });
             });
             env._.chain(ch)(cb);
           }
           else cb();
         });
-      }
+      };
 
 
 
       return Model;
     },
 
+    buildRels: function(){
+      var rels = this.rels, builders = env.relBuilders, self = this;
+      for(var key in rels){
+        (function(type, rels){
+          if(!_,isArray(rels)) rels = [rels];
+          rels.forEach(function(rel){
+            if(relTypes[type]) builders.push(relTypes[type](self, rel));
+          });
+        })(key, rels[key]);
+      }
+    },
+
+    objectify: function(model){
+      this.objectifiers.forEach(function(fn){fn(model);});
+      return model;
+    },
 
     // DB methods
     create:  function(data, cb){
       _.defaults(data, this.defaults);
-      this.objectify(data);
       var error = this.validate(data, true);
       if(error) return cb(error);
       this.coll.insert(data, function(err, model){cb(err, model[0])});
@@ -142,7 +185,6 @@ module.exports = function(env){
           var error = _.some(docs, function(doc){
             return !!self.validate(doc);
           });
-          console.log("error: ", error)
           if(error) return cb("Invalid objects in result");
           cb(null, docs);
         });
@@ -165,7 +207,7 @@ module.exports = function(env){
       return this;
     },
 
-    remove:  function(){ 
+    remove:  function(){
       var Self = this;
       var args = Array.prototype.slice.call(arguments);
       var cb = args.pop();
@@ -189,7 +231,7 @@ module.exports = function(env){
           var err = model.validate();
           if(err) return cb(err);
           Self.coll.update(
-            {_id: model.get("_id")}, 
+            {_id: model.get("_id")},
             model.omit("_id"),
             cb);
         }, cb);
@@ -202,6 +244,31 @@ module.exports = function(env){
       return this;
     },
 
+    save: function(models, cb){
+      var arr = _.isArray(models), self = this;
+      if(arr){
+        if(_.some(models, function(model){
+          console.log(model, self.validate(self.objectify(model)));
+          return self.validate(self.objectify(model)) !== undefined;
+        })) return cb("Models error");
+        return env._.amap(models, function(model, cb){
+          self.coll.save(model, function(err){cb(err,err?undefined:model)});
+        }, cb);
+      }
+      var error = this.validate(this.objectify(models));
+      console.log("error????", error, models);
+      if(error) return cb(error);
+      return this.coll.save(models, cb);
+    },
+
+
+    findById: function(id){
+      var arr = _.isArray(id);
+      var args = sl.apply(arguments);
+      args[0] = arr? {_id:{$in:env._.objectify(args[0])}} : env._.objectify(args[0]);
+      return (arr? this.find : this.findOne).apply(this, args);
+    }
+
 
     // // Models helpers
     // queryGenerator: function(modelName, query, options){
@@ -211,7 +278,7 @@ module.exports = function(env){
     //     var Model = this.findModel(modelName); //object must have find remote model by modelName
     //     if(!Model) throw new Error("")
     //     var args = parseArgs(
-    //       sl.apply(arguments), 
+    //       sl.apply(arguments),
     //       defaults.slice(),
     //       typeof this.contextPattern === "function"? this.contextPattern(modelName, options) : this.contextPattern
     //     );
@@ -220,14 +287,14 @@ module.exports = function(env){
     //   }
     // },
 
-  
+
   });
 
   MongoCollection.prototype.model = env.MongoModel;
   // findGenerator helpers
   var sl = Array.prototype.slice;
   var ra = function(a){return a};
-   
+
   // contextPattern examples:
   // initialize:     function(options){
   //   this.contextPattern = {"company.$id": this.get("_id")};
@@ -241,7 +308,7 @@ module.exports = function(env){
     for(var i=0;i<num;i++) {
       if(typeof args[i]==="function") q = args[i], result[i] = defaults[i];
       else      result[i] = _.extend({}, args[i], defaults[i])
-   
+
       //TODO - write two functions and move this if to findGenerator generated function
       if(i===0&&contextPattern) result[i] = _.extend(result[i]||{}, contextPattern);
     }
