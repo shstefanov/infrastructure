@@ -252,7 +252,7 @@ var View = App.View.extend("AdvancedView", _.extend(st, {
     }
   },
 
-  empty: function(){this.getContainer.empty(); return this;},
+  empty: function(){this.getContainer().empty(); return this;},
 
   update: function(listenTarget, event, template){
     var liveID = _.uniqueId();
