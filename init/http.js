@@ -59,6 +59,9 @@ module.exports = function(cb){
     io.set('log level', config.log || 0);
     var sio = new SessionSockets(io, sessionStore, cookieParser);
     sio.on("connection", env.socketConnection);
+    sio.on("error", function(err){
+      console.error(err);
+    });
 
     env.sys("HTTP", 'Express server listening on port ' + app.get('port'));
     env.app = app;
