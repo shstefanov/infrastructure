@@ -19,6 +19,7 @@ module.exports = EventedClass.extend("Controller", {
     // binds socket to listen for this controller's events
     var self = this;
     socket.on(this.name, function(data, cb){
+      if(arguments.length !== 2 || !_.isFunction(cb)) return _.isFunction(cb)?cb("Invalid arguments"):undefined;
       subject.currentSocket = socket;
       //if(data.event) return subject.trigger(data.event, subject, data.body, cb);
       if(self.methods.indexOf(data.action)!=-1) self[data.action](data.body, subject, cb);

@@ -156,7 +156,7 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
   },
 
   getGroup: function(groupName, key){
-    return this._groups[name] ? this._groups[name][key] : undefined;
+    return this._groups[groupName] ? this._groups[groupName][key] : undefined;
   },
 
   dropGroup: function(name){

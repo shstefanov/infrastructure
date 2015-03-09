@@ -23,7 +23,8 @@ module.exports = App.EventedClass.extend("Controller", {
 
   createMethod: function(methodName){
     var self = this;
-    this[methodName] = function(data, cb, ctx){ 
+    this[methodName] = function(data, cb, ctx){
+      if(_.isFunction(data)){ ctx = cb; cb = data; data = null; }
       socket.emit(self.name, {
         action: methodName,
         body:   data
