@@ -26,7 +26,7 @@ module.exports = App.Router.extend("AdvancedRouter", {
 
           function switchView(view){
             for(key in approuter.views){
-              approuter.views[key].hide && approuter.views[key].hide();
+              (view!==approuter.views[key]) && approuter.views[key].hide && approuter.views[key].hide();
             }
             view.show && view.show();
             return view;
