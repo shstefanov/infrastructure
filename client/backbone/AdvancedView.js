@@ -46,12 +46,10 @@ var renderMultiple = function($view){
   for(key in this.elements){ 
     var template = this.templates[key];
     var $el = this.elements[key];
-    if($view){
-      if($view===$el) {
-        $view.html(template.call(this, this));
-        this.trigger("render");
-        return this;
-      }
+    if($view && $view===$el){
+      $view.html(template.call(this, this));
+      this.trigger("render");
+      return this;
     }
     else $el.html(template.call(this, this));
   }

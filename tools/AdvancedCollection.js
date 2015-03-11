@@ -107,13 +107,22 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
     var groups = this._groups[name] = {};
 
     var add = function(index, model){
-      if(!groups[index]) groups[index] = new Backbone.Collection();
-      groups[index].add(model);
+      if(!groups[index]) {
+        groups[index] = new Backbone.Collection();
+        groups[index].add(model);
+        self.trigger("group:"+name, groups[index], index);
+      }
+      else{
+        groups[index].add(model);        
+      }
     };
 
     var remove = function(index, model){
       groups[index].remove(model);
-      if(!groups[index].length == 0) delete groups[index];
+      if(!groups[index].length == 0) {
+        groups[index].trigger("removeGroup");
+        delete groups[index];
+      }
     };
 
     var addModel = function(model){
