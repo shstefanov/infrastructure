@@ -20,7 +20,12 @@ module.exports = function(cb){
   function socketError(err){console.log("socket error: ", err, err.stack)}
   this.socketConnection = function(err, socket, session){
     
-    if(err) throw err;
+    if(err) {
+      console.error(err);
+      socket && socket.disconnect();
+      session && session.destroy();
+      throw;
+    }
 
     socket.on("error", socketError);
     socket.on("disconnect", decreaseConnections);
