@@ -24,7 +24,6 @@ module.exports = function(cb){
       console.error(err);
       socket && socket.disconnect();
       session && session.destroy();
-      throw;
     }
 
     socket.on("error", socketError);
