@@ -10,6 +10,10 @@ module.exports = function(cb){
   var env = this;
 
   var config = env.config;
+  if(!config.bundles) {
+    env.registerBundle = function(){};
+    return cb();
+  }
   var app = env.app;
 
   var jade_ext = ".jade";

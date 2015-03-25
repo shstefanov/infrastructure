@@ -69,7 +69,7 @@ var st = {};
 var View = App.View.extend("AdvancedView", _.extend(st, {
 
   constructor: function(options){
-    
+    this.self = this;
     if(this.controller && typeof this.controller === "string")
       this.controller = app.controllers[this.controller]
     else if(options&&options.controller)
@@ -182,7 +182,6 @@ var View = App.View.extend("AdvancedView", _.extend(st, {
   URL: function(str){ return this.config.root + (str||""); },
   
   config:   _.clone(window.config),
-  settings: _.clone(settings),
 
   render: function(){
     this.template && this.$el.html(this.template(this));

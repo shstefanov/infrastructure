@@ -1,4 +1,4 @@
-jade                            = require("jade/lib/runtime");
+// jade                            = require("jade/lib/runtime");
 io                              = require("../socket");
 _                               = require("underscore");
 $                               = require("./jquery");
@@ -37,7 +37,6 @@ _.extend(App, {
 });
 
 _.extend(App, {
-  Window:                       require("./window"),
   Layout:                       require("./layout"),
   Controls:                     require("./controls"),
   Controller:                   require("./controller")
@@ -52,9 +51,7 @@ var config = _.clone(window.config);
 App.run = function(Router, cb){
   app = Router.prototype;
 
-  // router.settings = window.settings, 
   Router.prototype.config      = config;
-  Router.prototype.settings    = settings;
   
   // initData == { "controllerName": ["method1", "method2", ...], ... }
   var initData;
