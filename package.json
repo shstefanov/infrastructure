@@ -8,21 +8,14 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "addresator": "0.0.2",
-    "async": "latest",
     "backbone": "latest",
     "body-parser": "~1.2.0",
-    "browserify": "1.17.3",
-    "clone-rpc": "latest",
     "coffee-script": "latest",
-    "colors": "latest",
-    "combinat": "latest",
     "connect-mongo": "latest",
     "cookie-parser": "~1.1.0",
     "express": "latest",
     "express-session": "latest",
     "jade": "latest",
-    "js-beautify": "latest",
     "method-override": "~1.0.1",
     "mkdirp": "^0.5.0",
     "mongodb": "latest",
@@ -32,12 +25,14 @@
     "session.socket.io": "latest",
     "socket.io": "0.9.16",
     "socket.io-client": "latest",
-    "ui-router": "0.0.1",
-    "underscore": "latest",
-    "walk": "latest"
+    "underscore": "latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"
+  },
+
+  "scripts":{
+    "test": "jasmine-node test"
   },
   "_id": "infrastructure@0.3.34",
   "_from": "infrastructure@latest",
