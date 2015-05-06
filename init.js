@@ -1,14 +1,13 @@
-var cluster = require("cluster");
-var mixins  = require("./lib/mixins");
 var _       = require("underscore");
+var cluster = require("cluster");
+var mixins  = require("./lib/helpers");
 
 module.exports = function(env, cb){
 
-  console.log("TODO: Clean mongodb things from mixins, except for models and pages");
   mixins.apply(env);
 
   if(env.config.nodes && cluster.isMaster){
-    var initWorker = require("./initWorker");
+    var initWorker = require("./init/initWorker");
     var nodes = env.config.nodes;
     function createNode(nc, index){
       nc.type = key, nc.id = (typeof nc.id == "undefined")? index : nc.id;
@@ -18,13 +17,10 @@ module.exports = function(env, cb){
       });
     }
     for(var key in nodes){
-
       var nodeConfig = nodes[key];
       if(_.isArray(nodeConfig)) nodeConfig.forEach(createNode);
       else                      createNode(nodeConfig);
-
     }
-
     return cb(null, env);
   }
 
@@ -35,10 +31,10 @@ module.exports = function(env, cb){
         // Model worker dependencies
         models:          function(){
           _.extend(env, {
-            AdvancedModel:               require("./tools/AdvancedModel"),
-            AdvancedCollection:          require("./tools/AdvancedCollection"),
+            ExtendedModel:               require("./tools/ExtendedModel"),
+            ExtendsedCollection:         require("./tools/ExtendsedCollection")
           });
-          require("./tools/MongoModel")(env);
+          require("./lib/MongoModel")(env);
 
           var chain = [
               require("./init/mongodb"),
@@ -70,8 +66,8 @@ module.exports = function(env, cb){
 
         controllers:     function(){
           _.extend(env, {
-            AdvancedModel:               require("./tools/AdvancedModel"),
-            AdvancedCollection:          require("./tools/AdvancedCollection"),
+            ExtendedModel:               require("./tools/ExtendedModel"),
+            ExtendsedCollection:          require("./tools/ExtendsedCollection"),
             Controller:                  require("./tools/Controller"),
           });
           require("./tools/ShallowModel")(env);
