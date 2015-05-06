@@ -1,9 +1,8 @@
+var _             = require("underscore");
+var Class         = require("./Class");
+var Backbone      = require("backbone");
 
-var Class = require("./Class");
-var Backbone = require("backbone");
-var _ = require("underscore");
-
-var AdvancedModel = Backbone.Model.extend({
+var ExtendedModel = Backbone.Model.extend({
   
   constructor: function(data, options){
     if(options && options.fromJSON===true) data = this.convertJSON(data);
@@ -12,7 +11,6 @@ var AdvancedModel = Backbone.Model.extend({
     if(this.error) Backbone.Model.apply(this);
     else Backbone.Model.call(this, data, options);
   },
-
 
   convertJSON: function(data){
     var result = _.clone(data);
@@ -32,6 +30,7 @@ var AdvancedModel = Backbone.Model.extend({
   },
 
   set: function(data, options){
+    delete this.error;
     if(options && options.fromJSON===true) data = this.convertJSON(data);
     this.error = this.validate(_.extend({}, this.attributes, data));
     if(this.error) return this;    
@@ -62,11 +61,11 @@ var AdvancedModel = Backbone.Model.extend({
       this.error = error;
       return error;
     }
-
-  },
+  }
 
 });
-AdvancedModel.__className = "Class_Model_AdvancedModel";
-AdvancedModel.extend = Class.extend;
 
-module.exports = AdvancedModel;
+ExtendedModel.__className = "Class_Model_ExtendedModel";
+ExtendedModel.extend      = Class.extend;
+
+module.exports            = ExtendedModel;

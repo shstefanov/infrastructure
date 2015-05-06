@@ -2,129 +2,55 @@
 // var AdvancedCollection = require("./AdvancedCollection");
 
 
-// module.exports = function(env){
-
-//   var _       = require("underscore");
-//   var mongodb = require("mongodb");
-
-// };
-
-
-
-
-
-
-
-
 
 module.exports = function(env){
 
   var _       = require("underscore");
   var mongodb = require("mongodb");
-  env.relBuilders = [];
-
-  var relTypes = {
-    hasOne: function(Model, rel){
-      return function(){
-        var RelatedModel = env.Models[rel.model];
-        var field = rel.field;
-        Model.validation[field] = env._.isObjectID
-
-      }
-    },
-    hasMany: function(ModelName, rel){
-      return function(){}
-    },
-    belongsTo: function(ModelName, rel){
-      return function(){}
-    },
-    belongsToMany: function(ModelName, rel){
-      return function(){}
-    }
-  }
-
-  function createGetRef(name){
-    return function(){
-      return new mongodb.DBRef(name, this.get("_id"));
-    }
-  }
-
-  function objectify_id (model){
-    model._id = env.ObjectID(model._id);
-  }
-
-  var MongoCollection = env.MongoCollection = env.AdvancedCollection.extend("MongoCollection", {
+  
+  var MongoCollection = env.MongoCollection = env.ExtendedCollection.extend("MongoCollection", {
 
   });
-
-  env.MongoModel = env.AdvancedModel.extend("MongoModel", {
+ 
+  env.MongoModel = env.ExtendedModel.extend("MongoModel", {
     idAttribute: "_id",
-
-
-
 
     toJSON: function(){
       if(this.error) return {error: this.error};
-      return env.AdvancedModel.prototype.toJSON.call(this);
+      return env.ExtendeddModel.prototype.toJSON.call(this);
     },
 
+    constructor: function(data){
+
+      if(!data){
+        this.error = "Can't find model";
+        return this;
+      }
+      else if(!_.isObject(data)){
+        this.error = "Model should be object";
+      }
+      var err = this.validate(data);
+      if(err){
+        this.error = err;
+        return env.ExtendedModel.apply(this, []);
+      }
+
+      return env.ExtendedModel.apply(this, arguments);
+    }
   },
 
   {
     db: env.db,
 
-    defaults: {},
-
-    validate: function(obj, isNew){
-      var error = false, errors = {invalid: []};
-      if(!_.isObject(obj)) return {error: "Not object"};
-
-      var validation_keys = _.keys(this.validation);
-      var object_keys     = _.keys(obj);
-
-      if(isNew) validation_keys = _.without(validation_keys, "_id");
-
-      var missing    = _.difference(validation_keys, object_keys);
-      var redundant  = _.difference(object_keys, validation_keys);
-
-      if(missing.length>0)   {errors.missing = missing;     error = true;}
-      if(redundant.length>0) {errors.redundant = redundant; error = true;}
-
-      var for_check = _.without(_.intersection(object_keys, validation_keys), missing);
-      var self = this, invalid = [];
-
-      for(var i=0;i<for_check.length;i++){
-        var field = for_check[i];
-        var fn    = this.validation[field];
-        var value = obj[field];
-        if(!fn(value)) {
-          error = true;
-          invalid.push(field);
-          errors.invalid = invalid;
-        }
-      }
-      return error?errors:undefined;
-    },
-
-    // objectify: function(obj, objectifier){
-    //   //analize this.validation object and find which fields to objectify
-    //   return obj;
-    // },
-
-    findModel: function(name){return env.Models[name];},
-
     extend:   function(name){
       var Model = env.AdvancedModel.extend.apply(this, arguments);
       Model.collectionName = name;
-      Model.objectifiers = [objectify_id];
-      if(Model.rels) Model.buildRels();
-      Model.prototype.getRef = createGetRef(name);
       Model.buildModel = function(cb){
 
         Model.db.createCollection(name, Model.options || {}, function(err, collection){
           if(err) return cb(err);
           Model.coll       = Model.prototype.coll = collection;
-          Model.Collection = MongoCollection.extend(name,
+          Model.Collection = MongoCollection.extend(name, 
             {model:    Model     },
             {coll:     collection}
           );
@@ -135,79 +61,69 @@ module.exports = function(env){
                 //TODO - get collection indexes and drop removed if any
                 Model.coll.ensureIndex(i.index,i.options||{}, function(err){
                   cb(err);
-                });
+                }); 
               });
             });
             env._.chain(ch)(cb);
           }
           else cb();
         });
-      };
+      }
 
 
 
       return Model;
     },
 
-    buildRels: function(){
-      var rels = this.rels, builders = env.relBuilders, self = this;
-      for(var key in rels){
-        (function(type, rels){
-          if(!_,isArray(rels)) rels = [rels];
-          rels.forEach(function(rel){
-            if(relTypes[type]) builders.push(relTypes[type](self, rel));
-          });
-        })(key, rels[key]);
-      }
-    },
-
-    objectify: function(model){
-      this.objectifiers.forEach(function(fn){fn(model);});
-      return model;
-    },
 
     // DB methods
-    create:  function(data, cb){
-      _.defaults(data, this.defaults);
-      var error = this.validate(data, true);
+    create:  function(){
+      var Self = this;
+      var args = Array.prototype.slice.call(arguments);
+      var cb = args.pop();
+      var md = {
+        isNew: true,
+        validation: Self.prototype.validation,
+        attributes: args[0]
+      }
+      var error = Self.prototype.validate.apply(md);
       if(error) return cb(error);
-      this.coll.insert(data, function(err, model){cb(err, model[0])});
+      args.push(function(err, doc){ cb(err, new Self(doc)); });
+      Self.coll.insert(md.attributes)
     },
 
-    find: function(){
-      var self = this;
+    find:    function(){
+      var Self = this;
       var args = Array.prototype.slice.call(arguments);
       var cb = args.pop();
       args.push(function(err, cursor){
         if(err) return cb(err);
         cursor.toArray(function(err, docs){
           if(err) return cb(err);
-          var error = _.some(docs, function(doc){
-            return !!self.validate(doc);
-          });
-          if(error) return cb("Invalid objects in result");
-          cb(null, docs);
+          cb(null, docs.map(function(doc){
+            return new Self(doc);
+          }));
         });
       });
-      this.coll.find.apply(this.coll, args);
+      this.coll.find.apply(this, args);
       return this;
     },
 
     findOne: function(){
-      var self = this;
+      var Self = this;
       var args = Array.prototype.slice.call(arguments);
       var cb = args.pop();
       args.push(function(err, doc){
         if(err) return cb(err);
-        var error = self.validate(doc);
-        if(error) return cb(error);
-        cb(null, doc);
+        var model = new Self(doc);
+        cb(model.error, model);
       });
-      this.coll.findOne.apply(this.coll, args);
+      console.log("findOne:", args);
+      this.coll.findOne.apply(this, args);
       return this;
     },
 
-    remove:  function(){
+    remove:  function(){ 
       var Self = this;
       var args = Array.prototype.slice.call(arguments);
       var cb = args.pop();
@@ -231,7 +147,7 @@ module.exports = function(env){
           var err = model.validate();
           if(err) return cb(err);
           Self.coll.update(
-            {_id: model.get("_id")},
+            {_id: model.get("_id")}, 
             model.omit("_id"),
             cb);
         }, cb);
@@ -244,57 +160,34 @@ module.exports = function(env){
       return this;
     },
 
-    save: function(models, cb){
-      var arr = _.isArray(models), self = this;
-      if(arr){
-        if(_.some(models, function(model){
-          console.log(model, self.validate(self.objectify(model)));
-          return self.validate(self.objectify(model)) !== undefined;
-        })) return cb("Models error");
-        return env._.amap(models, function(model, cb){
-          self.coll.save(model, function(err){cb(err,err?undefined:model)});
-        }, cb);
+
+    // Models helpers
+    queryGenerator: function(modelName, query, options){
+      var defaults = Array.prototype.slice.call(arguments);
+      defaults.shift();//Remove modelName
+      return function(){
+        var Model = this.findModel(modelName); //object must have find remote model by modelName
+        if(!Model) throw new Error("");
+        var args = parseArgs(
+          sl.apply(arguments), 
+          defaults.slice(),
+          typeof this.contextPattern === "function"? this.contextPattern(modelName, options) : this.contextPattern
+        );
+        var cb = args.pop();
+        args.push(function(err,cursor){err?cb(err):cursor.toArray(cb);})
+        Model.coll.find.apply(Model, args);
+        return this;
       }
-      var error = this.validate(this.objectify(models));
-      console.log("error????", error, models);
-      if(error) return cb(error);
-      return this.coll.save(models, cb);
     },
 
-
-    findById: function(id){
-      var arr = _.isArray(id);
-      var args = sl.apply(arguments);
-      args[0] = arr? {_id:{$in:env._.objectify(args[0])}} : env._.objectify(args[0]);
-      return (arr? this.find : this.findOne).apply(this, args);
-    }
-
-
-    // // Models helpers
-    // queryGenerator: function(modelName, query, options){
-    //   var defaults = Array.prototype.slice.call(arguments);
-    //   defaults.shift();//Remove modelName
-    //   return function(){
-    //     var Model = this.findModel(modelName); //object must have find remote model by modelName
-    //     if(!Model) throw new Error("")
-    //     var args = parseArgs(
-    //       sl.apply(arguments),
-    //       defaults.slice(),
-    //       typeof this.contextPattern === "function"? this.contextPattern(modelName, options) : this.contextPattern
-    //     );
-    //     Model.coll.find.apply(Model, args);
-    //     return this;
-    //   }
-    // },
-
-
+  
   });
 
   MongoCollection.prototype.model = env.MongoModel;
   // findGenerator helpers
   var sl = Array.prototype.slice;
   var ra = function(a){return a};
-
+   
   // contextPattern examples:
   // initialize:     function(options){
   //   this.contextPattern = {"company.$id": this.get("_id")};
@@ -308,7 +201,7 @@ module.exports = function(env){
     for(var i=0;i<num;i++) {
       if(typeof args[i]==="function") q = args[i], result[i] = defaults[i];
       else      result[i] = _.extend({}, args[i], defaults[i])
-
+   
       //TODO - write two functions and move this if to findGenerator generated function
       if(i===0&&contextPattern) result[i] = _.extend(result[i]||{}, contextPattern);
     }

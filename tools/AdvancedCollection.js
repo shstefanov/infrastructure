@@ -20,7 +20,6 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
     this.indexBy(index).groupBy(groups);
 
     Backbone.Collection.apply(this, arguments);
-    
   },
 
   fire: function(){
