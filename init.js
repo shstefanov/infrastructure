@@ -31,8 +31,8 @@ module.exports = function(env, cb){
         // Model worker dependencies
         models:          function(){
           _.extend(env, {
-            ExtendedModel:               require("./tools/ExtendedModel"),
-            ExtendsedCollection:         require("./tools/ExtendsedCollection")
+            ExtendedModel:               require("./lib/ExtendedModel"),
+            ExtendedCollection:         require("./lib/ExtendedCollection")
           });
           require("./lib/MongoModel")(env);
 
@@ -41,7 +41,7 @@ module.exports = function(env, cb){
               require("./init/models"),
           ];
           if(config.mysql) {
-            require("./tools/MySQLModel")(env);
+            require("./lib/MySQLModel")(env);
             chain.unshift(require("./init/mysql"));
           }
 
@@ -51,11 +51,11 @@ module.exports = function(env, cb){
 
         http:           function(){
           _.extend(env, {
-            Page:             require("./tools/Page"),
-            Api:              require("./tools/Api"),
-            Widget:           require("./tools/Widget"),
+            Page:             require("./lib/Page"),
+            Api:              require("./lib/Api"),
+            Widget:           require("./lib/Widget"),
           });
-          //require("./tools/ShallowModel")(env);
+
           return [
                               require("./init/mongodb"),
                               require("./init/shallowModels"),
@@ -66,13 +66,12 @@ module.exports = function(env, cb){
 
         controllers:     function(){
           _.extend(env, {
-            ExtendedModel:               require("./tools/ExtendedModel"),
-            ExtendsedCollection:          require("./tools/ExtendsedCollection"),
-            Controller:                  require("./tools/Controller"),
+            ExtendedModel:               require("./lib/ExtendedModel"),
+            ExtendedCollection:         require("./lib/ExtendedCollection"),
+            Controller:                  require("./lib/Controller"),
           });
-          require("./tools/ShallowModel")(env);
+
           return [
-                              require("./init/shallowModels"),
                               require("./init/controllers"),
           ];
         },

@@ -1,5 +1,3 @@
-
-var mixins     = require("./lib/mixins");
 var _          = require("underscore");
 var path       = require("path");
 var cluster    = require("cluster");
@@ -24,7 +22,6 @@ var msgTypes = {
     if(!worker) return console.log("Can't find worker: "+ id);
 
     worker.send(data);
-    // console.log("call: ", data);
   },
 
   cb: function(data){
@@ -56,8 +53,6 @@ var msgTypes = {
 
 var addWorker = module.exports = function(env, type, config, cb){
 
-
-
   var worker = cluster.fork();
   worker.once("message", function(){
     if(!workers[type]) workers[type] = {};
@@ -75,8 +70,5 @@ var addWorker = module.exports = function(env, type, config, cb){
 
     cb && cb(null, worker);
   });
-
-
-
     
 }; 
