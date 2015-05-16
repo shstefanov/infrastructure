@@ -58,7 +58,6 @@ module.exports = function(env, cb){
 
           return [
                               require("./init/mongodb"),
-                              require("./init/shallowModels"),
                               require("./init/http"),
                               require("./init/pages"),
           ];
@@ -148,6 +147,7 @@ module.exports = function(env, cb){
           var name   = parts[2];
           var method = parts[3];
           var object = access[name];
+          
           if(!object) return env.callback({
             type: "cb",
             cb:   data.cb,
@@ -173,7 +173,7 @@ module.exports = function(env, cb){
 
           if(object.methods){
             if(object.methods.indexOf(method) != -1 && _.isFunction(object[method])){
-              object[method].apply(object,args);
+              object[method].apply(object, args);
             }
             else{
               return callback("Can't find method "+method);
