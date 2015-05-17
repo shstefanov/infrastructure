@@ -10,15 +10,18 @@ module.exports = function(cb){
   var _            = require("underscore");
   var env          = this;
   var config       = this.config;
+
+  if(!config.mongodb) return cb();
+
   var mongodb      = env.MongoDB   = require("mongodb");
   var MongoClient  = mongodb.MongoClient;
 
   // Setup helpers
   env.ObjectID     = mongodb.ObjectID;
   env.DBRef        = mongodb.DBRef;
-  env._.isObjectID = function(val){ return val instanceof env.ObjectID; };
-  env._.isDBRef    = function(val){ return val instanceof DBRef;        };
-  env._.objectify = function(val){
+  env.helpers.isObjectID = function(val){ return val instanceof env.ObjectID; };
+  env.helpers.isDBRef    = function(val){ return val instanceof DBRef;        };
+  env.helpers.objectify = function(val){
     return _.isArray(val)? val.map(env.ObjectID) : env.ObjectID(val);
   };
 
@@ -27,12 +30,10 @@ module.exports = function(cb){
     MongoClient.connect(createURL(cfg), cfg.options || {}, callback);
   };
 
-
-  env.createMongoConnection(config.mongodb, function(err, db){
+  env.createMongoConnection(config.mongodb, function(err, mongodb){
     if(err) return cb(err);
-    env.db = db;
-    env.MongoDB = mongodb;
-    env.sys("init", "Connected to MongoDB on "+(config.mongodb.host || "localhost")+":"+(config.mongodb.port||27017)+"/"+config.mongodb.db);
+    env.mongodb = mongodb;
+    env.call("log.sys", ["mongodb", "Connected to MongoDB on "+(config.mongodb.host || "localhost")+":"+(config.mongodb.port||27017)+"/"+config.mongodb.db] );
     cb();
   });
 

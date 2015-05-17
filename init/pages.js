@@ -5,9 +5,10 @@ var _    = require("underscore");
 
 module.exports = function(cb){
   
-  var env = this;
+  var env    = this;
   var config = env.config;
-  var app = env.app;
+  if(!config.pages) return cb();
+  var app    = env.app;
   var pages = env.pages = {};
   
   env.buildPage = function(PageClass, options){
@@ -22,12 +23,11 @@ module.exports = function(cb){
     pages[page.root] = page;
     return page;
   }
-
-  // if(env.skipLoading === true) return cb && cb();
-  if(!config.routes || !fs.existsSync(path.join(config.rootDir, config.routes))) return cb();
   
-  if(fs.existsSync(path.join(config.rootDir, config.routes, "init.js"))){
-    var initializer = require(path.join(config.rootDir, config.routes, "init.js"));
+  if(!config.pages.path || !fs.existsSync(path.join(config.rootDir, config.pages.path))) return cb();
+  
+  if(fs.existsSync(path.join(config.rootDir, config.pages.path, "init.js"))){
+    var initializer = require(path.join(config.rootDir, config.pages.path, "init.js"));
     initializer.call(env, go);
   }
   else go();
@@ -37,7 +37,7 @@ module.exports = function(cb){
   function go(err){
     if(err) return cb && cb(err);
     
-    var routesDir  = path.join(config.rootDir, config.routes);
+    var routesDir  = path.join(config.rootDir, config.pages.path);
     var routeFiles = fs.readdirSync(routesDir);
 
     routeFiles.forEach(function(filename){

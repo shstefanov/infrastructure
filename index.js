@@ -1,13 +1,13 @@
+var fs      = require("fs");
+var path    = require("path");
+var _       = require("underscore");
 
-var fs   = require("fs");
-var path = require("path");
-var _    = require("underscore");
-
-var init = require("./init");
+var init    = require("./init");
+var helpers = require("./lib/helpers");
 
 var loadApp = function(rootDir, config, options, cb){
   config.rootDir = rootDir;
-  init(_.extend({config: config}, options), cb);
+  init(_.extend({config: config, helpers: helpers}, options), cb);
 };
 
 var hasConfig = function(folderPath){
@@ -15,7 +15,24 @@ var hasConfig = function(folderPath){
 };
 
 var getConfig = function(folderPath){
-  return require(path.join(folderPath, "config"));
+  var configPath = path.join(folderPath, "config"), config;
+  if(fs.statSync(configPath).isDirectory()){
+
+    var YAML              = require('yamljs');
+    var bulk              = require('bulk-require');
+
+    require.extensions['.yml'] = function(module, filename) {
+      var yaml_string = fs.readFileSync(filename, 'utf8').toString();
+      module.exports = YAML.parse(yaml_string);
+    };
+
+    config = bulk(configPath, ['**/*.js','**/*.json', '**/*.yml']);
+  }
+  else{
+    config = require(path.join(folderPath, "_config"));
+  }
+  helpers.deepExtend(config, config.development || {});
+  return config;
 };
 
 module.exports = function findApp(folderPath, options, cb){

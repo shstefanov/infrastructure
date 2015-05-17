@@ -1,11 +1,28 @@
 var _       = require("underscore");
 var cluster = require("cluster");
-var mixins  = require("./lib/helpers");
 
 module.exports = function(env, cb){
 
-  mixins.apply(env);
+  if      (!env.config.nodes && cluster.isMaster)     require("./init/single.js")(env, cb);
+  else if (env.config.nodes  && cluster.isMaster)     require("./init/master.js")(env, cb);
+  else                                                require("./init/worker.js")(env, cb);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  return;
   if(env.config.nodes && cluster.isMaster){
     var initWorker = require("./init/initWorker");
     var nodes = env.config.nodes;

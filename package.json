@@ -1,6 +1,6 @@
 {
   "name": "infrastructure",
-  "version": "0.3.37",
+  "version": "0.3.99",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
@@ -8,24 +8,26 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "backbone": "latest",
-    "body-parser": "~1.2.0",
-    "coffee-script": "latest",
-    "connect-mongo": "latest",
-    "cookie-parser": "~1.1.0",
-    "express": "latest",
-    "express-session": "latest",
-    "jade": "latest",
-    "method-override": "~1.0.1",
-    "mkdirp": "^0.5.0",
-    "mongodb": "latest",
-    "morgan": "latest",
-    "mysql": "^2.5.4",
-    "serve-favicon": "~2.0.0",
+    "backbone":          "latest",
+    "body-parser":       "latest",
+    "bulk-require":      "latest",
+    "coffee-script":     "latest",
+    "connect-mongo":     "latest",
+    "cookie-parser":     "latest",
+    "express":           "latest",
+    "express-session":   "latest",
+    "jade":              "latest",
+    "method-override":   "latest",
+    "mongodb":           "latest",
+    "morgan":            "latest",
+    "mysql":             "latest",
+    "serve-favicon":     "latest",
     "session.socket.io": "latest",
-    "socket.io": "0.9.16",
-    "socket.io-client": "latest",
-    "underscore": "latest"
+    "socket.io":         "latest",
+    "socket.io-client":  "latest",
+    "pg":                "latest",
+    "underscore":        "latest",
+    "yamljs":            "latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"
@@ -34,7 +36,7 @@
   "scripts":{
     "test": "jasmine-node test"
   },
-  "_id": "infrastructure@0.3.34",
+  "_id": "infrastructure@0.3.99",
   "_from": "infrastructure@latest",
   "repository": "git://github.com/shstefanov/infrastructure"
 }
