@@ -29,7 +29,7 @@ var getConfig = function(folderPath){
     config = bulk(configPath, ['**/*.js','**/*.json', '**/*.yml']);
   }
   else{
-    config = require(path.join(folderPath, "_config"));
+    config = require(path.join(folderPath, "config"));
   }
   helpers.deepExtend(config, config.development || {});
   return config;
