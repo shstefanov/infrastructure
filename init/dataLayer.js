@@ -1,6 +1,3 @@
-
-
-
 module.exports = function(cb){
 
   var env    = this;
@@ -8,39 +5,50 @@ module.exports = function(cb){
   var path   = require("path");
   var fs     = require("fs");
   
-  if(!config.models || !fs.existsSync(path.join(config.rootDir, config.models.path))) return cb();
+  if(!config.data || !fs.existsSync(path.join(config.rootDir, config.data.path))) return cb();
 
   var _      = require("underscore");
   var bulk   = require("bulk-require");
-  env.models = bulk(path.join(config.rootDir, config.models.path), ["**/*.js", "**/*.coffee"]);
 
-  env.helpers.objectWalk(env.models, function(name, target, parent){
+  var initializers = [];
+
+  env.data = bulk(path.join(config.rootDir, config.data.path), ["**/*.js", "**/*.coffee"]);
+
+  env.helpers.objectWalk(env.data, function(name, target, parent){
     if(_.isFunction(target)) {
-      var model = setupModel(target.apply(env));
-      if(model){
-        parent[name] = model;
+      var DataLayer = setupDataLayer(name, target.apply(env));
+      if(DataLayer){
+        parent[name] = DataLayer;
       }
       else delete parent[name];
     }
     else target.do = env.do;
   });
   
-  env.models.do = env.do;
+  env.data.do = env.do;
 
+  
+  function setupDataLayer(name, DataLayer){
+    if(!DataLayer.prototype.name) DataLayer.prototype.name = name;
+    var instance = new DataLayer(env, DataLayer);
+    if(instance.buildModel) {
+      initializers.push(instance.buildModel);
+      delete instance.buildModel;
+    }
+    return instance;
+  }
 
-
-
-
-  function setupModel(Model){
-    console.log("setupModel", Model);
-
-    return Model;
+  if(initializers.length){
+    env.helpers.chain(initializers)(cb);
+  }
+  else{
+    cb();
   }
 
 
 
 
-  return cb();
+  return;
 
 
 

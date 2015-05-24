@@ -10,6 +10,7 @@ module.exports = function(env, cb){
     require("./mongodb"      ),
     require("./mysql"        ),
     require("./postgres"     ),
+    require("./dataLayer"    ),
     require("./models"       ),  
 
 
@@ -24,13 +25,26 @@ module.exports = function(env, cb){
   var classes = bulk(path.join(__dirname, "../lib"), ['*.js']);
   _.extend(env, classes);
 
+
+  var doCache = {};
   env.do = function(address, args, cb){
-    if(_.isString(address)) address = address.split(".");
+    if(_.isString(address)) {
+      if(doCache[address]) return doCache[address](args, cb); // TODO
+      address = address.split(".");
+    }
     if(!this[address[0]]) return cb && cb("Can't find target: ["+address[0]+"]");
     
     if(address.length === 2){
       if(this[address[0]] && _.isFunction(this[address[0]][address[1]])){
-        this[address[0]][address[1]].apply(this[address[0]], args.concat([cb]));
+        if(_.isArray(this[address[0]].methods)){
+          if(this[address[0]].methods && this[address[0]].methods.indexOf(address[1])!=-1){
+            this[address[0]][address[1]].apply(this[address[0]], args.concat([cb]));
+          }
+          else return cb && cb("Invalid target: ["+address.join(".")+"]");
+        }
+        else{
+          this[address[0]][address[1]].apply(this[address[0]], args.concat([cb]));
+        }
       }
       else return cb && cb("Invalid target: ["+address.join(".")+"]");
     }

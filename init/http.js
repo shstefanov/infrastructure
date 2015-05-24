@@ -69,6 +69,7 @@ module.exports = function(cb){
     }    
   }
   
+  env.app = app;
   var server = http.createServer(app).listen(app.get('port'), function(err){
     if(err) return cb(err);
     env.do("log.sys", ["http", 'Express server listening on port ' + app.get('port')]);
@@ -79,7 +80,6 @@ module.exports = function(cb){
       io.set('log level', config.log.socketio_log_level || 0);
       var sio = new SessionSockets(io, sessionStore, cookieParser);
       sio.on("connection", env.socketConnection);
-      env.app = app;
       env.do("log.sys", ["websocket", 'socket.io listening on port ' + app.get('port')]);
       cb();
     }

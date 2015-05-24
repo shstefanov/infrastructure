@@ -39,23 +39,8 @@ module.exports = function(cb){
       Proto.prototype.name = name;
       env.controllers[name] = new Proto(env);
     });
-    // console.log("controllers: ", env.controllers);
-
-
-    // env.controllers = env._.dirToObject(controllersPath, function(name, folderName, module){
-    //   if(name === "init") return;
-    //   var Prototype = module.apply(env);
-    //   var name = Prototype.prototype.name||name;
-    //   return env.createController(name, Prototype);
-    // });
-
-    // if( fs.existsSync(finalPath) ){
-    //   var finalizer = require(finalPath);
-    //   finalizer.call(env, cb);
-    // }
-    // else{
-    //   cb();
-    // }
+    cb();
+   
   }
 
 }
