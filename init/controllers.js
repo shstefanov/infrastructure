@@ -32,7 +32,7 @@ module.exports = function(cb){
   function go(err){
     if(err) return cb&&cb(err);
     var bulk        = require("bulk-require");
-    env.controllers = {call: env.callTarget};
+    env.controllers = {do: env.do};
     _.each(bulk(controllersPath, "*.js"), function(module, name){
       var Proto = module.call(env);
       // var controllerName = name.charAt(0).toLowerCase() + name.slice(1);

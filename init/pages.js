@@ -9,7 +9,7 @@ module.exports = function(cb){
   var config = env.config;
   if(!config.pages) return cb();
   var app    = env.app;
-  var pages = env.pages = {};
+  var pages = env.pages = {do: env.do};
   
   env.buildPage = function(PageClass, options){
     if(!PageClass.prototype.root)

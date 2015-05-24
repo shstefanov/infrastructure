@@ -4,10 +4,15 @@ module.exports = function(env, cb){
   var path = require("path");
 
   var initChain = env.helpers.chain([
+    
     require("./log"          ),
+    
     require("./mongodb"      ),
     require("./mysql"        ),
     require("./postgres"     ),
+    require("./models"       ),  
+
+
     require("./websocket"    ),
     require("./http"         ),
     require("./pages"        ),
@@ -19,24 +24,20 @@ module.exports = function(env, cb){
   var classes = bulk(path.join(__dirname, "../lib"), ['*.js']);
   _.extend(env, classes);
 
-  env.call = function(address, args, cb){
-    var parts    = address.split(".");
-    var nodeType = parts.shift();
-    var target   = env[nodeType];
-    if(!target || !_.isFunction(target.call)) return cb && cb("Can't find target: " + nodeType );
-    target.call(parts.join("."), args, cb);
-  };
-
-  env.dropCallback = function(){};
-
-  env.callTarget = function(address, args, cb){
-    var parts    = address.split(".");
-    var nodeType = parts.shift();
-    var target   = this[nodeType];
-    if(!target) return cb && cb("Can't find target: "+nodeType);
-    var method   = parts.shift();
-    if(!target[method] || !_.isFunction(target[method])) return cb && cb("Can't find method: "+nodeType+"."+ method );
-    target[method].call(target, args, cb);
+  env.do = function(address, args, cb){
+    if(_.isString(address)) address = address.split(".");
+    if(!this[address[0]]) return cb && cb("Can't find target: ["+address[0]+"]");
+    
+    if(address.length === 2){
+      if(this[address[0]] && _.isFunction(this[address[0]][address[1]])){
+        this[address[0]][address[1]].apply(this[address[0]], args.concat([cb]));
+      }
+      else return cb && cb("Invalid target: ["+address.join(".")+"]");
+    }
+    else {
+      if(!_.isFunction(this[address[0]].do)) return cb && cb("Can't chain to target (missing 'do' method): ["+address.join(".")+"]");
+      return this[address[0]].do(address.slice(1), args, cb);
+    }
   };
 
   initChain(function(err){ cb(err, env); }, env );

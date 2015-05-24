@@ -6,8 +6,15 @@ var _ = require("underscore");
 
 module.exports = function(cb){
 
-  var env = this;
+  var env    = this;
   var config = env.config;
+
+  
+
+
+  return cb();
+
+
 
   if(!config.models || !fs.existsSync(path.join(config.rootDir, config.models))) return cb();
 
@@ -24,7 +31,7 @@ module.exports = function(cb){
 
     if(err) return cb(err);
     var modelsDir = path.join(config.rootDir, config.models);
-    var Models = env.models = {};
+    var Models = env.models = {do: env.do};
     var modelsFiles = fs.readdirSync(modelsDir);
 
     var chain = [];

@@ -12,7 +12,7 @@ module.exports = function(cb){
   connection.connect(function(err){
     if(err) return cb(err);
     env.mysql = connection;
-    env.call("log.sys", ["mysql", "Connected to MySQL on "+(config.mysql.host || "localhost")+":"+(config.mysql.port||3306)+"/"+config.mysql.database] );
+    env.do("log.sys", ["mysql", "Connected to MySQL on "+(config.mysql.host || "localhost")+":"+(config.mysql.port||3306)+"/"+config.mysql.database] );
     cb();
   });
 

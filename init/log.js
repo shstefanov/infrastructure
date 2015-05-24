@@ -45,13 +45,7 @@ module.exports = function(cb){
 
   };
 
-  env.log.call = function(addr, args, cb){
-    var addrParts = addr.split(".");
-    if(_.isFunction(this[addrParts[0]])){
-      this[addrParts[0]].apply(this, args.concat([cb]));
-    }
-    else cb && cb("Can't find method: "+addrParts[0]);
-  };
+  env.log.do = env.do
 
   cb();
 
