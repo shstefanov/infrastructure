@@ -33,7 +33,7 @@ module.exports = function(cb){
   env.createMongoConnection(config.mongodb, function(err, mongodb){
     if(err) return cb(err);
     env.mongodb = mongodb;
-    env.call("log.sys", ["mongodb", "Connected to MongoDB on "+(config.mongodb.host || "localhost")+":"+(config.mongodb.port||27017)+"/"+config.mongodb.db] );
+    env.do("log.sys", ["mongodb", "Connected to MongoDB on "+(config.mongodb.host || "localhost")+":"+(config.mongodb.port||27017)+"/"+config.mongodb.db] );
     cb();
   });
 

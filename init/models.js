@@ -24,7 +24,7 @@ module.exports = function(cb){
 
     if(err) return cb(err);
     var modelsDir = path.join(config.rootDir, config.models);
-    var Models = env.models = {};
+    var Models = env.models = {do: env.do};
     var modelsFiles = fs.readdirSync(modelsDir);
 
     var chain = [];
