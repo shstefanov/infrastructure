@@ -22,8 +22,8 @@ var getConfig = function(folderPath){
     var bulk              = require('bulk-require');
 
     require.extensions['.yml'] = function(module, filename) {
-      var yaml_string = fs.readFileSync(filename, 'utf8').toString();
-      module.exports = YAML.parse(yaml_string);
+      var yaml_string     = fs.readFileSync(filename, 'utf8').toString();
+      module.exports      = YAML.parse(yaml_string);
     };
 
     config = bulk(configPath, ['**/*.js','**/*.json', '**/*.yml']);
@@ -32,6 +32,7 @@ var getConfig = function(folderPath){
     config = require(path.join(folderPath, "config"));
   }
   helpers.deepExtend(config, config.development || {});
+  delete config.development;
   return config;
 };
 
