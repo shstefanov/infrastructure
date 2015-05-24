@@ -4,10 +4,15 @@ module.exports = function(env, cb){
   var path = require("path");
 
   var initChain = env.helpers.chain([
+    
     require("./log"          ),
+    
     require("./mongodb"      ),
     require("./mysql"        ),
     require("./postgres"     ),
+    require("./models"       ),  
+
+
     require("./websocket"    ),
     require("./http"         ),
     require("./pages"        ),

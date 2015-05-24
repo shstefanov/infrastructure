@@ -6,8 +6,15 @@ var _ = require("underscore");
 
 module.exports = function(cb){
 
-  var env = this;
+  var env    = this;
   var config = env.config;
+
+  
+
+
+  return cb();
+
+
 
   if(!config.models || !fs.existsSync(path.join(config.rootDir, config.models))) return cb();
 
