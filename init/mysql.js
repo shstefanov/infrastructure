@@ -20,6 +20,26 @@ module.exports = function(cb){
     });
   };
 
+  require.extensions['.sql'] = function(module, filename){
+    var sql_string = fs.readFileSync(filename, 'utf8').toString();
+    var filters    = [], ctx;
+    var fn = function(data, options, cb){
+      return (ctx || this).query(sql_string, data, cb);
+    };
+    fn.filter = function(filter_fn){
+      var next = filters.length?filters.pop():fn;
+      var filter = function(){
+        ctx = this;
+        filter_fn.apply(ctx||this, arguments)
+      };
+      filters.push(filter);
+      filter.filter = fn.filter;
+      return filter;
+    }
+
+    module.exports = fn;
+  };
+
   connection.connect(function(err){
     if(err) return cb(err);
     env.mysql = connection;

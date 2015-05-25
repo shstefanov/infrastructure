@@ -41,6 +41,13 @@ module.exports = function(cb){
       var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
       console.log("[error] ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
       cb && cb();
+    },
+
+    debug:   function(logName, value, cb){
+      if(!env.config.log.debug) return;
+      var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
+      console.log("[debug] ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
+      cb && cb();
     }
 
   };

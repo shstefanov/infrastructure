@@ -39,7 +39,12 @@ module.exports = function(cb){
 
   var Backbone = require("backbone");
   Backbone.sync = function(method, model, options){
-    console.log("SYNC:::")
+    
+    function callback(err, result){
+      if(err) return options.error(err);
+      options.success(result);
+    }
+
     options || (options = {});
     switch (method) {
       case 'create':
@@ -54,7 +59,6 @@ module.exports = function(cb){
         var pattern = options.pattern || model.id?{_id:model.id}:(!model.models?model.toJSON():{});
         env.do( dataPath+path ,   [pattern, options], callback); break;
     }
-    function callback(err, result){err? options.error(err) : options.success(result);}
   };
 
   cb()
