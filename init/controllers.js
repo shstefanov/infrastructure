@@ -35,7 +35,6 @@ module.exports = function(cb){
     env.controllers = {do: env.do};
     _.each(bulk(controllersPath, "*.js"), function(module, name){
       var Proto = module.call(env);
-      // var controllerName = name.charAt(0).toLowerCase() + name.slice(1);
       Proto.prototype.name = name;
       env.controllers[name] = new Proto(env);
     });
