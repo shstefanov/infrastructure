@@ -22,9 +22,9 @@ Config
       "notice":  true,
       "error":   true,
       "debug":   true,
-      "morgan":  ":method :url :status :response-time ms - :res[content-length]",
-      "socketio_log_level": 0
+      "morgan":  ":method :url :status :response-time ms - :res[content-length]"
     }
+    
   Options for logging. See [morgan log options](https://github.com/expressjs/morgan). 'socketio_log_level' is integer from 0 to 4.
 
   ---

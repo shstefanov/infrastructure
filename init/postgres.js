@@ -18,7 +18,7 @@ module.exports = function(cb){
     if(err) return cb(err);
     env.postgres  = client;
     env.postgres.release = release;
-    env.do("log.sys", ["postgres", "Connected to MongoDB on "+(config.postgres.host || "localhost")+":"+(config.postgres.port||5432)+"/"+(config.postgres.database||config.postgres.db)] );
+    env.do("log.sys", "postgres", "Connected to MongoDB on "+(config.postgres.host || "localhost")+":"+(config.postgres.port||5432)+"/"+(config.postgres.database||config.postgres.db) );
     cb();
   });
 

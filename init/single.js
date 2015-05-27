@@ -18,7 +18,7 @@ module.exports = function(env, cb){
     require("./http"         ),
     require("./pages"        ),
     // require("./bundles"      ),
-    require("./controllers"  ),
+    require("./controllers"  )
   ]);
 
   var bulk    = require('bulk-require');
@@ -28,8 +28,12 @@ module.exports = function(env, cb){
 
   var doCache = {};
   env.do = function(address, args, cb){
+
     if(_.isString(address)) {
-      if(doCache[address]) return doCache[address](args, cb); // TODO
+      var args    = Array.prototype.slice.call(arguments);
+      var address = args.shift();
+      var last    = _.last(args);
+      if(_.isFunction(last)) cb = last;
       address = address.split(".");
     }
     if(!this[address[0]]) return cb && cb("Can't find target: ["+address[0]+"]");
@@ -38,12 +42,13 @@ module.exports = function(env, cb){
       if(this[address[0]] && _.isFunction(this[address[0]][address[1]])){
         if(_.isArray(this[address[0]].methods)){
           if(this[address[0]].methods && this[address[0]].methods.indexOf(address[1])!=-1){
-            this[address[0]][address[1]].apply(this[address[0]], args.concat([cb]));
+            console.log("args: ", args);
+            this[address[0]][address[1]].apply(this[address[0]], args);
           }
           else return cb && cb("Invalid target: ["+address.join(".")+"]");
         }
         else{
-          this[address[0]][address[1]].apply(this[address[0]], args.concat([cb]));
+          this[address[0]][address[1]].apply(this[address[0]], args);
         }
       }
       else return cb && cb("Invalid target: ["+address.join(".")+"]");
