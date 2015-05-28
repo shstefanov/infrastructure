@@ -55,7 +55,7 @@ module.exports = function(env, cb){
     }
     else {
       if(!_.isFunction(this[address[0]].do)) return cb && cb("Can't chain to target (missing 'do' method): ["+address.join(".")+"]");
-      return this[address[0]].do(address.slice(1), args, cb);
+      return this[address[0]].do(address.slice(1), args);
     }
   };
 
