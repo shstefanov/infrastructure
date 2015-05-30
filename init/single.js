@@ -6,19 +6,20 @@ module.exports = function(env, cb){
   var initChain = env.helpers.chain([
     
     require("./log"          ),
-    
     require("./mongodb"      ),
     require("./mysql"        ),
     require("./postgres"     ),
+
+
     require("./dataLayer"    ),
-    require("./models"       ),  
+    // require("./models"       ),  
 
 
-    require("./websocket"    ),
-    require("./http"         ),
-    require("./pages"        ),
-    // require("./bundles"      ),
-    require("./controllers"  )
+    // require("./websocket"    ),
+    // require("./http"         ),
+    // require("./pages"        ),
+    // // require("./bundles"      ),
+    // require("./controllers"  )
   ]);
 
   var bulk    = require('bulk-require');
@@ -28,7 +29,6 @@ module.exports = function(env, cb){
 
   var doCache = {};
   env.do = function(address, args, cb){
-
     if(_.isString(address)) {
       var args    = Array.prototype.slice.call(arguments);
       var address = args.shift();
@@ -36,7 +36,9 @@ module.exports = function(env, cb){
       if(_.isFunction(last)) cb = last;
       address = address.split(".");
     }
-    if(!this[address[0]]) return cb && cb("Can't find target: ["+address[0]+"]");
+    if(!this[address[0]]) {
+      return cb && cb("Can't find target: ["+address[0]+"]");
+    }
     
     if(address.length === 2){
       if(this[address[0]] && _.isFunction(this[address[0]][address[1]])){

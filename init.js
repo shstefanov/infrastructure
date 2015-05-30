@@ -3,6 +3,45 @@ var cluster = require("cluster");
 
 module.exports = function(env, cb){
 
+  var config = env.config;
+  var path   = require("path");
+  var fs     = require("fs");
+
+  var _      = require("underscore");
+  var bulk   = require("bulk-require");
+
+  env.structureLoader = function(name, setup, cb){
+
+
+    var structureConfig = env.config[name];
+    if(!structureConfig) return cb(new Error("Cant find config: env.config."+name + " structure "+name));
+    var stagePath = path.join(env.config.rootDir, structureConfig.path);
+    if(!fs.existsSync(stagePath)) return cb(new Error("Cant find path: "+ stagePath + " structure "+name));
+
+    var initializers = [];
+    env[name] = bulk(stagePath, ["**/*.js", "**/*.coffee"]);
+    env[name].do = env.do;
+
+    env.helpers.objectWalk(env[name], function(nodeName, target, parent){
+      if(nodeName === "do") return;
+      if(_.isFunction(target)) {
+        var Node = setup(nodeName, target.apply(env));
+        if(Node){
+          parent[nodeName] = Node;
+          if(Node.setupNode) initializers.push(Node.setupNode);
+        }
+        else delete parent[nodeName];
+      }
+      else target.do = env.do;
+    });
+
+    if(initializers.length) env.helpers.chain(initializers)(cb, env);
+    else                    cb();
+    
+
+  }
+
+
   if      (!env.config.nodes && cluster.isMaster)     require("./init/single.js")(env, cb);
   else if (env.config.nodes  && cluster.isMaster)     require("./init/master.js")(env, cb);
   else                                                require("./init/worker.js")(env, cb);
