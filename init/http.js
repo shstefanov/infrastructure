@@ -31,8 +31,8 @@ module.exports = function(cb){
     env.do("log.sys", "favicon", "favicon middleware serves: "+config.http.favicon );
   }
 
-  if(config.log && config.log.morgan){
-    !Array.isArray(config.morgan)?app.use(morgan(config.log.morgan)):config.log.morgan.forEach(function(opt){app.use(morgan(opt));});
+  if(config.http.morgan){
+    !Array.isArray(config.morgan)?app.use(morgan(config.http.morgan)):config.http.morgan.forEach(function(opt){app.use(morgan(opt));});
     env.do("log.sys", "morgan", "morgan logger running");
   }
   
