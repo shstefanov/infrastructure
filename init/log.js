@@ -1,56 +1,27 @@
 
 module.exports = function(cb){
-  var env = this;
-  var _   = require("underscore");
+  var env    = this;
+  var config = env.config;
+  var _      = require("underscore");
+
+  if(env.nodes && env.nodes.log) return cb();
+
+  if(!config.log) return cb;
 
   var line      = ".................................";
   var shortline = ".................";
 
-  env.log = {
+  env.log = {};
 
-    info:    function(logName, value, cb){
-      if(!env.config.log.info) return;
+  _.each(config.log, function(val, key, log){
+    env.log[key] = function(logName, value, cb){
+      if(!env.config.log[key]) return;
+      if(_.isNull(logName) || _.isUndefined(logName)) logName = logName+"";
       var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
-      console.log("[info]  ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
-      cb && cb();
-    },
-
-    sys:     function(logName, value, cb){
-      if(!env.config.log.sys) return;
-      var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
-      console.log("[sys]   ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
-      cb && cb();
-    },
-
-    warning: function(logName, value, cb){
-      if(!env.config.log.warning) return;
-      var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
-      console.log("[warn]  ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
-      cb && cb();
-    },
-
-    notice:  function(logName, value, cb){
-      if(!env.config.log.warning) return;
-      var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
-      console.log("[notice]["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
-      cb && cb();
-    },
-
-    error:   function(logName, value, cb){
-      if(!env.config.log.error) return;
-      var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
-      console.log("[error] ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
-      cb && cb();
-    },
-
-    debug:   function(logName, value, cb){
-      if(!env.config.log.debug) return;
-      var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
-      console.log("[debug] ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
+      console.log("["+key+"]  ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
       cb && cb();
     }
-
-  };
+  });
 
   env.log.do = env.do
 
