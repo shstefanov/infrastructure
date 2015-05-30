@@ -6,20 +6,18 @@ module.exports = function(env, cb){
   var initChain = env.helpers.chain([
     
     require("./log"          ),
+    require("./http"         ),
+    require("./pages"        ),
+    // require("./websocket"    ),
+    // // require("./bundles"      ),
     require("./mongodb"      ),
     require("./mysql"        ),
     require("./postgres"     ),
+    
+    require("./models"       ),
+    require("./data"         ),
+    require("./controllers"  )
 
-
-    require("./dataLayer"    ),
-    // require("./models"       ),  
-
-
-    // require("./websocket"    ),
-    // require("./http"         ),
-    // require("./pages"        ),
-    // // require("./bundles"      ),
-    // require("./controllers"  )
   ]);
 
   var bulk    = require('bulk-require');
@@ -44,7 +42,6 @@ module.exports = function(env, cb){
       if(this[address[0]] && _.isFunction(this[address[0]][address[1]])){
         if(_.isArray(this[address[0]].methods)){
           if(this[address[0]].methods && this[address[0]].methods.indexOf(address[1])!=-1){
-            console.log("args: ", args);
             this[address[0]][address[1]].apply(this[address[0]], args);
           }
           else return cb && cb("Invalid target: ["+address.join(".")+"]");
