@@ -6,19 +6,18 @@ module.exports = function(env, cb){
   var initChain = env.helpers.chain([
     
     require("./log"          ),
-    
+    require("./http"         ),
+    require("./pages"        ),
+    // require("./websocket"    ),
+    // // require("./bundles"      ),
     require("./mongodb"      ),
     require("./mysql"        ),
     require("./postgres"     ),
-    require("./dataLayer"    ),
-    require("./models"       ),  
+    
+    require("./models"       ),
+    require("./data"         ),
+    require("./controllers"  )
 
-
-    require("./websocket"    ),
-    require("./http"         ),
-    require("./pages"        ),
-    // require("./bundles"      ),
-    require("./controllers"  ),
   ]);
 
   var bulk    = require('bulk-require');
@@ -29,28 +28,33 @@ module.exports = function(env, cb){
   var doCache = {};
   env.do = function(address, args, cb){
     if(_.isString(address)) {
-      if(doCache[address]) return doCache[address](args, cb); // TODO
+      var args    = Array.prototype.slice.call(arguments);
+      var address = args.shift();
+      var last    = _.last(args);
+      if(_.isFunction(last)) cb = last;
       address = address.split(".");
     }
-    if(!this[address[0]]) return cb && cb("Can't find target: ["+address[0]+"]");
+    if(!this[address[0]]) {
+      return cb && cb("Can't find target: ["+address[0]+"]");
+    }
     
     if(address.length === 2){
       if(this[address[0]] && _.isFunction(this[address[0]][address[1]])){
         if(_.isArray(this[address[0]].methods)){
           if(this[address[0]].methods && this[address[0]].methods.indexOf(address[1])!=-1){
-            this[address[0]][address[1]].apply(this[address[0]], args.concat([cb]));
+            this[address[0]][address[1]].apply(this[address[0]], args);
           }
           else return cb && cb("Invalid target: ["+address.join(".")+"]");
         }
         else{
-          this[address[0]][address[1]].apply(this[address[0]], args.concat([cb]));
+          this[address[0]][address[1]].apply(this[address[0]], args);
         }
       }
       else return cb && cb("Invalid target: ["+address.join(".")+"]");
     }
     else {
       if(!_.isFunction(this[address[0]].do)) return cb && cb("Can't chain to target (missing 'do' method): ["+address.join(".")+"]");
-      return this[address[0]].do(address.slice(1), args, cb);
+      return this[address[0]].do(address.slice(1), args);
     }
   };
 
