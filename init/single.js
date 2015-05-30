@@ -6,16 +6,16 @@ module.exports = function(env, cb){
   var initChain = env.helpers.chain([
     
     require("./log"          ),
-    require("./http"         ),
-    require("./pages"        ),
     // require("./websocket"    ),
     // // require("./bundles"      ),
     require("./mongodb"      ),
     require("./mysql"        ),
     require("./postgres"     ),
+    require("./http"         ),
     
-    require("./models"       ),
     require("./data"         ),
+    require("./models"       ),
+    require("./pages"        ),
     require("./controllers"  )
 
   ]);
