@@ -16,19 +16,13 @@ module.exports = function(cb){
   var mongodb      = env.MongoDB   = require("mongodb");
   var MongoClient  = mongodb.MongoClient;
 
-
-
-  env.createMongoConnection = function(cfg, callback){
-    MongoClient.connect(createURL(cfg), cfg.options || {}, callback);
-  };
-
-  env.createMongoConnection(config.mongodb, function(err, mongodb){
+  MongoClient.connect(createURL(config.mongodb), config.mongodb.options || {}, function(err, mongodb){
     if(err) return cb(err);
     env.mongodb = mongodb;
     // Setup helpers
     env.helpers.isObjectID = function(val){ return val instanceof env.ObjectID; };
     env.helpers.isDBRef    = function(val){ return val instanceof DBRef;        };
-    env.helpers.objectify = function(val){
+    env.helpers.objectify  = function(val){
       return _.isArray(val)? val.map(env.ObjectID) : env.ObjectID(val);
     };
     env.do("log.sys", "mongodb", "Connected to MongoDB on "+(config.mongodb.host || "localhost")+":"+(config.mongodb.port||27017)+"/"+config.mongodb.db );

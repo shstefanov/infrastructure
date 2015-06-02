@@ -2,6 +2,13 @@ Config
 ======
   Config files are in 'config' folder. Infrastructure loads them as one object. Accepted file formats are '.js', '.json' or '.yml'.
 
+  ---
+  config/app.json(.js,.yml)
+
+    {
+      "process_mode" :   "single",
+    }
+  General application options.
 
   ---
   config/http.json(.js,.yml)

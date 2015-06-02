@@ -17,6 +17,8 @@ module.exports = function(env, cb){
 
   env.structureLoader = function(name, setup, cb){
 
+    
+
     var structureConfig = env.config[name];
     if(!structureConfig) return cb(new Error("Cant find config: env.config."+name + " structure "+name));
     var stagePath = path.join(env.config.rootDir, structureConfig.path);
@@ -63,9 +65,14 @@ module.exports = function(env, cb){
 
   }
 
-  if      (!env.config.nodes && cluster.isMaster)     require("./init/single.js")(env, cb);
-  else if (env.config.nodes  && cluster.isMaster)     require("./init/master.js")(env, cb);
-  else                                                require("./init/worker.js")(env, cb);
+  if(config.app.process_mode === "cluster"){
+    console.log("App running in cluster mode - IMPLEMENT ME");
+  }
+  else require("./init/single.js")(env, cb);
+
+  // if      (!env.config.nodes && cluster.isMaster)     require("./init/single.js")(env, cb);
+  // else if (env.config.nodes  && cluster.isMaster)     require("./init/master.js")(env, cb);
+  // else                                                require("./init/worker.js")(env, cb);
 
 
 };
