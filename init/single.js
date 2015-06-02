@@ -1,9 +1,20 @@
 module.exports = function(env, cb){
   
-  var _    = require("underscore");
-  var path = require("path");
+  var _         = require("underscore"  );
+  var path      = require("path"        );
+  var config    = env.config;
+  
+  // pages, controllers, models, data
 
-  var initChain = env.helpers.chain([
+  var nodes = [];
+  _.each(config.structures, function(node, type){
+    if(Array.isArray(node)) nodes = nodes.concat(node);
+    else nodes.push(node);
+  });
+
+  console.log(nodes);
+
+  var initChain = [
     
     require("./log"          ),
     // require("./websocket"    ),
@@ -18,7 +29,7 @@ module.exports = function(env, cb){
     require("./pages"        ),
     require("./controllers"  )
 
-  ]);
+  ];
 
   var bulk    = require('bulk-require');
   var classes = bulk(path.join(__dirname, "../lib"), ['*.js']);
@@ -58,7 +69,7 @@ module.exports = function(env, cb){
     }
   };
 
-  initChain(function(err){ cb(err, env); }, env );
+  env.helpers.chain(initChain)(function(err){ cb(err, env); }, env );
 
 
 };
