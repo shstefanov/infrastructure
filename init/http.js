@@ -28,12 +28,12 @@ module.exports = function(cb){
   if(config.http.favicon){
     var favicon = require( 'serve-favicon' );
     app.use(favicon(path.join(config.rootDir, config.http.favicon)));
-    env.do("log.sys", "favicon", "favicon middleware serves: "+config.http.favicon );
+    env.i.do("log.sys", "favicon", "favicon middleware serves: "+config.http.favicon );
   }
 
   if(config.http.morgan){
     !Array.isArray(config.morgan)?app.use(morgan(config.http.morgan)):config.http.morgan.forEach(function(opt){app.use(morgan(opt));});
-    env.do("log.sys", "morgan", "morgan logger running");
+    env.i.do("log.sys", "morgan", "morgan logger running");
   }
   
   app.use(bodyParser());
@@ -44,7 +44,7 @@ module.exports = function(cb){
     CookieParser = require( 'cookie-parser' );
     cookieParser = CookieParser(config.session.secret);
     app.use(cookieParser);
-    env.do("log.sys", "CookiePrser", "Cookie: "+config.session.secret);
+    env.i.do("log.sys", "CookiePrser", "Cookie: "+config.session.secret);
   }
   
   var session, sessionStore;
@@ -59,27 +59,27 @@ module.exports = function(cb){
       secret:            config.session.secret,
       store:             sessionStore
     }));
-    env.do("log.sys", "MongoStore", "Collection: "+config.session.collection+" Cookie: "+config.session.secret);
+    env.i.do("log.sys", "MongoStore", "Collection: "+config.session.collection+" Cookie: "+config.session.secret);
   }
   
   if(config.statis){
     for(route in config.statis){
       app.use(route, express.static(path.join(config.rootDir, config.statis[route])));
-      env.do("log.sys", "static", route+" -> "+config.statis[route]);
+      env.i.do("log.sys", "static", route+" -> "+config.statis[route]);
     }    
   }
   
-  env.app = app;
+  env.engines.express = app;
   var server = http.createServer(app).listen(app.get('port'), function(err){
     if(err) return cb(err);
-    env.do("log.sys", "http", 'Express server listening on port ' + app.get('port'));
+    env.i.do("log.sys", "http", 'Express server listening on port ' + app.get('port'));
     if(!config.websocket) return cb();
     if(session && sessionStore && env.socketConnection){
       var SessionSockets = require( 'session.socket.io' );
       var io = socketio.listen(server);
       var sio = new SessionSockets(io, sessionStore, cookieParser);
       sio.on("connection", env.socketConnection);
-      env.do("log.sys", "websocket", 'socket.io listening on port ' + app.get('port'));
+      env.i.do("log.sys", "websocket", 'socket.io listening on port ' + app.get('port'));
       cb();
     }
     else {

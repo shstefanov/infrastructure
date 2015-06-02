@@ -11,16 +11,16 @@ module.exports = function(cb){
     options || (options = {});
     switch (method) {
       case 'create':
-        env.do(model.dataPath+".create", [model.toJSON(), options], callback); break;
+        env.i.do(model.dataPath+".create", [model.toJSON(), options], callback); break;
       case 'update':
-        env.do(model.dataPath+".update", [model.toJSON(), options], callback); break;
+        env.i.do(model.dataPath+".update", [model.toJSON(), options], callback); break;
       case 'delete':
-        env.do(model.dataPath+".delete", [model.toJSON(), options], callback); break;
+        env.i.do(model.dataPath+".delete", [model.toJSON(), options], callback); break;
       case 'read':
         var dataPath = ( model.models? (model.dataPath || model.model.prototype.dataPath) : model.dataPath );
         var path = (model.models?".find":"findOne");
         var pattern = options.pattern || model.id?{_id:model.id}:(!model.models?model.toJSON():{});
-        env.do( dataPath+path ,   [pattern, options], callback); break;
+        env.i.do( dataPath+path ,   [pattern, options], callback); break;
     }
   };
 

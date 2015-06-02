@@ -17,18 +17,16 @@ module.exports = function(env, cb){
 
   env.structureLoader = function(name, setup, cb){
 
-    
-
-    var structureConfig = env.config[name];
-    if(!structureConfig) return cb(new Error("Cant find config: env.config."+name + " structure "+name));
+    var structureConfig = env.config.structures[name];
+    if(!structureConfig) return cb(new Error("Cant find config: env.config.structures."+name + " structure "+name));
     var stagePath = path.join(env.config.rootDir, structureConfig.path);
     if(!fs.existsSync(stagePath)) return cb(new Error("Cant find path: "+ stagePath + " structure "+name));
 
     var initializers = [], structureInit;
-    env[name] = bulk(stagePath, ["**/*.js", "**/*.coffee"]);
-    env[name].do = env.do;
+    env.i[name] = bulk(stagePath, ["**/*.js", "**/*.coffee"]);
+    env.i[name].do = env.do;
 
-    if(env[name].index) {
+    if(env.i[name].index) {
       structureInit = env[name].index;
       delete env[name].index;
     }
@@ -57,13 +55,17 @@ module.exports = function(env, cb){
           }
           else delete parent[nodeName];
         }
-        else target.do = env.do;
+        else target.do = env.i.do;
       });
       if(initializers.length) env.helpers.chain(initializers)(cb, env);
       else                                                    cb(); 
     }
 
   }
+
+  env.engines = {};
+  env.i       = {};
+  env.classes = {};
 
   if(config.app.process_mode === "cluster"){
     console.log("App running in cluster mode - IMPLEMENT ME");

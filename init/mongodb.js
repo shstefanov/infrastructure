@@ -25,7 +25,7 @@ module.exports = function(cb){
     env.helpers.objectify  = function(val){
       return _.isArray(val)? val.map(env.ObjectID) : env.ObjectID(val);
     };
-    env.do("log.sys", "mongodb", "Connected to MongoDB on "+(config.mongodb.host || "localhost")+":"+(config.mongodb.port||27017)+"/"+config.mongodb.db );
+    env.i.do("log.sys", "mongodb", "Connected to MongoDB on "+(config.mongodb.host || "localhost")+":"+(config.mongodb.port||27017)+"/"+config.mongodb.db );
     cb();
   });
 
