@@ -116,3 +116,75 @@ Log
     [warn]  [2015-05-23 22:18:12][subject].......................... message
     [notice][2015-05-23 22:18:13][subject].......................... message
     [error] [2015-05-23 22:18:13][subject].......................... message
+
+
+
+
+
+
+
+env.data.Profile.find(function(){});
+-------------------------------------------------------------------------------------------------------
+
+
+
+Queries
+=======
+
+
+
+
+env.data.Profile.find(1, function(){});
+env.data.Profile.find([1,2,3,4,5], function(){});
+env.data.Profile.find([{},{},{},{}], function(){});
+
+env.data.Profile.find(1, {fields: ["field_1", "field_2"]}, function(){});
+
+env.data.Profile.find({primary_ley: 123}, function(){})
+env.data.Profile.find({primary_ley: 123}, {fields: ["field_1", "field_2"]}, function(){})
+
+env.data.Profile.find({field_name:  123, other_field: 333 }, function(){})
+env.data.Profile.find({field_name:  123, other_field: 333 }, {fields: ["field_1", "field_2"]}, function(){})
+
+env.data.Profile.find({field_name: "value" }, {fields: ["..."], limit: 10 }, function(){})
+env.data.Profile.find({field_name: "value" }, {fields: ["..."], limit: [10,10] }, function(){})
+
+env.data.Profile.find({field_name: "value" }, {fields: ["..."], limit: 10, groupBy: "field_name" }, function(){})
+env.data.Profile.find({field_name: "value" }, {fields: ["..."], limit: 10, groupBy: "field_name", orderBy: "field_name" }, function(){})
+
+env.data.Profile.find({
+    // ... fields, limit, orderBy, groupBy options
+    $and: [ {field_name: "value" }, {other_field: 333 }]
+}, options, function(){});
+
+env.data.Profile.find(data, {
+    // ... fields, limit, orderBy, groupBy options
+    $and: [ {field_name: "#value" }, {other_field: "#dataValue" }]
+}, function(){});
+
+env.data.Profile.find(data, {
+    // ... fields, limit, orderBy, groupBy options
+    $and: [ 
+        {$or: [{field_name: "#dataField" }, {other_field: 111 }]},
+        {$or: [{field_name: "#dataField" }, {other_field: 222 }]},
+        {$or: [{field_name: "#dataField" }, {other_field: 333 }]},
+        {$or: [{field_name: "#dataField" }, {other_field: 444 }]},
+    ]
+
+}, options, function(){});
+
+env.data.Profile.find({
+    // ... fields, limit, orderBy, groupBy options
+    $or: [ 
+        {$and: [
+                {field_name: "#dataField" }, 
+                {$or: [
+                    {field_name:  "#dataField" },
+                    {other_field: "#dataField" }, 
+                ]}
+        ]},
+        {$and: {[{field_name: "#dataField" }, {$or: [] }]}}
+    ]
+
+}, options, function(){});
+
