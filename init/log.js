@@ -4,18 +4,17 @@ module.exports = function(cb){
   var config = env.config;
   var _      = require("underscore");
 
-  if(env.nodes && env.nodes.log) return cb();
-
-  if(!config.log) return cb;
+  if(!config.structures || !config.structures.log) return cb();
 
   var line      = ".................................";
   var shortline = ".................";
 
   env.i.log = {};
 
-  _.each(config.log, function(val, key, log){
+  _.each(config.structures.log.options, function(val, key, log){
+   // console.log("????", "log ???", config.structures.log);
     env.i.log[key] = function(logName, value, cb){
-      if(!env.config.log[key]) return;
+      if(!config.structures.log.options[key]) return;
       if(_.isNull(logName) || _.isUndefined(logName)) logName = logName+"";
       var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
       console.log("["+key+"]  ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);
@@ -23,9 +22,8 @@ module.exports = function(cb){
     }
   });
 
-  env.i.log.do = env.i.do
-
-  
+  env.i.log.do = env.i.do;
+  env.i.do("log.sys", "logger", "options: "+_.keys(config.structures.log.options).join(", "));
 
   cb();
 

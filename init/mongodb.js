@@ -13,12 +13,12 @@ module.exports = function(cb){
 
   if(!config.mongodb) return cb();
 
-  var mongodb      = env.MongoDB   = require("mongodb");
+  var mongodb      = env.engines.MongoDB   = require("mongodb");
   var MongoClient  = mongodb.MongoClient;
 
   MongoClient.connect(createURL(config.mongodb), config.mongodb.options || {}, function(err, mongodb){
     if(err) return cb(err);
-    env.mongodb = mongodb;
+    env.engines.mongodb = mongodb;
     // Setup helpers
     env.helpers.isObjectID = function(val){ return val instanceof env.ObjectID; };
     env.helpers.isDBRef    = function(val){ return val instanceof DBRef;        };

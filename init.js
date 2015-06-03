@@ -15,7 +15,7 @@ module.exports = function(env, cb){
     return target.__cached;
   };
 
-  env.structureLoader = function(name, setup, cb){
+  env.structureLoader = function(name, setup, cb, cached){
 
     var structureConfig = env.config.structures[name];
     if(!structureConfig) return cb(new Error("Cant find config: env.config.structures."+name + " structure "+name));
@@ -24,11 +24,11 @@ module.exports = function(env, cb){
 
     var initializers = [], structureInit;
     env.i[name] = bulk(stagePath, ["**/*.js", "**/*.coffee"]);
-    env.i[name].do = env.do;
+    env.i[name].do = env.i.do;
 
     if(env.i[name].index) {
-      structureInit = env[name].index;
-      delete env[name].index;
+      structureInit = env.i[name].index;
+      delete env.i[name].index;
     }
 
     if(structureInit) structureInit.call(env, function(err, postinit){
@@ -42,12 +42,13 @@ module.exports = function(env, cb){
     else go(cb);
 
     function go(cb){
-      env.helpers.objectWalk(env[name], function(nodeName, target, parent){
+      env.helpers.objectWalk(env.i[name], function(nodeName, target, parent){
         if(nodeName === "do") return;
         if(_.isFunction(target)) {
           var Node;
-          if(setup) Node = setup(nodeName, env.getCached(target));
-          else Node = env.getCached(target);
+          if(setup)        Node = setup(nodeName, env.getCached(target));
+          else if (cached) Node = env.getCached(target);
+          else             Node = target;
 
           if(Node){
             parent[nodeName] = Node;

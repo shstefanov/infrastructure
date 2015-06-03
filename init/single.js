@@ -10,11 +10,11 @@ module.exports = function(env, cb){
   var baseTypes = {
 
     log: {
-      loaders: ["./log"]
+      engines: ["./log"]
     },
 
     controllers: {
-      loaders: ["./models", "./controllers"]
+      loaders: ["./controllers"]
     },
 
     pages: {
@@ -68,12 +68,13 @@ module.exports = function(env, cb){
   };
 
   var loadersAliases = {
-    "models" :     "./models",
-    "pages":       "./pages",
-    "consrollers": "./controllers",
-    "log":         "./log",
-    "data":        "./data",
-    "bundles":     "./bundles",
+    "backbone-data-sync": "./backbone-data-sync",
+    "models" :            "./models",
+    "pages":              "./pages",
+    "controllers":        "./controllers",
+    "log":                "./log",
+    "data":               "./data",
+    "bundles":            "./bundles",
   }
 
   var classes = {};
@@ -85,12 +86,12 @@ module.exports = function(env, cb){
   _.each(config.structures, function(node, type){
     if(!type) return;
     if(baseTypes[type]){
-      engines = _.unique(engines.concat(node.engines||[]).concat(baseTypes[type].engines || []));
-      loaders = _.unique(loaders.concat(node.loaders||[]).concat(baseTypes[type].loaders || []));
+      engines = engines.concat(node.engines||baseTypes[type].engines||[]).map(function(e){return enginesAliases[e]||e});
+      loaders = loaders.concat(node.loaders||baseTypes[type].loaders||[]).map(function(l){return loadersAliases[l]||l});
     }
     else{
-      engines = _.unique(engines.concat(node.engines||[]));
-      loaders = _.unique(loaders.concat(node.loaders||[]));
+      engines = engines.concat(node.engines||[]).map(function(e){return enginesAliases[e]||e});
+      loaders = loaders.concat(node.loaders||[]).map(function(l){return loadersAliases[l]||l});
     }
 
     if(node.libs){
@@ -106,7 +107,7 @@ module.exports = function(env, cb){
           return result;
         }
         else {
-          var result = require(classesAliases[val]?classesAliases[val]:val);
+          var result = require(classesAliases[val]?classesAliases[val]:path.join(env.config.rootDir, val));
           env.classes[key] = result;
           return result;
         }
@@ -115,50 +116,35 @@ module.exports = function(env, cb){
 
   });
 
-  engines = engines.map(function(e){ return enginesAliases[e] || e; });
-  loaders = loaders.map(function(e){ return loadersAliases[e] || e; });
+  engines = _.sortBy(_.uniq(engines), function(e){return e==="./log"?-1:1});
+  loaders = _.uniq(loaders);
 
 
 
 
   console.log("loaders: ", loaders);
   console.log("engines: ", engines);
-  console.log("classes: ", classes);
+  // console.log("classes: ", classes);
 
 
   
 
-  var initChain = [
-    
-    // require("./log"          ),
-    // // require("./websocket"    ),
-    // // // require("./bundles"      ),
-    // require("./mongodb"      ),
-    // require("./mysql"        ),
-    // require("./postgres"     ),
-    // require("./http"         ),
-    
-    // require("./data"         ),
-    // require("./models"       ),
-    // require("./pages"        ),
-    // require("./controllers"  )
+  var initChain = engines.concat(loaders).map(function(c){return require(c);});
 
-  ];
-
-  var bulk    = require('bulk-require');
-  var classes = bulk(path.join(__dirname, "../lib"), ['*.js']);
-  _.extend(env, classes);
+  // var bulk    = require('bulk-require');
+  // var classes = bulk(path.join(__dirname, "../lib"), ['*.js']);
+  // _.extend(env, classes);
 
 
   var doCache = {};
-  env.i.do = function(address, args, cb){
-    if(_.isString(address)) {
-      var args    = Array.prototype.slice.call(arguments);
-      var address = args.shift();
-      var last    = _.last(args);
-      if(_.isFunction(last)) cb = last;
-      address = address.split(".");
-    }
+  env.i.do = function(address){
+    var args    = Array.prototype.slice.call(arguments);
+    var address, cb;
+    if(_.isString(args[0])) address = args.shift().split(/[.\/]/);
+    else                    address = args.shift();
+    
+    if(_.isFunction(_.last(args))) cb = _.last(args);
+
     if(!this[address[0]]) {
       return cb && cb("Can't find target: ["+address[0]+"]");
     }
@@ -179,7 +165,7 @@ module.exports = function(env, cb){
     }
     else {
       if(!_.isFunction(this[address[0]].do)) return cb && cb("Can't chain to target (missing 'do' method): ["+address.join(".")+"]");
-      return this[address[0]].do(address.slice(1), args);
+      return this[address[0]].do.apply(this[address[0]], [address.slice(1)].concat(args));
     }
   };
 
