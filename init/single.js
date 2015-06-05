@@ -145,27 +145,31 @@ module.exports = function(env, cb){
     
     if(_.isFunction(_.last(args))) cb = _.last(args);
 
-    if(!this[address[0]]) {
+    var target = this[address[0]];
+
+    if(!target) {
       return cb && cb("Can't find target: ["+address[0]+"]");
     }
     
     if(address.length === 2){
-      if(this[address[0]] && _.isFunction(this[address[0]][address[1]])){
-        if(_.isArray(this[address[0]].methods)){
-          if(this[address[0]].methods && this[address[0]].methods.indexOf(address[1])!=-1){
-            this[address[0]][address[1]].apply(this[address[0]], args);
+      if(target && _.isFunction(target[address[1]])){
+        if(_.isArray(target.methods)){
+          if(target.methods && target.methods.indexOf(address[1])!=-1){
+            if(target.parseArgs) args = target.parseArgs(args);
+            target[address[1]].apply(target, args);
           }
           else return cb && cb("Invalid target: ["+address.join(".")+"]");
         }
         else{
-          this[address[0]][address[1]].apply(this[address[0]], args);
+          if(target.parseArgs) args = target.parseArgs(args);
+          target[address[1]].apply(target, args);
         }
       }
       else return cb && cb("Invalid target: ["+address.join(".")+"]");
     }
     else {
-      if(!_.isFunction(this[address[0]].do)) return cb && cb("Can't chain to target (missing 'do' method): ["+address.join(".")+"]");
-      return this[address[0]].do.apply(this[address[0]], [address.slice(1)].concat(args));
+      if(!_.isFunction(target.do)) return cb && cb("Can't chain to target (missing 'do' method): ["+address.join(".")+"]");
+      return target.do.apply(target, [address.slice(1)].concat(args));
     }
   };
 
