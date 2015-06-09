@@ -120,14 +120,9 @@ module.exports = function(env, cb){
   loaders = _.uniq(loaders);
 
 
-
-
   console.log("loaders: ", loaders);
   console.log("engines: ", engines);
   // console.log("classes: ", classes);
-
-
-  
 
   var initChain = engines.concat(loaders).map(function(c){return require(c);});
 
@@ -155,13 +150,19 @@ module.exports = function(env, cb){
       if(target && _.isFunction(target[address[1]])){
         if(_.isArray(target.methods)){
           if(target.methods && target.methods.indexOf(address[1])!=-1){
-            if(target.parseArgs) args = target.parseArgs(args);
+            if(target.parseArguments) {
+              args = target.parseArguments(args);
+              if(args===false) return cb && cb("Invalid arguments");
+            }
             target[address[1]].apply(target, args);
           }
           else return cb && cb("Invalid target: ["+address.join(".")+"]");
         }
         else{
-          if(target.parseArgs) args = target.parseArgs(args);
+          if(target.parseArguments) {
+            args = target.parseArguments(args);
+            if(args===false) return cb && cb("Invalid arguments");
+          }
           target[address[1]].apply(target, args);
         }
       }

@@ -138,60 +138,33 @@ env.data.Profile.find(function(){});
 Queries
 =======
 
+MongoDB data object
+-------------------
 
 
+  env.i.do("data.User.create", {email: 19, name: 24, age: 32}, function(err, user){
+    // console.log("????", arguments);
+  });
 
-env.data.Profile.find(1, function(){});
-env.data.Profile.find([1,2,3,4,5], function(){});
-env.data.Profile.find([{},{},{},{}], function(){});
+  env.i.do("data.User.delete", {email: 19, name: 24, age: 32}, function(err, user){
+    // console.log("????", arguments);
+  });
 
-env.data.Profile.find(1, {fields: ["field_1", "field_2"]}, function(){});
+  env.i.do("data.User.find", {email: 19, name: 24, age: 32}, {
+    limit:  2,
+    skip:   2,
+    fields: { email: 1 }
+  }, function(err, user){
+    // console.log("????", arguments);
+  });
 
-env.data.Profile.find({primary_ley: 123}, function(){})
-env.data.Profile.find({primary_ley: 123}, {fields: ["field_1", "field_2"]}, function(){})
 
-env.data.Profile.find({field_name:  123, other_field: 333 }, function(){})
-env.data.Profile.find({field_name:  123, other_field: 333 }, {fields: ["field_1", "field_2"]}, function(){})
+  env.i.do("data.User.update", {email: 19, name: 23, age: 32}, {
+    data: { $set:{ name: 24} }
+  }, function(err, user){
+    // console.log("????", arguments);
+  });
 
-env.data.Profile.find({field_name: "value" }, {fields: ["..."], limit: 10 }, function(){})
-env.data.Profile.find({field_name: "value" }, {fields: ["..."], limit: [10,10] }, function(){})
 
-env.data.Profile.find({field_name: "value" }, {fields: ["..."], limit: 10, groupBy: "field_name" }, function(){})
-env.data.Profile.find({field_name: "value" }, {fields: ["..."], limit: 10, groupBy: "field_name", orderBy: "field_name" }, function(){})
-
-env.data.Profile.find({
-    // ... fields, limit, orderBy, groupBy options
-    $and: [ {field_name: "value" }, {other_field: 333 }]
-}, options, function(){});
-
-env.data.Profile.find(data, {
-    // ... fields, limit, orderBy, groupBy options
-    $and: [ {field_name: "#value" }, {other_field: "#dataValue" }]
-}, function(){});
-
-env.data.Profile.find(data, {
-    // ... fields, limit, orderBy, groupBy options
-    $and: [ 
-        {$or: [{field_name: "#dataField" }, {other_field: 111 }]},
-        {$or: [{field_name: "#dataField" }, {other_field: 222 }]},
-        {$or: [{field_name: "#dataField" }, {other_field: 333 }]},
-        {$or: [{field_name: "#dataField" }, {other_field: 444 }]},
-    ]
-
-}, options, function(){});
-
-env.data.Profile.find({
-    // ... fields, limit, orderBy, groupBy options
-    $or: [ 
-        {$and: [
-                {field_name: "#dataField" }, 
-                {$or: [
-                    {field_name:  "#dataField" },
-                    {other_field: "#dataField" }, 
-                ]}
-        ]},
-        {$and: {[{field_name: "#dataField" }, {$or: [] }]}}
-    ]
-
-}, options, function(){});
-
+MySQL data object
+-----------------
