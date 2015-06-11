@@ -168,3 +168,53 @@ MongoDB data object
 
 MySQL data object
 -----------------
+
+
+    env.i.do("data.Profile.find", 23, function(err, profile){
+      console.log("RRRR", arguments);
+    });
+
+  ===
+
+    env.i.do("data.Profile.find", [23, 24, 25, 26], function(err, profile){
+      console.log("RRRR", arguments);
+    });
+
+  ===
+
+    env.i.do("data.Profile.find", {
+      user_id:       123123,
+      avatar:        "avatar url",
+      firstname:     "firstName",
+      lastname:      "lastName",
+      email:         "email here",
+    }, function(err, profiles){
+      
+    });
+
+
+
+
+
+  ===
+
+    env.i.do("data.Profile.find", 
+      { profile_id:       23}, 
+
+        // field_1: ["not in",      5, 9   ],
+        // field_2: ["in",        [ 5, 9 ] ],
+
+        // field_3: ["between",     3, 6   ],
+        // field_4: ["between",   [ 3, 6 ] ],
+
+        // field_4: [">",   5 ],
+
+
+
+      {fields: ["@primaryKey"]}, 
+      {limit:      [2, 3]},
+      {order:      ["profile_id", "email", "desc"]},
+
+      function(err, profiles){
+      
+    });
