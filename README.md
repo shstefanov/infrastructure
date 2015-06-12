@@ -141,60 +141,88 @@ Queries
 MongoDB data object
 -------------------
 
+  ---
+    env.i.do("data.User.create", {email: 19, name: 24, age: 32}, function(err, user){
+      // console.log("????", arguments);
+    });
 
-  env.i.do("data.User.create", {email: 19, name: 24, age: 32}, function(err, user){
-    // console.log("????", arguments);
-  });
+  ---
 
-  env.i.do("data.User.delete", {email: 19, name: 24, age: 32}, function(err, user){
-    // console.log("????", arguments);
-  });
+    env.i.do("data.User.delete", {email: 19, name: 24, age: 32}, function(err, user){
+      // console.log("????", arguments);
+    });
 
-  env.i.do("data.User.find", {email: 19, name: 24, age: 32}, {
-    limit:  2,
-    skip:   2,
-    fields: { email: 1 }
-  }, function(err, user){
-    // console.log("????", arguments);
-  });
+  ---
 
+    env.i.do("data.User.find", {email: 19, name: 24, age: 32}, {
+      limit:  2,
+      skip:   2,
+      fields: { email: 1 }
+    }, function(err, user){
+      // console.log("????", arguments);
+    });
 
-  env.i.do("data.User.update", {email: 19, name: 23, age: 32}, {
-    data: { $set:{ name: 24} }
-  }, function(err, user){
-    // console.log("????", arguments);
-  });
-
-
-MySQL data object
------------------
+  --- 
 
 
-    env.i.do("data.Profile.find", 23, function(err, profile){
+    
+    env.i.do("data.Profile.update", {
+      profile_id: [23, 24, 25],  // profile_id: 24 | profile_id: [24, 25, 26] | profile_id: ["BETWEEN" [24, 26]]
+      avatar: "new avatar",
+      email: "new updated email"
+    }, function(err, profile){
       console.log("RRRR", arguments);
     });
 
-  ===
+    
 
-    env.i.do("data.Profile.find", [23, 24, 25, 26], function(err, profile){
+    env.i.do("data.Profile.update", {
+      avatar: "new avatar",
+      email:  "new updated email",
+
+      someValue: 23,
+      otherValue: 24
+
+    }, {
+
+      // Template style. @placeholders are from options and not escaped, #placeholders are from pattern and escaped
+      // @tableName, @publicFields, @primaryKey are available
+      where: "WHERE @primaryKey = #someValue OR @primaryKey = #otherValue",   
+      limit: 4,
+
+      order: ["email", "avatar", "asc"]
+      // where: {
+      //   lastname: ["IN", ["lastName", "testName"]]
+      // }
+    }, function(err, profile){
       console.log("RRRR", arguments);
     });
 
-  ===
+  ---
 
-    env.i.do("data.Profile.find", {
-      user_id:       123123,
-      avatar:        "avatar url",
-      firstname:     "firstName",
-      lastname:      "lastName",
-      email:         "email here",
-    }, function(err, profiles){
-      
+
+
+    env.i.do("data.Profile.delete", {
+      profile_id: [123, 124, 125],  // profile_id: 24 | profile_id: [24, 25, 26] | profile_id: ["BETWEEN" [24, 26]]
+      avatar: ["lalala", "new avatar"],
+      email: ["LIKE", "new updated email"]
+    }, function(err, profile){
+      console.log("RRRR", arguments);
     });
 
+    env.i.do("data.Profile.delete", {
+      profile_id: [123, 124, 125],  // profile_id: 24 | profile_id: [24, 25, 26] | profile_id: ["BETWEEN" [24, 26]]
+      avatar: ["lalala", "new avatar"],
+      email: ["LIKE", "new updated email"]
+    }, {
+      limit: 3,
+      order: "email",
+      debug: "alabala"
+    }, function(err, profile){
+      console.log("RRRR", arguments);
+    });
 
-
-
+  ---
 
   ===
 
