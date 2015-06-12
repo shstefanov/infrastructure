@@ -174,7 +174,7 @@ MysqlLayer and PostgresLayer
 
     
     env.i.do("data.Profile.update", {
-      profile_id: [23, 24, 25],  // profile_id: 24 | profile_id: [24, 25, 26] | profile_id: ["BETWEEN" [24, 26]]
+      profile_id: [23, 24, 25],  // {profile_id: 24} | {profile_id: [24, 25, 26]} | {profile_id: ["BETWEEN" [24, 26]]}
       avatar: "new avatar",
       email: "new updated email"
     }, function(err, profile){
