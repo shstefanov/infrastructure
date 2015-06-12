@@ -61,6 +61,7 @@ module.exports = function(env, cb){
     "DataLayer":           "../lib/DataLayer",
     "MysqlLayer":          "../lib/MysqlLayer",
     "MongoLayer":          "../lib/MongoLayer",
+    "PostgresLayer":       "../lib/PostgresLayer",
 
     "Page":                "../lib/Page",
     "Api":                 "../lib/Api",
