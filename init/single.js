@@ -10,38 +10,38 @@ module.exports = function(env, cb){
   var baseTypes = {
 
     log: {
-      engines: ["./log"]
+      engines: ["./engines/log"]
     },
 
     controllers: {
-      loaders: ["./controllers"]
+      loaders: ["./loaders/controllers"]
     },
 
     pages: {
-      engines: ["http"     ],
-      loaders: ["./pages"  ]
+      engines: ["./engines/http"       ],
+      loaders: ["./loaders/pages"      ]
     },
 
     data:{
-      loaders: ["./data"   ]
+      loaders: ["./loaders/data"       ]
     },
 
     models: {
-      loaders: ["./models" ]
+      loaders: ["./loaders/models"     ]
     },
 
     bundles: {
-      engines: ["webpack"  ],
-      loaders: ["./bundles"]
+      engines: ["./engines/webpack"    ],
+      loaders: ["./loaders/bundles"    ]
     }
   };
 
   var enginesAliases = {
-    "mongodb":    "./mongodb",
-    "mysql":      "./mysql",
-    "postgres":   "./postgres",
-    "http":       "./http",
-    "websocket":  "./websocket",
+    "mongodb":    "./engines/mongodb",
+    "mysql":      "./engines/mysql",
+    "postgres":   "./engines/postgres",
+    "http":       "./engines/http",
+    "websocket":  "./engines/websocket",
   };
 
   var classesAliases = {
@@ -69,14 +69,14 @@ module.exports = function(env, cb){
   };
 
   var loadersAliases = {
-    "backbone-data-sync": "./backbone-data-sync",
-    "models" :            "./models",
-    "pages":              "./pages",
-    "controllers":        "./controllers",
-    "log":                "./log",
-    "data":               "./data",
-    "bundles":            "./bundles",
-  }
+    "backbone-data-sync": "./loaders/backbone-data-sync",
+    "models" :            "./loaders/models",
+    "pages":              "./loaders/pages",
+    "controllers":        "./loaders/controllers",
+    "log":                "./loaders/log",
+    "data":               "./loaders/data",
+    "bundles":            "./loaders/bundles",
+  };
 
   var classes = {};
   var engines = [];
