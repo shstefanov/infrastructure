@@ -37,6 +37,7 @@ module.exports = function(env, cb){
   };
 
   var enginesAliases = {
+    "redis":      "./engines/redis",
     "mongodb":    "./engines/mongodb",
     "mysql":      "./engines/mysql",
     "postgres":   "./engines/postgres",
@@ -62,6 +63,7 @@ module.exports = function(env, cb){
     "MysqlLayer":          "../lib/MysqlLayer",
     "MongoLayer":          "../lib/MongoLayer",
     "PostgresLayer":       "../lib/PostgresLayer",
+    "RedisLayer":          "../lib/RedisLayer",
 
     "Page":                "../lib/Page",
     "Api":                 "../lib/Api",

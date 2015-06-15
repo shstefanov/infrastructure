@@ -8,32 +8,32 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "backbone":          "latest",
-    "body-parser":       "latest",
-    "bulk-require":      "latest",
-    "coffee-script":     "latest",
-    "connect-mongo":     "latest",
-    "cookie-parser":     "latest",
-    "express":           "latest",
-    "express-session":   "latest",
-    "jade":              "latest",
-    "method-override":   "latest",
-    "mongodb":           "latest",
-    "morgan":            "latest",
-    "mysql":             "latest",
-    "serve-favicon":     "latest",
+    "backbone": "latest",
+    "body-parser": "latest",
+    "bulk-require": "latest",
+    "coffee-script": "latest",
+    "connect-mongo": "latest",
+    "cookie-parser": "latest",
+    "express": "latest",
+    "express-session": "latest",
+    "jade": "latest",
+    "method-override": "latest",
+    "mongodb": "latest",
+    "morgan": "latest",
+    "mysql": "latest",
+    "pg": "latest",
+    "redis": "^0.12.1",
+    "serve-favicon": "latest",
     "session.socket.io": "latest",
-    "socket.io":         "latest",
-    "socket.io-client":  "latest",
-    "pg":                "latest",
-    "underscore":        "latest",
-    "yamljs":            "latest"
+    "socket.io": "latest",
+    "socket.io-client": "latest",
+    "underscore": "latest",
+    "yamljs": "latest"
   },
   "devDependencies": {
     "jasmine-node": "latest"
   },
-
-  "scripts":{
+  "scripts": {
     "test": "jasmine-node test"
   },
   "_id": "infrastructure@0.3.99",
