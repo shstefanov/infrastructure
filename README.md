@@ -70,6 +70,14 @@ Config
   Available options: https://github.com/mranney/node_redis
 
   ---
+  config/elastic.json(.js,.yml)
+    {
+      "host": "localhost:9200",
+      "log":  "trace"
+    }
+
+
+  ---
   config/controllers.json(.js,.yml)
 
     {
