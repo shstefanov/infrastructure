@@ -20,21 +20,6 @@ Config
   Some http options.
 
   ---
-  config/log.json(.js,.yml)
-
-    {
-      "info":    true,
-      "sys":     true,
-      "warning": true,
-      "notice":  true,
-      "error":   true,
-      "debug":   true,
-      "morgan":  ":method :url :status :response-time ms - :res[content-length]"
-    }
-    
-  Options for logging. See [morgan log options](https://github.com/expressjs/morgan). 'socketio_log_level' is integer from 0 to 4.
-
-  ---
   config/mongodb.json(.js,.yml)
 
     {
@@ -71,6 +56,18 @@ Config
       "username":        "infrastructure",
       "password":        "infrastructure"
     }
+
+  ---
+  config/redis.json(.js,.yml)
+    {
+      "host":    "127.0.0.1",
+      "port":    6379,
+      "options": {
+
+      }
+    }
+
+  Available options: https://github.com/mranney/node_redis
 
   ---
   config/controllers.json(.js,.yml)
@@ -172,84 +169,181 @@ MongoLayer
 MysqlLayer and PostgresLayer
 ==========
 
-    
-    env.i.do("data.Profile.update", {
-      profile_id: [23, 24, 25],  // {profile_id: 24} | {profile_id: [24, 25, 26]} | {profile_id: ["BETWEEN" [24, 26]]}
-      avatar: "new avatar",
-      email: "new updated email"
-    }, function(err, profile){
-      console.log("RRRR", arguments);
+  ---
+    // Create a record
+    env.i.do("data.Blueprint.create", {
+      path: "test.path",
+      alalala:333,
+      name: "Some name",
+    }, function(err, record){
+      console.log("data.Blueprint.create", record);
     });
+  
+  ---
 
-    
-
-    env.i.do("data.Profile.update", {
-      avatar: "new avatar",
-      email:  "new updated email",
-
-      someValue: 23,
-      otherValue: 24
-
-    }, {
-
-      // Template style. @placeholders are from options and not escaped, #placeholders are from pattern and escaped
-      // @tableName, @publicFields, @primaryKey are available
-      where: "WHERE @primaryKey = #someValue OR @primaryKey = #otherValue",   
-      limit: 4,
-
-      order: ["email", "avatar", "asc"]
-      // where: {
-      //   lastname: ["IN", ["lastName", "testName"]]
-      // }
-    }, function(err, profile){
-      console.log("RRRR", arguments);
+    // Find all records
+    env.i.do("data.Blueprint.find", function(err, records){
+      console.log("data.Blueprint.find", records);
     });
 
   ---
 
-
-
-    env.i.do("data.Profile.delete", {
-      profile_id: [123, 124, 125],  // profile_id: 24 | profile_id: [24, 25, 26] | profile_id: ["BETWEEN" [24, 26]]
-      avatar: ["lalala", "new avatar"],
-      email: ["LIKE", "new updated email"]
-    }, function(err, profile){
-      console.log("RRRR", arguments);
-    });
-
-    env.i.do("data.Profile.delete", {
-      profile_id: [123, 124, 125],  // profile_id: 24 | profile_id: [24, 25, 26] | profile_id: ["BETWEEN" [24, 26]]
-      avatar: ["lalala", "new avatar"],
-      email: ["LIKE", "new updated email"]
-    }, {
-      limit: 3,
-      order: "email",
-      debug: "alabala"
-    }, function(err, profile){
-      console.log("RRRR", arguments);
+    // Find one record by id
+    env.i.do("data.Blueprint.find", 5, function(err, record){
+      console.log("????", record);
     });
 
   ---
 
-  ===
-
-    env.i.do("data.Profile.find", 
-      { profile_id:       23}, 
-
-        // field_1: ["not in",      5, 9   ],
-        // field_2: ["in",        [ 5, 9 ] ],
-
-        // field_3: ["between",     3, 6   ],
-        // field_4: ["between",   [ 3, 6 ] ],
-
-        // field_4: [">",   5 ],
-
-
-
-      {fields: ["@primaryKey"]}, 
-      {limit:      [2, 3]},
-      {order:      ["profile_id", "email", "desc"]},
-
-      function(err, profiles){
-      
+    // Find multiple records by array of ids
+    env.i.do("data.Blueprint.find", [5,6,7], function(err, records){
+      console.log("data.Blueprint.find", records);
     });
+
+  ---
+
+    // Find multiple records by condition
+    env.i.do("data.Blueprint.find", {
+      name: ["NOT IN", '1434118856493', 1434118849186], // 1434118849186 || [ 1434118849186, 1434118849186 ] || [">=", 1434118849186, 1434118849186 ]
+      path: 'test.path'
+    }, function(err, records){
+      console.log("data.Blueprint.find", records);
+    });
+
+  ---
+
+    // Find multiple records by condition and some options
+    env.i.do("data.Blueprint.find", {
+      name: [">", 0], // 1434118849186 || [ 1434118849186, 1434118849186 ] || [">=", 1434118849186, 1434118849186 ]
+      path: 'test.path'
+    }, {
+      limit: [3, 3],
+      order: ["name", "DESC"]
+    }, function(err, records){
+      console.log("data.Blueprint.find", records);
+    });
+
+  ---
+
+    // Update record
+    env.i.do("data.Blueprint.update", {
+      // if primaryKey provided - only one record will be updated
+      name: [">", 0], // varriants: 1434118849186 || [ 1434118849186, 1434118849186 ] || [">=", 1434118849186, 1434118849186 ]
+      path: 'test.path'
+    }, {
+      // where: { ... } - if omitted, all records will be updated, otherwise where clause will be generated
+      limit: [3, 3],
+      order: ["name", "DESC"]
+    }, function(err, result){
+      console.log("data.Blueprint.update", result);
+    });
+  
+  ---
+
+    // Delete all record
+    env.i.do("data.Blueprint.delete", function(err, result){
+      console.log("data.Blueprint.delete", result);
+    });
+
+    // Delete one record by id
+    env.i.do("data.Blueprint.delete", 15, function(err, result){
+      console.log("data.Blueprint.delete", result);
+    });
+
+    // Delete with where condition
+    env.i.do("data.Blueprint.delete", field: value, otrherField: ["Between"], function(err, result){
+      console.log("data.Blueprint.delete", result);
+    });
+
+RedisLayer
+==========
+
+  ---
+    // Create record
+    env.i.do("data.Cache.create", {alabala: 535353, value: {
+      something: 5,
+      other: Date.now()
+    }}, function(err, result){
+      if(err) return env.i.do("log.error", "data.Cache.create - test", err);
+      else{
+        console.log("success", result);
+      }
+    });
+
+
+  ---
+
+    // Get all records
+    env.i.do("data.Cache.find", function(err, result){
+      if(err) return env.i.do("log.error", "data.Cache.create - test", err);
+      else{
+        console.log("success", result);
+      }
+    });
+
+    // Get record by id
+    env.i.do("data.Cache.find", 11, {fields: ["value"]},  function(err, result){
+      if(err) return env.i.do("log.error", "data.Cache.create - test", err);
+      else{
+        console.log("success", result);
+      }
+    });
+
+    // Get records by array of ids
+    env.i.do("data.Cache.find", [10,11,12,13], {fields: ["value"]},  function(err, result){
+      if(err) return env.i.do("log.error", "data.Cache.create - test", err);
+      else{
+        console.log("success", result);
+      }
+    });
+
+    // Find with 'fields' option
+    env.i.do("data.Cache.find", [123,234], {fields: ["field1", "field2"]}, function(err, result){
+      if(err) return env.i.do("log.error", "data.Cache.create - test", err);
+      else{
+        console.log("success", result);
+      }
+    });
+
+  ---
+
+    
+    // Update single record
+    env.i.do("data.Cache.update", {field: value, primaryKey: 12}, function(err, result){
+      console.log("success: delete", arguments);
+    });
+
+    // Update multiple records
+    env.i.do("data.Cache.update", [
+     {field: value, primaryKey: 12},
+     {field: value, primaryKey: 13},
+     {field: value, primaryKey: 14},
+     {field: value, primaryKey: 15},
+    ], function(err, result){
+      console.log("success: update", arguments);
+    });
+
+    // Delete all records
+    env.i.do("data.Cache.update", null, function(err, result){
+      console.log("success: update", arguments);
+    });
+
+  ---
+
+    // Delete single record
+    env.i.do("data.Cache.delete", 11, function(err, result){
+      console.log("success: delete", arguments);
+    });
+
+    // Delete multiple records
+    env.i.do("data.Cache.delete", [11, 12, 13], function(err, result){
+      console.log("success: delete", arguments);
+    });
+
+    // Delete all records
+    env.i.do("data.Cache.delete", null, function(err, result){
+      console.log("success: delete", arguments);
+    });
+
+  ---
+
