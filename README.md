@@ -355,3 +355,122 @@ RedisLayer
 
   ---
 
+ElasticLayer
+============
+
+
+  Create record in the index
+    env.i.do("data.Posts.create", {
+      // post_id:        "---", // will be omited
+      user_id:        "user_id",
+      title:          "title",
+      created_at:     "created_at",
+      updated_at:     "updated_at",
+      body:           "body"
+    }, function(err, post){
+      console.log("data.Posts.create:::", post);
+    });
+
+  ---
+
+  Get all from this index
+    env.i.do("data.Posts.find", function(err, posts){
+      console.log("data.Posts.find:::", posts);
+    });
+
+  Get by id
+    env.i.do("data.Posts.find", 'RcW9mjKbSkSuUNC6t3nCtg', function(err, posts){
+      console.log("data.Posts.find:::", posts);
+    });
+
+  Get by list of ids
+    env.i.do("data.Posts.find", ['L-vuDpi-Qj297X-LlUHzDA', 'lw8wr96aRb2H6vSTULM8RA'], function(err, posts){
+      console.log("data.Posts.find:::", posts);
+    });
+
+  Get by elastic query  search (will be addes as body)
+  https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-search
+    env.i.do("data.Posts.find", {
+      query: {
+        match: {
+          created_at: 'created_at'
+        }
+      }
+    }, function(err, posts){
+      console.log("data.Posts.find:::", posts);
+    });
+
+
+  Get by elastic multimle query  search (will be addes as body) 
+  https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-msearch
+  If there is {type: "type"}, will be extended with index
+  otherwise will prepend the query with index: indexName
+    env.i.do("data.Posts.find", [
+      {query: { match: { created_at: 'created_at' } } },
+      {query: { match: { updated_at: 'updated_at' } } },
+    ], function(err, posts){
+      console.log("data.Posts.find:::", posts);
+    });
+
+  ---
+
+  Update single document (if primary key is provided)
+  https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-update
+    env.i.do("data.Posts.update", { 
+      user_id: 'user_id_updated_'+Date.now(),  
+      title: 'updated title',                         
+      created_at: 'created_at',               
+      updated_at: 'updated_at',               
+      body: 'body',                           
+      post_id: 'RcW9mjKbSkSuUNC6t3nCtg' 
+    }, function(err, posts){
+        if(err) return console.log("data.Posts.update:::error", err);
+      console.log("data.Posts.mass update:::", posts);
+    });
+
+
+  Update multiple documents (if no 'where' in options - will update all documents in index)
+  'where' shuld be argument like in find - single id, array of id-s, search pattern
+    env.i.do("data.Posts.update", { 
+     updated_at: 'updated_at',               
+    }, function(err, posts){
+      if(err) return console.log("data.Posts.update:::error", err);
+      console.log("data.Posts.update:::mass update", posts);
+    });
+
+
+  Update multiple documents (array of docuyments, containing id attribute every)
+  'where' in options shuld be argument like in find - single id, array of id-s, search pattern ...
+    env.i.do("data.Posts.update", { 
+     updated_at: 'updated_at',               
+    }, {where:  'find query here'  }, function(err, posts){
+      if(err) return console.log("data.Posts.update:::error", err);
+      console.log("data.Posts.update:::mass update", posts);
+    });
+
+  Update multiple models as array
+    env.i.do("data.Posts.update", [ { title: 'Mass updated title', post_id: 'qP5_KoDdSlONZrTwT4qghw' },
+      {aaa: 444, title: 'Mass updated test invalid props', post_id: 'lw8wr96aRb2H6vSTULM8RA' },
+      {aaa: 444, title: 'Mass updated test invalid props', post_id: 'HoE2yEv-RS-ErfFT_dK2nQ' },
+      {aaa: 444, title: 'Mass updated test invalid props', post_id: '7U_ElH90R1-oH9lXhAsXQA' },
+    ], function(err, updated){
+      if(err) return console.log("error: ", err);
+      console.log("data.Posts.update:::mass update", updated );
+    });
+
+  ---
+
+  Delete single record by id
+    env.i.do("data.Posts.delete", '7U_ElH90R1-oH9lXhAsXQA', function(err, result){
+      console.log("delete: ", arguments);
+    });
+  or by object, containing with primaryKey
+    env.i.do("data.Posts.delete", {post_id: '7U_ElH90R1-oH9lXhAsXQA'}, function(err, result){
+      console.log("delete: ", arguments);
+    });
+
+  if object does not contain id - delete by query
+  https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-deletebyquery
+    env.i.do("data.Posts.delete", {query: {...}}, function(err, result){
+      console.log("delete: ", arguments);
+    });
