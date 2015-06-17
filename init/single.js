@@ -37,6 +37,7 @@ module.exports = function(env, cb){
   };
 
   var enginesAliases = {
+    "neo4j":      "./engines/neo4j",
     "elastic":    "./engines/elastic",
     "redis":      "./engines/redis",
     "mongodb":    "./engines/mongodb",
@@ -66,6 +67,7 @@ module.exports = function(env, cb){
     "PostgresLayer":       "../lib/PostgresLayer",
     "RedisLayer":          "../lib/RedisLayer",
     "ElasticLayer":        "../lib/ElasticLayer",
+    "Neo4jLayer":          "../lib/Neo4jLayer",
 
     "Page":                "../lib/Page",
     "Api":                 "../lib/Api",

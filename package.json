@@ -22,6 +22,7 @@
     "mongodb": "latest",
     "morgan": "latest",
     "mysql": "latest",
+    "neo4j": "^1.1.1",
     "pg": "latest",
     "redis": "latest",
     "serve-favicon": "latest",
