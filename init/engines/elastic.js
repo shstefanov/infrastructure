@@ -15,32 +15,8 @@ module.exports = function(cb){
   },function(err){
     if(err) return cb(err);
     env.engines.elastic = elastic;
+    env.i.do("log.sys", "elasticsearch", "Connected to ElasticSearch on "+(config.elastic.host || "localhost:9200"));
     cb();
-    
   });
-
-
-  // var client = redis.createClient(config.redis.port || 6379, config.redis.host || '127.0.0.1', config.redis.options );
-  // // redis.createClient() = redis.createClient(6379, '127.0.0.1', {})
-
-  // client.on("error", function (err) {
-  //   env.i.do("log.error", "redis error", err);
-  // });
-
-  // client.on("connect", function(){
-  //   if(config.redis.password){
-  //     client.auth(config.redis.password, function(){
-
-  //     });
-  //   }
-  // });
-
-  // client.on("ready", function(){
-  //   env.engines.redis = client;
-  //   cb();
-  // });
-
-
-
 
 }

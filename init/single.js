@@ -36,6 +36,8 @@ module.exports = function(env, cb){
     }
   };
 
+  var engines_order = [ "neo4j", "elastic", "redis", "mongodb", "mysql", "postgres", "http", "websocket" ];
+
   var enginesAliases = {
     "neo4j":      "./engines/neo4j",
     "elastic":    "./engines/elastic",
@@ -61,13 +63,13 @@ module.exports = function(env, cb){
 
     "SocketsCollection":   "../lib/SocketsCollection",
 
-    "DataLayer":           "../lib/DataLayer",
-    "MysqlLayer":          "../lib/MysqlLayer",
-    "MongoLayer":          "../lib/MongoLayer",
-    "PostgresLayer":       "../lib/PostgresLayer",
-    "RedisLayer":          "../lib/RedisLayer",
-    "ElasticLayer":        "../lib/ElasticLayer",
-    "Neo4jLayer":          "../lib/Neo4jLayer",
+    "DataLayer":           "../lib/DataLayers/DataLayer",
+    "MysqlLayer":          "../lib/DataLayers/MysqlLayer",
+    "MongoLayer":          "../lib/DataLayers/MongoLayer",
+    "PostgresLayer":       "../lib/DataLayers/PostgresLayer",
+    "RedisLayer":          "../lib/DataLayers/RedisLayer",
+    "ElasticLayer":        "../lib/DataLayers/ElasticLayer",
+    "Neo4jLayer":          "../lib/DataLayers/Neo4jLayer",
 
     "Page":                "../lib/Page",
     "Api":                 "../lib/Api",
@@ -123,7 +125,7 @@ module.exports = function(env, cb){
 
   });
 
-  engines = _.sortBy(_.uniq(engines), function(e){return e==="./log"?-1:1});
+  engines = _.sortBy(_.uniq(engines), function(e){ return e==="./engines/log"?-1:1});
   loaders = _.uniq(loaders);
 
 

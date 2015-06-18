@@ -19,7 +19,7 @@ module.exports = function(cb){
     client.format = queryFormat;
     env.engines.postgres  = client;
     env.engines.postgres.release = release;
-    env.i.do("log.sys", "postgres", "Connected to MongoDB on "+(config.postgres.host || "localhost")+":"+(config.postgres.port||5432)+"/"+(config.postgres.database||config.postgres.db) );
+    env.i.do("log.sys", "postgres", "Connected to PostgreSQL on "+(config.postgres.host || "localhost")+":"+(config.postgres.port||5432)+"/"+(config.postgres.database||config.postgres.db) );
     cb();
   });
 
