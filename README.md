@@ -117,11 +117,11 @@ Config
 
 Log
 ===
-    env.do("log.info",    ["subject", "message"], [callback] );
-    env.do("log.sys",     ["subject", "message"], [callback] );
-    env.do("log.warning", ["subject", "message"], [callback] );
-    env.do("log.notice",  ["subject", "message"], [callback] );
-    env.do("log.error",   ["subject", "message"], [callback] );
+    env.do("log.info",    "subject", "message", [callback] );
+    env.do("log.sys",     "subject", "message", [callback] );
+    env.do("log.warning", "subject", "message", [callback] );
+    env.do("log.notice",  "subject", "message", [callback] );
+    env.do("log.error",   "subject", "message", [callback] );
     // Outputs:
     [info]  [2015-05-23 22:18:12][subject].......................... message          
     [sys]   [2015-05-23 22:18:12][subject].......................... message
@@ -132,10 +132,6 @@ Log
 
 
 
-
-
-
-env.data.Profile.find(function(){});
 -------------------------------------------------------------------------------------------------------
 
 
@@ -143,13 +139,6 @@ env.data.Profile.find(function(){});
 Queries
 =======
 
-MongoDB data object
--------------------
-
-  ---
-    env.i.do("data.User.create", {email: 19, name: 24, age: 32}, function(err, user){
-      // console.log("????", arguments);
-    });
 
   ---
 
@@ -157,9 +146,14 @@ MongoDB data object
 MongoLayer
 ==========
 
-
-    env.i.do("data.User.delete", {email: 19, name: 24, age: 32}, function(err, user){
+  ---
+    env.i.do("data.User.create", {email: 19, name: 24, age: 32}, function(err, user){
       // console.log("????", arguments);
+    });
+
+  ---
+    env.i.do("data.User.count", function(err, num){    
+      console.log("num_users::", num);
     });
 
   ---
@@ -169,6 +163,12 @@ MongoLayer
       skip:   2,
       fields: { email: 1 }
     }, function(err, user){
+      // console.log("????", arguments);
+    });
+
+  ---
+
+    env.i.do("data.User.delete", {email: 19, name: 24, age: 32}, function(err, user){
       // console.log("????", arguments);
     });
 
