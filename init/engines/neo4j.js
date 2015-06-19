@@ -16,4 +16,40 @@ module.exports = function(cb){
     .catch(function(err){
       cb(err);
     });
+
+  neo4j.format = function(query, data, cb){
+    if (!data) return query;
+    if(data.options) query = query.replace(/(@\w+)/g, function (txt, key){
+      key = key.slice(1);
+      if(data.options.hasOwnProperty(key)) {
+        if(typeof data.options[key] === "function") return data.options[key].call(data.context, data.values, data.options);
+        else return data.options[key];
+      }
+      return txt;
+    });
+
+    if(data.values) query = query.replace(/([#]\w+)/g, function (txt, key){
+      key = key.slice(1);
+      if(data.values.hasOwnProperty(key)) return escape(data.values[key]);
+      return txt;
+    });
+
+    return query;
+  }
+
+  neo4j.escape = escape;
+
+  function escape(val){
+    if(Array.isArray(val)){
+      var self = this;
+      return val.map(function(v, index, val){return escape(val[index]);}).join(",");
+    }
+    else{
+      if(typeof val === "number") return val.toString();
+      else return "\""+val.toString().replace(/\\/g, "\\\\").replace(/"/g, "\\\"")+"\"";
+    }
+  }
+
+
+
 }
