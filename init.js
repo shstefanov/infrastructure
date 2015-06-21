@@ -69,9 +69,15 @@ module.exports = function(env, cb){
   env.classes = {};
 
   if(config.app.process_mode === "cluster"){
-    console.log("App running in cluster mode - IMPLEMENT ME");
+    var cluster = require("cluster");
+    if(cluster.isMaster){
+      require("./init/process/master.js")(env, cb);
+    }
+    else{
+      require("./init/process/worker.js")(env, cb);
+    }
   }
-  else require("./init/single.js")(env, cb);
+  else require("./init/process/single.js")(env, cb);
 
   // if      (!env.config.nodes && cluster.isMaster)     require("./init/single.js")(env, cb);
   // else if (env.config.nodes  && cluster.isMaster)     require("./init/master.js")(env, cb);

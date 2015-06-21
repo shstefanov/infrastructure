@@ -10,80 +10,80 @@ module.exports = function(env, cb){
   var baseTypes = {
 
     log: {
-      engines: ["./engines/log"]
+      engines: ["../engines/log"]
     },
 
     controllers: {
-      loaders: ["./loaders/controllers"]
+      loaders: ["../loaders/controllers"]
     },
 
     pages: {
-      engines: ["./engines/http"       ],
-      loaders: ["./loaders/pages"      ]
+      engines: ["../engines/http"       ],
+      loaders: ["../loaders/pages"      ]
     },
 
     data:{
-      loaders: ["./loaders/data"       ]
+      loaders: ["../loaders/data"       ]
     },
 
     models: {
-      loaders: ["./loaders/models"     ]
+      loaders: ["../loaders/models"     ]
     },
 
     bundles: {
-      engines: ["./engines/webpack"    ],
-      loaders: ["./loaders/bundles"    ]
+      engines: ["../engines/webpack"    ],
+      loaders: ["../loaders/bundles"    ]
     }
   };
 
   var engines_order = [ "neo4j", "elastic", "redis", "mongodb", "mysql", "postgres", "http", "websocket" ];
 
   var enginesAliases = {
-    "neo4j":      "./engines/neo4j",
-    "elastic":    "./engines/elastic",
-    "redis":      "./engines/redis",
-    "mongodb":    "./engines/mongodb",
-    "mysql":      "./engines/mysql",
-    "postgres":   "./engines/postgres",
-    "http":       "./engines/http",
-    "websocket":  "./engines/websocket",
+    "neo4j":      "../engines/neo4j",
+    "elastic":    "../engines/elastic",
+    "redis":      "../engines/redis",
+    "mongodb":    "../engines/mongodb",
+    "mysql":      "../engines/mysql",
+    "postgres":   "../engines/postgres",
+    "http":       "../engines/http",
+    "websocket":  "../engines/websocket",
   };
 
   var classesAliases = {
 
-    "Class":               "../lib/Class",
-    "EventedClass":        "../lib/EventedClass",
+    "Class":               "../../lib/Class",
+    "EventedClass":        "../../lib/EventedClass",
 
-    "Controller":          "../lib/Controller",
+    "Controller":          "../../lib/Controller",
 
-    "Model":               "../lib/Model",
-    "Collection":          "../lib/Collection",
-    "ExtendedModel":       "../lib/ExtendedModel",
-    "ExtendedCollection":  "../lib/ExtendedCollection",
+    "Model":               "../../lib/Model",
+    "Collection":          "../../lib/Collection",
+    "ExtendedModel":       "../../lib/ExtendedModel",
+    "ExtendedCollection":  "../../lib/ExtendedCollection",
 
-    "SocketsCollection":   "../lib/SocketsCollection",
+    "SocketsCollection":   "../../lib/SocketsCollection",
 
-    "DataLayer":           "../lib/DataLayers/DataLayer",
-    "MysqlLayer":          "../lib/DataLayers/MysqlLayer",
-    "MongoLayer":          "../lib/DataLayers/MongoLayer",
-    "PostgresLayer":       "../lib/DataLayers/PostgresLayer",
-    "RedisLayer":          "../lib/DataLayers/RedisLayer",
-    "ElasticLayer":        "../lib/DataLayers/ElasticLayer",
-    "Neo4jLayer":          "../lib/DataLayers/Neo4jLayer",
+    "DataLayer":           "../../lib/DataLayers/DataLayer",
+    "MysqlLayer":          "../../lib/DataLayers/MysqlLayer",
+    "MongoLayer":          "../../lib/DataLayers/MongoLayer",
+    "PostgresLayer":       "../../lib/DataLayers/PostgresLayer",
+    "RedisLayer":          "../../lib/DataLayers/RedisLayer",
+    "ElasticLayer":        "../../lib/DataLayers/ElasticLayer",
+    "Neo4jLayer":          "../../lib/DataLayers/Neo4jLayer",
 
-    "Page":                "../lib/Page",
-    "Api":                 "../lib/Api",
-    "Widget":              "../lib/Widget"
+    "Page":                "../../lib/Page",
+    "Api":                 "../../lib/Api",
+    "Widget":              "../../lib/Widget"
   };
 
   var loadersAliases = {
-    "backbone-data-sync": "./loaders/backbone-data-sync",
-    "models" :            "./loaders/models",
-    "pages":              "./loaders/pages",
-    "controllers":        "./loaders/controllers",
-    "log":                "./loaders/log",
-    "data":               "./loaders/data",
-    "bundles":            "./loaders/bundles",
+    "backbone-data-sync": "../loaders/backbone-data-sync",
+    "models" :            "../loaders/models",
+    "pages":              "../loaders/pages",
+    "controllers":        "../loaders/controllers",
+    "log":                "../loaders/log",
+    "data":               "../loaders/data",
+    "bundles":            "../loaders/bundles",
   };
 
   var classes = {};
@@ -125,12 +125,12 @@ module.exports = function(env, cb){
 
   });
 
-  engines = _.sortBy(_.uniq(engines), function(e){ return e==="./engines/log"?-1:1});
+  engines = _.sortBy(_.uniq(engines), function(e){ return e==="../engines/log"?-1:1});
   loaders = _.uniq(loaders);
 
 
-  console.log("loaders: ", loaders);
-  console.log("engines: ", engines);
+  // console.log("loaders: ", loaders);
+  // console.log("engines: ", engines);
   // console.log("classes: ", classes);
 
   var initChain = engines.concat(loaders).map(function(c){return require(c);});
@@ -141,7 +141,7 @@ module.exports = function(env, cb){
 
 
   var doCache = {};
-  env.i.do = function(address){
+  env.i.do = env.i.do || function(){
     var args    = Array.prototype.slice.call(arguments);
     var address, cb;
     if(_.isString(args[0])) address = args.shift().split(/[.\/]/);
@@ -149,6 +149,7 @@ module.exports = function(env, cb){
     
     if(_.isFunction(_.last(args))) cb = _.last(args);
 
+    console.log("address", address, _.keys(this), !!this[address[0]]);
     var target = this[address[0]];
 
     if(!target) {
