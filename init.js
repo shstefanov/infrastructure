@@ -77,11 +77,22 @@ module.exports = function(env, cb){
       return cb_index;
     }
 
+
+
     env.runCallback = function runCallback(data){
       var fn = callbacks[data.run_cb[1]];
       if(fn) {
         fn.apply(global, data.args);
-        delete callbacks[data.run_cb[1]];
+        if(!fn.isListener && !fn.isStream){
+          env.dropCallback({drop_cb: data.run_cb});
+        }
+      }
+    }
+
+    env.dropCallback = function runCallback(data){
+      var fn = callbacks[data.drop_cb[1]];
+      if(fn) {
+        delete callbacks[data.drop_cb[1]];
       }
     }
 
@@ -91,6 +102,45 @@ module.exports = function(env, cb){
       require("./init/process/master.js")(env, cb);
     }
     else{
+
+      env.deserializeCallback = function deserializeCallback(cb_data){
+        var cb = Array.prototype.slice.call(cb_data);
+        return function(){
+          process.send({
+            address: cb[0],
+            run_cb: cb,
+            args: Array.prototype.slice.call(arguments)
+          });
+        }
+      }
+
+      env.deserializeStream = function deserializeStream(stream_data){
+        var stream = Array.prototype.slice.call(stream_data);
+        var deserialized = function(){
+          process.send({
+            address: stream[0],
+            run_cb: stream,
+            args: Array.prototype.slice.call(arguments)
+          });
+        }
+        deserialized.end = function(){ process.send({ address: stream[0], drop_cb: stream }); }
+        return deserialized;
+      }
+
+      env.deserializeListener = function deserializeListener(listener_data){
+        var listener = Array.prototype.slice.call(listener_data);
+        var deserialized = function(){
+          process.send({
+            address: listener[0],
+            run_cb: listener,
+            args: Array.prototype.slice.call(arguments)
+          });
+        }
+        deserialized.drop = function(){ process.send({ address: listener[0], drop_cb: listener }); };
+        return deserialized;
+      }
+
+
       require("./init/process/worker.js")(env, cb);
     }
   }

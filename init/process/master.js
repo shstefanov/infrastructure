@@ -55,9 +55,13 @@ module.exports = function(env, cb){
 
 
         worker.on("message", function(data){
+          if(!data.address) console.log(JSON.stringify(data));
           var address_parts = data.address.split(".");
           var target = address_parts[0];
           if(data.cb && !Array.isArray(data.cb)) data.cb = [name, data.cb];
+          else if(data.listener && !Array.isArray(data.listener)) data.listener = [name, data.listener];
+          else if(data.stream && !Array.isArray(data.stream)) data.stream = [name, data.stream];
+
           if(env.i[target] && env.i[target].initialized) {
             env.i[target].send(data);
           }
@@ -74,28 +78,34 @@ module.exports = function(env, cb){
 
 
 
-  function deserializeCallback(cb_data){
-    cb_data = Array.prototype.slice.call(cb_data);
-    return function(){
-      process.send({
-        run_cb: cb_data,
-        args: Array.prototype.slice.call(arguments)
-      });
-    }
-  }
+  // function deserializeCallback(cb_data){
+  //   cb_data = Array.prototype.slice.call(cb_data);
+  //   return function(){
+  //     process.send({
+  //       run_cb: cb_data,
+  //       args: Array.prototype.slice.call(arguments)
+  //     });
+  //   }
+  // }
 
   env.i.do = function(){
     var args = Array.prototype.slice.call(arguments);
     var address = args[0];
     if(_.isString(address)) address = args.shift().split(".");
-    var callback = _.last(args);
-    if(_.isFunction(callback)) callback = ["master", env.serializeCallback(args.pop())];
-    else callback = undefined;
+    var callback = _.last(args), cb_data;
+    if(_.isFunction(callback)) cb_data = ["master", env.serializeCallback(args.pop())];
+    else cb_data = undefined;
+
     var target_name = address[0];
     var target = env.i[target_name];
+
     if(target && target.send) {
       var sendData = {address: address.join("."), args: args};
-      if(callback) sendData.cb = callback;
+      if(cb_data) {
+        if     (callback.name === "do_stream"  ) { sendData.stream   = cb_data; callback.isStream   = true; }
+        else if(callback.name === "do_listener") { sendData.listener = cb_data; callback.isListener = true; }
+        else                                       sendData.cb        = cb_data;
+      }
       target.send(sendData);
     }
   }
@@ -103,7 +113,10 @@ module.exports = function(env, cb){
   env.i.master = {
     initialized: true,
     send: function processMessage(data){
-      if(data.run_cb){
+      if(data.drop_cb){
+        return env.dropCallback(data);
+      }
+      else if(data.run_cb){
         return env.runCallback(data);
       }
 

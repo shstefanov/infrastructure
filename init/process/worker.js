@@ -35,14 +35,21 @@ module.exports = function(env, cb){
 
   function processMessage(data){
 
-
-
     if(data.run_cb){
       return env.runCallback(data);
     }
 
     if(data.cb){
-      data.args.push(deserializeCallback(data.cb));
+      console.log("deserialize: ", "cb")
+      data.args.push(env.deserializeCallback(data.cb));
+    }
+    else if(data.listener){
+      console.log("deserialize: ", "listener")
+      data.args.push(env.deserializeListener(data.listener));
+    }
+    else if(data.stream){
+      console.log("deserialize: ", "stream")
+      data.args.push(env.deserializeStream(data.stream));
     }
     var address_parts = data.address.split(".");
     if(!env.i[address_parts[0]]){ console.error("Can't find target ???");}
@@ -69,7 +76,18 @@ module.exports = function(env, cb){
     var data = {address: address, args: args};
     if(typeof cb === "function"){
       cb = args.pop();
-      data.cb = env.serializeCallback(cb);
+      if(cb.name === "do_stream"){
+        console.log("cb name: ", cb.name);
+        data.stream = env.serializeCallback(cb);
+      }
+      else if(cb.name === "do_listener"){
+        console.log("cb name: ", cb.name);
+        data.listener = env.serializeCallback(cb);
+      }
+      else{
+        console.log("cb name: ", cb.name);
+        data.cb = env.serializeCallback(cb);        
+      }
     }
     process.send(data);
   }
