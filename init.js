@@ -69,6 +69,23 @@ module.exports = function(env, cb){
   env.classes = {};
 
   if(config.app.process_mode === "cluster"){
+
+    var callbacks = {}, cb_index = 0;
+    env.serializeCallback = function serializeCallback(fn){
+      cb_index++;
+      callbacks[cb_index] = fn;
+      return cb_index;
+    }
+
+    env.runCallback = function runCallback(data){
+      var fn = callbacks[data.run_cb[1]];
+      if(fn) {
+        fn.apply(global, data.args);
+        delete callbacks[data.run_cb[1]];
+      }
+    }
+
+
     var cluster = require("cluster");
     if(cluster.isMaster){
       require("./init/process/master.js")(env, cb);

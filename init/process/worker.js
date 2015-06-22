@@ -3,27 +3,42 @@ module.exports = function(env, cb){
   var _ = require("underscore");
   var config = env.config;
   var helpers = require("../../lib/helpers");
+  var cache = [];
 
-  var cache, initialized = false;
+  var initialized = false;
+
 
   process.once("message", function(worker_config){
+    var original_do = env.i.do;
+    // env.i.do = cacheMessages;
+
     delete config.structures;
-    helpers.deepExtend(config, worker_config);
-    cache = worker_config.msg_cache;
+    _.extend(config, worker_config);
     require("./single")(env, function(err){
-      env.i.do("log.sys", "worker", _.keys(worker_config.structures).join(","));
+      if(err) return process.send(err);
+      process.send(null);
       initialized = true;
-      cache.forEach(processMessage);
+      cache.forEach(function(args){ env.i.do.apply(env.i, args); });
+      cache = [];
+      env.i.do("log.sys", "worker", _.keys(worker_config.structures).join(","));
+      // env.i.do = original_do;
+      cache.forEach(function(args){env.i.do.apply(env.i, args);});
+      process.once("message", function(cache){
+        process.on("message", processMessage);
+        cache.forEach(processMessage);
+        cb(null, env)
+      });
     });
 
-    process.on("message", processMessage);
   });
   process.send(null); // Just initializing communication
 
   function processMessage(data){
-    if(!initialized) return cache.push(data);
+
+
+
     if(data.run_cb){
-      return runCallback(data);
+      return env.runCallback(data);
     }
 
     if(data.cb){
@@ -33,11 +48,8 @@ module.exports = function(env, cb){
     if(!env.i[address_parts[0]]){ console.error("Can't find target ???");}
     else{
       var doArgs = [data.address].concat(data.args);
-      //console.log("searching address in worker env.i doArgs", doArgs);
-      console.log("---------", [data.address].concat(data.args));
-      env.i.do.apply(env.i, [data.address].concat(data.args));
+      env.i.do.apply(env.i, doArgs);
     }
-    // console.log("handle worker data", JSON.stringify(data));
   }
   
   function deserializeCallback(cb_data){
@@ -45,7 +57,8 @@ module.exports = function(env, cb){
     return function(){
       process.send({
         run_cb: cb_data,
-        args: Array.prototype.slice.call(arguments)
+        args: Array.prototype.slice.call(arguments),
+        address: cb_data[0]
       });
     }
     // [source, id];
@@ -56,33 +69,19 @@ module.exports = function(env, cb){
     var data = {address: address, args: args};
     if(typeof cb === "function"){
       cb = args.pop();
-      data.cb = serializeCallback(cb);
+      data.cb = env.serializeCallback(cb);
     }
     process.send(data);
   }
 
-  function runCallback(data){
-    var fn = callbacks[data.run_cb[1]];
-    if(fn) {
-      fn.apply(global, data.args);
-      delete callbacks[data.run_cb[1]];
-    }
-  }
-
-  var callbacks = {}, cb_index = 0;
-  function serializeCallback(fn){
-    cb_index++;
-    callbacks[cb_index] = fn;
-    return cb_index;
-  }
-
   env.i.do = function(address){
     var args    = Array.prototype.slice.call(arguments);
+    if(!initialized) return cache.push(args);
     var address, cb;
     if(_.isString(args[0])) {
       var address_parts = args.shift().split(/[.\/]/);
       if(!env.i[address_parts[0]]) return forwardToMaster(address, args);
-      address = address.parts
+      address = address_parts;
     }
     else                    address = args.shift();
     
@@ -94,6 +93,7 @@ module.exports = function(env, cb){
       return cb && cb("Can't find target: ["+address[0]+"]");
     }
     
+   
     if(address.length === 2){
       if(target && _.isFunction(target[address[1]])){
         if(_.isArray(target.methods)){
