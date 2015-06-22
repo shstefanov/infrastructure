@@ -16,15 +16,15 @@ module.exports = function(cb){
     options || (options = {});
     switch (method) {
       case 'create':
-        env.i.do(model.dataPath+".create", model.toJSON(), opts, fields, callback);  break;
+        env.i.do(model.dataPath+".create", model.toJSON(), opts, callback);  break;
       case 'update':
-        env.i.do(model.dataPath+".update", query || model.toJSON(), opts, fields, callback); break;
+        env.i.do(model.dataPath+".update", query || model.toJSON(), opts, callback); break;
       case 'delete':
-        env.i.do(model.dataPath+".delete", query || model.toJSON(), opts, fields, callback); break;
+        env.i.do(model.dataPath+".delete", query || model.toJSON(), opts, callback); break;
       case 'read':
         var dataPath = ( model.models? (model.dataPath || model.model.prototype.dataPath) : model.dataPath );
         var path = (model.models?".find":".findOne");
-        env.i.do( dataPath+path , query, opts, fields, callback); break;
+        env.i.do( dataPath+path , query, opts, callback); break;
     }
   };
 
