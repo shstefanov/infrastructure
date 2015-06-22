@@ -148,8 +148,6 @@ module.exports = function(env, cb){
     else                    address = args.shift();
     
     if(_.isFunction(_.last(args))) cb = _.last(args);
-
-    console.log("address", address, _.keys(this), !!this[address[0]]);
     var target = this[address[0]];
 
     if(!target) {
