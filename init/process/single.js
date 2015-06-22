@@ -5,8 +5,6 @@ module.exports = function(env, cb){
   var config    = env.config;
   var bulk      = require("bulk-require");
   
-  // pages, controllers, models, data
-
   var baseTypes = {
 
     log: {
@@ -128,17 +126,7 @@ module.exports = function(env, cb){
   engines = _.sortBy(_.uniq(engines), function(e){ return e==="../engines/log"?-1:1});
   loaders = _.uniq(loaders);
 
-
-  // console.log("loaders: ", loaders);
-  // console.log("engines: ", engines);
-  // console.log("classes: ", classes);
-
   var initChain = engines.concat(loaders).map(function(c){return require(c);});
-
-  // var bulk    = require('bulk-require');
-  // var classes = bulk(path.join(__dirname, "../lib"), ['*.js']);
-  // _.extend(env, classes);
-
 
   var doCache = {};
   env.i.do = env.i.do || function(){
