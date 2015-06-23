@@ -41,6 +41,9 @@ module.exports = function(cb){
   
   var CookieParser, cookieParser;
   if(config.session){
+
+    console.log("config.session");
+
     CookieParser = require( 'cookie-parser' );
     cookieParser = CookieParser(config.session.secret);
     app.use(cookieParser);
@@ -48,11 +51,11 @@ module.exports = function(cb){
   }
   
   var session, sessionStore;
-  if(config.session && env.mongodb){
+  if(config.session && env.engines.mongodb){
     // https://github.com/expressjs/cookie-session
     var session    = require( 'express-session' );
     var MongoStore = require( 'connect-mongo' )(session);
-    sessionStore   = new MongoStore(_.extend({db:env.mongodb}, config.session));
+    sessionStore   = new MongoStore(_.extend({db:env.engines.mongodb}, config.session));
     app.use(session({
       resave:            config.session.resave || true,
       saveUninitialized: config.session.saveUninitialized || true,
