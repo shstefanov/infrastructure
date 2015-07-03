@@ -41,9 +41,6 @@ module.exports = function(cb){
   
   var CookieParser, cookieParser;
   if(config.session){
-
-    console.log("config.session");
-
     CookieParser = require( 'cookie-parser' );
     cookieParser = CookieParser(config.session.secret);
     app.use(cookieParser);

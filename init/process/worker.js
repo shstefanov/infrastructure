@@ -40,15 +40,12 @@ module.exports = function(env, cb){
     }
 
     if(data.cb){
-      console.log("deserialize: ", "cb")
       data.args.push(env.deserializeCallback(data.cb));
     }
     else if(data.listener){
-      console.log("deserialize: ", "listener")
       data.args.push(env.deserializeListener(data.listener));
     }
     else if(data.stream){
-      console.log("deserialize: ", "stream")
       data.args.push(env.deserializeStream(data.stream));
     }
     var address_parts = data.address.split(".");
@@ -77,15 +74,12 @@ module.exports = function(env, cb){
     if(typeof cb === "function"){
       cb = args.pop();
       if(cb.name === "do_stream"){
-        console.log("cb name: ", cb.name);
         data.stream = env.serializeCallback(cb);
       }
       else if(cb.name === "do_listener"){
-        console.log("cb name: ", cb.name);
         data.listener = env.serializeCallback(cb);
       }
       else{
-        console.log("cb name: ", cb.name);
         data.cb = env.serializeCallback(cb);        
       }
     }
