@@ -62,10 +62,11 @@ module.exports = function(cb){
     env.i.do("log.sys", "MongoStore", "Collection: "+config.session.collection+" Cookie: "+config.session.secret);
   }
   
-  if(config.statis){
-    for(route in config.statis){
-      app.use(route, express.static(path.join(config.rootDir, config.statis[route])));
-      env.i.do("log.sys", "static", route+" -> "+config.statis[route]);
+  if(config.http.static){
+    for(route in config.http.static){
+      var folderPath = path.join(config.rootDir, config.http.static[route]);
+      app.use(route, express.static(folderPath));
+      env.i.do("log.sys", "http", "Serve static content: "+route+" -> "+folderPath);
     }    
   }
   
