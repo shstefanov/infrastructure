@@ -12,7 +12,6 @@ module.exports = function(cb){
   env.i.log = {};
 
   _.each(config.structures.log.options, function(val, key, log){
-   // console.log("????", "log ???", config.structures.log);
     env.i.log[key] = function(logName, value, cb){
       if(!config.structures.log.options[key]) return;
       if(_.isNull(logName) || _.isUndefined(logName)) logName = logName+"";
