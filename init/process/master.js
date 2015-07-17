@@ -55,7 +55,7 @@ module.exports = function(env, cb){
 
 
         worker.on("message", function(data){
-          if(!data.address) console.log(JSON.stringify(data));
+          if(!data.address) console.log("????", JSON.stringify(data));
           var address_parts = data.address.split(".");
           var target = address_parts[0];
           if(data.cb && !Array.isArray(data.cb)) data.cb = [name, data.cb];
