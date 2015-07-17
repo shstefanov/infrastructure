@@ -6,6 +6,7 @@
     "name": "Stefan Stefanov",
     "email": "s.h.stefanov@mail.bg"
   },
+  "license": "MIT",
   "main": "./index.js",
   "dependencies": {
     "backbone": "latest",
