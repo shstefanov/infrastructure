@@ -147,7 +147,7 @@ module.exports = function(env){
           }));
         });
       });
-      this.coll.find.apply(this, args);
+      this.coll.find.apply(this.coll, args);
       return this;
     },
 
