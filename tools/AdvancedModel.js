@@ -8,9 +8,7 @@ var AdvancedModel = Backbone.Model.extend({
   constructor: function(data, options){
     if(options && options.fromJSON===true) data = this.convertJSON(data);
     data = data || {};
-    this.error = this.validate(data);
-    if(this.error) Backbone.Model.apply(this);
-    else Backbone.Model.call(this, data, options);
+    Backbone.Model.call(this, data, options);
   },
 
 
@@ -38,31 +36,24 @@ var AdvancedModel = Backbone.Model.extend({
     else Backbone.Model.prototype.set.call(this, data, options);
   },
 
-  validate: function(obj){ // all - true/false
+  validate: function(obj){
     delete this.error;
     if(!this.validation) return;
-    if(!obj) {this.error = "Invalid model"; return;}
-    var error = {}, err = false, props, validation = this.validation;
-    for(var key in validation){
-      if(key==="_id" && this.isNew===true) continue;
-      if(!validation[key](obj[key])){
-        err = true;
-        error[key] = "invalid";
-      }
-    }
-    // Check for unwanted properties
-    for(var key in obj){
+    if(!obj) { obj = _.clone(this.attributes || {}); }
+    
+    var error, err = false, props, validation = this.validation;
+    error = _.mapObject(validation, function(comparator, key){
+      if     (!_.has(obj, key))      { err = true; return "missing"; }
+      else if(!comparator(obj[key])) { err = true; return "invalid"; }
+    });
 
-      if(!validation[key]){
-        err = true;
-        error[key] = "unwanted";
-      }
-    }
-    if(err){
+    for(var key in error) if(_.isUndefined(error[key]) )  delete error[key];
+    for(var key in obj)   if(!_.has(validation, key)   )  error[key] = "redundant";
+   
+    if(err) {
       this.error = error;
       return error;
     }
-
   },
 
 });
