@@ -41,10 +41,11 @@ var AdvancedModel = Backbone.Model.extend({
     if(!this.validation) return;
     if(!obj) { obj = _.clone(this.attributes || {}); }
     
-    var error, err = false, props, validation = this.validation;
+    var error, self = this, err = false, props, validation = this.validation;
     error = _.mapObject(validation, function(comparator, key){
-      if     (!_.has(obj, key))      { err = true; return "missing"; }
-      else if(!comparator(obj[key])) { err = true; return "invalid"; }
+      if(self.isNew && key === "_id") return;
+      else if   (!_.has(obj, key))      { err = true; return "missing"; }
+      else if   (!comparator(obj[key])) { err = true; return "invalid"; }
     });
 
     for(var key in error) if(_.isUndefined(error[key]) )  delete error[key];
