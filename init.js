@@ -42,7 +42,7 @@ module.exports = function(env, cb){
     else go(cb);
 
     function go(cb){
-      env.helpers.objectWalk(env.i[name], function(nodeName, target, parent){
+      env.helpers.traverse(env.i[name], function(target, nodeName, parent){
         if(nodeName === "do") return;
         if(_.isFunction(target)) {
           var Node;

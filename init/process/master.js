@@ -27,6 +27,7 @@ module.exports = function(env, cb){
   });
 
   helpers.amap(complete_chain, function(fn, cb){fn(cb);}, function(err){
+    if(err) console.log("EEEEE:::::", err);
     if(err) return cb(err);
     cb(null, env);
   });

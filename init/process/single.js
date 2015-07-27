@@ -107,7 +107,7 @@ module.exports = function(env, cb){
           val = val.slice();
           val[0] = path.join(process.cwd(), val[0]);
           var result = bulk(val[0], val[1]);
-          if(val[2]===true) env.helpers.objectWalk(result, function(nodeName, target, parent){
+          if(val[2]===true) env.helpers.traverse(result, function(nodeName, target, parent){
             parent[nodeName] = env.getCached(target);
           });
           env.classes[key] = result;

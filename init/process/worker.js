@@ -15,6 +15,7 @@ module.exports = function(env, cb){
     delete config.structures;
     _.extend(config, worker_config);
     require("./single")(env, function(err){
+      if(err) throw err;
       if(err) return process.send(err);
       process.send(null);
       initialized = true;
