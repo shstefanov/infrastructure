@@ -44,7 +44,9 @@ module.exports = function(cb){
 
   app.use(session({
     secret: config.session.secret,
-    store: sessionStore
+    store: sessionStore,
+    resave: true,
+    saveUninitialized: true
   }));
   
   for(route in config.public){
@@ -56,7 +58,6 @@ module.exports = function(cb){
   var server = app.server = http.createServer(app).listen(app.get('port'), function(err){
     if(err) return cb(err);
     var io = socketio.listen(server);
-    io.set('log level', config.log || 0);
     var sio = new SessionSockets(io, sessionStore, cookieParser);
     sio.on("connection", env.socketConnection);
     sio.on("error", function(err){
