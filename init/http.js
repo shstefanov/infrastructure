@@ -53,7 +53,7 @@ module.exports = function(cb){
   }
   
 
-  var server = http.createServer(app).listen(app.get('port'), function(err){
+  var server = app.server = http.createServer(app).listen(app.get('port'), function(err){
     if(err) return cb(err);
     var io = socketio.listen(server);
     io.set('log level', config.log || 0);

@@ -8,6 +8,7 @@ var init = require("./init");
 
 var loadApp = function(rootDir, config, options, cb){
   config.rootDir = rootDir;
+  if(options.testConfig) _.extend( config, options.testConfig );
   init(_.extend({config: config}, options), cb);
 };
 
@@ -21,7 +22,6 @@ var getConfig = function(folderPath){
 
 module.exports = function findApp(folderPath, options, cb){
   folderPath = folderPath||process.argv[2]||process.cwd();
-  options = options||{};
   if(hasConfig(folderPath))    loadApp(folderPath, getConfig(folderPath), options || {}, cb);
   else{
     console.log("config not found");
