@@ -96,4 +96,34 @@ describe('ExtendedCollection -> indexBy', function(){
     next();
   });
 
+  it("groupBy array", function(next){
+    var GroupedCollection = TestCollection.extend("GroupedCollection", { group: {field: "field"} } );
+    var collection = new GroupedCollection([
+      { id: 1, field: ["a", "c"] },
+      { id: 2, field: ["a", "d"] },
+      { id: 3, field: ["b", "c"] },
+      { id: 4, field: ["d", "c"] },
+      { id: 5, field: ["b", "d"] },
+    ]);
+
+    assert.equal(collection.getGroup("field", "a").length, 2 );
+    assert.equal(collection.getGroup("field", "b").length, 2 );
+    assert.equal(collection.getGroup("field", "c").length, 3 );
+    assert.equal(collection.getGroup("field", "d").length, 3 );
+
+    collection.get(1).set({field: ["a", "d"]});
+    collection.get(3).set({field: ["b", "d"]});
+
+    assert.equal(collection.getGroup("field", "a").length, 2 );
+    assert.equal(collection.getGroup("field", "b").length, 2 );
+    assert.equal(collection.getGroup("field", "c").length, 1 );
+    assert.equal(collection.getGroup("field", "d").length, 5 );
+
+    collection.get(4).set({field: ["d", "d"]});
+
+    assert.equal(collection.getGroup("field", "d").length, 5 );
+    assert.equal(collection.getGroup("field", "c"), undefined);
+    next();
+  });
+
 });
