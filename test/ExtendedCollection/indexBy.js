@@ -8,14 +8,13 @@ var TestCollection     = ExtendedCollection.extend("TestCollection", { model: Te
 describe('ExtendedCollection -> indexBy', function(){
 
   it("Sets collection index by constructor options", function(next){
-    var collection = new TestCollection([], {index: {field: "field"}});
-    collection.add([
+    var collection = new TestCollection([
       { id: 1, field: "a" },
       { id: 2, field: "b" },
       { id: 3, field: "c" },
       { id: 4, field: "d" },
       { id: 5, field: "e" },
-    ]);
+    ], {index: {field: "field"}});
 
     assert.equal(collection.getBy("field", "a"), collection.get(1));
     assert.equal(collection.getBy("field", "b"), collection.get(2));
@@ -30,8 +29,7 @@ describe('ExtendedCollection -> indexBy', function(){
     var IndexedCollection = TestCollection.extend("IndexedCollection", {
       index: { field: "field" }
     });
-    var collection = new IndexedCollection();
-    collection.add([
+    var collection = new IndexedCollection([
       { id: 1, field: "a" },
       { id: 2, field: "b" },
       { id: 3, field: "c" },
@@ -50,15 +48,14 @@ describe('ExtendedCollection -> indexBy', function(){
 
   it("Sets collection index by calling indexBy method", function(next){
 
-    var collection = new TestCollection();
-    collection.indexBy("field");
-    collection.add([
+    var collection = new TestCollection([
       { id: 1, field: "a" },
       { id: 2, field: "b" },
       { id: 3, field: "c" },
       { id: 4, field: "d" },
       { id: 5, field: "e" },
     ]);
+    collection.indexBy("field");
 
     assert.equal(collection.getBy("field", "a"), collection.get(1));
     assert.equal(collection.getBy("field", "b"), collection.get(2));
@@ -71,15 +68,14 @@ describe('ExtendedCollection -> indexBy', function(){
 
   it("Updates index on model change", function(next){
 
-    var collection = new TestCollection();
-    collection.indexBy("field");
-    collection.add([
+    var collection = new TestCollection([
       { id: 1, field: "a" },
       { id: 2, field: "b" },
       { id: 3, field: "c" },
       { id: 4, field: "d" },
       { id: 5, field: "e" },
     ]);
+    collection.indexBy("field");
 
     collection.get(1).set({field: "x"});
     assert.equal(collection.getBy("field", "a"), undefined);
@@ -90,15 +86,15 @@ describe('ExtendedCollection -> indexBy', function(){
 
   it("Updates index on model remove", function(next){
 
-    var collection = new TestCollection();
-    collection.indexBy("field");
-    collection.add([
+    var collection = new TestCollection([
       { id: 1, field: "a" },
       { id: 2, field: "b" },
       { id: 3, field: "c" },
       { id: 4, field: "d" },
       { id: 5, field: "e" },
     ]);
+    collection.indexBy("field");
+    collection.add();
 
     collection.remove(1);
     assert.equal(collection.getBy("field", "a"), undefined);
@@ -107,17 +103,16 @@ describe('ExtendedCollection -> indexBy', function(){
 
   it("Sets index with iterator", function(next){
 
-    var collection = new TestCollection();
-    collection.indexBy("field", function(model){
-      return model.get("field")+"_"+model.id;
-    });
-    collection.add([
+    var collection = new TestCollection([
       { id: 1, field: "a" },
       { id: 2, field: "b" },
       { id: 3, field: "c" },
       { id: 4, field: "d" },
       { id: 5, field: "e" },
     ]);
+    collection.indexBy("field", function(model){
+      return model.get("field")+"_"+model.id;
+    });
 
     assert.equal(collection.getBy("field", "a_1"), collection.get(1));
     assert.equal(collection.getBy("field", "b_2"), collection.get(2));
@@ -134,17 +129,16 @@ describe('ExtendedCollection -> indexBy', function(){
 
   it("dropIndex", function(next){
 
-    var collection = new TestCollection();
-    collection.indexBy("field", function(model){
-      return model.get("field")+"_"+model.id;
-    });
-    collection.add([
+    var collection = new TestCollection([
       { id: 1, field: "a" },
       { id: 2, field: "b" },
       { id: 3, field: "c" },
       { id: 4, field: "d" },
       { id: 5, field: "e" },
     ]);
+    collection.indexBy("field", function(model){
+      return model.get("field")+"_"+model.id;
+    });
 
     collection.dropIndex("field");
 
