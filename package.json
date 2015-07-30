@@ -34,10 +34,10 @@
     "yamljs": "latest"
   },
   "devDependencies": {
-    "jasmine-node": "latest"
+    "mocha": "latest"
   },
   "scripts": {
-    "test": "jasmine-node test"
+    "test": "mocha --recursive test"
   },
   "_id": "infrastructure@0.3.99",
   "_from": "infrastructure@latest",
