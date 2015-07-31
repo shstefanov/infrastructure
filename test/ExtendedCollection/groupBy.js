@@ -16,7 +16,6 @@ describe('ExtendedCollection -> indexBy', function(){
       { id: 4, field: "b" },
       { id: 5, field: "b" },
     ], { group: {field: "field"}} );
-    collection.add();
 
     assert.equal(collection.getGroup("field", "a") instanceof BaseCollection, true );
     assert.equal(collection.getGroup("field", "b") instanceof BaseCollection, true );
