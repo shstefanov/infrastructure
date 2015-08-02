@@ -5,7 +5,7 @@ var ExtendedCollection = require("../../lib/ExtendedCollection.js");
 var TestModel          = ExtendedModel.extend("TestModel", { id_attribute: "id" });
 var TestCollection     = ExtendedCollection.extend("TestCollection", { model: TestModel });
 
-describe('ExtendedCollection -> fire', function(){
+describe(['ExtendedCollection -> fire', "\n", "[", __filename, "]"].join(""), function(){
   var collection = new TestCollection();
   var model_ids = [ 1, 2, 3, 4, 5];
   var results   = new Array(model_ids.length);

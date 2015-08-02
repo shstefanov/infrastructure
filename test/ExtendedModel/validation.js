@@ -9,7 +9,7 @@ var TestModel = ExtendedModel.extend("TestModel", {
   }
 });
 
-describe('Model validation', function() {
+describe(['Model -> validation', "\n",  "[", __filename, "]"].join(""), function(){
   
   it('Empty constructor should give missing error', function (next) {
     var m = new TestModel();
