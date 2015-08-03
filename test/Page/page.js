@@ -530,26 +530,6 @@ describe(["Page", "\n", "[", __filename, "]"].join(""), function(){
     handler( test_req, test_res , function(){ /*next();*/ });
   });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   it("Case with single simple string in array", function(next){
 
     var handler;
