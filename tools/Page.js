@@ -33,7 +33,7 @@ var Page = EventedClass.extend("Page", {
     var queue = [];
     var glob = !!page.pre || !!page.after || false;
 
-    for(key in page){
+    for(var key in page){
       if(/(^\/|^[*]|^get\s|^post\s|^put\s|^delete\s)/i.test(key)){
         var bind = true;
         if(typeof page[key]==="string") {
