@@ -59,25 +59,8 @@ module.exports = function(env){
     toJSON: function(){
       if(this.error) return {error: this.error};
       return env.AdvancedModel.prototype.toJSON.call(this);
-    },
-
-    constructor: function(data){
-
-      if(!data){
-        this.error = "Can't find model";
-        return this;
-      }
-      else if(!_.isObject(data)){
-        this.error = "Model should be object";
-      }
-      var err = this.validate(data);
-      if(err){
-        this.error = err;
-        return env.AdvancedModel.apply(this, []);
-      }
-
-      return env.AdvancedModel.apply(this, arguments);
     }
+    
   },
 
   {
