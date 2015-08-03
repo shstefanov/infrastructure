@@ -37,7 +37,7 @@
     "mocha": "latest"
   },
   "scripts": {
-    "test": "mocha --recursive --colors --sort --check-leaks --full-trace --no-exit --prof --throw-deprecation test"
+    "test": "node node_modules/.bin/mocha --recursive --colors --sort --check-leaks --full-trace --no-exit --throw-deprecation test"
   },
   "_id": "infrastructure@0.3.99",
   "_from": "infrastructure@latest",
