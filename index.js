@@ -7,7 +7,8 @@ var helpers = require("./lib/helpers");
 
 
 module.exports = function findApp( config, cb ){
-  if( !config.mode ) config.mode = "development"; // development is default mode
+  if( !config.mode )         config.mode         = "development"; // development is default mode
+  if( !config.process_mode ) config.process_mode = "single";      // single is default process_mode
   loadApp( extendConfig( config ), cb );
 };
 
