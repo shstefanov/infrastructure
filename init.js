@@ -68,7 +68,7 @@ module.exports = function(env, cb){
   env.i       = {};
   env.classes = {};
 
-  if(config.app.process_mode === "cluster"){
+  if(config.process_mode === "cluster"){
 
     var callbacks = {}, cb_index = 0;
     env.serializeCallback = function serializeCallback(fn){
