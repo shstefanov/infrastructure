@@ -1,6 +1,8 @@
 var helpers = require("../../lib/helpers.js");
 var assert  = require("assert");
-describe(["helpers -> resolve", "\n", "[", __filename, "]"].join(""), function(){
+
+var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
+describe("helpers -> resolve" + currentFileMark, function(){
   
   it("Simple resolve", function(next){
     var target = {child: 5};

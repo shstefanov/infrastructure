@@ -2,7 +2,8 @@ var _      = require("underscore");
 var assert = require("assert");
 var Page   = require("../../lib/Page.js");
 
-describe(["Page", "\n", "[", __filename, "]"].join(""), function(){
+var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
+describe("Page" + currentFileMark, function(){
 
   var TestPage = Page.extend("TestPage", {
     root: "/test"

@@ -2,20 +2,31 @@ var fs      = require("fs");
 var path    = require("path");
 var _       = require("underscore");
 
-var init    = require("./init");
+// var init    = require("./init");
 var helpers = require("./lib/helpers");
 
-var loadApp = function(rootDir, config, options, cb){
-  config.rootDir = rootDir;
-  init(_.extend({config: config, helpers: helpers}, options), cb);
+
+module.exports = function findApp( config, cb ){
+  if( !config.mode ) config.mode = "development"; // development is default mode
+  loadApp( extendConfig( config ), cb );
 };
 
-var hasConfig = function(folderPath){
-  return fs.existsSync(path.join(folderPath, "config")) || fs.existsSync(path.join(folderPath, "config.js"));
+var init = module.exports.init = require("./init");
+
+var loadApp = module.exports.loadApp = function( config, cb ){
+  // Creating the env object
+  module.exports.init({ config: config, helpers: helpers }, cb);
 };
 
-var getConfig = function(folderPath){
-  var configPath = path.join(folderPath, "config"), config;
+var hasConfig = module.exports.hasConfig = function( rootDir ){
+  return      fs.existsSync(path.join(rootDir, "config"       )) 
+          ||  fs.existsSync(path.join(rootDir, "config.js"    ))
+          ||  fs.existsSync(path.join(rootDir, "config.json"  ))
+          ||  fs.existsSync(path.join(rootDir, "config.yml"   ));
+};
+
+var loadConfig = module.exports.loadConfig = function(configPath){
+  var config;
   if(fs.statSync(configPath).isDirectory()){
 
     var YAML              = require('yamljs');
@@ -28,20 +39,40 @@ var getConfig = function(folderPath){
 
     config = bulk(configPath, ['**/*.js','**/*.json', '**/*.yml']);
   }
-  else{
-    config = require(path.join(folderPath, "config"));
+  else if(configPath.split(".").pop() === "yml"){
+    config = require('yamljs').parse(fs.readFileSync(configPath, 'utf8').toString());
   }
-  helpers.deepExtend(config, config.development || {});
-  delete config.development;
+  else{
+    config = require(configPath);
+  }
+  return config
+}
+
+var getConfigPath = module.exports.getConfigPath = function(rootDir){
+  return  ( fs.existsSync(path.join(rootDir, "config"       )) ? path.join(rootDir, "config"      ) : false )
+      ||  ( fs.existsSync(path.join(rootDir, "config.js"    )) ? path.join(rootDir, "config.js"   ) : false )
+      ||  ( fs.existsSync(path.join(rootDir, "config.json"  )) ? path.join(rootDir, "config.json" ) : false )
+      ||  ( fs.existsSync(path.join(rootDir, "config.yml"   )) ? path.join(rootDir, "config.yml"  ) : false )
+}
+
+var extendConfig = module.exports.extendConfig = function( config ){
+  if( !hasConfig(config.rootDir) ) return config; // Nothing to extend
+  var isMaster = require("cluster").isMaster;
+
+  // Workers will get their configs later
+  if( config.process_mode === "cluster" && !isMaster ) return config;
+  var extension      = module.exports.loadConfig(module.exports.getConfigPath(config.rootDir));
+  var mode_extension =  ( config.mode === "development") ? ( extension.development ) :
+                        ( config.mode === "test"       ) ? ( extension.test        ) : null;
+  
+  delete extension.development;
+  delete extension.test;
+  
+  if(mode_extension){
+    helpers.deepExtend( extension, mode_extension );
+  }
+  helpers.deepExtend(config, extension);
   return config;
 };
 
-module.exports = function findApp(folderPath, options, cb){
-  folderPath = folderPath||process.argv[2]||process.cwd();
-  options = options||{};
-  if(hasConfig(folderPath))    loadApp(folderPath, getConfig(folderPath), options || {}, cb);
-  else{
-    console.log("config not found");
-    console.log("try to find multiple apps in folder: TODO");
-  }
-};
+

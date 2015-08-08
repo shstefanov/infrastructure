@@ -5,7 +5,8 @@ var ExtendedCollection = require("../../lib/ExtendedCollection.js");
 var TestModel          = ExtendedModel.extend("TestModel", { id_attribute: "id" });
 var TestCollection     = ExtendedCollection.extend("TestCollection", { model: TestModel });
 
-describe(['ExtendedCollection -> indexBy', "\n", "[", __filename, "]"].join(""), function(){
+var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
+describe('ExtendedCollection -> indexBy' + currentFileMark, function(){
 
   it("Sets collection index by constructor options", function(next){
     var collection = new TestCollection([

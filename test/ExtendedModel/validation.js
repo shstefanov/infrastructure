@@ -9,7 +9,9 @@ var TestModel = ExtendedModel.extend("TestModel", {
   }
 });
 
-describe(['Model -> validation', "\n",  "[", __filename, "]"].join(""), function(){
+
+var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
+describe('Model -> validation' + currentFileMark, function(){
   
   it('Empty constructor should give missing error', function (next) {
     var m = new TestModel();

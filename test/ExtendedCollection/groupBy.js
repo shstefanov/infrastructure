@@ -6,7 +6,8 @@ var ExtendedCollection = require("../../lib/ExtendedCollection.js");
 var TestModel          = ExtendedModel.extend("TestModel", { id_attribute: "id" });
 var TestCollection     = ExtendedCollection.extend("TestCollection", { model: TestModel });
 
-describe(['ExtendedCollection -> groupBy', "\n", "[", __filename, "]"].join(""), function(){
+var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
+describe('ExtendedCollection -> groupBy' + currentFileMark, function(){
 
   it("Sets collection group by constructor options", function(next){
     var collection = new TestCollection([

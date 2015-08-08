@@ -1,6 +1,8 @@
 var helpers = require("../../lib/helpers.js");
 var assert  = require("assert");
-describe(["helpers -> patch", "\n", "[", __filename, "]"].join(""), function(){
+
+var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
+describe("helpers -> patch" + currentFileMark, function(){
   
   it("Simple patch", function(next){
     var target = {};

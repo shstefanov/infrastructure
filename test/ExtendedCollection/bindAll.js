@@ -6,7 +6,8 @@ var ExtendedCollection = require("../../lib/ExtendedCollection.js");
 var TestModel          = ExtendedModel.extend("TestModel", { id_attribute: "id" });
 var TestCollection     = ExtendedCollection.extend("TestCollection", { model: TestModel });
 
-describe(['ExtendedCollection -> bindAll', "\n", "[", __filename, "]"].join(""), function(){
+var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
+describe('ExtendedCollection -> bindAll' + currentFileMark, function(){
 
   it("Using bindAll to listen for model events", function(next){
     var collection = new TestCollection([
