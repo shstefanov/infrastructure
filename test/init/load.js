@@ -94,6 +94,7 @@ describe( "Application loader" + currentFileMark, function(){
         assert.deepEqual( env.config, {
 
           mode:                    "production",
+          process_mode:            "single",
           rootDir:                 path.join(__dirname, "fixtures/test_production_config"),
           app: {
             original_property:     "original",
@@ -115,6 +116,7 @@ describe( "Application loader" + currentFileMark, function(){
         assert.deepEqual( env.config, {
 
           mode:                      "development",
+          process_mode:              "single",
           rootDir:                   path.join(__dirname, "fixtures/test_development_config"),
           app: {
             original_property:       "original",
@@ -138,6 +140,7 @@ describe( "Application loader" + currentFileMark, function(){
         assert.deepEqual( env.config, {
 
           mode:                      "test",
+          process_mode:              "single",
           rootDir:                   path.join(__dirname, "fixtures/test_test_config"),
           app: {
             original_property:       "original",
@@ -152,7 +155,5 @@ describe( "Application loader" + currentFileMark, function(){
     });
 
   });
-
-
 
 });
