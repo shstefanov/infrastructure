@@ -9,8 +9,14 @@ module.exports = function(env, cb){
 
 
   process.once("message", function(worker_config){
+
+    env.config = worker_config;
+
     var original_do = env.i.do;
-    // env.i.do = cacheMessages;
+    if(worker_config.config){
+      env.config = worker_config.config;
+      worker_config = _.omit( worker_config, ["config"] );
+    }
 
     delete config.structures;
     _.extend(config, worker_config);
@@ -30,7 +36,6 @@ module.exports = function(env, cb){
         cb(null, env)
       });
     });
-
   });
   process.send(null); // Just initializing communication
 
