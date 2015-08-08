@@ -77,8 +77,6 @@ module.exports = function(env, cb){
       return cb_index;
     }
 
-
-
     env.runCallback = function runCallback(data){
       var fn = callbacks[data.run_cb[1]];
       if(fn) {
@@ -95,7 +93,6 @@ module.exports = function(env, cb){
         delete callbacks[data.drop_cb[1]];
       }
     }
-
 
     var cluster = require("cluster");
     if(cluster.isMaster){
