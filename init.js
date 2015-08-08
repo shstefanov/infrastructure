@@ -141,7 +141,19 @@ module.exports = function(env, cb){
       require("./init/process/worker.js")(env, cb);
     }
   }
-  else require("./init/process/single.js")(env, cb);
+  else {
+    // Flatten partial configurations in structures
+    if(config.structures){
+      _.each(config.structures, function(structure_config){
+        if(structure_config.config){
+          var partial_config = structure_config;
+          _.extend(config, partial_config);
+          delete structure_config.config;
+        }
+      });
+    }
+    require("./init/process/single.js")(env, cb);
+  }
 
   // if      (!env.config.nodes && cluster.isMaster)     require("./init/single.js")(env, cb);
   // else if (env.config.nodes  && cluster.isMaster)     require("./init/master.js")(env, cb);
