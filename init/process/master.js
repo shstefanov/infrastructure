@@ -14,12 +14,12 @@ module.exports = function(env, cb){
       structure = _.extend.apply(_, [{}].concat(structure));
     }
     else structure = _.object([[name, structure]]);
-    var node_config = { structures: structure };
+    var node_config = _.extend((structure.config || {}), { structures: _.omit(structure, ["config"]) });
     cache[name] = [];
-    if(node_config.config) {
-      helpers.deepExtend(node_config, node_config.config);
-      delete node_config.config;
-    }
+    // if(node_config.config) {
+    //   helpers.deepExtend(node_config, node_config.config);
+    //   delete node_config.config;
+    // }
 
     var node_ready_cb;
     complete_chain.push(function(cb){node_ready_cb = cb;});

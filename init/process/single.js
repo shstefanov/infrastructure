@@ -31,6 +31,11 @@ module.exports = function(env, cb){
     bundles: {
       engines: ["../engines/webpack"    ],
       loaders: ["../loaders/bundles"    ]
+    },
+
+    websocket: {
+      engines: [ "../engines/websocket" ],
+      loaders: ["../loaders/websocket"  ]
     }
   };
 
@@ -71,7 +76,9 @@ module.exports = function(env, cb){
 
     "Page":                "../../lib/Page",
     "Api":                 "../../lib/Api",
-    "Widget":              "../../lib/Widget"
+    "Widget":              "../../lib/Widget",
+
+    "WebsocketApp":        "../../lib/WebsocketApp",
   };
 
   var loadersAliases = {
@@ -82,6 +89,7 @@ module.exports = function(env, cb){
     "log":                "../loaders/log",
     "data":               "../loaders/data",
     "bundles":            "../loaders/bundles",
+    "websocket":          "../loaders/websocket",
   };
 
   var classes = {};

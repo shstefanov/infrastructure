@@ -14,6 +14,7 @@
     "bulk-require": "latest",
     "coffee-script": "latest",
     "connect-mongo": "latest",
+    "cookie": "latest",
     "cookie-parser": "latest",
     "elasticsearch": "latest",
     "express": "latest",

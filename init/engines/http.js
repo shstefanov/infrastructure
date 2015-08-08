@@ -10,11 +10,8 @@ module.exports = function(cb){
   var express        = require("express"                );
   var methodOverride = require('method-override'        );
   var bodyParser     = require('body-parser'            );
-  // var session        = require('express-session'        );
   var morgan         = require('morgan'                 );
-  // var MongoStore     = require('connect-mongo') (session);
   var socketio       = require("socket.io"              );
-  // var SessionSockets = require('session.socket.io'      );
   var _              = require("underscore"             );
 
   var env     = this;
@@ -44,7 +41,7 @@ module.exports = function(cb){
     CookieParser = require( 'cookie-parser' );
     cookieParser = CookieParser(config.session.secret);
     app.use(cookieParser);
-    env.i.do("log.sys", "CookiePrser", "Cookie: "+config.session.secret);
+    env.i.do("log.sys", "CookiePrser", "Setup cookies ");
   }
   
   var session, sessionStore;
@@ -59,7 +56,7 @@ module.exports = function(cb){
       secret:            config.session.secret,
       store:             sessionStore
     }));
-    env.i.do("log.sys", "MongoStore", "Collection: "+config.session.collection+" Cookie: "+config.session.secret);
+    env.i.do("log.sys", "MongoStore", "Collection: "+config.session.collection);
   }
   
   if(config.http.static){
@@ -74,18 +71,7 @@ module.exports = function(cb){
   var server = http.createServer(app).listen(app.get('port'), function(err){
     if(err) return cb(err);
     env.i.do("log.sys", "http", 'Express server listening on port ' + app.get('port'));
-    if(!config.websocket) return cb();
-    if(session && sessionStore && env.socketConnection){
-      var SessionSockets = require( 'session.socket.io' );
-      var io = socketio.listen(server);
-      var sio = new SessionSockets(io, sessionStore, cookieParser);
-      sio.on("connection", env.socketConnection);
-      env.i.do("log.sys", "websocket", 'socket.io listening on port ' + app.get('port'));
-      cb();
-    }
-    else {
-      cb();
-    }
+    cb();
   });
 
 };

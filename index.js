@@ -11,7 +11,7 @@ var loadApp = function(rootDir, config, options, cb){
 };
 
 var hasConfig = function(folderPath){
-  return fs.existsSync(path.join(folderPath, "config")) || fs.existsSync(path.join(folderPath, "config.js"))
+  return fs.existsSync(path.join(folderPath, "config")) || fs.existsSync(path.join(folderPath, "config.js"));
 };
 
 var getConfig = function(folderPath){
