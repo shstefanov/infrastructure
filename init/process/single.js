@@ -4,110 +4,85 @@ module.exports = function(env, cb){
   var path      = require("path"        );
   var config    = env.config;
   var bulk      = require("bulk-require");
-  
-  var baseTypes = {
-
-    log: {
-      engines: ["../engines/log"]
-    },
-
-    controllers: {
-      loaders: ["../loaders/controllers"]
-    },
-
-    pages: {
-      engines: ["../engines/http"       ],
-      loaders: ["../loaders/pages"      ]
-    },
-
-    data:{
-      loaders: ["../loaders/data"       ]
-    },
-
-    models: {
-      loaders: ["../loaders/models"     ]
-    },
-
-    bundles: {
-      engines: ["../engines/webpack"    ],
-      loaders: ["../loaders/bundles"    ]
-    },
-
-    websocket: {
-      engines: [ "../engines/websocket" ],
-      loaders: ["../loaders/websocket"  ]
-    }
-  };
-
-  var engines_order = [ "neo4j", "elastic", "redis", "mongodb", "mysql", "postgres", "http", "websocket" ];
-
+ 
   var enginesAliases = {
-    "neo4j":      "../engines/neo4j",
-    "elastic":    "../engines/elastic",
-    "redis":      "../engines/redis",
-    "mongodb":    "../engines/mongodb",
-    "mysql":      "../engines/mysql",
-    "postgres":   "../engines/postgres",
-    "http":       "../engines/http",
-    "websocket":  "../engines/websocket",
+    "log":        path.join( __dirname, "../engines/log.js"        ),
+    "neo4j":      path.join( __dirname, "../engines/neo4j.js"      ),
+    "elastic":    path.join( __dirname, "../engines/elastic.js"    ),
+    "redis":      path.join( __dirname, "../engines/redis.js"      ),
+    "mongodb":    path.join( __dirname, "../engines/mongodb.js"    ),
+    "mysql":      path.join( __dirname, "../engines/mysql.js"      ),
+    "postgres":   path.join( __dirname, "../engines/postgres.js"   ),
+    "http":       path.join( __dirname, "../engines/http.js"       ),
+    "websocket":  path.join( __dirname, "../engines/websocket.js"  ),
+    "webpack":    path.join( __dirname, "../engines/webpack.js"    ),
   };
 
-  var classesAliases = {
+  var libsAliases = {
 
-    "Class":               "../../lib/Class",
-    "EventedClass":        "../../lib/EventedClass",
+    "Class":               path.join( __dirname, "../../lib/Class"                     ),
+    "EventedClass":        path.join( __dirname, "../../lib/EventedClass"              ),
 
-    "Controller":          "../../lib/Controller",
+    "Controller":          path.join( __dirname, "../../lib/Controller"                ),
 
-    "Model":               "../../lib/Model",
-    "Collection":          "../../lib/Collection",
-    "ExtendedModel":       "../../lib/ExtendedModel",
-    "ExtendedCollection":  "../../lib/ExtendedCollection",
+    "Model":               path.join( __dirname, "../../lib/Model"                     ),
+    "Collection":          path.join( __dirname, "../../lib/Collection"                ),
+    "ExtendedModel":       path.join( __dirname, "../../lib/ExtendedModel"             ),
+    "ExtendedCollection":  path.join( __dirname, "../../lib/ExtendedCollection"        ),
 
-    "SocketsCollection":   "../../lib/SocketsCollection",
+    "SocketsCollection":   path.join( __dirname, "../../lib/SocketsCollection"         ),
 
-    "DataLayer":           "../../lib/DataLayers/DataLayer",
-    "MysqlLayer":          "../../lib/DataLayers/MysqlLayer",
-    "MongoLayer":          "../../lib/DataLayers/MongoLayer",
-    "PostgresLayer":       "../../lib/DataLayers/PostgresLayer",
-    "RedisLayer":          "../../lib/DataLayers/RedisLayer",
-    "ElasticLayer":        "../../lib/DataLayers/ElasticLayer",
-    "Neo4jLayer":          "../../lib/DataLayers/Neo4jLayer",
+    "DataLayer":           path.join( __dirname, "../../lib/DataLayers/DataLayer"      ),
+    "MysqlLayer":          path.join( __dirname, "../../lib/DataLayers/MysqlLayer"     ),
+    "MongoLayer":          path.join( __dirname, "../../lib/DataLayers/MongoLayer"     ),
+    "PostgresLayer":       path.join( __dirname, "../../lib/DataLayers/PostgresLayer"  ),
+    "RedisLayer":          path.join( __dirname, "../../lib/DataLayers/RedisLayer"     ),
+    "ElasticLayer":        path.join( __dirname, "../../lib/DataLayers/ElasticLayer"   ),
+    "Neo4jLayer":          path.join( __dirname, "../../lib/DataLayers/Neo4jLayer"     ),
 
-    "Page":                "../../lib/Page",
-    "Api":                 "../../lib/Api",
-    "Widget":              "../../lib/Widget",
+    "Page":                path.join( __dirname, "../../lib/Page"                      ),
+    "Api":                 path.join( __dirname, "../../lib/Api"                       ),
+    "Widget":              path.join( __dirname, "../../lib/Widget"                    ),
 
-    "WebsocketApp":        "../../lib/WebsocketApp",
+    "WebsocketApp":        path.join( __dirname, "../../lib/WebsocketApp"              ),
   };
 
   var loadersAliases = {
-    "backbone-data-sync": "../loaders/backbone-data-sync",
-    "models" :            "../loaders/models",
-    "pages":              "../loaders/pages",
-    "controllers":        "../loaders/controllers",
-    "log":                "../loaders/log",
-    "data":               "../loaders/data",
-    "bundles":            "../loaders/bundles",
-    "websocket":          "../loaders/websocket",
+    "backbone-data-sync": path.join( __dirname, "../loaders/backbone-data-sync"   ),
+    "models" :            path.join( __dirname, "../loaders/models"               ),
+    "pages":              path.join( __dirname, "../loaders/pages"                ),
+    "controllers":        path.join( __dirname, "../loaders/controllers"          ),
+    "log":                path.join( __dirname, "../loaders/log"                  ),
+    "data":               path.join( __dirname, "../loaders/data"                 ),
+    "bundles":            path.join( __dirname, "../loaders/bundles"              ),
+    "websocket":          path.join( __dirname, "../loaders/websocket"            ),
   };
 
   var classes = {};
   var engines = [];
   var loaders = [];
 
+  function resolvePath(name, aliasMap){
+    // Absolute path
+    if     ( name.indexOf("/") === 0 ) return name; 
+
+    // Relative path - compose path based on project root
+    else if( name.indexOf(".") === 0 ) return path.join( config.rootDir, name );
+    
+    // We have alias for it
+    else if( aliasMap.hasOwnProperty(name) ) return aliasMap[name];
+
+    // May be it is package that can be resolved from node_modules
+    else return name;
+
+  }
+
   env.classes = classes;
 
   _.each(config.structures, function(node, type){
-    if(!type) return;
-    if(baseTypes[type]){
-      engines = engines.concat(node.engines||baseTypes[type].engines||[]).map(function(e){return enginesAliases[e]||e});
-      loaders = loaders.concat(node.loaders||baseTypes[type].loaders||[]).map(function(l){return loadersAliases[l]||l});
-    }
-    else{
-      engines = engines.concat(node.engines||[]).map(function(e){return enginesAliases[e]||e});
-      loaders = loaders.concat(node.loaders||[]).map(function(l){return loadersAliases[l]||l});
-    }
+
+    if( node.engines ) engines = engines.concat( node.engines );
+    if( node.loaders ) loaders = loaders.concat( node.loaders );
 
     if(node.libs){
       _.extend(classes, _.mapObject(node.libs || {}, function(val, key){
@@ -122,7 +97,7 @@ module.exports = function(env, cb){
           return result;
         }
         else {
-          var result = require(classesAliases[val]?classesAliases[val]:path.join(env.config.rootDir, val));
+          var result = require( resolvePath( val, libsAliases ) );
           env.classes[key] = result;
           return result;
         }
@@ -131,8 +106,11 @@ module.exports = function(env, cb){
 
   });
 
-  engines = _.sortBy(_.uniq(engines), function(e){ return e==="../engines/log"?-1:1});
-  loaders = _.uniq(loaders);
+  engines = _.sortBy(_.uniq(engines), function( e ){ return e === "log" ? -1 : 1 } )
+    .map(function(e){ return resolvePath( e, enginesAliases ); });
+
+  loaders = _.uniq(loaders)
+    .map(function(l){ return resolvePath( l, loadersAliases ); });
 
   var initChain = engines.concat(loaders).map(function(c){return require(c);});
 
@@ -179,6 +157,5 @@ module.exports = function(env, cb){
   };
 
   env.helpers.chain(initChain)(function(err){ cb(err, env); }, env );
-
 
 };
