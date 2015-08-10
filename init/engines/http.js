@@ -70,6 +70,7 @@ module.exports = function(cb){
   env.engines.express = app;
   var server = http.createServer(app).listen(app.get('port'), function(err){
     if(err) return cb(err);
+    env.stops.push(function(cb){ server.close(); cb(); });
     env.i.do("log.sys", "http", 'Express server listening on port ' + app.get('port'));
     cb();
   });
