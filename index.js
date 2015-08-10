@@ -7,8 +7,11 @@ var helpers = require("./lib/helpers");
 
 
 module.exports = function findApp( config, cb ){
-  if( !config.mode )         config.mode         = "development"; // development is default mode
+  // Keep original config untouched
+  config = JSON.parse(JSON.stringify(config));
+  if( !config.mode         ) config.mode         = "development"; // development is default mode
   if( !config.process_mode ) config.process_mode = "single";      // single is default process_mode
+  if( !config.rootDir      ) config.rootDir      = process.cwd(); // process.cwd() is default rootDir
   loadApp( extendConfig( config ), cb );
 };
 
@@ -46,6 +49,8 @@ var loadConfig = module.exports.loadConfig = function(configPath){
   else{
     config = require(configPath);
   }
+  // Create a clone of config in order to eep original modules untouched
+  config = JSON.parse(JSON.stringify(config));
   return config
 }
 
