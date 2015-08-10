@@ -10,16 +10,7 @@ module.exports = function(env, cb){
 
   process.once("message", function(worker_config){
 
-    env.config = worker_config;
-
-    var original_do = env.i.do;
-    if(worker_config.config){
-      env.config = worker_config.config;
-      worker_config = _.omit( worker_config, ["config"] );
-    }
-
-    delete config.structures;
-    _.extend(config, worker_config);
+    _.extend( config, worker_config );
     require("./single")(env, function(err){
       if(err) throw err;
       if(err) return process.send(err);

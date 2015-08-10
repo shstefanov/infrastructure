@@ -17,6 +17,7 @@ module.exports = function(env, cb){
 
   env.structureLoader = function(name, setup, cb, cached){
 
+
     var structureConfig = env.config.structures[name];
     if(!structureConfig) return cb(new Error("Cant find config: env.config.structures."+name + " structure "+name));
     var stagePath = path.join(env.config.rootDir, structureConfig.path);
@@ -144,11 +145,11 @@ module.exports = function(env, cb){
   else {
     // Flatten partial configurations in structures
     if(config.structures){
-      _.each(config.structures, function(structure_config){
-        if(structure_config.config){
-          var partial_config = structure_config;
+      _.each(config.structures, function(structure){
+        if(structure.config){
+          var partial_config = structure.config;
           _.extend(config, partial_config);
-          delete structure_config.config;
+          delete structure.config;
         }
       });
     }

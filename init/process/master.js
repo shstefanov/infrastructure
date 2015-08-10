@@ -9,18 +9,10 @@ module.exports = function(env, cb){
   var workerNames = _.keys(config.structures);
   var complete_chain = [];
   _.each(config.structures, function(structure, name){
-    var other_worker_names;
-    if(Array.isArray(structure)){
-      structure = _.extend.apply(_, [{}].concat(structure));
-    }
-    else structure = _.object([[name, structure]]);
-    var node_config = _.extend((structure.config || {}), { structures: _.omit(structure, ["config"]) });
-    cache[name] = [];
-    // if(node_config.config) {
-    //   helpers.deepExtend(node_config, node_config.config);
-    //   delete node_config.config;
-    // }
-
+    var conf        = structure.config;
+    structure       = _.object([[name, _.omit(structure, ["config"])]]);;
+    var node_config = _.extend((conf || {}), { structures: structure });
+    cache[name]     = [];
     var node_ready_cb;
     complete_chain.push(function(cb){node_ready_cb = cb;});
     createWorker(name, node_config, function(err){ node_ready_cb(err); });
