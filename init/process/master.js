@@ -10,7 +10,7 @@ module.exports = function(env, cb){
   var complete_chain = [];
   _.each(config.structures, function(structure, name){
     var conf        = structure.config;
-    structure       = _.object([[name, _.omit(structure, ["config"])]]);;
+    structure       = _.object([[name, _.omit(structure, ["config"])]]);
     var node_config = _.extend((conf || {}), { structures: structure });
     cache[name]     = [];
     var node_ready_cb;
