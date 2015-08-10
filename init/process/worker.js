@@ -7,7 +7,6 @@ module.exports = function(env, cb){
 
   var initialized = false;
 
-
   process.once("message", function(worker_config){
 
     _.extend( config, worker_config );
@@ -24,10 +23,12 @@ module.exports = function(env, cb){
       process.once("message", function(cache){
         process.on("message", processMessage);
         cache.forEach(processMessage);
+        env.stops.push(function(cb){ process.removeAllListeners(); cb(); });
         cb(null, env)
       });
     });
   });
+
   process.send(null); // Just initializing communication
 
   function processMessage(data){
@@ -90,6 +91,7 @@ module.exports = function(env, cb){
     if(_.isString(args[0])) {
       var address_parts = args.shift().split(/[.\/]/);
       if(!env.i[address_parts[0]]) return forwardToMaster(address, args);
+
       address = address_parts;
     }
     else                    address = args.shift();
@@ -130,6 +132,5 @@ module.exports = function(env, cb){
       return target.do.apply(target, [address.slice(1)].concat(args));
     }
   };
-
 
 }

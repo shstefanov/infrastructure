@@ -16,16 +16,32 @@ module.exports = function(env, cb){
     var node_ready_cb;
     complete_chain.push(function(cb){node_ready_cb = cb;});
     createWorker(name, node_config, function(err){ node_ready_cb(err); });
+
+    env.stops.push(function(cb){
+      env.i[name].once("disconnect", function(){
+        env.i[name].removeAllListeners();
+      });
+      env.i.do( name + ".__run.stop", function(err){
+        if(err) console.error(err)
+        cb();     
+      });
+    });
+
   });
 
   helpers.amap(complete_chain, function(fn, cb){fn(cb);}, function(err){
     if(err) console.log("EEEEE:::::", err);
     if(err) return cb(err);
+    env.stops.push(function(cb){process.removeAllListeners(); cb();})
     cb(null, env);
   });
 
   function createWorker(name, config, cb){
     var worker = env.i[name] = cluster.fork();
+
+    // worker.on("disconnect", function(){
+    //   console.log("gracefull, ", name );
+    // })
 
     worker.on("exit", function(){
       delete env.i[name];

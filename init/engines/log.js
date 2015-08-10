@@ -9,7 +9,7 @@ module.exports = function(cb){
   var line      = ".................................";
   var shortline = ".................";
 
-  env.i.log = {};
+  env.i.log = {__run: { stop: env.stop }};
 
   _.each(config.structures.log.options, function(val, key, log){
     env.i.log[key] = function(logName, value, cb){

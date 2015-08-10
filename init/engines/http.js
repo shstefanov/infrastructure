@@ -60,7 +60,7 @@ module.exports = function(cb){
   }
   
   if(config.http.static){
-    for(route in config.http.static){
+    for(var route in config.http.static){
       var folderPath = path.join(config.rootDir, config.http.static[route]);
       app.use(route, express.static(folderPath));
       env.i.do("log.sys", "http", "Serve static content: "+route+" -> "+folderPath);

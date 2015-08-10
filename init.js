@@ -27,6 +27,7 @@ module.exports = function(env, cb){
     env.i[name] = bulk(stagePath, ["**/*.js", "**/*.coffee"]);
     env.i[name].do = env.i.do;
 
+
     if(env.i[name].index) {
       structureInit = env.i[name].index;
       delete env.i[name].index;
@@ -59,6 +60,9 @@ module.exports = function(env, cb){
         }
         else target.do = env.i.do;
       });
+
+      env.i[name].__run = { stop: env.stop };
+      
       if(initializers.length) env.helpers.chain(initializers)(cb, env);
       else                                                    cb(); 
     }
