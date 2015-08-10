@@ -69,6 +69,13 @@ module.exports = function(env, cb){
   env.i       = {};
   env.classes = {};
 
+  env.testSetup = [];
+  env.stops     = [];
+
+  env.stop = function(cb){
+    env.helpers.chain(env.stops)(cb);
+  };
+
   if(config.process_mode === "cluster"){
 
     var callbacks = {}, cb_index = 0;
