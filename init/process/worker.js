@@ -18,12 +18,15 @@ module.exports = function(env, cb){
       delete local_cache;
       env.i.do("log.sys", "worker", _.keys(config.structures).join(","));
       process.on("message", processMessage);
-      env.stops.push(function(cb){ process.removeAllListeners(); cb(); });
+      env.stops.push(function(cb){ 
+        process.removeAllListeners(); cb(); });
       cb(null, env)
     });
   });
 
   function processMessage(data){
+
+
 
     if(data.run_cb){
       return env.runCallback(data);
@@ -76,52 +79,24 @@ module.exports = function(env, cb){
     process.send(data);
   }
 
+  function findCbAndRespond(args, msg){
+    var cb = _.last(args);
+    if(_.isFunction(cb)) cb(msg)
+  }
+
   var DO = function(address){
-    var args    = Array.prototype.slice.call(arguments);
-    var address, cb;
-    if(_.isString(args[0])) {
-      var address_parts = args.shift().split(/[.\/]/);
-      if(!env.i[address_parts[0]]) return forwardToMaster(address, args);
-
-      address = address_parts;
-    }
-    else                    address = args.shift();
+    var args          = Array.prototype.slice.call(arguments);
+    var address       = args[0];
+    var address_parts = address.split(".");
+    var root          = env.i[address_parts[0]];
+    if(!root) return forwardToMaster(address, args.splice(1));
+    var last          = _.last(address_parts);
+    var context       = env.helpers.resolve(env.i, address_parts.slice(0, -1).join("."));
+    if(!context || !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
     
-    if(_.isFunction(_.last(args))) cb = _.last(args);
-
-    var target = this[address[0]];
-
-    if(!target) {
-      return cb && cb("Can't find target: ["+address[0]+"]");
-    }
-    
-   
-    if(address.length === 2){
-      if(target && _.isFunction(target[address[1]])){
-        if(_.isArray(target.methods)){
-          if(target.methods && target.methods.indexOf(address[1])!=-1){
-            if(target.parseArguments) {
-              args = target.parseArguments(args);
-              if(args===false) return cb && cb("Invalid arguments");
-            }
-            target[address[1]].apply(target, args);
-          }
-          else return cb && cb("Invalid target: ["+address.join(".")+"]");
-        }
-        else{
-          if(target.parseArguments) {
-            args = target.parseArguments(args);
-            if(args===false) return cb && cb("Invalid arguments");
-          }
-          target[address[1]].apply(target, args);
-        }
-      }
-      else return cb && cb("Invalid target: ["+address.join(".")+"]");
-    }
-    else {
-      if(!_.isFunction(target.do)) return cb && cb("Can't chain to target (missing 'do' method): ["+address.join(".")+"]");
-      return target.do.apply(target, [address.slice(1)].concat(args));
-    }
+    if(context.parseArguments) args = context.parseArguments(args.slice(1));
+    else args = args.slice(1);
+    context[last].apply(context, args);
   };
 
 }

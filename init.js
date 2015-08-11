@@ -10,6 +10,13 @@ module.exports = function(env, cb){
   var _      = require("underscore");
   var bulk   = require("bulk-require");
 
+  env.testSetup = [];
+  env.stops     = [];
+
+  env.stop = function(cb){
+    env.helpers.chain(env.stops)(cb);
+  };
+
   env.getCached = function(target){
     if(!target.__cached) { target.__cached = target.apply(env); }
     return target.__cached;
@@ -44,7 +51,7 @@ module.exports = function(env, cb){
 
     function go(cb){
       env.helpers.traverse(env.i[name], function(target, nodeName, parent){
-        if(nodeName === "do") return;
+        if( nodeName === "do" || (nodeName === "stop" && parent === env.i[name].__run  )    ) return;
         if(_.isFunction(target)) {
           var Node;
           if(setup)        Node = setup(nodeName, env.getCached(target));
@@ -59,7 +66,6 @@ module.exports = function(env, cb){
         }
         else target.do = env.i.do;
       });
-
       env.i[name].__run = { stop: env.stop };
       
       if(initializers.length) env.helpers.chain(initializers)(cb, env);
@@ -72,12 +78,7 @@ module.exports = function(env, cb){
   env.i       = {};
   env.classes = {};
 
-  env.testSetup = [];
-  env.stops     = [];
 
-  env.stop = function(cb){
-    env.helpers.chain(env.stops)(cb);
-  };
 
   if(config.process_mode === "cluster"){
 
@@ -163,6 +164,24 @@ module.exports = function(env, cb){
         }
       });
     }
+
+
+    env.i.do = function(address){
+      var args          = Array.prototype.slice.call(arguments);
+      var address       = args[0];
+      var address_parts = address.split(".");
+      var root          = env.i[address_parts[0]];
+      if(!root) return forwardToMaster(address, args.splice(1));
+      var last          = _.last(address_parts);
+      var context       = env.helpers.resolve(env.i, address_parts.slice(0, -1).join("."));
+      if(!context || !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
+      
+      if(context.parseArguments) args = context.parseArguments(args.slice(1));
+      else args = args.slice(1);
+      context[last].apply(context, args);
+    };
+
+
     require("./init/process/single.js")(env, cb);
   }
 

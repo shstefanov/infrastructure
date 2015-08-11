@@ -31,13 +31,16 @@ module.exports = function(env, cb){
 
   var cache       = {};
   var nodes_chain = [];
+  var log = helpers.resolve(config, "structures.log.options.sys");
   _.each(config.structures, function( structure, name ){
 
     var str_config = bundleWorkerConfig( structure, name );
     env.stops.push(function(cb){
       if(!env.i[name]) return cb();
+      log && console.log("try Gracefull ", name);
       env.i[name].once("disconnect", function(){
-        if(helpers.resolve(config, "structures.log.options.sys")) console.log("Gracefull shutdown for worker:", name );
+        log && console.log("Gracefull success", name)
+        log && console.log("Gracefull shutdown for worker:", name );
         cb();
       });
       env.i.do( name + ".__run.stop", function(err){ if(err) console.error(err); }); 
