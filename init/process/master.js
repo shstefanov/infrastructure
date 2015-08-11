@@ -4,98 +4,82 @@ module.exports = function(env, cb){
   var cluster = require("cluster");
   var helpers = require("../../lib/helpers");
   var config  = env.config;
-  var cache   = {};
-
-  var workerNames = _.keys(config.structures);
-  var complete_chain = [];
-  _.each(config.structures, function(structure, name){
-    var conf        = structure.config;
-    structure       = _.object([[name, _.omit(structure, ["config"])]]);
-    var node_config = _.extend((conf || {}), { structures: structure });
-    cache[name]     = [];
-    var node_ready_cb;
-    complete_chain.push(function(cb){node_ready_cb = cb;});
-    createWorker(name, node_config, function(err){ node_ready_cb(err); });
-
-    env.stops.push(function(cb){
-      env.i[name].once("disconnect", function(){
-        env.i[name].removeAllListeners();
-      });
-      env.i.do( name + ".__run.stop", function(err){
-        if(err) console.error(err)
-        cb();     
-      });
-    });
-
-  });
-
-  helpers.amap(complete_chain, function(fn, cb){fn(cb);}, function(err){
-    if(err) console.log("EEEEE:::::", err);
-    if(err) return cb(err);
-    env.stops.push(function(cb){process.removeAllListeners(); cb();})
-    cb(null, env);
-  });
-
-  function createWorker(name, config, cb){
-    var worker = env.i[name] = cluster.fork();
-
-    // worker.on("disconnect", function(){
-    //   console.log("gracefull, ", name );
-    // })
-
-    worker.on("exit", function(){
-      delete env.i[name];
-      createWorker(name, config);
-      worker.initialized = false;
-    });
-
-    worker.once("message", function(){
-      var i = env.i;
-      worker.send(config);
-      worker.once("message", function(err){ // fully initialized or error
-        
-        if(err) return cb && cb(err);
-
-        worker.send(cache[name]);
-        cache[name] = [];
-
-        cb && cb();
-        worker.initialized = true;
 
 
-        worker.on("message", function(data){
-          if(!data.address) console.log("????", JSON.stringify(data));
-          var address_parts = data.address.split(".");
-          var target = address_parts[0];
-          if(data.cb && !Array.isArray(data.cb)) data.cb = [name, data.cb];
-          else if(data.listener && !Array.isArray(data.listener)) data.listener = [name, data.listener];
-          else if(data.stream && !Array.isArray(data.stream)) data.stream = [name, data.stream];
+  var base_config = JSON.stringify(_.omit(config, ["structures"]));
+  function bundleWorkerConfig(structure, name){
+    var node_base_config = JSON.parse(base_config);
+    var node_config      = structure.config || {};
 
-          if(env.i[target] && env.i[target].initialized) {
-            env.i[target].send(data);
-          }
-          else {
-            if(!cache[target]) cache[target] = [];
-            cache[target].push(data);
-          }
-        });
+    helpers.deepExtend( node_base_config, node_config );
 
-      });
-    })
-    
+    if(config.mode === "development" && node_config.development){
+      helpers.deepExtend( node_base_config, node_config.development );
+    }
+    else if(config.mode === "test" && node_config.test){
+      helpers.deepExtend( node_base_config, node_config.test );
+    }
+
+    _.extend(node_base_config, {structures: _.object([[name, _.omit(structure, ["config"])]])});
+
+    delete node_config.development;
+    delete node_config.test;
+
+    return JSON.stringify(node_base_config);
   }
 
 
+  var cache       = {};
+  var nodes_chain = [];
+  _.each(config.structures, function( structure, name ){
 
-  // function deserializeCallback(cb_data){
-  //   cb_data = Array.prototype.slice.call(cb_data);
-  //   return function(){
-  //     process.send({
-  //       run_cb: cb_data,
-  //       args: Array.prototype.slice.call(arguments)
-  //     });
-  //   }
-  // }
+    var str_config = bundleWorkerConfig( structure, name );
+    env.stops.push(function(cb){
+      if(!env.i[name]) return cb();
+      env.i[name].once("disconnect", function(){
+        if(helpers.resolve(config, "structures.log.options.sys")) console.log("Gracefull shutdown for worker:", name );
+        cb();
+      });
+      env.i.do( name + ".__run.stop", function(err){ if(err) console.error(err); }); 
+    });
+
+    createWorker(name, str_config);
+  });
+
+  function createWorker(name, str_config){
+    cache[name]     = [];
+    nodes_chain[name === "log" ? "unshift" : "push"](function(cb){
+      var worker  = cluster.fork({ INFRASTRUCTURE_CONFIG: str_config });
+      worker.on("exit", function(){
+        delete env.i[name];
+        createWorker(name, str_config);
+      });
+      worker.once("message", function(err){ // fully initialized or error
+        if(err) return cb(err);
+        env.i[name] = worker;
+        worker.send(cache[name]);
+        worker.on("message", function(data){
+          if(!data.address) console.log("????", JSON.stringify(data));
+          var address_parts = data.address.split(".");
+          var target_name   = address_parts[0];
+          var target = env.i[target_name];
+          if(data.cb && !Array.isArray(data.cb)                  ) data.cb       = [name, data.cb       ];
+          else if(data.listener && !Array.isArray(data.listener) ) data.listener = [name, data.listener ];
+          else if(data.stream   && !Array.isArray(data.stream)   ) data.stream   = [name, data.stream   ];
+
+          if(target)        target.send(data);
+          else              cache[target_name].push(data);
+        });
+        cb();
+      });
+      
+    });
+  }
+
+  helpers.chain(nodes_chain)(function(err){
+    if(err) return cb(err);
+    cb(null, env);
+  });
 
   env.i.do = function(){
     var args = Array.prototype.slice.call(arguments);

@@ -7,6 +7,12 @@ var helpers = require("./lib/helpers");
 
 
 module.exports = function findApp( config, cb ){
+
+  if( require("cluster").isWorker ) return module.exports.init({ 
+    config: JSON.parse(process.env.INFRASTRUCTURE_CONFIG),
+    helpers: helpers 
+  }, cb);
+
   // Keep original config untouched
   config = JSON.parse(JSON.stringify(config));
   if( !config.mode         ) config.mode         = "development"; // development is default mode
@@ -65,7 +71,7 @@ var extendConfig = module.exports.extendConfig = function( config ){
   if( !hasConfig(config.rootDir) ) return config; // Nothing to extend
   var isMaster = require("cluster").isMaster;
 
-  // Workers will get their configs later
+  // Workers will get their from process.env
   if( config.process_mode === "cluster" && !isMaster ) return config;
   var extension      = module.exports.loadConfig(module.exports.getConfigPath(config.rootDir));
   var mode_extension =  ( config.mode === "development") ? ( extension.development ) :

@@ -3,5 +3,5 @@ module.exports = function(cb){
   env.structureLoader("data", function setupDataLayer(name, DataLayer){
     if(!DataLayer.prototype.name) DataLayer.prototype.name = name;
     return new DataLayer(env, DataLayer, name);
-  }, cb );
+  }, cb, true );
 };

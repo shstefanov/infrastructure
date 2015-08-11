@@ -33,15 +33,16 @@ module.exports = function(cb){
     env.i.do("log.sys", "morgan", "morgan logger running");
   }
   
-  app.use(bodyParser());
   app.use(methodOverride());
+  app.use(bodyParser.urlencoded({extended: true}));
+  app.use(bodyParser.json({extended: true}));
   
   var CookieParser, cookieParser;
   if(config.session){
     CookieParser = require( 'cookie-parser' );
     cookieParser = CookieParser(config.session.secret);
     app.use(cookieParser);
-    env.i.do("log.sys", "CookiePrser", "Setup cookies ");
+    env.i.do("log.sys", "CookieParser", "Setup cookies ");
   }
   
   var session, sessionStore;

@@ -10,6 +10,6 @@ module.exports = function(cb){
     proto.private?_.extend(proto, proto.private):null;
     delete proto.private;
     return new Controller(env);
-  }, cb );
+  }, cb, true );
 
 };

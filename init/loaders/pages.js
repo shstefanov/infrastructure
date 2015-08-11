@@ -4,6 +4,6 @@ module.exports = function(cb){
     Page.prototype.env  = env;
     if(!Page.prototype.root) Page.prototype.root = "/"+name;
     return new Page(env);
-  }, cb );
+  }, cb, true );
 
 };

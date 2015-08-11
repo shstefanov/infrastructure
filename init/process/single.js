@@ -108,52 +108,58 @@ module.exports = function(env, cb){
 
   engines = _.sortBy(_.uniq(engines), function( e ){ return e === "log" ? -1 : 1 } )
     .map(function(e){ return resolvePath( e, enginesAliases ); });
+  if(config.mode === "test" && config.engines_fixtures) engines = engines.concat(config.engines_fixtures.map(function(p){
+    return path.join(config.rootDir, p);
+  }))
 
   loaders = _.uniq(loaders)
     .map(function(l){ return resolvePath( l, loadersAliases ); });
+  if(config.mode === "test" && config.loaders_fixtures) loaders = loaders.concat(config.loaders_fixtures.map(function(p){
+    return path.join(config.rootDir, p);
+  }))
 
   var initChain = engines.concat(loaders).map(function(c){return require(c);});
 
-  env.i.do = env.i.do || function(){
-    var args    = Array.prototype.slice.call(arguments);
-    var address, cb;
-    if(_.isString(args[0])) address = args.shift().split(/[.\/]/);
-    else                    address = args.shift();
+  // env.i.do = env.i.do || function(){
+  //   var args    = Array.prototype.slice.call(arguments);
+  //   var address, cb;
+  //   if(_.isString(args[0])) address = args.shift().split(/[.\/]/);
+  //   else                    address = args.shift();
     
-    if(_.isFunction(_.last(args))) cb = _.last(args);
-    var target = this[address[0]];
+  //   if(_.isFunction(_.last(args))) cb = _.last(args);
+  //   var target = this[address[0]];
 
-    if(!target) {
-      return cb && cb("Can't find target: ["+address[0]+"]");
-    }
+  //   if(!target) {
+  //     return cb && cb("Can't find target: ["+address[0]+"]");
+  //   }
     
-    if(address.length === 2){
-      if(target && _.isFunction(target[address[1]])){
-        if(_.isArray(target.methods)){
-          if(target.methods && target.methods.indexOf(address[1])!=-1){
-            if(target.parseArguments) {
-              args = target.parseArguments(args);
-              if(args===false) return cb && cb("Invalid arguments");
-            }
-            target[address[1]].apply(target, args);
-          }
-          else return cb && cb("Invalid target: ["+address.join(".")+"]");
-        }
-        else{
-          if(target.parseArguments) {
-            args = target.parseArguments(args);
-            if(args===false) return cb && cb("Invalid arguments");
-          }
-          target[address[1]].apply(target, args);
-        }
-      }
-      else return cb && cb("Invalid target: ["+address.join(".")+"]");
-    }
-    else {
-      if(!_.isFunction(target.do)) return cb && cb("Can't chain to target (missing 'do' method): ["+address.join(".")+"]");
-      return target.do.apply(target, [address.slice(1)].concat(args));
-    }
-  };
+  //   if(address.length === 2){
+  //     if(target && _.isFunction(target[address[1]])){
+  //       if(_.isArray(target.methods)){
+  //         if(target.methods && target.methods.indexOf(address[1])!=-1){
+  //           if(target.parseArguments) {
+  //             args = target.parseArguments(args);
+  //             if(args===false) return cb && cb("Invalid arguments");
+  //           }
+  //           target[address[1]].apply(target, args);
+  //         }
+  //         else return cb && cb("Invalid target: ["+address.join(".")+"]");
+  //       }
+  //       else{
+  //         if(target.parseArguments) {
+  //           args = target.parseArguments(args);
+  //           if(args===false) return cb && cb("Invalid arguments");
+  //         }
+  //         target[address[1]].apply(target, args);
+  //       }
+  //     }
+  //     else return cb && cb("Invalid target: ["+address.join(".")+"]");
+  //   }
+  //   else {
+  //     if(!_.isFunction(target.do)) return cb && cb("Can't chain to target (missing 'do' method): ["+address.join(".")+"]");
+  //     return target.do.apply(target, [address.slice(1)].concat(args));
+  //   }
+  // };
 
   env.helpers.chain(initChain)(function(err){ cb(err, env); }, env );
 

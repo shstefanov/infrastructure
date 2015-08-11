@@ -3,33 +3,25 @@ module.exports = function(env, cb){
   var _ = require("underscore");
   var config = env.config;
   var helpers = require("../../lib/helpers");
-  var cache = [];
+  var local_cache = [];
+  env.i.do = function(){ local_cache.push(arguments); }
 
-  var initialized = false;
-
-  process.once("message", function(worker_config){
-
-    _.extend( config, worker_config );
-    require("./single")(env, function(err){
-      if(err) throw err;
-      if(err) return process.send(err);
-      process.send(null);
-      initialized = true;
-      cache.forEach(function(args){ env.i.do.apply(env.i, args); });
-      cache = [];
-      env.i.do("log.sys", "worker", _.keys(worker_config.structures).join(","));
-      // env.i.do = original_do;
-      cache.forEach(function(args){env.i.do.apply(env.i, args);});
-      process.once("message", function(cache){
-        process.on("message", processMessage);
-        cache.forEach(processMessage);
-        env.stops.push(function(cb){ process.removeAllListeners(); cb(); });
-        cb(null, env)
-      });
+  require("./single")(env, function(err){
+    if(err) {
+      cb(err);
+      return process.send(err);
+    }
+    process.send(null);
+    process.once("message", function(cache){
+      env.i.do = DO;
+      local_cache.concat(cache).forEach(function(args){ env.i.do.apply(env.i, args); });
+      delete local_cache;
+      env.i.do("log.sys", "worker", _.keys(config.structures).join(","));
+      process.on("message", processMessage);
+      env.stops.push(function(cb){ process.removeAllListeners(); cb(); });
+      cb(null, env)
     });
   });
-
-  process.send(null); // Just initializing communication
 
   function processMessage(data){
 
@@ -84,9 +76,8 @@ module.exports = function(env, cb){
     process.send(data);
   }
 
-  env.i.do = function(address){
+  var DO = function(address){
     var args    = Array.prototype.slice.call(arguments);
-    if(!initialized) return cache.push(args);
     var address, cb;
     if(_.isString(args[0])) {
       var address_parts = args.shift().split(/[.\/]/);

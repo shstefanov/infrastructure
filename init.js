@@ -17,7 +17,6 @@ module.exports = function(env, cb){
 
   env.structureLoader = function(name, setup, cb, cached){
 
-
     var structureConfig = env.config.structures[name];
     if(!structureConfig) return cb(new Error("Cant find config: env.config.structures."+name + " structure "+name));
     var stagePath = path.join(env.config.rootDir, structureConfig.path);

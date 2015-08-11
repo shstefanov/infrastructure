@@ -8,5 +8,5 @@ module.exports = function(cb){
   env.engines.io = require('socket.io');
   env.engines.servers = {};
 
-  cb&&cb(null);
+  cb&&cb();
 };
