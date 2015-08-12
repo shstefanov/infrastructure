@@ -11,18 +11,18 @@ module.exports = function(cb){
     var opts   = options.options;
     var fields = options.fields;
 
-    options || (options = {});
+    // options || (options = {});
     switch (method) {
       case 'create':
-        env.i.do(model.dataPath+".create", model.toJSON(), opts, callback);  break;
       case 'update':
-        env.i.do(model.dataPath+".update", query || model.toJSON(), opts, callback); break;
+      case 'patch':
       case 'delete':
-        env.i.do(model.dataPath+".delete", query || model.toJSON(), opts, callback); break;
+        var target = options.dataPath || ( model.dataPath+"."+(options.method || method) );
+        env.i.do( target, query || model.toJSON(), opts, callback); 
+        break;
       case 'read':
-        var dataPath = ( model.models? (model.dataPath || model.model.prototype.dataPath) : model.dataPath );
-        var path = (model.models?".find":".findOne");
-        env.i.do( dataPath+path , query, opts, callback); break;
+        var dataPath = options.dataPath || ( (model instanceof Backbone.Collection)? (model.dataPath || model.model.prototype.dataPath) : model.dataPath ) + ( options.method || ( (model instanceof Backbone.Collection ) ? ".find" : ".findOne" ) );
+        env.i.do( dataPath , query || model.toJSON(), opts, callback); break;
     }
   };
 
