@@ -5,9 +5,7 @@ module.exports = function(cb){
   var Backbone  = require("backbone");
   Backbone.sync = function(method, model, options){
     
-    function callback(err, result){
-      err? options.error(err) : options.success(result);
-    }
+    function callback(err, result){ err? options.error(err) : options.success(result); }
 
     var query  = options.query;
     var opts   = options.options;
@@ -27,7 +25,6 @@ module.exports = function(cb){
         env.i.do( dataPath+path , query, opts, callback); break;
     }
   };
-
 
   cb();
 
