@@ -43,8 +43,6 @@ module.exports.stop = function(cb){
 
 };
 
-
-
 if(cluster.isWorker){
   module.exports.start(JSON.parse(process.argv[2]), function(err){
     if(err) return console.error(err);
