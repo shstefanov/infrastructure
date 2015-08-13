@@ -99,6 +99,8 @@ describe("Page" + currentFileMark, function(){
     };
     
     var page = new PageHandlers({
+      helpers: require("../../lib/helpers.js"),
+      config: {},
       i: {do: function(){}},
       engines: {
         express: {
@@ -129,6 +131,8 @@ describe("Page" + currentFileMark, function(){
 
     var handler;
     var page = new PageHandlers({
+      helpers: require("../../lib/helpers.js"),
+      config: {},
       i: {do: function(){}},
       engines: {
         express: {
@@ -153,6 +157,8 @@ describe("Page" + currentFileMark, function(){
 
     var handler;
     var page = new PageHandlers({
+      helpers: require("../../lib/helpers.js"),
+      config: {},
       i: {do: function(){}},
       engines: {
         express: {
@@ -183,6 +189,7 @@ describe("Page" + currentFileMark, function(){
 
     var page = new PageHandlers({
       helpers: require("../../lib/helpers.js"),
+      config: {},
       i: {do: function(){}},
       engines: {
         express: {
@@ -225,6 +232,7 @@ describe("Page" + currentFileMark, function(){
 
     var page = new PageHandlers({
       helpers: require("../../lib/helpers.js"),
+      config: {},
       i: {do: function(){}},
       engines: {
         express: {
@@ -264,6 +272,7 @@ describe("Page" + currentFileMark, function(){
 
     var page = new PageHandlers({
       helpers: require("../../lib/helpers.js"),
+      config: {},
       i: {do: function(){}},
       engines: {
         express: {
@@ -298,6 +307,7 @@ describe("Page" + currentFileMark, function(){
     var do_params = [];
     var page = new PageHandlers({
       helpers: require("../../lib/helpers.js"),
+      config: {},
       i: { do: function(){
         var args = Array.prototype.slice.call(arguments);
         if(typeof args[ args.length - 1 ] === "function"){
@@ -344,6 +354,7 @@ describe("Page" + currentFileMark, function(){
     var do_params = [];
     var page = new PageHandlers({
       helpers: require("../../lib/helpers.js"),
+      config: {},
       i: {do: function(){
         var args = Array.prototype.slice.call(arguments);
         if(typeof args[ args.length - 1 ] === "function"){
@@ -402,6 +413,7 @@ describe("Page" + currentFileMark, function(){
 
     var page = new PageHandlers({
       helpers: require("../../lib/helpers.js"),
+      config: {},
       i: { do: function(){
         var args = Array.prototype.slice.call(arguments);
         if(typeof args[ args.length - 1 ] === "function" && doHandlers[args[0]]){
@@ -488,6 +500,7 @@ describe("Page" + currentFileMark, function(){
 
     var page = new PageHandlers({
       helpers: require("../../lib/helpers.js"),
+      config: {},
       i: { 
         do: function(){
           var args = Array.prototype.slice.call(arguments);
@@ -544,6 +557,7 @@ describe("Page" + currentFileMark, function(){
 
     var page = new PageHandlers({
       helpers: require("../../lib/helpers.js"),
+      config: {},
       i: { 
         do: function(){
           var args = Array.prototype.slice.call(arguments);
