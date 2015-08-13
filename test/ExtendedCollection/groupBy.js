@@ -126,4 +126,45 @@ describe('ExtendedCollection -> groupBy' + currentFileMark, function(){
     next();
   });
 
+  it("Emits group:*name* when new group is created and drop:*name* when group is removed", function(next){
+    var collection = new TestCollection([],{ group: {field: "field"}} );
+
+    var created = [];
+    var removed = [];
+    collection.on("group:field", function(index, group){
+      created.push([index, group.length > 0 ]);
+    });
+    collection.on("dropGroup:field", function(index){
+      removed.push(index);
+    });
+
+    collection.add([
+      { id: 1, field: "a" },
+      { id: 2, field: "a" },
+      { id: 3, field: "b" },
+      { id: 4, field: "b" },
+      { id: 5, field: "b" },
+    ]);
+
+    assert.deepEqual(created, [
+      ["a", true],
+      ["b", true],
+    ]);
+
+    collection.remove(1);
+    assert.deepEqual(removed, []);
+    collection.remove(2);
+    assert.deepEqual(removed, ["a"]);
+    assert.equal(collection.getGroup("field", "a"), undefined );
+
+    var prevModels;
+    collection.once("reset", function(collection, options){ prevModels = options.previousModels });
+
+    collection.reset([]);
+    assert.deepEqual(removed, ["a", "b"]);
+    assert.equal(collection.getGroup("field", "b"), undefined );
+
+    next();
+  });
+
 });

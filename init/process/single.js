@@ -85,7 +85,7 @@ module.exports = function(env, cb){
     if( node.loaders ) loaders = loaders.concat( node.loaders );
 
     if(node.libs){
-      _.extend(classes, _.mapObject(node.libs || {}, function(val, key){
+      env.helpers.deepExtend(classes, _.mapObject(node.libs || {}, function(val, key){
         if(Array.isArray(val)) {
           val = val.slice();
           val[0] = path.join(config.rootDir , val[0]);
@@ -93,7 +93,6 @@ module.exports = function(env, cb){
           if(val[2]===true) env.helpers.traverse(result, function( target, nodeName, parent){
             parent[nodeName] = env.getCached(target);
           });
-          env.classes[key] = result;
           return result;
         }
         else {
