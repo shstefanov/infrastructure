@@ -23,7 +23,7 @@ module.exports = function(cb){
     env.helpers.isObjectID = function(val){ return val instanceof env.ObjectID; };
     env.helpers.isDBRef    = function(val){ return val instanceof DBRef;        };
     env.helpers.objectify  = function(val){
-      return _.isArray(val)? val.map(env.ObjectID) : env.ObjectID(val);
+      return _.isArray(val)? val.map(mongodb.ObjectID) : mongodb.ObjectID(val);
     };
 
     env.stops.push(function(cb){ db.close(); cb(); });
