@@ -107,13 +107,13 @@ module.exports = function(env, cb){
 
   engines = _.sortBy(_.uniq(engines), function( e ){ return e === "log" ? -1 : 1 } )
     .map(function(e){ return resolvePath( e, enginesAliases ); });
-  if(config.mode === "test" && config.engines_fixtures) engines = engines.concat(config.engines_fixtures.map(function(p){
+  if(config.mode === "test" && config.init) engines = engines.concat(config.init.map(function(p){
     return path.join(config.rootDir, p);
   }))
 
   loaders = _.uniq(loaders)
     .map(function(l){ return resolvePath( l, loadersAliases ); });
-  if(config.mode === "test" && config.loaders_fixtures) loaders = loaders.concat(config.loaders_fixtures.map(function(p){
+  if(config.mode === "test" && config.postinit) loaders = loaders.concat(config.postinit.map(function(p){
     return path.join(config.rootDir, p);
   }))
 
