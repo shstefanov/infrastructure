@@ -5,25 +5,31 @@ var _ = require("underscore")
 module.exports = Backbone.Collection.extend("AdvancedCollection", {
 
   constructor: function(models, options){
-    
     this._index        = {};
     this._groups       = {};
     this._eventMarkers = {};
 
+    Backbone.Collection.apply(this, arguments);
+
     var index          = {};
     var groups         = {};
 
-    if(this.index) _.extend(index, this.index);
+    if(this.index)               _.extend(index, this.index);
     if(options && options.index) _.extend(index, options.index);
-    if(this.group) _.extend(groups, this.group);
+    if(this.group)               _.extend(groups, this.group);
     if(options && options.group) _.extend(groups, options.group);
     this.indexBy(index).groupBy(groups);
-
-    Backbone.Collection.apply(this, arguments);
-    
   },
 
-  fire: function(){
+  fire: function(event){
+    if(_.isObject(event)){
+      for(var key in event){
+        var args = ["trigger"];
+        args = args.concat(Array.isString(event)? event[key] : [event[key]]);
+        this.invoke.apply(this, args);
+      }
+      return this;
+    }
     var args = Array.prototype.slice.call(arguments);
     args.unshift("trigger");
     this.invoke.apply(this, args);
@@ -33,7 +39,7 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
   // iterator - string, function or array of strings that compile index from many attributes and separators
   indexBy: function(name, iterator){
     if(_.isObject(name)){
-      for(key in name) {
+      for(var key in name) {
         this.indexBy(key, name[key]);
       }
       return this;
@@ -74,6 +80,10 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
     this
     .on("add",   addModel,    index)
     .on("remove",removeModel, index)
+    .on("reset", function(){
+      options.previousModels.forEach(removeModel);
+      self.each(addModel, this)
+    }, index )
     .each(_.bind(addModel,    index));
     return this;
   },
@@ -89,10 +99,11 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
 
   // iterator - string, function or array of strings that compile index from many attributes and separators
   // also, iterator can return array of strings to add model to multiple groups
-  groupBy: function(name, iterator){
+  groupBy: function(name, iterator, Collection){
+    Collection = Collection || Backbone.Collection;
     
     if(_.isObject(name)){
-      for(key in name) {
+      for(var key in name) {
         this.groupBy(key, name[key]);
       }
       return this;
@@ -108,9 +119,9 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
 
     var add = function(index, model){
       if(!groups[index]) {
-        groups[index] = new Backbone.Collection();
+        groups[index] = new Collection();
         groups[index].add(model);
-        self.trigger("group:"+name, groups[index], index);
+        self.trigger("group:"+name, index, groups[index]);
       }
       else{
         groups[index].add(model);        
@@ -119,8 +130,9 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
 
     var remove = function(index, model){
       groups[index].remove(model);
-      if(!groups[index].length == 0) {
-        groups[index].trigger("removeGroup");
+      if(groups[index].length === 0) {
+        groups[index].trigger("empty");
+        self.trigger("dropGroup:"+name, index);
         delete groups[index];
       }
     };
@@ -134,9 +146,9 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
 
       model.on("change", function(model){
         var newIndex = itr(model);
-        if(!_.isEqual(newInex, group)){
+        if(!_.isEqual(newIndex, group)){
           if(Array.isArray(group) && Array.isArray(newIndex)){
-            var added   = _.difference(  newInex, group     );
+            var added   = _.difference(  newIndex, group    );
             var removed = _.difference(  group,   newIndex  );
             added   .forEach(function(idx){add   (idx, model);});
             removed .forEach(function(idx){remove(idx, model);});
@@ -160,46 +172,61 @@ module.exports = Backbone.Collection.extend("AdvancedCollection", {
     this
     .on("add",      addModel,    groups)
     .on("remove",   removeModel, groups)
+    .on("reset", function(collection, options){
+      options.previousModels.forEach(removeModel);
+      self.each(addModel, this);
+    }, groups )
     .each(_.bind(addModel, groups));
     return this;
   },
 
-  getGroup: function(groupName, key){
-    return this._groups[groupName] ? this._groups[groupName][key] : undefined;
+  getGroup: function(name, index){
+    return this._groups[name] ? this._groups[name][index] : undefined;
   },
 
   dropGroup: function(name){
     var self = this;
     var groups = this._groups[name];
+    if(!grups) return this;
     this.each(function(model){model.off(null, null, groups);});
     this
     .off("add",    null, groups)
-    .off("remove", null, groups)
+    .off("reset",  null, groups)
+    .off("remove", null, groups);
     delete this._groups[name];
     return this;
   },
 
   bindAll: function(evt, method, ctx){
+    var self = this;
     var marker = this._eventMarkers[evt] = {};
     var bind   = function(model){ model.on (evt, method, ctx || model) };
     var unbind = function(model){ model.off(evt, method, ctx || model) };
-    this.on("add", bind, marker).on("remove", unbind, marker);
+    this
+      .on("add", bind, marker)
+      .on("remove", unbind, marker)
+      .on("reset", function(collection, options){
+        options.previousModels.forEach(unbind);
+        self.each(bind);
+      }, marker );
     this.each(bind);
     return this;
   },
 
   unbindAll: function(evt, method, ctx){
     var marker = this._eventMarkers[evt];
+    if(!marker) return this;
     this
     .off("add",    method || null, marker)
+    .off("reset",            null, marker)
     .off("remove", method || null, marker);
     this.each(function(model){model.off(evt, method || null, ctx || model)});
     delete this._eventMarkers[evt];
     return this;
   },
 
-  getBy: function(arg1, arg2){
-    return this._index[arg1]?this._index[arg1][arg2]:undefined;
+  getBy: function(index, value){
+    return this._index[index] ? this._index[ index ][ value ] : undefined;
   }
 
 });
