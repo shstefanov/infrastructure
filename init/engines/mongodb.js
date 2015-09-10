@@ -20,7 +20,7 @@ module.exports = function(cb){
     if(err) return cb(err);
     env.engines.mongodb = db;
     // Setup helpers
-    env.helpers.isObjectID = function(val){ return val instanceof env.ObjectID; };
+    env.helpers.isObjectId = function(val){ return val instanceof mongodb.ObjectId; };
     env.helpers.isDBRef    = function(val){ return val instanceof DBRef;        };
     env.helpers.objectify  = function(val){
       return _.isArray(val)? val.map(mongodb.ObjectID) : mongodb.ObjectID(val);
