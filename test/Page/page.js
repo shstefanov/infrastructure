@@ -517,6 +517,7 @@ describe("Page" + currentFileMark, function(){
       render: function(template_name, data){
         data = _.omit(data, ["meta", "javascripts", "styles", "config", "title", "cache"]);
         assert.deepEqual(data, {
+          page: page,
           template: "other_template",
           arr1: { 
             first:  { aaa: 1, value: 1, result_from: 'target.object.method_1' },
