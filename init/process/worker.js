@@ -14,7 +14,8 @@ module.exports = function(env, cb){
     process.send(null);
     process.once("message", function(cache){
       env.i.do = DO;
-      local_cache.concat(cache).forEach(function(args){ env.i.do.apply(env.i, args); });
+      cache.forEach(processMessage);
+      local_cache.forEach(function(args){ env.i.do.apply(env.i, args); });
       delete local_cache;
       env.i.do("log.sys", "worker", _.keys(config.structures).join(","));
       process.on("message", processMessage);
