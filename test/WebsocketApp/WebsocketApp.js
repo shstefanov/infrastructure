@@ -55,14 +55,15 @@ describe("WebsocketApp" + currentFileMark, function(){
 
     tokens: {},
 
-    path: "/apps/app_name",
-    port: 4001,
-    name: "app_name",
-    protocol: "ws://",
-    host:    "localhost",
-    transports: ["websocket", "xhr-polling"],
-
-    tokenParam: "token",
+    options: {
+      path: "/apps/app_name",
+      port: 4001,
+      name: "app_name",
+      protocol: "ws://",
+      host:    "localhost",
+      transports: ["websocket", "xhr-polling"],
+      tokenParam: "token",      
+    },
 
     generateAppToken: function(){
       return "123456"
