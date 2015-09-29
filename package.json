@@ -32,6 +32,7 @@
     "socket.io": "latest",
     "socket.io-client": "latest",
     "underscore": "latest",
+    "webpack": "latest",
     "yamljs": "latest"
   },
   "devDependencies": {
