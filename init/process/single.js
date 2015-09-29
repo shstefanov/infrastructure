@@ -77,7 +77,7 @@ module.exports = function(env, cb){
 
   }
 
-  env.classes = classes;
+  env.classes = env.lib = classes;
 
   _.each(config.structures, function(node, type){
 
