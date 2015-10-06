@@ -36,9 +36,10 @@ module.exports = function(env, cb){
       
       // Listen for messages
       process.on("message", processMessage);
-      env.stops.push(function(cb){ 
-        process.removeAllListeners(); cb(); });
-      cb(null, env)
+
+      // Add final stop function - it will remove all intervals or timeouts
+      env.stops.push(function(cb){ process.removeAllListeners(); cb(); });
+      cb(null, env);
     });
   });
 

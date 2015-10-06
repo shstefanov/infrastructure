@@ -5,6 +5,7 @@ module.exports = function(env, cb){
   var config    = env.config;
   var bulk      = require("bulk-require");
  
+  // Make most of engines separate packages  
   var enginesAliases = {
     "log":        path.join( __dirname, "../engines/log.js"        ),
     "neo4j":      path.join( __dirname, "../engines/neo4j.js"      ),
@@ -33,6 +34,9 @@ module.exports = function(env, cb){
     "SocketsCollection":   path.join( __dirname, "../../lib/SocketsCollection"         ),
 
     "DataLayer":           path.join( __dirname, "../../lib/DataLayers/DataLayer"      ),
+    
+    // TODO - make datalayers separate packages
+    // HOW? How can i accessenv from the package?
     "MysqlLayer":          path.join( __dirname, "../../lib/DataLayers/MysqlLayer"     ),
     "MongoLayer":          path.join( __dirname, "../../lib/DataLayers/MongoLayer"     ),
     "PostgresLayer":       path.join( __dirname, "../../lib/DataLayers/PostgresLayer"  ),
@@ -47,6 +51,7 @@ module.exports = function(env, cb){
     "WebsocketApp":        path.join( __dirname, "../../lib/WebsocketApp"              ),
   };
 
+  // TODO - make most of loaders to be separate packages
   var loadersAliases = {
     "backbone-data-sync": path.join( __dirname, "../loaders/backbone-data-sync"   ),
     "models" :            path.join( __dirname, "../loaders/models"               ),
@@ -85,7 +90,7 @@ module.exports = function(env, cb){
     if( node.loaders ) loaders = loaders.concat( node.loaders );
 
     if(node.libs){
-      env.helpers.deepExtend(classes, _.mapObject(node.libs || {}, function(val, key){
+      env.helpers.deepExtend(classes, _.mapObject(node.libs, function(val, key){
         if(Array.isArray(val)) {
           val = val.slice();
           val[0] = path.join(config.rootDir , val[0]);
@@ -97,6 +102,8 @@ module.exports = function(env, cb){
         }
         else {
           var result = require( resolvePath( val, libsAliases ) );
+          // TODO - check for static prop 'getCached: true' and
+          // get the result from env.getCached(result);
           env.classes[key] = result;
           return result;
         }
@@ -105,20 +112,34 @@ module.exports = function(env, cb){
 
   });
 
+  // Sort engines and prepare them to be required as modules
   engines = _.sortBy(_.uniq(engines), function( e ){ return e === "log" ? -1 : 1 } )
     .map(function(e){ return resolvePath( e, enginesAliases ); });
+  
+  // In test mode - inject given scripts after engines in chain
+  // to be executed as fixtures or soething similar
   if(config.mode === "test" && config.init) engines = engines.concat(config.init.map(function(p){
     return path.join(config.rootDir, p);
-  }))
+  }));
 
+  // TODO - find way to inject some plugins after engines
+
+  // Sort engines and prepare them to be required as modules
   loaders = _.uniq(loaders)
     .map(function(l){ return resolvePath( l, loadersAliases ); });
+  
+  // In test mode - inject given scripts after loaders in chain
+  // to be executed as fixtures or soething similar
   if(config.mode === "test" && config.postinit) loaders = loaders.concat(config.postinit.map(function(p){
     return path.join(config.rootDir, p);
   }))
 
+
+  // Concatenate engines and loaders to get compact chain
+  // and require all of them as modules
   var initChain = engines.concat(loaders).map(function(c){return require(c);});
 
+  // Run the chain
   env.helpers.chain(initChain)(function(err){ cb(err, env); }, env );
 
 };
