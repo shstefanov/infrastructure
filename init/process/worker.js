@@ -4,20 +4,37 @@ module.exports = function(env, cb){
   var config = env.config;
   var helpers = require("../../lib/helpers");
   var local_cache = [];
+
+  // In some cases the worker may emit messages to other nodes
+  // during initialization process, for example - log.sys
+  // create mocup caller that will cache all messages
   env.i.do = function(){ local_cache.push(arguments); }
 
   require("./single")(env, function(err){
     if(err) {
+      // TODO - try to call env.stop, then send error message to master
       cb(err);
       return process.send(err);
     }
+    // Sending null for error arg, it is first message
     process.send(null);
+
+    // Waiting first response. It will provide cached messages
     process.once("message", function(cache){
+      // Change cache caller with the realone
       env.i.do = DO;
+
+      // Process recieved cache
       cache.forEach(processMessage);
+
+      // Process locally cached messages
       local_cache.forEach(function(args){ env.i.do.apply(env.i, args); });
       delete local_cache;
+
+      // Report that node is initialized to logger
       env.i.do("log.sys", "worker", _.keys(config.structures).join(","));
+      
+      // Listen for messages
       process.on("message", processMessage);
       env.stops.push(function(cb){ 
         process.removeAllListeners(); cb(); });
@@ -27,21 +44,12 @@ module.exports = function(env, cb){
 
   function processMessage(data){
 
+    if(data.run_cb) return env.runCallback(data);
 
-
-    if(data.run_cb){
-      return env.runCallback(data);
-    }
-
-    if(data.cb){
-      data.args.push(env.deserializeCallback(data.cb));
-    }
-    else if(data.listener){
-      data.args.push(env.deserializeListener(data.listener));
-    }
-    else if(data.stream){
-      data.args.push(env.deserializeStream(data.stream));
-    }
+    if     (data.cb      ) data.args.push(env.deserializeCallback (data.cb)       );
+    else if(data.listener) data.args.push(env.deserializeListener (data.listener) );
+    else if(data.stream  ) data.args.push(env.deserializeStream   (data.stream)   );
+    
     var address_parts = data.address.split(".");
     if(!env.i[address_parts[0]]){ console.error("Can't find target ???");}
     else{

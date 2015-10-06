@@ -5,7 +5,6 @@ module.exports = function(env, cb){
   var helpers = require("../../lib/helpers");
   var config  = env.config;
 
-
   var base_config = JSON.stringify(_.omit(config, ["structures"]));
   function bundleWorkerConfig(structure, name){
     var node_base_config = JSON.parse(base_config);
@@ -15,29 +14,29 @@ module.exports = function(env, cb){
 
     if(config.mode === "development" && node_config.development){
       helpers.deepExtend( node_base_config, node_config.development );
+      delete node_config.development;
     }
     else if(config.mode === "test" && node_config.test){
       helpers.deepExtend( node_base_config, node_config.test );
+      delete node_config.test;
     }
 
     _.extend(node_base_config, {structures: _.object([[name, _.omit(structure, ["config"])]])});
 
-    delete node_config.development;
-    delete node_config.test;
-
     return JSON.stringify(node_base_config);
   }
 
+  var cache       = {}; // The cache namespace
+  var nodes_chain = []; // Nodes initialization chain
 
-  var cache       = {};
-  var nodes_chain = [];
-  var log = helpers.resolve(config, "structures.log.options.sys");
+  // Flag that indicates that syslog is on
+  var log = !!helpers.resolve(config, "structures.log.options.sys");
   _.each(config.structures, function( structure, name ){
 
-    var str_config = bundleWorkerConfig( structure, name );
+    // Push stoper function for this structure
     env.stops.push(function(cb){
       if(!env.i[name]) return cb();
-      log && console.log("try Gracefull ", name);
+      log && console.log("try Gracefull shutdown for structure: ", name);
       env.i[name].once("disconnect", function(){
         log && console.log("Gracefull success", name)
         log && console.log("Gracefull shutdown for worker:", name );
@@ -46,39 +45,87 @@ module.exports = function(env, cb){
       env.i.do( name + ".__run.stop", function(err){ if(err) console.error(err); }); 
     });
 
+    // Building node config as stringified json
+    var str_config = bundleWorkerConfig( structure, name );
     createWorker(name, str_config);
   });
 
-  function createWorker(name, str_config){
+  function createWorker(name, str_config, avoid_callback){
+    // Set the cache that will keep messages
     cache[name]     = [];
+
     nodes_chain[name === "log" ? "unshift" : "push"](function(cb){
+      
+      // Passing node config as string vie env var
       var worker  = cluster.fork({ INFRASTRUCTURE_CONFIG: str_config });
+      
+      // listening for 'exit' event and spawning node again
       worker.on("exit", function(){
         delete env.i[name];
-        createWorker(name, str_config);
+        // Creating the cache
+        cache[name]     = [];
+        createWorker(name, str_config, true);
       });
+
+      // Waiting node to send it's first message
       worker.once("message", function(err){ // fully initialized or error
         if(err) return cb(err);
+        
+        // Attaching worker object to workers namespace 'i'
         env.i[name] = worker;
+
+        // If meanwhile other node calls this node before it is initialized, 
+        // messages are cached, so send them to the worker
         worker.send(cache[name]);
+
+        // Removing the cache
+        delete cache[name];
+        
+        // Listen for messages
         worker.on("message", function(data){
-          if(!data.address) console.log("????", JSON.stringify(data));
+          // If there is no 'address' property, there is some anomaly
+          if(!data.address) return console.log("????", JSON.stringify(data));
+          
+          // The address is dot notated, split it to it's parts
           var address_parts = data.address.split(".");
+
+          // Targeted node is the first part
           var target_name   = address_parts[0];
+
+          // Resolve targeted worker from workers namespace
           var target = env.i[target_name];
+          
+          // Parse callbacks, listeners and streams, 
+          // they must contain source worker name so 
+          // make them to be array of type [worker_name, fn_id]
           if(data.cb && !Array.isArray(data.cb)                  ) data.cb       = [name, data.cb       ];
           else if(data.listener && !Array.isArray(data.listener) ) data.listener = [name, data.listener ];
           else if(data.stream   && !Array.isArray(data.stream)   ) data.stream   = [name, data.stream   ];
 
-          if(target)        target.send(data);
-          else              cache[target_name].push(data);
+          // If target is found, send message to target
+          if(target) target.send(data);
+          // If target does not exist, may be it is still not initialized
+          // pushing data to cache
+          else if(cache[target_name]) cache[target_name].push(data);
+          else {
+            handleMissingTarget(worker, data);
+          }
         });
-        cb();
+
+        // Node is initialized, calling callback to continue/finish initialization chain
+        if(!avoid_callback) cb();
       });
       
     });
   }
 
+  function handleMissingTarget(worker, data){
+    // TODO: If has callback - send back error message
+    // if stream or listener is present 
+    // send back destroy listener/stream message
+  }
+
+  // Run created workers initilization chain
   helpers.chain(nodes_chain)(function(err){
     if(err) return cb(err);
     cb(null, env);
@@ -104,17 +151,22 @@ module.exports = function(env, cb){
       }
       target.send(sendData);
     }
+
+    // Try to handle missing target called from master process
+    else handleMissingTarget( env.i.master, sendData );
   }
 
   env.i.master = {
     initialized: true,
     send: function processMessage(data){
+      // TODO - make master node callable
       if(data.drop_cb){
         return env.dropCallback(data);
       }
       else if(data.run_cb){
         return env.runCallback(data);
       }
+
 
       // if(data.cb){
       //   data.args.push(deserializeCallback(data.cb));
@@ -128,7 +180,4 @@ module.exports = function(env, cb){
     }
   }
 
-
-
-  // cb();
 }
