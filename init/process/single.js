@@ -78,7 +78,7 @@ module.exports = function(env, cb){
     else if( aliasMap.hasOwnProperty(name) ) return aliasMap[name];
 
     // May be it is package that can be resolved from node_modules
-    else return name;
+    else return path.join(process.cwd(), "node_modules", name);
 
   }
 
