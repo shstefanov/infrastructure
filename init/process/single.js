@@ -14,7 +14,6 @@ module.exports = function(env, cb){
     "mongodb":    path.join( __dirname, "../engines/mongodb.js"    ),
     "mysql":      path.join( __dirname, "../engines/mysql.js"      ),
     "postgres":   path.join( __dirname, "../engines/postgres.js"   ),
-    "http":       path.join( __dirname, "../engines/http.js"       ),
     "websocket":  path.join( __dirname, "../engines/websocket.js"  ),
     "webpack":    path.join( __dirname, "../engines/webpack.js"    ),
   };
@@ -32,21 +31,14 @@ module.exports = function(env, cb){
     "ExtendedCollection":  path.join( __dirname, "../../lib/ExtendedCollection"        ),
 
     "SocketsCollection":   path.join( __dirname, "../../lib/SocketsCollection"         ),
-
-    "DataLayer":           path.join( __dirname, "../../lib/DataLayers/DataLayer"      ),
     
     // TODO - make datalayers separate packages
     // HOW? How can i accessenv from the package?
     "MysqlLayer":          path.join( __dirname, "../../lib/DataLayers/MysqlLayer"     ),
-    "MongoLayer":          path.join( __dirname, "../../lib/DataLayers/MongoLayer"     ),
     "PostgresLayer":       path.join( __dirname, "../../lib/DataLayers/PostgresLayer"  ),
     "RedisLayer":          path.join( __dirname, "../../lib/DataLayers/RedisLayer"     ),
     "ElasticLayer":        path.join( __dirname, "../../lib/DataLayers/ElasticLayer"   ),
     "Neo4jLayer":          path.join( __dirname, "../../lib/DataLayers/Neo4jLayer"     ),
-
-    "Page":                path.join( __dirname, "../../lib/Page"                      ),
-    "Api":                 path.join( __dirname, "../../lib/Api"                       ),
-    "Widget":              path.join( __dirname, "../../lib/Widget"                    ),
 
     "WebsocketApp":        path.join( __dirname, "../../lib/WebsocketApp"              ),
   };
