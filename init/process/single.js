@@ -11,7 +11,6 @@ module.exports = function(env, cb){
     "neo4j":      path.join( __dirname, "../engines/neo4j.js"      ),
     "elastic":    path.join( __dirname, "../engines/elastic.js"    ),
     "redis":      path.join( __dirname, "../engines/redis.js"      ),
-    "mongodb":    path.join( __dirname, "../engines/mongodb.js"    ),
     "mysql":      path.join( __dirname, "../engines/mysql.js"      ),
     "postgres":   path.join( __dirname, "../engines/postgres.js"   ),
     "websocket":  path.join( __dirname, "../engines/websocket.js"  ),
