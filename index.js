@@ -7,7 +7,7 @@ var helpers = require("./lib/helpers");
 
 
 module.exports = function findApp( config, cb ){
-
+  var now = Date.now();
   if( require("cluster").isWorker ) return module.exports.init({ 
     config: JSON.parse(process.env.INFRASTRUCTURE_CONFIG),
     helpers: helpers 
@@ -18,7 +18,11 @@ module.exports = function findApp( config, cb ){
   if( !config.mode         ) config.mode         = "development"; // development is default mode
   if( !config.process_mode ) config.process_mode = "single";      // single is default process_mode
   if( !config.rootDir      ) config.rootDir      = process.cwd(); // process.cwd() is default rootDir
-  loadApp( extendConfig( config ), cb );
+  loadApp( extendConfig( config ), function(err, env){
+    if(err) return cb(err);
+    env.i.do("log.sys", "application started", (Date.now() - now) +"ms")
+    cb(null, env);
+  });
 };
 
 var init = module.exports.init = require("./init");
