@@ -128,9 +128,9 @@ module.exports = function(env, cb){
   // Run created workers initilization chain
   helpers.chain(nodes_chain)(function(err){
     if(err) return cb(err);
-    cb(null, env);
+    setTimeout(function(){ cb(null, env); }, 0 );    
   });
-
+  
   env.i.do = function(){
     var args = Array.prototype.slice.call(arguments);
     var address = args[0];
