@@ -102,7 +102,8 @@ module.exports = function(env, cb){
     if(!root) return forwardToMaster(address, args.splice(1));
     var last          = _.last(address_parts);
     var context       = env.helpers.resolve(env.i, address_parts.slice(0, -1).join("."));
-    if(!context || !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
+    if(!context || (context.methods && context.methods.indexOf(last) === -1)) return findCbAndRespond(args, "Can't find target: "+address);
+    if( !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
     
     if(context.parseArguments) {
       var parsed = context.parseArguments(args.slice(1));
