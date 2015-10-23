@@ -2,14 +2,14 @@ var path   = require("path");
 var assert = require("assert");
 
 var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
-describe( "Process modes" + currentFileMark, function(){
+xdescribe( "Process modes" + currentFileMark, function(){
 
   var infrastructure       = require("../../index.js"               );
   var single_initializer   = require("../../init/process/single.js" );
   var original_initializer = require("../../init.js"                );
   var skip_init = infrastructure.init = function(env, cb){ cb(null, env); };
 
-  describe( "Process mode - \"single\"", function(){
+  xdescribe( "Process mode - \"single\"", function(){
 
     it("If not present, process_mode should be set to \"single\"", function(next){
       infrastructure({ rootDir: __dirname }, function(err, env){
