@@ -13,9 +13,7 @@ module.exports = function(env, cb){
   env.testSetup = [];
   env.stops     = [];
 
-  env.stop = function(cb){
-    env.helpers.chain(env.stops)(cb);
-  };
+  env.stop = function(cb){ env.helpers.chain(env.stops)(cb); };
 
   env.getCached = function(target){
     if(!target.__cached) { target.__cached = target.apply(env); }

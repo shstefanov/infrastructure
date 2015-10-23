@@ -31,9 +31,11 @@ module.exports.stop = function(cb){
 
   var mode = module.exports.env.config.process_mode;
   
-  if(module.exports.env.config.process_mode === "cluster") cluster.once("disconnect", function(){ 
-    module.exports.cleanup(null, cb);
-  });
+  if(module.exports.env.config.process_mode === "cluster") {
+    cluster.once("disconnect", function(){ 
+      module.exports.cleanup(null, cb);
+    });
+  }
   else module.exports.env.stops.push(function(cb){ process.removeAllListeners(); cb(); });
 
   module.exports.env.stop(function(err){

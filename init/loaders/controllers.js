@@ -1,7 +1,7 @@
 module.exports = function(cb){
 
   var _      = require("underscore");
-  var base   = _.methods(this.classes.Controller.prototype);
+  var base   = _.methods(this.lib.Controller.prototype);
   var env    = this;
 
   env.structureLoader("controllers", function(name, Controller){

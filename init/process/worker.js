@@ -104,13 +104,18 @@ module.exports = function(env, cb){
     var context       = env.helpers.resolve(env.i, address_parts.slice(0, -1).join("."));
     if(!context || !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
     
-    if(context.parseArguments) {
-      var parsed = context.parseArguments(args.slice(1));
-      if( parsed === false ) return findCbAndRespond( args, "Invalid arguments" );
-      args = parsed;
+    try{
+      if(context.parseArguments) {
+        var parsed = context.parseArguments(args.slice(1));
+        if( parsed === false ) return findCbAndRespond( args, "Invalid arguments" );
+        args = parsed;
+      }
+      else args = args.slice(1);
+      context[last].apply(context, args);
     }
-    else args = args.slice(1);
-    context[last].apply(context, args);
+    catch(err){
+      findCbAndRespond( args, err );
+    }
   };
 
 }
