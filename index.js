@@ -39,7 +39,7 @@ var hasConfig = module.exports.hasConfig = function( rootDir ){
           ||  fs.existsSync(path.join(rootDir, "config.yml"   ));
 };
 
-var loadConfig = module.exports.loadConfig = function(configPath){
+var loadConfig = module.exports.loadConfig = function(configPath, app_config){
   var config;
   if(fs.statSync(configPath).isDirectory()){
 
@@ -59,8 +59,10 @@ var loadConfig = module.exports.loadConfig = function(configPath){
   else{
     config = require(configPath);
   }
-  // Create a clone of config in order to eep original modules untouched
+
+  if(app_config.mode) config.mode = app_config.mode;
   config = JSON.parse(JSON.stringify(config));
+
   return config
 }
 
@@ -77,9 +79,9 @@ var extendConfig = module.exports.extendConfig = function( config ){
 
   // Workers will get their from process.env
   if( config.process_mode === "cluster" && !isMaster ) return config;
-  var extension      = module.exports.loadConfig(module.exports.getConfigPath(config.rootDir));
+  var extension      = module.exports.loadConfig(module.exports.getConfigPath(config.rootDir), config);
   var mode_extension =  ( config.mode === "development") ? ( extension.development ) :
-                        ( config.mode === "test"       ) ? ( extension.test        ) : null;
+                        ( config.mode === "test"       ) ? ( helpers.deepExtend(extension, config.test||extension.test||{}) ) : null;
   
   delete extension.development;
   delete extension.test;
@@ -88,6 +90,7 @@ var extendConfig = module.exports.extendConfig = function( config ){
     helpers.deepExtend( extension, mode_extension );
   }
   helpers.deepExtend(config, extension);
+
   return config;
 };
 
