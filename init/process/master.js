@@ -38,8 +38,7 @@ module.exports = function(env, cb){
       if(!env.i[name]) return cb();
       log && console.log("try Gracefull shutdown for structure: ", name);
       env.i[name].once("disconnect", function(){
-        log && console.log("Gracefull success", name)
-        log && console.log("Gracefull shutdown for worker:", name );
+        log && console.log("Gracefull shutdown success for worker:", name );
         cb();
       });
       env.i.do( name + ".__run.stop", function(err){ if(err) console.error(err); }); 
