@@ -24,11 +24,11 @@ module.exports = function(env, cb){
 
     var structureConfig = env.config.structures[name];
     if(!structureConfig) return cb(new Error("Cant find config: env.config.structures."+name + " structure "+name));
-    var stagePath = path.join(env.config.rootDir, structureConfig.path);
+    var stagePath = path.join(env.config.rootDir, Array.isArray(structureConfig.path)?structureConfig.path[0]:structureConfig.path);
     if(!fs.existsSync(stagePath)) return cb(new Error("Cant find path: "+ stagePath + " structure "+name));
 
     var initializers = [], structureInit;
-    env.i[name] = bulk(stagePath, ["**/*.js", "**/*.coffee"]);
+    env.i[name] = bulk(stagePath, Array.isArray(structureConfig.path)?structureConfig.path[1]:["**/*.js", "**/*.coffee"]);
     env.i[name].do = env.i.do;
 
 
@@ -48,11 +48,11 @@ module.exports = function(env, cb){
     else go(cb);
 
     function go(cb){
-      env.helpers.traverse(env.i[name], function(target, nodeName, parent){
+      env.helpers.traverse(env.i[name], function(target, nodeName, parent, path){
         if( nodeName === "do" || (nodeName === "stop" && parent === env.i[name].__run  )    ) return;
         if(_.isFunction(target)) {
           var Node;
-          if(setup)        Node = setup(nodeName, env.getCached(target));
+          if(setup)        Node = setup(nodeName, cached? env.getCached(target) : target, path );
           else if (cached) Node = env.getCached(target);
           else             Node = target;
 
