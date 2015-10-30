@@ -22,5 +22,3 @@ app.init({
   if(err) throw err;
   console.log("app initialized");
 });
-
-console.log("hello")

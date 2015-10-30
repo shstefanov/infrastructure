@@ -1,0 +1,7 @@
+.col-xs-2
+  .fixed-sidebar: .row
+    | {{#items}}
+    a.sidebar-item.col-xs-10(class="{{condition(state.tab === ., 'active')}}", href="/infrastructure/{{state.screen}}/{{.}}") {{.}}
+    | {{/items}}
+  .after-fixed
+.col-xs-10 {{>TabPartial}}

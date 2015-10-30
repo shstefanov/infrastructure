@@ -6750,11 +6750,15 @@ button.close {
   height: calc(100% - 80px + 50px);
   width: 16% !important;
   background: white;
+  padding-left: 15px;
 }
 .fixed-sidebar + div.after-fixed {
   position: relative;
   height: calc(100% - 80px + 50px);
   width: 16% !important;
+}
+.sidebar-item.active {
+  text-decoration: underline;
 }
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)

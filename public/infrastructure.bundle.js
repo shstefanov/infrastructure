@@ -2,27 +2,27 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(29);
-	module.exports = __webpack_require__(19);
+	__webpack_require__(33);
+	module.exports = __webpack_require__(21);
 
 
 /***/ },
 /* 1 */,
 /* 2 */
-1,
-/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Ractive    = __webpack_require__(12 );
+	var Ractive    = __webpack_require__(13 );
 	// Ractive.DEBUG  = config.ractive.debug;
 
-	var backboneAdaptor      = __webpack_require__( 25 );
-	backboneAdaptor.Backbone = __webpack_require__( 24 );
+	var backboneAdaptor      = __webpack_require__( 29 );
+	backboneAdaptor.Backbone = __webpack_require__( 28 );
 
 	module.exports = Ractive.extend({ adapt: [ backboneAdaptor ] });
 
 
 /***/ },
+/* 3 */
+1,
 /* 4 */
 /***/ function(module, exports) {
 
@@ -34,7 +34,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	// Main App namespace
-	var helpers = __webpack_require__(26);
+	var helpers = __webpack_require__(30);
 	var _ = __webpack_require__(8);
 
 	var App = module.exports = {
@@ -80,8 +80,8 @@ webpackJsonp([1],[
 
 	var _ = __webpack_require__(1);
 
-	module.exports = __webpack_require__(11).extend("AppController", {
-	  Layout: __webpack_require__(30),
+	module.exports = __webpack_require__(12).extend("AppController", {
+	  Layout: __webpack_require__(34),
 	  config: "app",
 
 	  routes: {
@@ -99,6 +99,21 @@ webpackJsonp([1],[
 
 /***/ },
 /* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(15),
+	  style:    __webpack_require__(23),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(1);
@@ -214,13 +229,13 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _            = __webpack_require__(2);
-	var helpers      = __webpack_require__(39); 
-	var Controller   = __webpack_require__(37);
-	var Router       = __webpack_require__(38);
+	var _            = __webpack_require__(3);
+	var helpers      = __webpack_require__(44); 
+	var Controller   = __webpack_require__(42);
+	var Router       = __webpack_require__(43);
 
 	/*
 	  // Every controller can:
@@ -377,10 +392,10 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _          = __webpack_require__(2);
+	var _          = __webpack_require__(3);
 	var Ractive    = __webpack_require__(7 );
 
 	var config     = __webpack_require__(4);
@@ -487,37 +502,43 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"container fixed-header"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Header\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container fixed-menu"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"TopMenu\",{state:\"state\",search_input:\"search_input\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Content\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Footer\",{state:\"state\"})"}}]}]},{"t":2,"r":"search_input"}]};
-
-/***/ },
 /* 14 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":["Sidebar Here"]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":7,"e":"p","f":["Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here"]},{"t":7,"e":"p","f":["Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here"]},{"t":7,"e":"p","f":["Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here"]},{"t":7,"e":"p","f":["Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here"]},{"t":7,"e":"p","f":["Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here"]},{"t":7,"e":"p","f":["Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here"]},{"t":7,"e":"p","f":["Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here"]},{"t":7,"e":"p","f":["Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here Content here"]}]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"container fixed-header"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Header\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container fixed-menu"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"TopMenu\",{state:\"state\",search_input:\"search_input\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"MainContainer\",{state:\"state\"})"}}]}]}]},{"t":7,"e":"div","a":{"class":"container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Footer\",{state:\"state\"})"}}]}]}]};
 
 /***/ },
 /* 15 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":["Builder sidebar here",{"t":7,"e":"br"},{"t":2,"r":"search_input"}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]}]}]};
 
 /***/ },
 /* 16 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["The Layout Header"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
 
 /***/ },
 /* 17 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"form","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"form-group"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Search","value":[{"t":2,"r":"search_input"}],"class":"form-control"}}]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/build","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Infrastructure"]}]};
 
 /***/ },
 /* 18 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":8,"x":{"r":["resolveComponent","state"],"s":"_0(_1.screen===\"docs\"?\"Docs\":_1.screen===\"build\"?\"Builder\":\"NotFount\",{state:\"state\",search_input:\"search_input\"})"}}]}]};
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"form","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"form-group"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Search","value":[{"t":2,"r":"search_input"}],"class":"form-control"}}]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/build","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs/Installation","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
+
+/***/ },
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(5);
@@ -533,28 +554,32 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 20 */
-19,
-/* 21 */
-19,
 /* 22 */
-19,
+21,
 /* 23 */
-19,
+21,
 /* 24 */
-[74, 2, 2],
+21,
 /* 25 */
+21,
+/* 26 */
+21,
+/* 27 */
+21,
+/* 28 */
+[78, 3, 3],
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
 	var define = false;
-	var _ = __webpack_require__(2);
+	var _ = __webpack_require__(3);
 
 	(function (global, factory) {
 		 true ? module.exports = factory() :
@@ -677,9 +702,9 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 26 */
-[42, 8],
-/* 27 */
+/* 30 */
+[46, 8],
+/* 31 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -691,7 +716,7 @@ webpackJsonp([1],[
 	};
 
 /***/ },
-/* 28 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
@@ -709,16 +734,16 @@ webpackJsonp([1],[
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 28;
+	webpackContext.id = 32;
 
 
 /***/ },
-/* 29 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(5);  //{  }
 
-	App.Controllers = App.bulk(__webpack_require__(28));
+	App.Controllers = App.bulk(__webpack_require__(32));
 
 	App.config({
 		whoa: (function (){ console.log("WHOAAAAAA!!!") }),
@@ -728,48 +753,49 @@ webpackJsonp([1],[
 		}
 	});
 
-	var app = __webpack_require__(18);
+	var app = __webpack_require__(20);
 
 	app.init({
 	  App:          App,
 	  config:       __webpack_require__(4),
 	  settings:     window.settings || {},
-	  routes:       __webpack_require__(27),
+	  routes:       __webpack_require__(31),
 	  data:         {}
 	}, function(err){
 	  if(err) throw err;
 	  console.log("app initialized");
 	});
 
-	console.log("hello")
 
 /***/ },
-/* 30 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(5);
 
-	module.exports = __webpack_require__(3).extend({
+	module.exports = __webpack_require__(2).extend({
 
-	  template: __webpack_require__(13),
-	  style:    __webpack_require__(40),
+	  template: __webpack_require__(14),
+	  style:    __webpack_require__(22),
 	  
-	  components: __webpack_require__(5).bulk(
-	    __webpack_require__(31),
+	  components: App.bulk(
+	    __webpack_require__(35),
 	    function(name, context, cb){ cb(name.split("/").shift()); }),
 
 	});
 
 
 /***/ },
-/* 31 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./Content/Content.js": 32,
-		"./Footer/Footer.js": 33,
-		"./Header/Header.js": 34,
-		"./TopMenu/TomMenu.js": 35
+		"./Builder/Builder.js": 10,
+		"./Docs/Docs.js": 36,
+		"./Footer/Footer.js": 37,
+		"./Header/Header.js": 38,
+		"./MainContainer/MainContainer.js": 39,
+		"./TopMenu/TomMenu.js": 40
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -782,76 +808,99 @@ webpackJsonp([1],[
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 31;
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(3).extend({
-	  template: __webpack_require__(14),
-	  style:    __webpack_require__(20),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(3).extend({
-	  template: __webpack_require__(15),
-	  style:    __webpack_require__(21),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(3).extend({
-	  template: __webpack_require__(16),
-	  style:    __webpack_require__(22),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(3).extend({
-	  template: __webpack_require__(17),
-	  style:    __webpack_require__(23),
-	  components: {
-
-	  },
-
-
-	});
+	webpackContext.id = 35;
 
 
 /***/ },
 /* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var partials = __webpack_require__(5).bulk(__webpack_require__(50),function(name, context, cb){ 
+	  cb(name.replace(/\.ractive\.(jade|html)$/, "").replace(/^i[\d]{1,2}_/, ""));
+	});
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(51),
+	  style:    __webpack_require__(49),
+	  data: {
+	    items: Object.keys(partials)
+	  },
+	  partials: {
+	    TabPartial: function(){
+	      return partials[this.get("state.tab")];
+	    }
+	  },
+
+
+	});
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(16),
+	  style:    __webpack_require__(24),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(17),
+	  style:    __webpack_require__(25),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(18),
+	  style:    __webpack_require__(26),
+	  components: {
+	    Docs:    __webpack_require__(36       ),
+	    Builder: __webpack_require__(10 ),
+	  }
+	});
+
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(19),
+	  style:    __webpack_require__(27),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
 	
-	var Backbone = __webpack_require__(73);
-	var Class = __webpack_require__(10);
+	var Backbone = __webpack_require__(77);
+	var Class = __webpack_require__(11);
 
 	var _ = __webpack_require__(1);
 
@@ -894,11 +943,11 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 37 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(1);
-	var EventedClass = __webpack_require__(36);
+	var EventedClass = __webpack_require__(41);
 
 	module.exports = EventedClass.extend("Controller", {
 
@@ -923,14 +972,14 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 38 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Backbone router needs jQuery to select 'window' and to attach 2 events to it
 	// Creating simple mockup
 
-	var Backbone               = __webpack_require__(73);
-	var Class                  = __webpack_require__(10);
+	var Backbone               = __webpack_require__(77);
+	var Class                  = __webpack_require__(11);
 
 	var jQueryMockup = {
 	  on: function(event, handler){
@@ -1016,12 +1065,10 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 39 */
-[42, 1],
-/* 40 */
-19,
-/* 41 */,
-/* 42 */
+/* 44 */
+[46, 1],
+/* 45 */,
+/* 46 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var _ = __webpack_require__(__webpack_module_template_argument_0__);
@@ -1240,6 +1287,56 @@ webpackJsonp([1],[
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 47 */,
+/* 48 */,
+/* 49 */
+21,
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var map = {
+		"./i1_Installation.ractive.jade": 57,
+		"./i2_Configuration.ractive.jade": 59
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 50;
+
+
+/***/ },
+/* 51 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"."}],"class":["sidebar-item col-xs-10 ",{"t":2,"x":{"r":["condition","state.tab","."],"s":"_0(_1===_2,\"active\")"}}]},"f":[{"t":2,"r":"."}]}],"r":"items"}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":8,"r":"TabPartial"}]}]};
+
+/***/ },
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Installation"]}]};
+
+/***/ },
+/* 58 */,
+/* 59 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Configuration"]}]};
 
 /***/ }
 ]);
