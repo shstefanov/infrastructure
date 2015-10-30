@@ -1,0 +1,17 @@
+doctype strict
+html(xmlns='http://www.w3.org/1999/xhtml', xml:lang='en', lang='en')
+  head
+    title=title
+    meta(http-equiv='Content-Type', content='text/html; charset=utf8')
+    script.
+      window.config   = !{config};
+      window.settings = !{JSON.stringify(settings || {})};
+    each script in javascripts
+      script(src=script)
+    each style in styles
+      link(rel="stylesheet", type="text/css", href=style)
+    each content, name in meta
+      meta(name=name,content=content)
+    block head
+  body
+    block content
