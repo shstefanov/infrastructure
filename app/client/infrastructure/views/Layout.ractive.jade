@@ -1,1 +1,5 @@
-h1 The Layout (clientside)
+.container: .row       {{>resolveComponent( "Header",  {state: "state"} ) }}
+.fluid-container: .row {{>resolveComponent( "TopMenu", {state: "state"} ) }}
+.fluid-container: .row {{>resolveComponent( "Content", {state: "state"} ) }}
+.container: .row       {{>resolveComponent( "Footer",  {state: "state"} ) }}
+

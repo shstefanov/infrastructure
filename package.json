@@ -17,9 +17,10 @@
   },
   "devDependencies": {
     "bootstrap": "^3.3.5",
+    "infrastructure-appcontroller-ractive": "shstefanov/infrastructure-appcontroller-ractive",
     "infrastructure-server-engine-express": "git+https://github.com/shstefanov/infrastructure-server-engine-express.git",
     "infrastructure-server-pages-express": "git+https://github.com/shstefanov/infrastructure-server-pages-express.git",
-    "infrastructure-webpack": "^0.3.0",
+    "infrastructure-webpack": "^0.3.1",
     "mocha": "latest"
   },
   "scripts": {

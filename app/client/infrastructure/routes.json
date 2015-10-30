@@ -1,3 +1,8 @@
 {
-	
+  "/": "setContext",
+  "/":                                "setContext",
+  "/:screen" :                        "setContext",
+  "/:screen/:tab" :                   "setContext",
+  "/:screen/:tab/:context" :          "setContext",
+  "/:screen/:tab/:context/:action" :  "setContext"
 }

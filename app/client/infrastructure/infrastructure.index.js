@@ -1,11 +1,12 @@
-var App = require("App");
+var App = require("App");  //{  }
 
 App.Controllers = App.bulk(require.context("./controllers"));
+
 App.config({
 	whoa: SOME_FUNC,
 	debug: true,
 	app: {
-		container: "#main-container"
+		// container: "#main-container"
 	}
 });
 

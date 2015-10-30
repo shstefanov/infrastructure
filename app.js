@@ -67,7 +67,7 @@ infrastructure({
       "chunks": {
         "vendor": {
           "output": "infrastructure.vendor.js",
-          "modules": ["underscore", "backbone"]
+          "modules": ["underscore", "backbone", "ractive/ractive.runtime.js"]
         }
       },
 
