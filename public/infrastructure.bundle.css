@@ -6717,11 +6717,44 @@ button.close {
 /* resolved from application dependencies */
 /* resolved from web_modules folder */
 /* resolved from web_modules folder */
-.h1 {
-  color: red;
+.fixed-header {
+  z-index: 100;
+  position: fixed;
+  top: 0px;
+  height: 80px;
+  width: 100% !important;
+  background: white;
 }
-#top-menu {
-  color: red;
+.fixed-header + div.after-fixed {
+  position: relative;
+  height: 80px;
+  width: 100% !important;
+}
+.fixed-menu {
+  z-index: 100;
+  position: fixed;
+  top: 80px;
+  height: 50px;
+  width: 100% !important;
+  background: white;
+}
+.fixed-menu + div.after-fixed {
+  position: relative;
+  height: 50px;
+  width: 100% !important;
+}
+.fixed-sidebar {
+  z-index: 100;
+  position: fixed;
+  top: 80px + 50px;
+  height: calc(100% - 80px + 50px);
+  width: 16% !important;
+  background: white;
+}
+.fixed-sidebar + div.after-fixed {
+  position: relative;
+  height: calc(100% - 80px + 50px);
+  width: 16% !important;
 }
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)

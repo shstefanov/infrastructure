@@ -97,7 +97,7 @@
 /******/ 			script.charset = 'utf-8';
 /******/ 			script.async = true;
 
-/******/ 			script.src = __webpack_require__.p + "" + chunkId + "./home/stefan/projects/infrastructure/docs-infrastructure/public/infrastructure.bundle.js";
+/******/ 			script.src = __webpack_require__.p + "" + chunkId + "./home/stefan/projects/infrastructure/infrastructure/public/infrastructure.bundle.js";
 /******/ 			head.appendChild(script);
 /******/ 		}
 /******/ 	};
@@ -144,14 +144,14 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(3);
-	__webpack_require__(75);
-	module.exports = __webpack_require__(9);
+	__webpack_require__(1);
+	__webpack_require__(73);
+	module.exports = __webpack_require__(7);
 
 
 /***/ },
 
-/***/ 3:
+/***/ 1:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -1706,7 +1706,7 @@
 
 /***/ },
 
-/***/ 9:
+/***/ 7:
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -15881,10 +15881,10 @@
 
 /***/ },
 
-/***/ 75:
-[76, 3, 3],
+/***/ 73:
+[74, 1, 1],
 
-/***/ 76:
+/***/ 74:
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*** IMPORTS FROM imports-loader ***/

@@ -1,6 +1,8 @@
-.container:       .col-xs-12   {{>resolveComponent( "Header",  {state: "state"}) }}
-.fluid-container: .col-xs-12   {{>resolveComponent( "TopMenu", {state: "state", search_input: "search_input" }) }}
-.fluid-container: .col-xs-12   {{>resolveComponent( "Content", {state: "state"}) }}
-.container:       .col-xs-12   {{>resolveComponent( "Footer",  {state: "state"}) }}
+.container.fixed-header:     .col-xs-12   {{>resolveComponent( "Header",  {state: "state"}) }}
+.after-fixed
+.fluid-container.fixed-menu: .col-xs-12   {{>resolveComponent( "TopMenu", {state: "state", search_input: "search_input" }) }}
+.after-fixed
+.fluid-container:            .col-xs-12   {{>resolveComponent( "Content", {state: "state"}) }}
+.container:                  .col-xs-12   {{>resolveComponent( "Footer",  {state: "state"}) }}
 
-{{search_input}}
+| {{search_input}}

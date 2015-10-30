@@ -1,9 +1,18 @@
 @import "~bootstrap/less/bootstrap";  /* resolved from application dependencies */
-@import "~color-scheme";              /* resolved from web_modules folder */
+@import "~scheme";                    /* resolved from web_modules folder */
 @import "~mixins";                    /* resolved from web_modules folder */
 
+.fixed-header{
+  .fixed(0px, @header-hight);
+  background: white;
+}
 
+.fixed-menu{
+  .fixed(@header-hight, @top-menu-hight);
+  background: white;
+}
 
-.h1{
-	color: @heading-color;
+.fixed-sidebar{
+  .fixed(@header-hight + @top-menu-hight, @sidebar-height, 16%);
+  background: white;
 }
