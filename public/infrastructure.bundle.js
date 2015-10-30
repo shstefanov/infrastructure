@@ -3,18 +3,31 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(12);
-	module.exports = __webpack_require__(27);
+	module.exports = __webpack_require__(31);
 
 
 /***/ },
 /* 1 */
-2,
-/* 2 */,
-/* 3 */
+3,
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Ractive    = __webpack_require__(23 );
+	// Ractive.DEBUG  = config.ractive.debug;
+
+	var backboneAdaptor      = __webpack_require__( 38 );
+	backboneAdaptor.Backbone = __webpack_require__( 6 );
+
+	module.exports = Ractive.extend({ adapt: [ backboneAdaptor ] });
+
+
+/***/ },
+/* 3 */,
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Main App namespace
-	var helpers = __webpack_require__(33);
+	var helpers = __webpack_require__(39);
 	var _ = __webpack_require__(10);
 
 	var App = module.exports = {
@@ -43,7 +56,7 @@ webpackJsonp([1],[
 	  },
 
 	  config: function(conf){
-	    var config = __webpack_require__(4);
+	    var config = __webpack_require__(5);
 	    _.extend(config, typeof conf === "function" ? App.bulk(conf) : conf );
 	  }
 
@@ -51,34 +64,21 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	// Config namespace object
 	module.exports = {};
 
 /***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Ractive    = __webpack_require__(21 );
-	// Ractive.DEBUG  = config.ractive.debug;
-
-	var backboneAdaptor      = __webpack_require__( 32 );
-	backboneAdaptor.Backbone = __webpack_require__( 6 );
-
-	module.exports = Ractive.extend({ adapt: [ backboneAdaptor ] });
-
-
-/***/ },
 /* 6 */
-[64, 1, 1],
+[75, 1, 1],
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _ = __webpack_require__(2);
+	var _ = __webpack_require__(3);
 
-	module.exports = __webpack_require__(17).extend("AppController", {
+	module.exports = __webpack_require__(19).extend("AppController", {
 	  Layout: __webpack_require__(13),
 	  config: "app",
 
@@ -214,7 +214,7 @@ webpackJsonp([1],[
 /***/ },
 /* 9 */,
 /* 10 */
-2,
+3,
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -240,7 +240,7 @@ webpackJsonp([1],[
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App = __webpack_require__(3);  //{  }
+	var App = __webpack_require__(4);  //{  }
 
 	App.Controllers = App.bulk(__webpack_require__(11));
 
@@ -252,13 +252,13 @@ webpackJsonp([1],[
 		}
 	});
 
-	var app = __webpack_require__(26);
+	var app = __webpack_require__(30);
 
 	app.init({
 	  App:          App,
-	  config:       __webpack_require__(4),
+	  config:       __webpack_require__(5),
 	  settings:     window.settings || {},
-	  routes:       __webpack_require__(34),
+	  routes:       __webpack_require__(40),
 	  data:         {}
 	}, function(err){
 	  if(err) throw err;
@@ -271,14 +271,14 @@ webpackJsonp([1],[
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App = __webpack_require__(3);
+	var App = __webpack_require__(4);
 
-	module.exports = __webpack_require__(5).extend({
+	module.exports = __webpack_require__(2).extend({
 
-	  template: __webpack_require__(23),
-	  style:    __webpack_require__(28),
+	  template: __webpack_require__(25),
+	  style:    __webpack_require__(32),
 	  
-	  components: __webpack_require__(3).bulk(
+	  components: __webpack_require__(4).bulk(
 	    __webpack_require__(14),
 	    function(name, context, cb){ cb(name.split("/").shift()); }),
 
@@ -290,10 +290,10 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./Content/Content.js": 58,
-		"./Footer/Footer.js": 47,
-		"./Header/Header.js": 15,
-		"./TopMenu/TomMenu.js": 16
+		"./Content/Content.js": 15,
+		"./Footer/Footer.js": 16,
+		"./Header/Header.js": 17,
+		"./TopMenu/TomMenu.js": 18
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -313,9 +313,9 @@ webpackJsonp([1],[
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(5).extend({
-	  template: __webpack_require__(24),
-	  style:    __webpack_require__(29),
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(26),
+	  style:    __webpack_require__(33),
 	  components: {
 
 	  },
@@ -328,9 +328,9 @@ webpackJsonp([1],[
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(5).extend({
-	  template: __webpack_require__(25),
-	  style:    __webpack_require__(30),
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(27),
+	  style:    __webpack_require__(34),
 	  components: {
 
 	  },
@@ -343,10 +343,40 @@ webpackJsonp([1],[
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(28),
+	  style:    __webpack_require__(35),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(29),
+	  style:    __webpack_require__(36),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var _            = __webpack_require__(1);
-	var helpers      = __webpack_require__(20); 
-	var Controller   = __webpack_require__(19);
-	var Router       = __webpack_require__(22);
+	var helpers      = __webpack_require__(22); 
+	var Controller   = __webpack_require__(21);
+	var Router       = __webpack_require__(24);
 
 	/*
 	  // Every controller can:
@@ -504,7 +534,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -552,11 +582,11 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(1);
-	var EventedClass = __webpack_require__(18);
+	var EventedClass = __webpack_require__(20);
 
 	module.exports = EventedClass.extend("Controller", {
 
@@ -581,15 +611,15 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 20 */
-[35, 1],
-/* 21 */
+/* 22 */
+[41, 1],
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _          = __webpack_require__(1);
 	var Ractive    = __webpack_require__(9 );
 
-	var config     = __webpack_require__(4);
+	var config     = __webpack_require__(5);
 	Ractive.DEBUG  = config.debug;
 
 	module.exports = Ractive.extend({
@@ -693,7 +723,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Needs base tag to be set in head
@@ -790,32 +820,44 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"container"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Header\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"fluid-container"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"TopMenu\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"fluid-container"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Content\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"container"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Footer\",{state:\"state\"})"}}]}]}]};
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["The Layout (clientside) /infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"state.tab"},"/",{"t":2,"r":"state.context"},"/",{"t":2,"r":"state.action"}]}]};
-
-/***/ },
 /* 25 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","a":{"id":"top-menu","class":"fluid-container"},"f":["Top menu here"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Header\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"fluid-container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"TopMenu\",{state:\"state\",search_input:\"search_input\"})"}}]}]},{"t":7,"e":"div","a":{"class":"fluid-container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Content\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Footer\",{state:\"state\"})"}}]}]},{"t":2,"r":"search_input"}]};
 
 /***/ },
 /* 26 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]},{"t":7,"e":"p","f":["Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content.Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content. Some content."]}]};
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
+
+/***/ },
+/* 28 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["The Layout Header"]}]};
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"form","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"form-group"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Search","value":[{"t":2,"r":"search_input"}],"class":"form-control"}}]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/build","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]}]};
+
+/***/ },
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App = __webpack_require__(3);
+	var App = __webpack_require__(4);
 
 	module.exports = new App.Controllers.AppController();
 
-	var config = __webpack_require__(4);
+	var config = __webpack_require__(5);
 
 	if(config.debug === true) {
 		window.app    = module.exports; 
@@ -824,20 +866,24 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 27 */
+/* 31 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 28 */
-27,
-/* 29 */
-27,
-/* 30 */
-27,
-/* 31 */,
 /* 32 */
+31,
+/* 33 */
+31,
+/* 34 */
+31,
+/* 35 */
+31,
+/* 36 */
+31,
+/* 37 */,
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -965,9 +1011,9 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 33 */
-[35, 10],
-/* 34 */
+/* 39 */
+[41, 10],
+/* 40 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -979,7 +1025,7 @@ webpackJsonp([1],[
 	};
 
 /***/ },
-/* 35 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var _ = __webpack_require__(__webpack_module_template_argument_0__);
@@ -1199,70 +1245,5 @@ webpackJsonp([1],[
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(5).extend({
-	  template: __webpack_require__(53),
-	  style:    __webpack_require__(54),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
-
-/***/ },
-/* 54 */
-27,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(5).extend({
-	  template: __webpack_require__(59),
-	  style:    __webpack_require__(60),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 59 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Content here"]}]};
-
-/***/ },
-/* 60 */
-27
+/***/ }
 ]);

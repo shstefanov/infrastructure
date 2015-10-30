@@ -1,5 +1,6 @@
-.container: .row       {{>resolveComponent( "Header",  {state: "state"} ) }}
-.fluid-container: .row {{>resolveComponent( "TopMenu", {state: "state"} ) }}
-.fluid-container: .row {{>resolveComponent( "Content", {state: "state"} ) }}
-.container: .row       {{>resolveComponent( "Footer",  {state: "state"} ) }}
+.container:       .col-xs-12   {{>resolveComponent( "Header",  {state: "state"}) }}
+.fluid-container: .col-xs-12   {{>resolveComponent( "TopMenu", {state: "state", search_input: "search_input" }) }}
+.fluid-container: .col-xs-12   {{>resolveComponent( "Content", {state: "state"}) }}
+.container:       .col-xs-12   {{>resolveComponent( "Footer",  {state: "state"}) }}
 
+{{search_input}}
