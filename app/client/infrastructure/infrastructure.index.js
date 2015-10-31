@@ -10,7 +10,7 @@ App.config({
   debug: true,
   app: {
     // container: "#main-container"
-    pushState: true
+    pushState: false
   }
 });
 

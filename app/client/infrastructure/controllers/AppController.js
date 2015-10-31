@@ -3,6 +3,14 @@ var _ = require("underscore");
 module.exports = require("infrastructure-appcontroller-ractive").extend("AppController", {
   Layout: require("infrastructure.views.Layout"),
   config: "app",
+  /*
+	Resolved config can contain the following working options:
+	container: String // selector, where the app will initialize it's Layout view
+	pushState: Boolean
+
+
+
+  */
 
   routes: {
     "setContext": "setContext",
