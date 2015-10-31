@@ -22,6 +22,10 @@ module.exports = require("View").extend({
   },
 
   onrender: function(){
+    this.observe("installation_1", function(v){
+      console.log("installation_1: ", v);
+    })
+
     this.observe("state.tab", function(val){
       if(!val) return;
       var codes = this.el.querySelectorAll("code");

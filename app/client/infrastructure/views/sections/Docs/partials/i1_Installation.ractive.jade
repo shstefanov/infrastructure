@@ -1,24 +1,13 @@
 .page-header: h1 Installation
-pre: code.language-bash.
+
+ul.nav.nav-tabs
+  li(class="{{condition(installation_1.cli,     'active')}}" ): a(on-click="radioToggle('installation_1.cli',     true)") cli
+  li(class="{{condition(installation_1.package, 'active')}}" ): a(on-click="radioToggle('installation_1.package', true)") package.json
+
+div(class="{{condition(!installation_1.cli, condition(installation_1.__active, 'hide'))}}"): pre: code.language-bash.
   npm install infrastructure
 
-pre: code.language-javascript.
-  for(var i = 5; i &lt; 10; i++){
-      console.log("Hello" + i);
+div(class="{{condition(!installation_1.package, 'hide')}}"): pre: code.language-javascript.
+  "dependencies": {
+    "infrastructure": "^1.0.0"
   }
-pre: code.language-javascript.
-  throw new Error('aaa');
-  throw new Error('bbb');
-pre: code.language-javascript.
-  /*
-   * do some jQuery magic on load
-   */
-  $(document).ready(function() {
-      function showHiddenParagraphs() {
-          $("p.hidden").fadeIn(500);
-      }
-      setTimeout(showHiddenParagraphs, 1000);
-  });
-pre: code.language-javascript.
-  var App = require('App');
-  App.bulk(require.context('./', false));

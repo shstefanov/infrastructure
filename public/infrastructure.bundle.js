@@ -10,7 +10,7 @@ webpackJsonp([1],[
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Ractive    = __webpack_require__(18 );
+	var Ractive    = __webpack_require__(19 );
 	// Ractive.DEBUG  = config.ractive.debug;
 
 	var backboneAdaptor      = __webpack_require__( 40 );
@@ -2663,7 +2663,7 @@ webpackJsonp([1],[
 /***/ },
 /* 8 */,
 /* 9 */
-[74, 3, 3],
+[94, 3, 3],
 /* 10 */,
 /* 11 */
 2,
@@ -2672,7 +2672,7 @@ webpackJsonp([1],[
 
 	var _ = __webpack_require__(2);
 
-	module.exports = __webpack_require__(17).extend("AppController", {
+	module.exports = __webpack_require__(18).extend("AppController", {
 	  Layout: __webpack_require__(45),
 	  config: "app",
 	  /*
@@ -2702,7 +2702,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(20),
+	  template: __webpack_require__(21),
 	  style:    __webpack_require__(32),
 	  components: {
 
@@ -2720,7 +2720,7 @@ webpackJsonp([1],[
 
 	// Prism highlighter themes and stuff can be downloaded from http://prismjs.com/download.html
 
-	var beautify = __webpack_require__(57).js_beautify;
+	var beautify = __webpack_require__(56).js_beautify;
 	// beautify(tag.innerHTML, { indent_size: 2 });
 
 	var partials = App.bulk(__webpack_require__(47),function(name, context, cb){ 
@@ -2728,7 +2728,7 @@ webpackJsonp([1],[
 	});
 
 	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(21),
+	  template: __webpack_require__(22),
 	  style:    __webpack_require__(33),
 	  data: {
 	    items: Object.keys(partials)
@@ -2740,6 +2740,10 @@ webpackJsonp([1],[
 	  },
 
 	  onrender: function(){
+	    this.observe("installation_1", function(v){
+	      console.log("installation_1: ", v);
+	    })
+
 	    this.observe("state.tab", function(val){
 	      if(!val) return;
 	      var codes = this.el.querySelectorAll("code");
@@ -2757,6 +2761,21 @@ webpackJsonp([1],[
 
 /***/ },
 /* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1).extend({
+	  template: __webpack_require__(28),
+	  style:    __webpack_require__(38),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(2);
@@ -2872,14 +2891,14 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Backbone router needs jQuery to select 'window' and to attach 2 events to it
 	// Creating simple mockup
 
 	var Backbone               = __webpack_require__(9);
-	var Class                  = __webpack_require__(15);
+	var Class                  = __webpack_require__(16);
 
 	var jQueryMockup = {
 	  on: function(event, handler){
@@ -2966,13 +2985,13 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _            = __webpack_require__(3);
-	var helpers      = __webpack_require__(56); 
-	var Controller   = __webpack_require__(55);
-	var Router       = __webpack_require__(16);
+	var helpers      = __webpack_require__(55); 
+	var Controller   = __webpack_require__(54);
+	var Router       = __webpack_require__(17);
 
 	/*
 	  // Every controller can:
@@ -3129,7 +3148,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _          = __webpack_require__(3);
@@ -3147,10 +3166,9 @@ webpackJsonp([1],[
 	    },
 
 	    resolveComponent: function(name, properties){
-	      if(this.partials[name]) {
-	        if(properties) this.bindComponentVars(this.partials[name], properties );
-	        return name;
-	      }
+	      
+	      if(this.partials[name]) return name;
+
 	      var component, partial, components = this.__proto__.constructor.components;
 	      try{
 	        if(!components[name]) throw new Error("Component not found");
@@ -3159,7 +3177,7 @@ webpackJsonp([1],[
 	        if(properties) this.bindComponentVars(partial, properties );
 	      }
 	      catch(err){
-	        this.partials[name] = {"v":3,"t":[{"t":7,"e":"p","a":{"class":"alert alert-danger"},"f":["Error: Component at '"+name+"'' can't be resolved"]}]};
+	        this.partials[name] = {"v":3,"t":[{"t":7,"e":"p","a":{"class":"alert alert-danger"},"f":["Error: Component '"+name+"'' can't be resolved"]}]};
 	      }
 	      return name;
 	    }
@@ -3214,11 +3232,12 @@ webpackJsonp([1],[
 	    return result;
 	  },
 
-	  radioToggle: function(path){
+	  radioToggle: function(path, exclusive){
 	    var parts      = path.split(".");
 	    var parentPath = parts.slice(0,-1).join(".");
 	    var target     = parts.slice(-1).pop();
 	    var active     = this.get(parentPath+".__active");
+	    if(exclusive && target === active) return;
 	    if(active){
 	      this.toggle(parentPath+"."+active);
 	    }
@@ -3239,28 +3258,22 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"container fixed-header"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Header\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container fixed-menu"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"TopMenu\",{state:\"state\",search_input:\"search_input\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"MainContainer\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Footer\",{state:\"state\"})"}}]}]}]};
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":["Builder sidebar here",{"t":7,"e":"br"},{"t":2,"r":"search_input"}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]}]}]};
 
 /***/ },
-/* 21 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"."}],"class":["sidebar-item col-xs-10 ",{"t":2,"x":{"r":["condition","state.tab","."],"s":"_0(_1===_2,\"active\")"}}]},"f":[{"t":2,"r":"."}]}],"r":"items"}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":8,"r":"TabPartial"}]}]};
-
-/***/ },
 /* 22 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Installation"]}]},{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["npm install infrastructure\n"]}]},{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["for(var i = 5; i < 10; i++){\n    console.log(\"Hello\" + i);\n}"]}]},{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["throw new Error('aaa');\nthrow new Error('bbb');"]}]},{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["/*\n * do some jQuery magic on load\n */\n$(document).ready(function() {\n    function showHiddenParagraphs() {\n        $(\"p.hidden\").fadeIn(500);\n    }\n    setTimeout(showHiddenParagraphs, 1000);\n});"]}]},{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var App = require('App');\nApp.bulk(require.context('./', false));"]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"."}],"class":["sidebar-item col-xs-10 ",{"t":2,"x":{"r":["condition","state.tab","."],"s":"_0(_1===_2,\"active\")"}}]},"f":[{"t":2,"r":"."}]}],"r":"items"}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":8,"r":"TabPartial"}]}]};
 
 /***/ },
 /* 23 */
@@ -3278,7 +3291,7 @@ webpackJsonp([1],[
 /* 25 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Infrastructure"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":[{"t":7,"e":"a","a":{"href":"/infrastructure"},"f":["Infrastructure"]}]}]};
 
 /***/ },
 /* 26 */
@@ -3508,7 +3521,7 @@ webpackJsonp([1],[
 
 	var App = __webpack_require__(5);  //{  }
 
-	__webpack_require__(53);
+	__webpack_require__(52);
 	__webpack_require__(39);
 
 	App.Controllers = App.bulk(__webpack_require__(43));
@@ -3551,7 +3564,7 @@ webpackJsonp([1],[
 
 	module.exports = __webpack_require__(1).extend({
 
-	  template: __webpack_require__(19),
+	  template: __webpack_require__(20),
 	  style:    __webpack_require__(31),
 	  
 	  components: App.bulk(
@@ -3572,7 +3585,7 @@ webpackJsonp([1],[
 		"./Header/Header.js": 49,
 		"./MainContainer/MainContainer.js": 50,
 		"./TopMenu/TomMenu.js": 51,
-		"./UnderConstruction/UnderConstruction.js": 52
+		"./UnderConstruction/UnderConstruction.js": 15
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -3593,7 +3606,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./i1_Installation.ractive.jade": 22,
+		"./i1_Installation.ractive.jade": 58,
 		"./i2_Configuration.ractive.jade": 23
 	};
 	function webpackContext(req) {
@@ -3650,7 +3663,7 @@ webpackJsonp([1],[
 	  components: {
 	    Docs:              __webpack_require__(14       ),
 	    Builder:           __webpack_require__(13 ),
-	    UnderConstruction: __webpack_require__(52 ),
+	    UnderConstruction: __webpack_require__(15 ),
 	  }
 	});
 
@@ -3672,21 +3685,6 @@ webpackJsonp([1],[
 
 /***/ },
 /* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(28),
-	  style:    __webpack_require__(38),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 53 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript+bash&plugins=line-highlight+line-numbers */
@@ -3702,12 +3700,12 @@ webpackJsonp([1],[
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 54 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var Backbone = __webpack_require__(73);
-	var Class = __webpack_require__(15);
+	var Backbone = __webpack_require__(93);
+	var Class = __webpack_require__(16);
 
 	var _ = __webpack_require__(2);
 
@@ -3750,11 +3748,11 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 55 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(2);
-	var EventedClass = __webpack_require__(54);
+	var EventedClass = __webpack_require__(53);
 
 	module.exports = EventedClass.extend("Controller", {
 
@@ -3779,9 +3777,9 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 56 */
+/* 55 */
 [60, 2],
-/* 57 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -3824,7 +3822,7 @@ webpackJsonp([1],[
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 	        __webpack_require__(7),
 	        __webpack_require__(6),
-	        __webpack_require__(58)
+	        __webpack_require__(57)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(js_beautify, css_beautify, html_beautify) {
 	        return get_beautify(js_beautify, css_beautify, html_beautify);
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3842,7 +3840,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 58 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -4798,6 +4796,12 @@ webpackJsonp([1],[
 
 	}());
 
+
+/***/ },
+/* 58 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_1.cli\",true]"}}},"f":["cli"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["installation_1.cli","condition","installation_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"dependencies\": {\n  \"infrastructure\": \"^1.0.0\"\n}"]}]}]}]};
 
 /***/ },
 /* 59 */,
