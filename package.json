@@ -21,6 +21,7 @@
     "infrastructure-server-engine-express": "git+https://github.com/shstefanov/infrastructure-server-engine-express.git",
     "infrastructure-server-pages-express": "git+https://github.com/shstefanov/infrastructure-server-pages-express.git",
     "infrastructure-webpack": "^0.3.1",
+    "js-beautify": "^1.5.10",
     "mocha": "latest"
   },
   "scripts": {

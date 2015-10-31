@@ -1,1 +1,24 @@
-h1 Installation
+.page-header: h1 Installation
+pre: code.language-bash.
+  npm install infrastructure
+
+pre: code.language-javascript.
+  for(var i = 5; i &lt; 10; i++){
+      console.log("Hello" + i);
+  }
+pre: code.language-javascript.
+  throw new Error('aaa');
+  throw new Error('bbb');
+pre: code.language-javascript.
+  /*
+   * do some jQuery magic on load
+   */
+  $(document).ready(function() {
+      function showHiddenParagraphs() {
+          $("p.hidden").fadeIn(500);
+      }
+      setTimeout(showHiddenParagraphs, 1000);
+  });
+pre: code.language-javascript.
+  var App = require('App');
+  App.bulk(require.context('./', false));

@@ -71,6 +71,11 @@ infrastructure({
         }
       },
 
+      "loaders": [
+        // {"test": "rainbow.js", "loader": "imports?window=App"},
+        // {"test": "Rainbow\\/js\\/language\\/javascript.js", "loader": "imports?App=App&Rainbow=App['Rainbow']" }
+      ],
+
       // "config": {
       //   "SOME_FUNC": function(){ console.log("WHOAAAAAA!!!") },
       // },
