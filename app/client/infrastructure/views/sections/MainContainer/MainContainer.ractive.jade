@@ -1,2 +1,7 @@
-.row {{>resolveComponent( state.screen === "docs" ? "Docs" : state.screen === "build"? "Builder": "NotFount", {state: "state" , search_input: "search_input"}) }}
+.row.
+  {{#if !state.screen}}
+    {{>resolveComponent("UnderConstruction", {})}}
+  {{else}}
+    {{>resolveComponent(state.screen[0].toUpperCase() + state.screen.slice(1), {state: "state" , search_input: "search_input"})}}
+  {{/if}}
   

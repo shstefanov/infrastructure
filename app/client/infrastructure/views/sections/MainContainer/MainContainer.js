@@ -1,8 +1,9 @@
-module.exports = require("infrastructure-appcontroller-ractive/ractive-backbone-view").extend({
+module.exports = require("View").extend({
   template: require("./MainContainer.ractive.jade"),
   style:    require("./MainContainer.less"),
   components: {
-    Docs:    require("../Docs/Docs.js"       ),
-    Builder: require("../Builder/Builder.js" ),
+    Docs:              require("../Docs/Docs.js"       ),
+    Builder:           require("../Builder/Builder.js" ),
+    UnderConstruction: require("../UnderConstruction/UnderConstruction.js" ),
   }
 });

@@ -9,7 +9,7 @@ var partials = App.bulk(require.context("./partials", false),function(name, cont
   cb(name.replace(/\.ractive\.(jade|html)$/, "").replace(/^i[\d]{1,2}_/, ""));
 });
 
-module.exports = require("infrastructure-appcontroller-ractive/ractive-backbone-view").extend({
+module.exports = require("View").extend({
   template: require("./Docs.ractive.jade"),
   style:    require("./Docs.less"),
   data: {

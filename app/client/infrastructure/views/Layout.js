@@ -1,6 +1,6 @@
 var App = require("App");
 
-module.exports = require("infrastructure-appcontroller-ractive/ractive-backbone-view").extend({
+module.exports = require("View").extend({
 
   template: require("./Layout.ractive.jade"),
   style:    require("./Layout.less"),

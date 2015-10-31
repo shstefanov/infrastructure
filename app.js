@@ -81,7 +81,7 @@ infrastructure({
       // },
 
       "alias": {
-        
+        "View": "infrastructure-appcontroller-ractive/ractive-backbone-view"
       },
 
       "fileLoaders": {
