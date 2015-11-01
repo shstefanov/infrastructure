@@ -10,6 +10,8 @@ module.exports = function(env, cb){
   var _      = require("underscore");
   var bulk   = require("bulk-require");
 
+  var actual_do;
+
   env.testSetup = [];
   env.stops     = [];
 
@@ -62,7 +64,7 @@ module.exports = function(env, cb){
           }
           else delete parent[nodeName];
         }
-        else target.do = env.i.do;
+        else target.do = actual_do;
       });
       env.i[name].__run = { stop: env.stop };
       
@@ -76,6 +78,27 @@ module.exports = function(env, cb){
   env.i       = {};
   env.classes = {};
 
+
+  function findCbAndRespond(args, msg){
+    var cb = _.last(args);
+    if(_.isFunction(cb)) cb(msg)
+  }
+
+
+  var DO = function(address){
+    var args          = Array.prototype.slice.call(arguments);
+    var address       = args[0];
+    var address_parts = address.split(".");
+    var root          = env.i[address_parts[0]];
+    if(!root) return findCbAndRespond(args, "Can't find target: ", address);
+    var last          = _.last(address_parts);
+    var context       = env.helpers.resolve(env.i, address_parts.slice(0, -1).join("."));
+    if(!context || !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
+    
+    if(context.parseArguments) args = context.parseArguments(args.slice(1));
+    else args = args.slice(1);
+    context[last].apply(context, args);
+  };
 
 
   if(config.process_mode === "cluster"){
@@ -147,6 +170,7 @@ module.exports = function(env, cb){
         return deserialized;
       }
 
+      actual_do = env.i.do;
 
       require("./init/process/worker.js")(env, cb);
     }
@@ -163,24 +187,25 @@ module.exports = function(env, cb){
       });
     }
 
+    actual_do = DO;
+   
 
-    env.i.do = function(address){
-      var args          = Array.prototype.slice.call(arguments);
-      var address       = args[0];
-      var address_parts = address.split(".");
-      var root          = env.i[address_parts[0]];
-      if(!root) return forwardToMaster(address, args.splice(1));
-      var last          = _.last(address_parts);
-      var context       = env.helpers.resolve(env.i, address_parts.slice(0, -1).join("."));
-      if(!context || !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
-      
-      if(context.parseArguments) args = context.parseArguments(args.slice(1));
-      else args = args.slice(1);
-      context[last].apply(context, args);
-    };
+    var calls_cache = [];
+    env.i.do = function(){
+      calls_cache.push(arguments);
+    }
+    require("./init/process/single.js")(env, function(err){
+      if(err) return cb(err);
 
+      env.i.do = DO;
 
-    require("./init/process/single.js")(env, cb);
+      for(var i=0;i<calls_cache.length; i++){
+        DO.apply(env.i, calls_cache[i]);
+      }
+      delete calls_cache;
+
+      cb(null, env);
+    });
   }
 
   // if      (!env.config.nodes && cluster.isMaster)     require("./init/single.js")(env, cb);

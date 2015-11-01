@@ -20,7 +20,7 @@ module.exports = function findApp( config, cb ){
   if( !config.rootDir      ) config.rootDir      = process.cwd(); // process.cwd() is default rootDir
   loadApp( extendConfig( config ), function(err, env){
     if(err) return cb(err);
-    env.i.do("log.sys", "application started", (Date.now() - now) +"ms")
+    env.i.do("log.sys", "application started", (Date.now() - now) +"ms, process_mode: "+env.config.process_mode +", application mode: "+env.config.mode);
     cb(null, env);
   });
 };
