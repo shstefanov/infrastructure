@@ -14,8 +14,9 @@
 
 .code_block(@height){
   height: @height;
+  overflow: auto;
   > pre, > code{
     margin: 0;
-    min-height: @height; 
+    height: @height; 
   }  
 }

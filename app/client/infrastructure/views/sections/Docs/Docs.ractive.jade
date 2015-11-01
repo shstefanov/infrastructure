@@ -1,7 +1,14 @@
 .col-xs-2
   .fixed-sidebar: .row
     | {{#items}}
-    a.sidebar-item.col-xs-10(class="{{condition(state.tab === ., 'active')}}", href="/infrastructure/{{state.screen}}/{{.}}") {{.}}
+    a.sidebar-item.col-xs-10(class="{{condition(state.tab === ., 'active')}}", href="/infrastructure/{{state.screen}}/{{.}}") {{this.replace(/([a-z])([A-Z])/g, "$1 $2")}}
     | {{/items}}
   .after-fixed
 .col-xs-10 {{>TabPartial}}
+.col-xs-10.pull-right: .page-header: .row
+  | {{#previous}} 
+  .col-xs-2.pull-left.text-left:   a.btn.btn-default(href="/infrastructure/{{state.screen}}/{{previous}}") {{previous.replace(/([a-z])([A-Z])/g, "$1 $2")}}
+  | {{/previous}} 
+  | {{#next}}
+  .col-xs-2.pull-right.text-right: a.btn.btn-default(href="/infrastructure/{{state.screen}}/{{next}}") {{next.replace(/([a-z])([A-Z])/g, "$1 $2")}}
+  | {{/next}}

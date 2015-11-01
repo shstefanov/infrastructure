@@ -2663,7 +2663,7 @@ webpackJsonp([1],[
 /***/ },
 /* 8 */,
 /* 9 */
-[59, 3, 3],
+[120, 3, 3],
 /* 10 */,
 /* 11 */
 2,
@@ -2739,10 +2739,21 @@ webpackJsonp([1],[
 	    }
 	  },
 
+	  computed: {
+	    previous: function(){
+	      var items = this.get("items");
+	      var tab  = this.get("state.tab");
+	      return items[items.indexOf(tab) - 1];
+	    },
+	    next: function(){
+	      var items = this.get("items");
+	      var tab   = this.get("state.tab");
+	      return items[items.indexOf(tab) + 1];
+	    },
+	  },
+
 	  onrender: function(){
-	    this.observe("installation_1", function(v){
-	      console.log("installation_1: ", v);
-	    })
+	    window.scrollTo(0, 0);
 
 	    this.observe("state.tab", function(val){
 	      if(!val) return;
@@ -2754,6 +2765,7 @@ webpackJsonp([1],[
 	        }
 	      }
 	      Prism.highlightAll();
+	      window.scrollTo(0, 0);
 	    })
 	  }
 
@@ -3275,21 +3287,11 @@ webpackJsonp([1],[
 /* 22 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"."}],"class":["sidebar-item col-xs-10 ",{"t":2,"x":{"r":["condition","state.tab","."],"s":"_0(_1===_2,\"active\")"}}]},"f":[{"t":2,"r":"."}]}],"r":"items"}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":8,"r":"TabPartial"}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"."}],"class":["sidebar-item col-xs-10 ",{"t":2,"x":{"r":["condition","state.tab","."],"s":"_0(_1===_2,\"active\")"}}]},"f":[{"t":2,"x":{"r":["."],"s":"_0.replace(/([a-z])([A-Z])/g,\"$1 $2\")"}}]}],"r":"items"}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":8,"r":"TabPartial"}]},{"t":7,"e":"div","a":{"class":"col-xs-10 pull-right"},"f":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 pull-left text-left"},"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"previous"}],"class":"btn btn-default"},"f":[{"t":2,"x":{"r":["previous"],"s":"_0.replace(/([a-z])([A-Z])/g,\"$1 $2\")"}}]}]}],"r":"previous"}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 pull-right text-right"},"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"next"}],"class":"btn btn-default"},"f":[{"t":2,"x":{"r":["next"],"s":"_0.replace(/([a-z])([A-Z])/g,\"$1 $2\")"}}]}]}],"r":"next"}]}]}]}]};
 
 /***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Setup"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.cli","setup_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.cli\",true]"}}},"f":["command line"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_1.cli","condition","setup_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"dependencies\": {\n    \"infrastructure\": \"^1.0.0\"\n  }  \n}\n"]}]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Running"]}]},{"t":7,"e":"p","f":[" Create ",{"t":7,"e":"mark","f":["app.js "]},"in project folder with following content, then run it:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.app_js","setup_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_2.app_js","condition","setup_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({}, function(err, env){\n  if(err){\n    throw err;\n  }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js"]}]}]}]};
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Configuration"]}]};
-
-/***/ },
+/* 23 */,
+/* 24 */,
 /* 25 */
 /***/ function(module, exports) {
 
@@ -3614,8 +3616,9 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./i1_Setup.ractive.jade": 23,
-		"./i2_Configuration.ractive.jade": 24
+		"./i1_SetupApplication.ractive.jade": 63,
+		"./i2_TheLogger.ractive.jade": 77,
+		"./i3_Configuration.ractive.jade": 70
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -3712,7 +3715,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var Backbone = __webpack_require__(10);
+	var Backbone = __webpack_require__(119);
 	var Class = __webpack_require__(16);
 
 	var _ = __webpack_require__(2);
@@ -5026,6 +5029,38 @@ webpackJsonp([1],[
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 61 */,
+/* 62 */,
+/* 63 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Setup"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.cli","setup_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.cli\",true]"}}},"f":["command line"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_1.cli","condition","setup_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"dependencies\": {\n    \"infrastructure\": \"^1.0.0\"\n  }  \n}\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":["The version that tutorial covers is not released yet, so use this version instead:"]},{"t":7,"e":"div","a":{"class":"code-block small"},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install https://github.com/shstefanov/infrastructure.git#dev\n"]}]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Running"]}]},{"t":7,"e":"p","f":[" Create ",{"t":7,"e":"mark","f":["app.js"]}," in project folder with following content, then run it. It should exit immediately without any messages, because there are no active workers."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.app_js","setup_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_2.app_js","condition","setup_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* configuration goes here */ }, function(err, env){\n  if(err){\n    throw err;\n  }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.jss\n$>"]}]}]}]};
+
+/***/ },
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Configuration"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Let's expand our configuration"]}]},{"t":7,"e":"p","f":[" We passed the configuration object. But ",{"t":7,"e":"mark","f":["infrastructure"]}," will try to find some files or folders in project root folder and will extend passed config. Possible variants are:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.app_js","configuration_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_json"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_json\",true]"}}},"f":["config.json"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_js"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_js\",true]"}}},"f":["config.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_yml"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_yml\",true]"}}},"f":["config.yml"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_folder"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_folder\",true]"}}},"f":["config folder"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["configuration_1.app_js","condition","configuration_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"structures\": {\n    \"log\": {\n      \"engines\": [ \"log\"],\n      \"options\": { \"sys\": true, \"debug\": true }\n    }\n  }\n}"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["module.exports = {\n  structures: {\n    log: {\n      engines: [ \"log\"],\n      options: { sys: true, debug: true }\n    }\n  }\n};"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_yml"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-yaml"},"f":["---\n  structures: \n    log: \n      engines: \n        - \"log\"\n      options: \n        sys: true\n        debug: true"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_folder"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["//TODO - create fs block here"]}]}]}]};
+
+/***/ },
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["The Logger"]}]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.app","logger_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_1.app","condition","logger_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\" ],\n      options: { sys: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-01 21:19:15][logger]........................... options: sys, build\n[sys]  [2015-11-01 21:19:15][application started].............. 33ms, process_mode: single, application mode: development\n$>\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":[" First - it's a ",{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/Structures"]},"f":[{"t":7,"e":"mark","f":["structure."]}]},"It uses built-in engine, called ",{"t":7,"e":"mark","f":["log"]},". Also, it's config has options. The ",{"t":7,"e":"mark","f":["options"]}," object represents which log types are turned on. Only ",{"t":7,"e":"mark","f":["sys "]},"option is used by the system to report some initialization stuff. Any other option is custom. Let's create log type ",{"t":7,"e":"mark","f":["debug"]},"and use it to log some message."]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.app","logger_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"iv","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_2.app","condition","logger_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\"],\n      options: { sys: true, debug: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n  env.i.do(\"log.debug\", \"hello\", \"logger\");\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-01 22:04:51][logger]........................... options: sys, debug\n[sys]  [2015-11-01 22:04:51][application started].............. 31ms, process_mode: single, application mode: development\n[debug]  [2015-11-01 22:04:51][hello]............................ logger\n$>"]}]}]}]};
 
 /***/ }
 ]);

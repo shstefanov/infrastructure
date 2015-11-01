@@ -21,10 +21,21 @@ module.exports = require("View").extend({
     }
   },
 
+  computed: {
+    previous: function(){
+      var items = this.get("items");
+      var tab  = this.get("state.tab");
+      return items[items.indexOf(tab) - 1];
+    },
+    next: function(){
+      var items = this.get("items");
+      var tab   = this.get("state.tab");
+      return items[items.indexOf(tab) + 1];
+    },
+  },
+
   onrender: function(){
-    this.observe("installation_1", function(v){
-      console.log("installation_1: ", v);
-    })
+    window.scrollTo(0, 0);
 
     this.observe("state.tab", function(val){
       if(!val) return;
@@ -36,6 +47,7 @@ module.exports = require("View").extend({
         }
       }
       Prism.highlightAll();
+      window.scrollTo(0, 0);
     })
   }
 

@@ -2,7 +2,7 @@ var infrastructure = require("./index");
 
 infrastructure({
   "mode":              "development",
-  "process_mode":      "cluster",
+  "process_mode":      "single",
   "rootDir":           __dirname,
 
   "structures": {

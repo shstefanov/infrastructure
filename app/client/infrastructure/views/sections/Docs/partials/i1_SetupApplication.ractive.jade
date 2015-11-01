@@ -35,12 +35,17 @@ div.code-block.medium(class!=locals.getContentStaeTemplate("setup_1.package")): 
     }  
   }
 
+p
+p The version that tutorial covers is not released yet, so use this version instead:
+div.code-block.small: pre: code.language-bash.
+  $> npm install https://github.com/shstefanov/infrastructure.git#dev
+
 .page-header: h2 Running
 
 p 
   | Create 
-  mark app.js 
-  | in project folder with following content, then run it:
+  mark app.js
+  |  in project folder with following content, then run it. It should exit immediately without any messages, because there are no active workers.
 
 +doc_example_tab_items("setup_2", {
   "app_js":                 "app.js",
@@ -48,10 +53,11 @@ p
 })
 div.code-block.medium(class!=locals.getContentStaeTemplate("setup_2.app_js")): pre: code.language-javascript.
   var infrastructure = require("infrastructure");
-  infrastructure({}, function(err, env){
+  infrastructure({ /* configuration goes here */ }, function(err, env){
     if(err){
       throw err;
     }
   });
 div.code-block.medium(class!=locals.getContentStaeTemplate("setup_2.cli")):     pre: code.language-bash.
-  $> node app.js
+  $> node app.jss
+  $>
