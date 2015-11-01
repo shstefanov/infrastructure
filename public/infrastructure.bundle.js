@@ -2,8 +2,8 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(44);
-	module.exports = __webpack_require__(30);
+	__webpack_require__(45);
+	module.exports = __webpack_require__(31);
 
 
 /***/ },
@@ -13,7 +13,7 @@ webpackJsonp([1],[
 	var Ractive    = __webpack_require__(19 );
 	// Ractive.DEBUG  = config.ractive.debug;
 
-	var backboneAdaptor      = __webpack_require__( 40 );
+	var backboneAdaptor      = __webpack_require__( 41 );
 	backboneAdaptor.Backbone = __webpack_require__( 9 );
 
 	module.exports = Ractive.extend({ adapt: [ backboneAdaptor ] });
@@ -34,7 +34,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	// Main App namespace
-	var helpers = __webpack_require__(41);
+	var helpers = __webpack_require__(42);
 	var _ = __webpack_require__(11);
 
 	var App = module.exports = {
@@ -2663,7 +2663,7 @@ webpackJsonp([1],[
 /***/ },
 /* 8 */,
 /* 9 */
-[94, 3, 3],
+[71, 3, 3],
 /* 10 */,
 /* 11 */
 2,
@@ -2673,7 +2673,7 @@ webpackJsonp([1],[
 	var _ = __webpack_require__(2);
 
 	module.exports = __webpack_require__(18).extend("AppController", {
-	  Layout: __webpack_require__(45),
+	  Layout: __webpack_require__(46),
 	  config: "app",
 	  /*
 		Resolved config can contain the following working options:
@@ -2703,7 +2703,7 @@ webpackJsonp([1],[
 
 	module.exports = __webpack_require__(1).extend({
 	  template: __webpack_require__(21),
-	  style:    __webpack_require__(32),
+	  style:    __webpack_require__(33),
 	  components: {
 
 	  },
@@ -2720,16 +2720,16 @@ webpackJsonp([1],[
 
 	// Prism highlighter themes and stuff can be downloaded from http://prismjs.com/download.html
 
-	var beautify = __webpack_require__(56).js_beautify;
+	var beautify = __webpack_require__(57).js_beautify;
 	// beautify(tag.innerHTML, { indent_size: 2 });
 
-	var partials = App.bulk(__webpack_require__(47),function(name, context, cb){ 
+	var partials = App.bulk(__webpack_require__(48),function(name, context, cb){ 
 	  cb(name.replace(/\.ractive\.(jade|html)$/, "").replace(/^i[\d]{1,2}_/, ""));
 	});
 
 	module.exports = __webpack_require__(1).extend({
 	  template: __webpack_require__(22),
-	  style:    __webpack_require__(33),
+	  style:    __webpack_require__(34),
 	  data: {
 	    items: Object.keys(partials)
 	  },
@@ -2764,8 +2764,8 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(28),
-	  style:    __webpack_require__(38),
+	  template: __webpack_require__(29),
+	  style:    __webpack_require__(39),
 	  components: {
 
 	  },
@@ -2989,8 +2989,8 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	var _            = __webpack_require__(3);
-	var helpers      = __webpack_require__(55); 
-	var Controller   = __webpack_require__(54);
+	var helpers      = __webpack_require__(56); 
+	var Controller   = __webpack_require__(55);
 	var Router       = __webpack_require__(17);
 
 	/*
@@ -3279,40 +3279,46 @@ webpackJsonp([1],[
 /* 23 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Configuration"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_1.cli\",true]"}}},"f":["cli"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["installation_1.cli","condition","installation_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"dependencies\": {\n  \"infrastructure\": \"^1.0.0\"\n}\n"]}]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_2.cli","installation_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_2.cli\",true]"}}},"f":["cli"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_2.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_2.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["installation_2.cli","condition","installation_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["condition","installation_2.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"dependencies\": {\n  \"infrastructure\": \"^1.0.0\"\n}"]}]}]}]};
 
 /***/ },
 /* 24 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Configuration"]}]};
 
 /***/ },
 /* 25 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":[{"t":7,"e":"a","a":{"href":"/infrastructure"},"f":["Infrastructure"]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
 
 /***/ },
 /* 26 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"UnderConstruction\",{})"}}],"n":50,"x":{"r":["state.screen"],"s":"!_0"}},{"t":4,"n":51,"f":[{"t":8,"x":{"r":["resolveComponent","state"],"s":"_0(_1.screen[0].toUpperCase()+_1.screen.slice(1),{state:\"state\",search_input:\"search_input\"})"}}],"x":{"r":["state.screen"],"s":"!_0"}}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":[{"t":7,"e":"a","a":{"href":"/infrastructure"},"f":["Infrastructure"]}]}]};
 
 /***/ },
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"form","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"form-group"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Search","value":[{"t":2,"r":"search_input"}],"class":"form-control"}}]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/builder","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs/Installation","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"UnderConstruction\",{})"}}],"n":50,"x":{"r":["state.screen"],"s":"!_0"}},{"t":4,"n":51,"f":[{"t":8,"x":{"r":["resolveComponent","state"],"s":"_0(_1.screen[0].toUpperCase()+_1.screen.slice(1),{state:\"state\",search_input:\"search_input\"})"}}],"x":{"r":["state.screen"],"s":"!_0"}}]}]};
 
 /***/ },
 /* 28 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Under Construction"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"form","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"form-group"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Search","value":[{"t":2,"r":"search_input"}],"class":"form-control"}}]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/builder","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs/Installation","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
 
 /***/ },
 /* 29 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Under Construction"]}]};
+
+/***/ },
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(5);
@@ -3328,31 +3334,31 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 31 */
-30,
 /* 32 */
-30,
+31,
 /* 33 */
-30,
+31,
 /* 34 */
-30,
+31,
 /* 35 */
-30,
+31,
 /* 36 */
-30,
+31,
 /* 37 */
-30,
+31,
 /* 38 */
-30,
+31,
 /* 39 */
-30,
+31,
 /* 40 */
+31,
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -3480,9 +3486,9 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 41 */
-[60, 11],
 /* 42 */
+[60, 11],
+/* 43 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -3494,7 +3500,7 @@ webpackJsonp([1],[
 	};
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
@@ -3512,19 +3518,19 @@ webpackJsonp([1],[
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 43;
+	webpackContext.id = 44;
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(5);  //{  }
 
-	__webpack_require__(52);
-	__webpack_require__(39);
+	__webpack_require__(53);
+	__webpack_require__(40);
 
-	App.Controllers = App.bulk(__webpack_require__(43));
+	App.Controllers = App.bulk(__webpack_require__(44));
 
 	App.config({
 	  whoa: (function (){ console.log("WHOAAAAAA!!!") }),
@@ -3542,13 +3548,13 @@ webpackJsonp([1],[
 
 
 
-	var app = __webpack_require__(29);
+	var app = __webpack_require__(30);
 
 	app.init({
 	  App:          App,
 	  config:       __webpack_require__(4),
 	  settings:     window.settings || {},
-	  routes:       __webpack_require__(42),
+	  routes:       __webpack_require__(43),
 	  data:         {}
 	}, function(err){
 	  if(err) throw err;
@@ -3557,7 +3563,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(5);
@@ -3565,40 +3571,13 @@ webpackJsonp([1],[
 	module.exports = __webpack_require__(1).extend({
 
 	  template: __webpack_require__(20),
-	  style:    __webpack_require__(31),
+	  style:    __webpack_require__(32),
 	  
 	  components: App.bulk(
-	    __webpack_require__(46),
+	    __webpack_require__(47),
 	    function(name, context, cb){ cb(name.split("/").shift()); }),
 
 	});
-
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var map = {
-		"./Builder/Builder.js": 13,
-		"./Docs/Docs.js": 14,
-		"./Footer/Footer.js": 48,
-		"./Header/Header.js": 49,
-		"./MainContainer/MainContainer.js": 50,
-		"./TopMenu/TomMenu.js": 51,
-		"./UnderConstruction/UnderConstruction.js": 15
-	};
-	function webpackContext(req) {
-		return __webpack_require__(webpackContextResolve(req));
-	};
-	function webpackContextResolve(req) {
-		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
-	};
-	webpackContext.keys = function webpackContextKeys() {
-		return Object.keys(map);
-	};
-	webpackContext.resolve = webpackContextResolve;
-	module.exports = webpackContext;
-	webpackContext.id = 46;
 
 
 /***/ },
@@ -3606,8 +3585,13 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./i1_Installation.ractive.jade": 58,
-		"./i2_Configuration.ractive.jade": 23
+		"./Builder/Builder.js": 13,
+		"./Docs/Docs.js": 14,
+		"./Footer/Footer.js": 49,
+		"./Header/Header.js": 50,
+		"./MainContainer/MainContainer.js": 51,
+		"./TopMenu/TomMenu.js": 52,
+		"./UnderConstruction/UnderConstruction.js": 15
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -3627,15 +3611,22 @@ webpackJsonp([1],[
 /* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(24),
-	  style:    __webpack_require__(34),
-	  components: {
-
-	  },
-
-
-	});
+	var map = {
+		"./i1_Installation.ractive.jade": 23,
+		"./i2_Configuration.ractive.jade": 24
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 48;
 
 
 /***/ },
@@ -3661,10 +3652,10 @@ webpackJsonp([1],[
 	  template: __webpack_require__(26),
 	  style:    __webpack_require__(36),
 	  components: {
-	    Docs:              __webpack_require__(14       ),
-	    Builder:           __webpack_require__(13 ),
-	    UnderConstruction: __webpack_require__(15 ),
-	  }
+
+	  },
+
+
 	});
 
 
@@ -3676,6 +3667,21 @@ webpackJsonp([1],[
 	  template: __webpack_require__(27),
 	  style:    __webpack_require__(37),
 	  components: {
+	    Docs:              __webpack_require__(14       ),
+	    Builder:           __webpack_require__(13 ),
+	    UnderConstruction: __webpack_require__(15 ),
+	  }
+	});
+
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1).extend({
+	  template: __webpack_require__(28),
+	  style:    __webpack_require__(38),
+	  components: {
 
 	  },
 
@@ -3684,7 +3690,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript+bash&plugins=line-highlight+line-numbers */
@@ -3700,11 +3706,11 @@ webpackJsonp([1],[
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var Backbone = __webpack_require__(93);
+	var Backbone = __webpack_require__(70);
 	var Class = __webpack_require__(16);
 
 	var _ = __webpack_require__(2);
@@ -3748,11 +3754,11 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(2);
-	var EventedClass = __webpack_require__(53);
+	var EventedClass = __webpack_require__(54);
 
 	module.exports = EventedClass.extend("Controller", {
 
@@ -3777,9 +3783,9 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 55 */
-[60, 2],
 /* 56 */
+[60, 2],
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -3822,7 +3828,7 @@ webpackJsonp([1],[
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 	        __webpack_require__(7),
 	        __webpack_require__(6),
-	        __webpack_require__(57)
+	        __webpack_require__(58)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(js_beautify, css_beautify, html_beautify) {
 	        return get_beautify(js_beautify, css_beautify, html_beautify);
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3840,7 +3846,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -4796,12 +4802,6 @@ webpackJsonp([1],[
 
 	}());
 
-
-/***/ },
-/* 58 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_1.cli\",true]"}}},"f":["cli"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["installation_1.cli","condition","installation_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"dependencies\": {\n  \"infrastructure\": \"^1.0.0\"\n}"]}]}]}]};
 
 /***/ },
 /* 59 */,

@@ -11,3 +11,18 @@ div(class="{{condition(!installation_1.package, 'hide')}}"): pre: code.language-
   "dependencies": {
     "infrastructure": "^1.0.0"
   }
+
+include ../../../mixins/docs.jade
+
++doc_example_tab_items("installation_2", {
+  "cli":     "cli", 
+  "package": "package.json"
+})
+
+div(class!=locals.getContentStaeTemplate("installation_2.cli")):     pre: code.language-bash.
+  npm install infrastructure
+  
+div(class!=locals.getContentStaeTemplate("installation_2.package")): pre: code.language-javascript.
+  "dependencies": {
+    "infrastructure": "^1.0.0"
+  }
