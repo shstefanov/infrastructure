@@ -6965,6 +6965,34 @@ button.close {
   height: calc(100% - 80px + 50px);
   width: 16% !important;
 }
+.code-block {
+  margin-top: 15px;
+  overflow: auto;
+}
+.code-block.small {
+  height: 60px;
+}
+.code-block.small > pre,
+.code-block.small > code {
+  margin: 0;
+  min-height: 60px;
+}
+.code-block.medium {
+  height: 160px;
+}
+.code-block.medium > pre,
+.code-block.medium > code {
+  margin: 0;
+  min-height: 160px;
+}
+.code-block.large {
+  height: 260px;
+}
+.code-block.large > pre,
+.code-block.large > code {
+  margin: 0;
+  min-height: 260px;
+}
 .sidebar-item.active {
   text-decoration: underline;
 }

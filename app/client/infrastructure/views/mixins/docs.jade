@@ -18,9 +18,6 @@
 - locals.example_contents_states = {}
 - locals.getContentStaeTemplate = function(item_flag){ return locals.example_contents_states[item_flag] }
 
-mixin doc_tab_item(item_flag, text)
-  li(class="{{condition(#{item_flag}, 'active')}}" ): a(on-click="radioToggle('#{item_flag}',true)") #{text}
-
 mixin doc_example_tab_items(base, items)
   - var active = base + "." + "__active"
   - var initial = true
@@ -28,8 +25,7 @@ mixin doc_example_tab_items(base, items)
     each text, name in items
       - var item_flag = base + '.' + name
       - var class_template = "{{condition("+item_flag+(initial? (" || !"+active): "")+", 'active')}}"
-      - console.log("class_template: ", class_template)
-      li(class=class_template): a(on-click="radioToggle('#{item_flag}', true)") #{text}
+      li(class=class_template): a(href="javascript: void(0);", on-click="radioToggle('#{item_flag}', true)") #{text}
       - if(initial)
         - locals.example_contents_states[item_flag] = "{{condition(!"+item_flag+",  condition( "+active+" ,'hide' )  )}}"
       - else

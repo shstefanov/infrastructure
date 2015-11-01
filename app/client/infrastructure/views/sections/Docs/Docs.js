@@ -31,7 +31,9 @@ module.exports = require("View").extend({
       var codes = this.el.querySelectorAll("code");
       if(!codes) return;
       for(var i=0; i< codes.length; i++){
-        codes[i].innerHTML = beautify(codes[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">"), { indent_size: 2 });
+        if(codes[i].className.indexOf("javascript") > -1){
+          codes[i].innerHTML = beautify(codes[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">"), { indent_size: 2 });
+        }
       }
       Prism.highlightAll();
     })

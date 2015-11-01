@@ -17,3 +17,18 @@
   background: white;
   padding-left: @sidebar-padding-left;
 }
+
+
+.code-block{
+  margin-top: 15px;
+  overflow: auto;
+  &.small{
+    .code_block(@code_block_small_height);
+  }
+  &.medium{
+    .code_block(@code_block_medium_height);
+  }
+  &.large{
+    .code_block(@code_block_large_height);
+  }
+}

@@ -1,13 +1,21 @@
 .fixed(@top, @height, @width: 100%){
-	z-index: 100;
-	position: fixed;
-	top:    @top;
-	height: @height;
-	width:  @width !important;
+  z-index: 100;
+  position: fixed;
+  top:    @top;
+  height: @height;
+  width:  @width !important;
 
-	& + div.after-fixed{
-		position: relative;
-		height:   @height;
-		width:    @width !important;
-	}
+  & + div.after-fixed{
+    position: relative;
+    height:   @height;
+    width:    @width !important;
+  }
+}
+
+.code_block(@height){
+  height: @height;
+  > pre, > code{
+    margin: 0;
+    min-height: @height; 
+  }  
 }

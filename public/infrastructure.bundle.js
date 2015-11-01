@@ -2663,7 +2663,7 @@ webpackJsonp([1],[
 /***/ },
 /* 8 */,
 /* 9 */
-[71, 3, 3],
+[59, 3, 3],
 /* 10 */,
 /* 11 */
 2,
@@ -2749,7 +2749,9 @@ webpackJsonp([1],[
 	      var codes = this.el.querySelectorAll("code");
 	      if(!codes) return;
 	      for(var i=0; i< codes.length; i++){
-	        codes[i].innerHTML = beautify(codes[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">"), { indent_size: 2 });
+	        if(codes[i].className.indexOf("javascript") > -1){
+	          codes[i].innerHTML = beautify(codes[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">"), { indent_size: 2 });
+	        }
 	      }
 	      Prism.highlightAll();
 	    })
@@ -3279,7 +3281,7 @@ webpackJsonp([1],[
 /* 23 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_1.cli\",true]"}}},"f":["cli"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["installation_1.cli","condition","installation_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["condition","installation_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"dependencies\": {\n  \"infrastructure\": \"^1.0.0\"\n}\n"]}]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_2.cli","installation_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_2.cli\",true]"}}},"f":["cli"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","installation_2.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"installation_2.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["installation_2.cli","condition","installation_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":[{"t":2,"x":{"r":["condition","installation_2.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"dependencies\": {\n  \"infrastructure\": \"^1.0.0\"\n}"]}]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Setup"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.cli","setup_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.cli\",true]"}}},"f":["command line"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_1.cli","condition","setup_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"dependencies\": {\n    \"infrastructure\": \"^1.0.0\"\n  }  \n}\n"]}]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Running"]}]},{"t":7,"e":"p","f":[" Create ",{"t":7,"e":"mark","f":["app.js "]},"in project folder with following content, then run it:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.app_js","setup_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_2.app_js","condition","setup_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({}, function(err, env){\n  if(err){\n    throw err;\n  }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js"]}]}]}]};
 
 /***/ },
 /* 24 */
@@ -3612,7 +3614,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./i1_Installation.ractive.jade": 23,
+		"./i1_Setup.ractive.jade": 23,
 		"./i2_Configuration.ractive.jade": 24
 	};
 	function webpackContext(req) {
@@ -3710,7 +3712,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var Backbone = __webpack_require__(70);
+	var Backbone = __webpack_require__(10);
 	var Class = __webpack_require__(16);
 
 	var _ = __webpack_require__(2);
