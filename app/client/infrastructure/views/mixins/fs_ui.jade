@@ -1,0 +1,53 @@
+
+- locals.fs_flags = {}
+- locals.raw_fs  = {}
+- locals.patch   = function( target, path, value, separator  ) { var parts = path.split(separator || "."); for(var i = 0;i<parts.length;i++){ target[parts[i]] = (i < (parts.length - 1)) ? (target[parts[i]] || {}) : value; target = target[parts[i]]; } }
+- locals.resolve = function( target, path, separator, result ) { var parts = path.split(separator || "."); for(var i = 0;i<parts.length;i++){ if(!target.hasOwnProperty(parts[i])){ return undefined;} target = result = target[parts[i]] } return result; }
+- locals.getFlag = function( fs_name, filepath ) { return fs_name + "." + filepath.split("/").map(function(p){return p.replace(/\./g, "_")}).join("_") }
+- locals.getStateFromFs = function(fs_name, filepath){var initial = locals.raw_fs[fs_name][filepath]; if(initial) return "{{condition(!"+locals.getFlag(fs_name, filepath)+", condition("+fs_name+".__active, 'hide'))}}"; else return "{{condition(!"+locals.getFlag(fs_name, filepath)+", 'hide')}}"}
+
+mixin file_element(name, fullpath, flag, state)
+  - var onclick = "radioToggle('"+flag+"', true)"
+  - if(state === true)
+    - var active = [flag.split(".")[0], '__active'].join('.')
+    a.fs-file(href="javascript: void(0);", on-click=onclick, class="{{condition( #{flag} || !(#{active}), 'active')}}")=name
+  - else
+    a.fs-file(href="javascript: void(0);", on-click=onclick, class="{{condition( #{flag}, 'active')}}")=name
+
+mixin dir_element(name, fs_object)
+  p.fs-dir=name
+  .fs-dir
+    each val, name in fs_object
+      - if(Array.isArray(val))
+        +file_element(name, val[0], val[1], val[2])
+      -else
+        +dir_element(name, val)
+
+mixin fs_block(name, files)
+  - locals.raw_fs[name] = files
+  - if(!locals.fs_flags[name]) locals.fs_flags[name] = {}
+  - var flags = locals.fs_flags[name]
+  - var sorted = Object.keys(files).sort()
+  - var fs_object = {}
+  each filepath in sorted
+    - var state = files[filepath]
+    - var filename = filepath.split("/").pop()
+    - var dirpath = filepath.split("/").slice(0,-1).join("/") || filename
+    - var file_flag = locals.getFlag(name, filepath)
+    - if(filename === dirpath) 
+      - fs_object[filename] = [filepath, file_flag, state]
+    - else
+      - var dir_object = locals.resolve(fs_object, dirpath, "/")
+      - if(!dir_object) 
+        - dir_object = {}
+      - locals.patch(fs_object, dirpath, dir_object, "/")
+      - dir_object[filename] = [filepath, file_flag, state]
+  //- - var a = JSON.stringify(fs_object)
+  //- p(onclick='console.log(#{a})')=a
+  each val, name in fs_object
+    - if(Array.isArray(val))
+      +file_element(val[0], val[0], val[1], val[2])
+    -else
+      +dir_element(name, val)
+
+
