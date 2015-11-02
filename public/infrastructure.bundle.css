@@ -7002,6 +7002,10 @@ button.close {
   margin: 0px;
   padding-left: 10px;
 }
+.fs-block p.closed + div {
+  height: 0px;
+  overflow: hidden;
+}
 .fs-block .fs-file.active {
   text-decoration: underline;
 }

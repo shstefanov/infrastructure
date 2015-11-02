@@ -67,11 +67,12 @@ div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.conf
         options: 
           sys: true
           debug: true
+
 div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.config_folder"))
   .col-xs-2.fs-block
     +fs_block("conf_fs_1", {
       "app.js" :                      false,
-      "config/structures/log.json":   true
+      "config/structures/log.json":   true,
     })
 
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("conf_fs_1", "app.js")): pre: code.language-javascript.
@@ -85,9 +86,4 @@ div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.conf
       "engines": [ "log" ],
       "options": { "sys": true, "debug": true }
     }
-
-
-
-
-
 

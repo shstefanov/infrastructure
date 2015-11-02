@@ -15,7 +15,7 @@ mixin file_element(name, fullpath, flag, state)
     a.fs-file(href="javascript: void(0);", on-click=onclick, class="{{condition( #{flag}, 'active')}}")=name
 
 mixin dir_element(name, fs_object)
-  p.fs-dir=name
+  p.fs-dir(onclick="javascript:this.classList.toggle('closed');"): a(href="javascript:void(0);")=name
   .fs-dir
     each val, name in fs_object
       - if(Array.isArray(val))
