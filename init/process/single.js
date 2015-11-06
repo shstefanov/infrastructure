@@ -8,13 +8,13 @@ module.exports = function(env, cb){
   // Make most of engines separate packages  
   var enginesAliases = {
     "log":        path.join( __dirname, "../engines/log.js"        ),
-    "neo4j":      path.join( __dirname, "../engines/neo4j.js"      ),
-    "elastic":    path.join( __dirname, "../engines/elastic.js"    ),
-    "redis":      path.join( __dirname, "../engines/redis.js"      ),
-    "mysql":      path.join( __dirname, "../engines/mysql.js"      ),
-    "postgres":   path.join( __dirname, "../engines/postgres.js"   ),
-    "websocket":  path.join( __dirname, "../engines/websocket.js"  ),
-    "webpack":    path.join( __dirname, "../engines/webpack.js"    ),
+    // "neo4j":      path.join( __dirname, "../engines/neo4j.js"      ),
+    // "elastic":    path.join( __dirname, "../engines/elastic.js"    ),
+    // "redis":      path.join( __dirname, "../engines/redis.js"      ),
+    // "mysql":      path.join( __dirname, "../engines/mysql.js"      ),
+    // "postgres":   path.join( __dirname, "../engines/postgres.js"   ),
+    // "websocket":  path.join( __dirname, "../engines/websocket.js"  ),
+    // "webpack":    path.join( __dirname, "../engines/webpack.js"    ),
   };
 
   var libsAliases = {
@@ -29,29 +29,25 @@ module.exports = function(env, cb){
     "ExtendedModel":       path.join( __dirname, "../../lib/ExtendedModel"             ),
     "ExtendedCollection":  path.join( __dirname, "../../lib/ExtendedCollection"        ),
 
-    "SocketsCollection":   path.join( __dirname, "../../lib/SocketsCollection"         ),
+    //"SocketsCollection":   path.join( __dirname, "../../lib/SocketsCollection"         ),
     
     // TODO - make datalayers separate packages
     // HOW? How can i accessenv from the package?
-    "MysqlLayer":          path.join( __dirname, "../../lib/DataLayers/MysqlLayer"     ),
-    "PostgresLayer":       path.join( __dirname, "../../lib/DataLayers/PostgresLayer"  ),
-    "RedisLayer":          path.join( __dirname, "../../lib/DataLayers/RedisLayer"     ),
-    "ElasticLayer":        path.join( __dirname, "../../lib/DataLayers/ElasticLayer"   ),
-    "Neo4jLayer":          path.join( __dirname, "../../lib/DataLayers/Neo4jLayer"     ),
+    // "MysqlLayer":          path.join( __dirname, "../../lib/DataLayers/MysqlLayer"     ),
+    // "PostgresLayer":       path.join( __dirname, "../../lib/DataLayers/PostgresLayer"  ),
+    // "RedisLayer":          path.join( __dirname, "../../lib/DataLayers/RedisLayer"     ),
+    // "ElasticLayer":        path.join( __dirname, "../../lib/DataLayers/ElasticLayer"   ),
+    // "Neo4jLayer":          path.join( __dirname, "../../lib/DataLayers/Neo4jLayer"     ),
 
-    "WebsocketApp":        path.join( __dirname, "../../lib/WebsocketApp"              ),
+    // "WebsocketApp":        path.join( __dirname, "../../lib/WebsocketApp"              ),
   };
 
   // TODO - make most of loaders to be separate packages
   var loadersAliases = {
-    "backbone-data-sync": path.join( __dirname, "../loaders/backbone-data-sync"   ),
-    "models" :            path.join( __dirname, "../loaders/models"               ),
-    "pages":              path.join( __dirname, "../loaders/pages"                ),
+    // "backbone-data-sync": path.join( __dirname, "../loaders/backbone-data-sync"   ),
+    "default" :           path.join( __dirname, "../loaders/default"              ),
     "controllers":        path.join( __dirname, "../loaders/controllers"          ),
-    "log":                path.join( __dirname, "../loaders/log"                  ),
     "data":               path.join( __dirname, "../loaders/data"                 ),
-    "bundles":            path.join( __dirname, "../loaders/bundles"              ),
-    "websocket":          path.join( __dirname, "../loaders/websocket"            ),
   };
 
   var classes = {};
@@ -78,7 +74,9 @@ module.exports = function(env, cb){
   _.each(config.structures, function(node, type){
 
     if( node.engines ) engines = engines.concat( node.engines );
-    if( node.loaders ) loaders = loaders.concat( node.loaders );
+
+    if( node.loader )  loaders = loaders.push( [type, node.loader] );
+    else               loaders.push( [type, loadersAliases.default] );
 
     if(node.libs){
       env.helpers.deepExtend(classes, _.mapObject(node.libs, function(val, key){
@@ -117,7 +115,10 @@ module.exports = function(env, cb){
 
   // Sort engines and prepare them to be required as modules
   loaders = _.uniq(loaders)
-    .map(function(l){ return resolvePath( l, loadersAliases ); });
+    .map(function(l){ 
+      if(Array.isArray(l)) return [l[0], resolvePath( l[1], loadersAliases ) ];
+      return resolvePath( l, loadersAliases ); 
+    });
   
   // In test mode - inject given scripts after loaders in chain
   // to be executed as fixtures or soething similar
@@ -128,7 +129,10 @@ module.exports = function(env, cb){
 
   // Concatenate engines and loaders to get compact chain
   // and require all of them as modules
-  var initChain = engines.concat(loaders).map(function(c){return require(c);});
+  var initChain = engines.concat(loaders).map(function(c){
+    if(Array.isArray(c)) return require(c[1]).bind(env, c[0]);
+    return require(c);
+  });
 
   // Run the chain
   env.helpers.chain(initChain)(function(err){ cb(err, env); }, env );
