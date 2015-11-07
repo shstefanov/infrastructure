@@ -56,7 +56,7 @@ module.exports = function(env, cb){
     nodes_chain[name === "log" ? "unshift" : "push"](function(cb){
       
       // Passing node config as string vie env var
-      var worker  = cluster.fork({ INFRASTRUCTURE_CONFIG: str_config });
+      var worker  = cluster.fork({ INFRASTRUCTURE_CONFIG: str_config, INFRASTRUCTURE_AUTOLOAD: 1 });
       
       // listening for 'exit' event and spawning node again
       worker.on("exit", function(){
