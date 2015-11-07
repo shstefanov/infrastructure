@@ -23,13 +23,19 @@ module.exports = function(env, cb){
   };
 
   env.structureLoader = function(name, setup, cb, cached){
-
     var structureConfig = env.config.structures[name];
+    if(!structureConfig.path) return cb();
     if(!structureConfig) return cb(new Error("Cant find config: env.config.structures."+name + " structure "+name));
     var stagePath = path.join(env.config.rootDir, Array.isArray(structureConfig.path)?structureConfig.path[0]:structureConfig.path);
-    if(!fs.existsSync(stagePath)) return cb(new Error("Cant find path: "+ stagePath + " structure "+name));
-
     var initializers = [], structureInit;
+    if(!fs.existsSync(stagePath)) {
+      if(structureConfig.instances) {
+        env.i[name] = {};
+        return go(cb);
+      }
+      return cb(new Error("Cant find path: "+ stagePath + " structure "+name));
+    }
+
     env.i[name] = bulk(stagePath, Array.isArray(structureConfig.path)?structureConfig.path[1]:["**/*.js", "**/*.coffee"]);
     env.i[name].do = env.i.do;
 

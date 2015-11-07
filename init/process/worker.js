@@ -52,7 +52,11 @@ module.exports = function(env, cb){
     else if(data.stream  ) data.args.push(env.deserializeStream   (data.stream)   );
     
     var address_parts = data.address.split(".");
-    if(!env.i[address_parts[0]]){ console.error("Can't find target ???");}
+    if(!env.i[address_parts[0]]){
+      console.log(address_parts[0])
+      console.log(env.i);
+      console.error("Can't find target ???");
+    }
     else{
       var doArgs = [data.address].concat(data.args);
       env.i.do.apply(env.i, doArgs);
