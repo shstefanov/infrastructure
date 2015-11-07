@@ -9,7 +9,7 @@ App.config({
   whoa: SOME_FUNC,
   debug: true,
   app: {
-    container: "#main-container",
+    // container: "#main-container",
     pushState: false
   }
 });

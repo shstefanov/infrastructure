@@ -2,8 +2,8 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(46);
-	module.exports = __webpack_require__(32);
+	__webpack_require__(51);
+	module.exports = __webpack_require__(35);
 
 
 /***/ },
@@ -13,29 +13,23 @@ webpackJsonp([1],[
 	var Ractive    = __webpack_require__(19 );
 	// Ractive.DEBUG  = config.ractive.debug;
 
-	var backboneAdaptor      = __webpack_require__( 42 );
-	backboneAdaptor.Backbone = __webpack_require__( 9 );
+	var backboneAdaptor      = __webpack_require__( 45 );
+	backboneAdaptor.Backbone = __webpack_require__( 11 );
 
 	module.exports = Ractive.extend({ adapt: [ backboneAdaptor ] });
 
 
 /***/ },
-/* 2 */,
+/* 2 */
+6,
 /* 3 */
-2,
+6,
 /* 4 */
-/***/ function(module, exports) {
-
-	// Config namespace object
-	module.exports = {};
-
-/***/ },
-/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Main App namespace
-	var helpers = __webpack_require__(43);
-	var _ = __webpack_require__(11);
+	var helpers = __webpack_require__(48);
+	var _ = __webpack_require__(12);
 
 	var App = module.exports = {
 	  
@@ -63,7 +57,7 @@ webpackJsonp([1],[
 	  },
 
 	  config: function(conf){
-	    var config = __webpack_require__(4);
+	    var config = __webpack_require__(5);
 	    _.extend(config, typeof conf === "function" ? App.bulk(conf) : conf );
 	  }
 
@@ -71,7 +65,15 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 6 */
+/* 5 */
+/***/ function(module, exports) {
+
+	// Config namespace object
+	module.exports = {};
+
+/***/ },
+/* 6 */,
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -568,7 +570,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -2661,135 +2663,8 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 8 */,
-/* 9 */
-[89, 3, 3],
-/* 10 */,
-/* 11 */
-2,
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(2);
-
-	module.exports = __webpack_require__(18).extend("AppController", {
-	  Layout: __webpack_require__(47),
-	  config: "app",
-	  /*
-		Resolved config can contain the following working options:
-		container: String // selector, where the app will initialize it's Layout view
-		pushState: Boolean
-
-
-
-	  */
-
-	  routes: {
-	    "setContext": "setContext",
-	  },
-
-	  contaxtParams: ["screen", "tab", "context", "action", "param_1", "param_2", "param_3", "param_4"],
-
-	  setContext: function( screen_name, tab, context, action ){
-	    this.reset( "state", _.chain(this.contaxtParams).zip(arguments).object().value() ); 
-	  },
-
-	});
-
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(21),
-	  style:    __webpack_require__(34),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var App = __webpack_require__(5);
-
-	// Prism highlighter themes and stuff can be downloaded from http://prismjs.com/download.html
-
-	var beautify = __webpack_require__(58).js_beautify;
-	// beautify(tag.innerHTML, { indent_size: 2 });
-
-	var partials = App.bulk(__webpack_require__(49),function(name, context, cb){ 
-	  cb(name.replace(/\.ractive\.(jade|html)$/, "").replace(/^i[\d]{1,2}_/, ""));
-	});
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(22),
-	  style:    __webpack_require__(35),
-	  data: {
-	    items: Object.keys(partials)
-	  },
-	  partials: {
-	    TabPartial: function(){
-	      return partials[this.get("state.tab")];
-	    }
-	  },
-
-	  computed: {
-	    previous: function(){
-	      var items = this.get("items");
-	      var tab  = this.get("state.tab");
-	      return items[items.indexOf(tab) - 1];
-	    },
-	    next: function(){
-	      var items = this.get("items");
-	      var tab   = this.get("state.tab");
-	      return items[items.indexOf(tab) + 1];
-	    },
-	  },
-
-	  onrender: function(){
-	    window.scrollTo(0, 0);
-
-	    this.observe("state.tab", function(val){
-	      if(!val) return;
-	      var codes = this.el.querySelectorAll("code");
-	      if(!codes) return;
-	      for(var i=0; i< codes.length; i++){
-	        if(codes[i].className.indexOf("javascript") > -1){
-	          codes[i].innerHTML = beautify(codes[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">"), { indent_size: 2 });
-	        }
-	      }
-	      Prism.highlightAll();
-	      window.scrollTo(0, 0);
-	    })
-	  }
-
-
-	});
-
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(30),
-	  style:    __webpack_require__(40),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 16 */
+/* 9 */,
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(2);
@@ -2905,14 +2780,140 @@ webpackJsonp([1],[
 
 
 /***/ },
+/* 11 */
+[63, 3, 3],
+/* 12 */
+6,
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(6);
+
+	module.exports = __webpack_require__(18).extend("AppController", {
+	  Layout: __webpack_require__(52),
+	  config: "app",
+	  /*
+		Resolved config can contain the following working options:
+		container: String // selector, where the app will initialize it's Layout view
+		pushState: Boolean
+
+
+
+	  */
+
+	  routes: {
+	    "setContext": "setContext",
+	  },
+
+	  contaxtParams: ["screen", "tab", "context", "action", "param_1", "param_2", "param_3", "param_4"],
+
+	  setContext: function( screen_name, tab, context, action ){
+	    this.reset( "state", _.chain(this.contaxtParams).zip(arguments).object().value() ); 
+	  },
+
+	});
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1).extend({
+	  template: __webpack_require__(24),
+	  style:    __webpack_require__(37),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var App = __webpack_require__(4);
+
+	// Prism highlighter themes and stuff can be downloaded from http://prismjs.com/download.html
+
+	var beautify = __webpack_require__(60).js_beautify;
+	// beautify(tag.innerHTML, { indent_size: 2 });
+
+	var partials = App.bulk(__webpack_require__(54),function(name, context, cb){ 
+	  cb(name.replace(/\.ractive\.(jade|html)$/, "").replace(/^i[\d]{1,2}_/, ""));
+	});
+
+	module.exports = __webpack_require__(1).extend({
+	  template: __webpack_require__(25),
+	  style:    __webpack_require__(38),
+	  data: {
+	    items: Object.keys(partials)
+	  },
+	  partials: {
+	    TabPartial: function(){
+	      return partials[this.get("state.tab")];
+	    }
+	  },
+
+	  computed: {
+	    previous: function(){
+	      var items = this.get("items");
+	      var tab  = this.get("state.tab");
+	      return items[items.indexOf(tab) - 1];
+	    },
+	    next: function(){
+	      var items = this.get("items");
+	      var tab   = this.get("state.tab");
+	      return items[items.indexOf(tab) + 1];
+	    },
+	  },
+
+	  onrender: function(){
+	    window.scrollTo(0, 0);
+
+	    this.observe("state.tab", function(val){
+	      if(!val) return;
+	      var codes = this.el.querySelectorAll("code");
+	      if(!codes) return;
+	      for(var i=0; i< codes.length; i++){
+	        if(codes[i].className.indexOf("javascript") > -1){
+	          codes[i].innerHTML = beautify(codes[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">"), { indent_size: 2 });
+	        }
+	      }
+	      Prism.highlightAll();
+	      window.scrollTo(0, 0);
+	    })
+	  }
+
+
+	});
+
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1).extend({
+	  template: __webpack_require__(33),
+	  style:    __webpack_require__(43),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Backbone router needs jQuery to select 'window' and to attach 2 events to it
 	// Creating simple mockup
 
-	var Backbone               = __webpack_require__(9);
-	var Class                  = __webpack_require__(16);
+	var Backbone               = __webpack_require__(11);
+	var Class                  = __webpack_require__(10);
 
 	if(!Backbone.$){
 	  var jQueryMockup = {
@@ -3025,8 +3026,8 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	var _            = __webpack_require__(3);
-	var helpers      = __webpack_require__(57); 
-	var Controller   = __webpack_require__(56);
+	var helpers      = __webpack_require__(22); 
+	var Controller   = __webpack_require__(21);
 	var Router       = __webpack_require__(17);
 
 	/*
@@ -3198,9 +3199,9 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	var _          = __webpack_require__(3);
-	var Ractive    = __webpack_require__(8 );
+	var Ractive    = __webpack_require__(9 );
 
-	var config     = __webpack_require__(4);
+	var config     = __webpack_require__(5);
 	Ractive.DEBUG  = config.debug;
 
 	module.exports = Ractive.extend({
@@ -3305,79 +3306,158 @@ webpackJsonp([1],[
 
 /***/ },
 /* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var Backbone = __webpack_require__(46);
+	var Class = __webpack_require__(10);
+
+	var _ = __webpack_require__(2);
+
+	var EventedClass = Class.extend("EventedClass", _.extend(Backbone.Events, {
+	  
+	  // EventedClass's constructor handles props like:
+	  // events:{
+	  //   "event_name": "method name",
+	  //   "evt": ["method1", "method2", function(){}],
+	  //   "event": function(){ ... }
+	  // }
+
+	  constructor: function(){
+	    if(_.isObject(this.events)){
+	      for(event in this.events){ var evt = this.events[event];
+	        
+	        if(_.isFunction(evt)) this.on(event, evt, this);
+	        
+	        else if(_.isString(evt) && _.isFunction(this[evt])){
+	          this.on(event, this[evt], this);
+	        }
+	        
+	        else if(_.isArray(evt)){
+	          for(var i = 0;i< evt.length;i++){ var meth = evt[i];
+	            if(_.isString(meth) && _.isFunction(this[meth])){
+	              this.on(event, this[meth], this);
+	            }
+	            else if(_.isFunction(meth)){
+	              this.on(event, meth, this);
+	            }
+	          }
+	        }
+	      }
+	    }
+	    Class.apply(this, arguments);
+	  }
+
+	}), Backbone.Events);
+	module.exports = EventedClass;
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(2);
+	var EventedClass = __webpack_require__(20);
+
+	module.exports = EventedClass.extend("Controller", {
+
+	  bindRoutes: function(app){
+	    for(var key in this.routes){
+	      var handlerName = this.routes[key];
+	      if(Array.isArray(handlerName)){
+	        for(var i=0;i<handlerName.length;i++){
+	          if(_.isFunction(this[handlerName[i]])){
+	            app.router.on("route:"+key, this[handlerName[i]], this);
+	          }
+	        }
+	      }
+	      else{
+	        if(_.isFunction(this[handlerName])){
+	          app.router.on("route:"+key, this[handlerName], this);
+	        }
+	      }
+	    }
+	  }
+	});
+
+
+/***/ },
+/* 22 */
+[62, 2],
+/* 23 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"container fixed-header"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Header\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container fixed-menu"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"TopMenu\",{state:\"state\",search_input:\"search_input\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"MainContainer\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Footer\",{state:\"state\"})"}}]}]}]};
 
 /***/ },
-/* 21 */
+/* 24 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":["Builder sidebar here",{"t":7,"e":"br"},{"t":2,"r":"search_input"}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]},{"t":7,"e":"p","f":["Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here Builder content here"]}]}]};
 
 /***/ },
-/* 22 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"."}],"class":["sidebar-item col-xs-10 ",{"t":2,"x":{"r":["condition","state.tab","."],"s":"_0(_1===_2,\"active\")"}}]},"f":[{"t":2,"x":{"r":["."],"s":"_0.replace(/([a-z])([A-Z])/g,\"$1 $2\")"}}]}],"r":"items"}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":8,"r":"TabPartial"}]},{"t":7,"e":"div","a":{"class":"col-xs-10 pull-right"},"f":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 pull-left text-left"},"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"previous"}],"class":"btn btn-default"},"f":[{"t":2,"x":{"r":["previous"],"s":"_0.replace(/([a-z])([A-Z])/g,\"$1 $2\")"}}]}]}],"r":"previous"}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 pull-right text-right"},"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"next"}],"class":"btn btn-default"},"f":[{"t":2,"x":{"r":["next"],"s":"_0.replace(/([a-z])([A-Z])/g,\"$1 $2\")"}}]}]}],"r":"next"}]}]}]}]};
 
 /***/ },
-/* 23 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Setup"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.cli","setup_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.cli\",true]"}}},"f":["command line"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_1.cli","condition","setup_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"dependencies\": {\n    \"infrastructure\": \"^1.0.0\"\n  }  \n}\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":["The version that tutorial covers is not released yet, so use this version instead:"]},{"t":7,"e":"div","a":{"class":"code-block small"},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install https://github.com/shstefanov/infrastructure.git#dev\n"]}]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Running"]}]},{"t":7,"e":"p","f":[" Create ",{"t":7,"e":"mark","f":["app.js"]}," in project folder with following content, then run it. It should exit immediately without any messages, because there are no active workers."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.app_js","setup_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_2.app_js","condition","setup_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* configuration goes here */ }, function(err, env){\n  if(err){\n    throw err;\n  }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.jss\n$>"]}]}]}]};
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["The Logger"]}]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.app","logger_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_1.app","condition","logger_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\" ],\n      options: { sys: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-01 21:19:15][logger]........................... options: sys, build\n[sys]  [2015-11-01 21:19:15][application started].............. 33ms, process_mode: single, application mode: development\n$>\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":[" First - it's a ",{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/Structures"]},"f":[{"t":7,"e":"mark","f":["structure."]}]},"It uses built-in engine, called ",{"t":7,"e":"mark","f":["log"]},". Also, it's config has options. The ",{"t":7,"e":"mark","f":["options"]}," object represents which log types are turned on. Only ",{"t":7,"e":"mark","f":["sys "]},"option is used by the system to report some initialization stuff. Any other option is custom. Let's create log type ",{"t":7,"e":"mark","f":["debug"]},"and use it to log some message."]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.app","logger_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"iv","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_2.app","condition","logger_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\"],\n      options: { sys: true, debug: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n  env.i.do(\"log.debug\", \"hello\", \"logger\");\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-01 22:04:51][logger]........................... options: sys, debug\n[sys]  [2015-11-01 22:04:51][application started].............. 31ms, process_mode: single, application mode: development\n[debug]  [2015-11-01 22:04:51][hello]............................ logger\n$>"]}]}]}]};
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Configuration"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Let's expand our configuration"]}]},{"t":7,"e":"p","f":[" We passed the configuration object. But ",{"t":7,"e":"mark","f":["infrastructure"]}," will try to find some files or folders in project root folder and will extend passed config. Possible variants are:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.app_js","configuration_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_json"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_json\",true]"}}},"f":["config.json"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_js"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_js\",true]"}}},"f":["config.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_yml"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_yml\",true]"}}},"f":["config.yml"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_folder"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_folder\",true]"}}},"f":["config folder"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["configuration_1.app_js","condition","configuration_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"structures\": {\n    \"log\": {\n      \"engines\": [ \"log\"],\n      \"options\": { \"sys\": true, \"debug\": true }\n    }\n  }\n}"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["module.exports = {\n  structures: {\n    log: {\n      engines: [ \"log\"],\n      options: { sys: true, debug: true }\n    }\n  }\n};"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_yml"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-yaml"},"f":["---\n  structures: \n    log: \n      engines: \n        - \"log\"\n      options: \n        sys: true\n        debug: true\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_folder"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 fs-block"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","conf_fs_1.app_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"conf_fs_1.app_js\",true]"}}},"f":["app.js"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["config"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["structures"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","conf_fs_1.config_structures_log_json","conf_fs_1.__active"],"s":"_0(_1||!(_2),\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"conf_fs_1.config_structures_log_json\",true]"}}},"f":["log.json"]}]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","conf_fs_1.app_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["conf_fs_1.config_structures_log_json","condition","conf_fs_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"engines\": [ \"log\" ],\n  \"options\": { \"sys\": true, \"debug\": true }\n}"]}]}]}]}]};
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":[{"t":7,"e":"a","a":{"href":"/infrastructure"},"f":["Infrastructure"]}]}]};
 
 /***/ },
-/* 28 */
+/* 31 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"UnderConstruction\",{})"}}],"n":50,"x":{"r":["state.screen"],"s":"!_0"}},{"t":4,"n":51,"f":[{"t":8,"x":{"r":["resolveComponent","state"],"s":"_0(_1.screen[0].toUpperCase()+_1.screen.slice(1),{state:\"state\",search_input:\"search_input\"})"}}],"x":{"r":["state.screen"],"s":"!_0"}}]}]};
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"form","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"form-group"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Search","value":[{"t":2,"r":"search_input"}],"class":"form-control"}}]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/builder","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
 
 /***/ },
-/* 30 */
+/* 33 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Under Construction"]}]};
 
 /***/ },
-/* 31 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App = __webpack_require__(5);
+	var App = __webpack_require__(4);
 
 	module.exports = new App.Controllers.AppController();
 
-	var config = __webpack_require__(4);
+	var config = __webpack_require__(5);
 
 	if(config.debug === true) {
 		window.app    = module.exports; 
@@ -3386,31 +3466,31 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 32 */
+/* 35 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 33 */
-32,
-/* 34 */
-32,
-/* 35 */
-32,
 /* 36 */
-32,
+35,
 /* 37 */
-32,
+35,
 /* 38 */
-32,
+35,
 /* 39 */
-32,
+35,
 /* 40 */
-32,
+35,
 /* 41 */
-32,
+35,
 /* 42 */
+35,
+/* 43 */
+35,
+/* 44 */
+35,
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -3538,9 +3618,12 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 43 */
-[61, 11],
-/* 44 */
+/* 46 */
+[63, 2, 2],
+/* 47 */,
+/* 48 */
+[62, 12],
+/* 49 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -3552,12 +3635,12 @@ webpackJsonp([1],[
 	};
 
 /***/ },
-/* 45 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./AppController": 12,
-		"./AppController.js": 12
+		"./AppController": 13,
+		"./AppController.js": 13
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -3570,25 +3653,25 @@ webpackJsonp([1],[
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 45;
+	webpackContext.id = 50;
 
 
 /***/ },
-/* 46 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App = __webpack_require__(5);  //{  }
+	var App = __webpack_require__(4);  //{  }
 
-	__webpack_require__(54);
-	__webpack_require__(41);
+	__webpack_require__(59);
+	__webpack_require__(44);
 
-	App.Controllers = App.bulk(__webpack_require__(45));
+	App.Controllers = App.bulk(__webpack_require__(50));
 
 	App.config({
 	  whoa: (function (){ console.log("WHOAAAAAA!!!") }),
 	  debug: true,
 	  app: {
-	    container: "#main-container",
+	    // container: "#main-container",
 	    pushState: false
 	  }
 	});
@@ -3600,13 +3683,13 @@ webpackJsonp([1],[
 
 
 
-	var app = __webpack_require__(31);
+	var app = __webpack_require__(34);
 
 	app.init({
 	  App:          App,
-	  config:       __webpack_require__(4),
+	  config:       __webpack_require__(5),
 	  settings:     window.settings || {},
-	  routes:       __webpack_require__(44),
+	  routes:       __webpack_require__(49),
 	  data:         {}
 	}, function(err){
 	  if(err) throw err;
@@ -3615,120 +3698,75 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 47 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App = __webpack_require__(5);
+	var App = __webpack_require__(4);
 
 	module.exports = __webpack_require__(1).extend({
 
-	  template: __webpack_require__(20),
-	  style:    __webpack_require__(33),
+	  template: __webpack_require__(23),
+	  style:    __webpack_require__(36),
 	  
 	  components: App.bulk(
-	    __webpack_require__(48),
+	    __webpack_require__(53),
 	    function(name, context, cb){ cb(name.split("/").shift()); }),
 
 	});
 
 
 /***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var map = {
-		"./Builder/Builder.js": 13,
-		"./Docs/Docs.js": 14,
-		"./Footer/Footer.js": 50,
-		"./Header/Header.js": 51,
-		"./MainContainer/MainContainer.js": 52,
-		"./TopMenu/TomMenu.js": 53,
-		"./UnderConstruction/UnderConstruction.js": 15
-	};
-	function webpackContext(req) {
-		return __webpack_require__(webpackContextResolve(req));
-	};
-	function webpackContextResolve(req) {
-		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
-	};
-	webpackContext.keys = function webpackContextKeys() {
-		return Object.keys(map);
-	};
-	webpackContext.resolve = webpackContextResolve;
-	module.exports = webpackContext;
-	webpackContext.id = 48;
-
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var map = {
-		"./i1_SetupApplication.ractive.jade": 23,
-		"./i2_TheLogger.ractive.jade": 24,
-		"./i3_Configuration.ractive.jade": 25
-	};
-	function webpackContext(req) {
-		return __webpack_require__(webpackContextResolve(req));
-	};
-	function webpackContextResolve(req) {
-		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
-	};
-	webpackContext.keys = function webpackContextKeys() {
-		return Object.keys(map);
-	};
-	webpackContext.resolve = webpackContextResolve;
-	module.exports = webpackContext;
-	webpackContext.id = 49;
-
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(26),
-	  style:    __webpack_require__(36),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(27),
-	  style:    __webpack_require__(37),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(28),
-	  style:    __webpack_require__(38),
-	  components: {
-	    Docs:              __webpack_require__(14       ),
-	    Builder:           __webpack_require__(13 ),
-	    UnderConstruction: __webpack_require__(15 ),
-	  }
-	});
-
-
-/***/ },
 /* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var map = {
+		"./Builder/Builder.js": 14,
+		"./Docs/Docs.js": 15,
+		"./Footer/Footer.js": 55,
+		"./Header/Header.js": 56,
+		"./MainContainer/MainContainer.js": 57,
+		"./TopMenu/TomMenu.js": 58,
+		"./UnderConstruction/UnderConstruction.js": 16
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 53;
+
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var map = {
+		"./i1_SetupApplication.ractive.jade": 26,
+		"./i2_TheLogger.ractive.jade": 27,
+		"./i3_Configuration.ractive.jade": 28
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 54;
+
+
+/***/ },
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1).extend({
@@ -3743,7 +3781,52 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 54 */
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1).extend({
+	  template: __webpack_require__(30),
+	  style:    __webpack_require__(40),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1).extend({
+	  template: __webpack_require__(31),
+	  style:    __webpack_require__(41),
+	  components: {
+	    Docs:              __webpack_require__(15       ),
+	    Builder:           __webpack_require__(14 ),
+	    UnderConstruction: __webpack_require__(16 ),
+	  }
+	});
+
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1).extend({
+	  template: __webpack_require__(32),
+	  style:    __webpack_require__(42),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 59 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript+bash&plugins=line-highlight+line-numbers */
@@ -3759,86 +3842,7 @@ webpackJsonp([1],[
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var Backbone = __webpack_require__(88);
-	var Class = __webpack_require__(16);
-
-	var _ = __webpack_require__(2);
-
-	var EventedClass = Class.extend("EventedClass", _.extend(Backbone.Events, {
-	  
-	  // EventedClass's constructor handles props like:
-	  // events:{
-	  //   "event_name": "method name",
-	  //   "evt": ["method1", "method2", function(){}],
-	  //   "event": function(){ ... }
-	  // }
-
-	  constructor: function(){
-	    if(_.isObject(this.events)){
-	      for(event in this.events){ var evt = this.events[event];
-	        
-	        if(_.isFunction(evt)) this.on(event, evt, this);
-	        
-	        else if(_.isString(evt) && _.isFunction(this[evt])){
-	          this.on(event, this[evt], this);
-	        }
-	        
-	        else if(_.isArray(evt)){
-	          for(var i = 0;i< evt.length;i++){ var meth = evt[i];
-	            if(_.isString(meth) && _.isFunction(this[meth])){
-	              this.on(event, this[meth], this);
-	            }
-	            else if(_.isFunction(meth)){
-	              this.on(event, meth, this);
-	            }
-	          }
-	        }
-	      }
-	    }
-	    Class.apply(this, arguments);
-	  }
-
-	}), Backbone.Events);
-	module.exports = EventedClass;
-
-
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(2);
-	var EventedClass = __webpack_require__(55);
-
-	module.exports = EventedClass.extend("Controller", {
-
-	  bindRoutes: function(app){
-	    for(var key in this.routes){
-	      var handlerName = this.routes[key];
-	      if(Array.isArray(handlerName)){
-	        for(var i=0;i<handlerName.length;i++){
-	          if(_.isFunction(this[handlerName[i]])){
-	            app.router.on("route:"+key, this[handlerName[i]], this);
-	          }
-	        }
-	      }
-	      else{
-	        if(_.isFunction(this[handlerName])){
-	          app.router.on("route:"+key, this[handlerName], this);
-	        }
-	      }
-	    }
-	  }
-	});
-
-
-/***/ },
-/* 57 */
-[61, 2],
-/* 58 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -3879,9 +3883,9 @@ webpackJsonp([1],[
 	if (true) {
 	    // Add support for AMD ( https://github.com/amdjs/amdjs-api/wiki/AMD#defineamd-property- )
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+	        __webpack_require__(8),
 	        __webpack_require__(7),
-	        __webpack_require__(6),
-	        __webpack_require__(59)
+	        __webpack_require__(61)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(js_beautify, css_beautify, html_beautify) {
 	        return get_beautify(js_beautify, css_beautify, html_beautify);
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3899,7 +3903,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 59 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -4822,9 +4826,9 @@ webpackJsonp([1],[
 
 	    if (true) {
 	        // Add support for AMD ( https://github.com/amdjs/amdjs-api/wiki/AMD#defineamd-property- )
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, __webpack_require__(7), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_RESULT__ = function(requireamd) {
-	            var js_beautify =  __webpack_require__(7);
-	            var css_beautify =  __webpack_require__(6);
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, __webpack_require__(8), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_RESULT__ = function(requireamd) {
+	            var js_beautify =  __webpack_require__(8);
+	            var css_beautify =  __webpack_require__(7);
 
 	            return {
 	              html_beautify: function(html_source, options) {
@@ -4857,8 +4861,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 60 */,
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var _ = __webpack_require__(__webpack_module_template_argument_0__);
