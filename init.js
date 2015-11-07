@@ -24,19 +24,27 @@ module.exports = function(env, cb){
 
   env.structureLoader = function(name, setup, cb, cached){
     var structureConfig = env.config.structures[name];
-    if(!structureConfig.path) return cb();
-    if(!structureConfig) return cb(new Error("Cant find config: env.config.structures."+name + " structure "+name));
-    var stagePath = path.join(env.config.rootDir, Array.isArray(structureConfig.path)?structureConfig.path[0]:structureConfig.path);
-    var initializers = [], structureInit;
-    if(!fs.existsSync(stagePath)) {
-      if(structureConfig.instances) {
-        env.i[name] = {};
-        return go(cb);
+    if(!structureConfig.path && !structureConfig.instances) return cb();
+    
+    // REMOVE ME - nonsense
+    // if(!structureConfig) return cb(new Error("Cant find config: env.config.structures."+name + " structure "+name));
+    
+    if(structureConfig.path){
+      var stagePath = path.join(env.config.rootDir, Array.isArray(structureConfig.path)?structureConfig.path[0]:structureConfig.path);
+      if(fs.existsSync(stagePath)) {
+        env.i[name] = bulk(stagePath, Array.isArray(structureConfig.path)?structureConfig.path[1]:["**/*.js", "**/*.coffee"]);
       }
-      return cb(new Error("Cant find path: "+ stagePath + " structure "+name));
+      else{
+        env.i[name] = {};        
+      }
+    }
+    else{
+      env.i[name] = {};        
     }
 
-    env.i[name] = bulk(stagePath, Array.isArray(structureConfig.path)?structureConfig.path[1]:["**/*.js", "**/*.coffee"]);
+
+    var initializers = [], structureInit;
+
     env.i[name].do = env.i.do;
 
 

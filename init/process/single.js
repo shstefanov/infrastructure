@@ -75,7 +75,7 @@ module.exports = function(env, cb){
 
     if( node.engines ) engines = engines.concat( node.engines );
 
-    if( node.loader )  loaders = loaders.push( [type, node.loader] );
+    if( node.loader )  loaders.push( [type, node.loader] );
     else               loaders.push( [type, loadersAliases.default] );
 
     if(node.libs){

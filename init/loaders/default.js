@@ -19,9 +19,6 @@ module.exports = function(structure_name, cb){
     }
 
     cb();
-
-
-
     
   }, structure_config.wrapped );
 
