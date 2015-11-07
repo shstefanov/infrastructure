@@ -1,7 +1,0 @@
-{
-  "custom_test_development_config": "test_random",
-  "app": {
-    "app_property":                 "test_value",
-    "additional_test_property":     "additional_test_value"
-  }
-}

@@ -1,0 +1,5 @@
+{
+  "structures": {
+    "log": { "engines": ["log"], "options": {"sys": false}  }
+  }
+}
