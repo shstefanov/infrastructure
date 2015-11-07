@@ -1,0 +1,16 @@
+{
+  "structures": {
+    "instances_components": {
+      "path": "wrapped",
+      "engines": [],
+      "libs": {
+        "Class": "./lib/Class.js",
+        "Class2": "./lib/Class2.js"
+      },
+      "instances": {
+        "el1": { "prototype": "Class" },
+        "el2": { "prototype": "Class2" }
+      }
+    }
+  }
+}
