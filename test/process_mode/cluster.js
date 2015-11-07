@@ -7,9 +7,6 @@ var rootDir      = path.join(__dirname, "fixtures/test_app");
 
 var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
 
-
-console.log("here ---------");
-
 describe("Test process mode: "+process_mode + currentFileMark, function(){
   var env;
   it("Starts application in mode: "+ process_mode, function(next){
