@@ -2,7 +2,7 @@ var path   = require("path");
 var assert = require("assert");
 
 var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
-describe( "Application loader" + currentFileMark, function(){
+describe( "Application configuration" + currentFileMark, function(){
   
   var infrastructure = require("../../index.js");
   // Stopping defaut initializer and jumping into callback
@@ -76,15 +76,6 @@ describe( "Application loader" + currentFileMark, function(){
   });
 
   describe("Extending config depending on mode", function(){
-
-    // it("If no mode is set, setting default to 'development'", function(next){
-    //   infrastructure({
-    //     rootDir: path.join(__dirname, "test_config")
-    //   }, function(err, env){
-    //     assert.equal(env.config.mode, "development");
-    //     next();
-    //   });
-    // });
 
     it("If no mode is specified - no config patches", function(next){
 
