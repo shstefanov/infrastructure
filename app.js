@@ -11,10 +11,8 @@ infrastructure({
       "options": {"sys": true, "build": true}
     },
     "pages": {
-      "path":       "app/pages",
-      "engines":    [ "infrastructure-server-engine-express"            ],
-      "loaders":    [ "infrastructure-server-pages-express/loader"      ],
-      "libs": {     "Page" : "infrastructure-server-pages-express/Page" },
+      "engines":    [ "infrastructure-express/engine" ],
+      "libs": {     "Page" : "infrastructure-express/Page" },
       "config": {
         "views":{ 
           "path": "app/templates", 
@@ -27,13 +25,21 @@ infrastructure({
             "/infrastructure/public": "public"
           }
         }
+      },
+      "instances": {
+        "infrastructure": {
+          "prototype": "Page",
+          "root": "/infrastructure",
+          "template": "infrastructure",
+          "GET *": ["webpack.infrastructure.getAssets"]
+        }
       }
     },
 
     "webpack": {
-      "path": ["app/client", "*/*.webpack.js"],
+      "path": ["app/client", "*/*.webpack.js"    ],
       "engines": ["infrastructure-webpack/engine"],
-      "loaders": ["infrastructure-webpack/loader"],
+      "loader":  "infrastructure-webpack/loader",
       "libs": {
         "Bundler": "infrastructure-webpack/Bundler"
       },
@@ -49,13 +55,13 @@ infrastructure({
 
   },
 
-  "pages": {
-    "infrastructure": {
-      "root": "/infrastructure",
-      "template": "infrastructure",
-      "GET *": ["webpack.infrastructure.getAssets"]
-    }
-  },
+  // "pages": {
+  //   "infrastructure": {
+  //     "root": "/infrastructure",
+  //     "template": "infrastructure",
+  //     "GET *": ["webpack.infrastructure.getAssets"]
+  //   }
+  // },
 
   "client": {
     "infrastructure": {

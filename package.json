@@ -18,8 +18,7 @@
   "devDependencies": {
     "bootstrap": "^3.3.5",
     "infrastructure-appcontroller-ractive": "latest",
-    "infrastructure-server-engine-express": "git+https://github.com/shstefanov/infrastructure-server-engine-express.git",
-    "infrastructure-server-pages-express": "git+https://github.com/shstefanov/infrastructure-server-pages-express.git",
+    "infrastructure-express": "latest",
     "infrastructure-webpack": "^0.3.1",
     "js-beautify": "^1.5.10",
     "mocha": "latest"
