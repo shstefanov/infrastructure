@@ -1,7 +1,0 @@
-{
-  "custom_development_config": "random",
-  "app": {
-    "app_property":        "new_value",
-    "additional_property": "additional_value"
-  }
-}

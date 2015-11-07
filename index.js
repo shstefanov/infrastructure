@@ -2,9 +2,7 @@ var fs      = require("fs");
 var path    = require("path");
 var _       = require("underscore");
 
-// var init    = require("./init");
 var helpers = require("./lib/helpers");
-
 
 module.exports = function findApp( config, cb ){
   var now = Date.now();
@@ -15,7 +13,7 @@ module.exports = function findApp( config, cb ){
 
   // Keep original config untouched
   config = JSON.parse(JSON.stringify(config));
-  if( !config.mode         ) config.mode         = "development"; // development is default mode
+  //if( !config.mode         ) config.mode         = "development"; // development is default mode
   if( !config.process_mode ) config.process_mode = "single";      // single is default process_mode
   if( !config.rootDir      ) config.rootDir      = process.cwd(); // process.cwd() is default rootDir
   loadApp( extendConfig( config ), function(err, env){
@@ -80,12 +78,13 @@ var extendConfig = module.exports.extendConfig = function( config ){
   // Workers will get their from process.env
   if( config.process_mode === "cluster" && !isMaster ) return config;
   var extension      = module.exports.loadConfig(module.exports.getConfigPath(config.rootDir), config);
-  var mode_extension =  ( config.mode === "development") ? ( extension.development ) :
-                        ( config.mode === "test"       ) ? ( helpers.deepExtend(extension, config.test||extension.test||{}) ) : null;
-  
-  delete extension.development;
-  delete extension.test;
-  
+
+  var mode_extension;
+  if(config.mode){
+    mode_extension = extension[config.mode];
+    delete extension[config.mode]
+  } 
+
   if(mode_extension){
     helpers.deepExtend( extension, mode_extension );
   }
