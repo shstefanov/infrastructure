@@ -1,0 +1,9 @@
+{
+  "structures": {
+    "wrapped_components": {
+      "wrapped": true,
+      "path": "wrapped",
+      "engines": []
+    }
+  }
+}
