@@ -7007,7 +7007,8 @@ button.close {
   overflow: hidden;
 }
 .fs-block .fs-file.active {
-  text-decoration: underline;
+  text-decoration: none;
+  background: #CCC7C7;
 }
 .sidebar-item.active {
   text-decoration: underline;

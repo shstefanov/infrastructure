@@ -2,8 +2,8 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(51);
-	module.exports = __webpack_require__(35);
+	__webpack_require__(52);
+	module.exports = __webpack_require__(36);
 
 
 /***/ },
@@ -13,7 +13,7 @@ webpackJsonp([1],[
 	var Ractive    = __webpack_require__(19 );
 	// Ractive.DEBUG  = config.ractive.debug;
 
-	var backboneAdaptor      = __webpack_require__( 45 );
+	var backboneAdaptor      = __webpack_require__( 46 );
 	backboneAdaptor.Backbone = __webpack_require__( 11 );
 
 	module.exports = Ractive.extend({ adapt: [ backboneAdaptor ] });
@@ -28,7 +28,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	// Main App namespace
-	var helpers = __webpack_require__(48);
+	var helpers = __webpack_require__(49);
 	var _ = __webpack_require__(12);
 
 	var App = module.exports = {
@@ -2781,7 +2781,7 @@ webpackJsonp([1],[
 
 /***/ },
 /* 11 */
-[63, 3, 3],
+[75, 3, 3],
 /* 12 */
 6,
 /* 13 */
@@ -2790,7 +2790,7 @@ webpackJsonp([1],[
 	var _ = __webpack_require__(6);
 
 	module.exports = __webpack_require__(18).extend("AppController", {
-	  Layout: __webpack_require__(52),
+	  Layout: __webpack_require__(53),
 	  config: "app",
 	  /*
 		Resolved config can contain the following working options:
@@ -2820,7 +2820,7 @@ webpackJsonp([1],[
 
 	module.exports = __webpack_require__(1).extend({
 	  template: __webpack_require__(24),
-	  style:    __webpack_require__(37),
+	  style:    __webpack_require__(38),
 	  components: {
 
 	  },
@@ -2837,16 +2837,16 @@ webpackJsonp([1],[
 
 	// Prism highlighter themes and stuff can be downloaded from http://prismjs.com/download.html
 
-	var beautify = __webpack_require__(60).js_beautify;
+	var beautify = __webpack_require__(61).js_beautify;
 	// beautify(tag.innerHTML, { indent_size: 2 });
 
-	var partials = App.bulk(__webpack_require__(54),function(name, context, cb){ 
+	var partials = App.bulk(__webpack_require__(55),function(name, context, cb){ 
 	  cb(name.replace(/\.ractive\.(jade|html)$/, "").replace(/^i[\d]{1,2}_/, ""));
 	});
 
 	module.exports = __webpack_require__(1).extend({
 	  template: __webpack_require__(25),
-	  style:    __webpack_require__(38),
+	  style:    __webpack_require__(39),
 	  data: {
 	    items: Object.keys(partials)
 	  },
@@ -2895,8 +2895,8 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(33),
-	  style:    __webpack_require__(43),
+	  template: __webpack_require__(34),
+	  style:    __webpack_require__(44),
 	  components: {
 
 	  },
@@ -3309,7 +3309,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var Backbone = __webpack_require__(46);
+	var Backbone = __webpack_require__(47);
 	var Class = __webpack_require__(10);
 
 	var _ = __webpack_require__(2);
@@ -3383,7 +3383,7 @@ webpackJsonp([1],[
 
 /***/ },
 /* 22 */
-[62, 2],
+[63, 2],
 /* 23 */
 /***/ function(module, exports) {
 
@@ -3405,13 +3405,13 @@ webpackJsonp([1],[
 /* 26 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Setup"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.cli","setup_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.cli\",true]"}}},"f":["command line"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_1.cli","condition","setup_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"dependencies\": {\n    \"infrastructure\": \"^1.0.0\"\n  }  \n}\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":["The version that tutorial covers is not released yet, so use this version instead:"]},{"t":7,"e":"div","a":{"class":"code-block small"},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install https://github.com/shstefanov/infrastructure.git#dev\n"]}]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Running"]}]},{"t":7,"e":"p","f":[" Create ",{"t":7,"e":"mark","f":["app.js"]}," in project folder with following content, then run it. It should exit immediately without any messages, because there are no active workers."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.app_js","setup_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_2.app_js","condition","setup_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* configuration goes here */ }, function(err, env){\n  if(err){\n    throw err;\n  }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.jss\n$>"]}]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Setup"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.cli","setup_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.cli\",true]"}}},"f":["command line"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_1.cli","condition","setup_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"dependencies\": {\n    \"infrastructure\": \"^1.0.0\"\n  }  \n}\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":["The version that tutorial covers is not released yet, so use this version instead:"]},{"t":7,"e":"div","a":{"class":"code-block small"},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install https://github.com/shstefanov/infrastructure.git#dev\n"]}]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Running"]}]},{"t":7,"e":"p","f":[" Create ",{"t":7,"e":"mark","f":["app.js"]}," in project folder with following content, then run it. It should exit immediately without any messages, because there are no active workers."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.app_js","setup_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_2.app_js","condition","setup_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* configuration goes here */ }, function(err, env){\n  if(err){\n    throw err;\n  }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n$>"]}]}]}]};
 
 /***/ },
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["The Logger"]}]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.app","logger_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_1.app","condition","logger_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\" ],\n      options: { sys: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-01 21:19:15][logger]........................... options: sys, build\n[sys]  [2015-11-01 21:19:15][application started].............. 33ms, process_mode: single, application mode: development\n$>\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":[" First - it's a ",{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/Structures"]},"f":[{"t":7,"e":"mark","f":["structure."]}]},"It uses built-in engine, called ",{"t":7,"e":"mark","f":["log"]},". Also, it's config has options. The ",{"t":7,"e":"mark","f":["options"]}," object represents which log types are turned on. Only ",{"t":7,"e":"mark","f":["sys "]},"option is used by the system to report some initialization stuff. Any other option is custom. Let's create log type ",{"t":7,"e":"mark","f":["debug"]},"and use it to log some message."]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.app","logger_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"iv","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_2.app","condition","logger_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\"],\n      options: { sys: true, debug: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n  env.i.do(\"log.debug\", \"hello\", \"logger\");\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-01 22:04:51][logger]........................... options: sys, debug\n[sys]  [2015-11-01 22:04:51][application started].............. 31ms, process_mode: single, application mode: development\n[debug]  [2015-11-01 22:04:51][hello]............................ logger\n$>"]}]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["The Logger"]}]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.app","logger_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_1.app","condition","logger_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\" ],\n      options: { sys: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-08 21:40:37][logger]........................... options: sys\n[sys]  [2015-11-08 21:40:37][application started].............. 30ms, process_mode: single, application mode: undefined\n$>\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":[" First - it's a ",{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/Structures"]},"f":[{"t":7,"e":"mark","f":["structure."]}]},"It uses built-in engine, called ",{"t":7,"e":"mark","f":["log"]},". Also, it's config has options. The ",{"t":7,"e":"mark","f":["options"]}," object represents which log types are turned on. Only ",{"t":7,"e":"mark","f":["sys "]},"option is used by the system to report some initialization stuff. Any other option is custom. Let's create log type ",{"t":7,"e":"mark","f":["debug"]},"and use it to log some message."]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.app","logger_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"iv","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_2.app","condition","logger_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\"],\n      options: { sys: true, debug: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n  env.i.do(\"log.debug\", \"hello\", \"logger\");\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-08 21:42:53][logger]........................... options: sys, debug\n[sys]  [2015-11-08 21:42:53][application started].............. 30ms, process_mode: single, application mode: undefined\n[debug]  [2015-11-08 21:42:53][hello]............................ logger\n$>"]}]}]}]};
 
 /***/ },
 /* 28 */
@@ -3423,34 +3423,40 @@ webpackJsonp([1],[
 /* 29 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Process modes"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","process_modes_1.app_js","process_modes_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_1.app_js\",true]"}}},"f":["in app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","process_modes_1.in_configuration"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_1.in_configuration\",true]"}}},"f":["in configuration"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","process_modes_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_1.cli\",true]"}}},"f":["cli"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["process_modes_1.app_js","condition","process_modes_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ process_mode: \"cluster\" }, function(err, env) {\n  if (err) { throw err; }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","process_modes_1.in_configuration"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 fs-block"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","process_modes_fs_1.app_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_fs_1.app_js\",true]"}}},"f":["app.js"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["config"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","process_modes_fs_1.config_process_mode_json","process_modes_fs_1.__active"],"s":"_0(_1||!(_2),\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_fs_1.config_process_mode_json\",true]"}}},"f":["process_mode.json"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["structures"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","process_modes_fs_1.config_structures_log_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_fs_1.config_structures_log_json\",true]"}}},"f":["log.json"]}]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","process_modes_fs_1.app_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["process_modes_fs_1.config_process_mode_json","condition","process_modes_fs_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"cluster\"\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","process_modes_fs_1.config_structures_log_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"engines\": [ \"log\" ],\n  \"options\": { \"sys\": true, \"debug\": true }\n}\n"]}]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","process_modes_1.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app\n[sys]  [2015-11-09 20:49:00][logger]........................... options: sys, debug\n[sys]  [2015-11-09 20:49:00][worker]........................... log\n[sys]  [2015-11-09 20:49:00][worker started]................... 56ms, structures: log\n[sys]  [2015-11-09 20:49:00][application started].............. 466ms, process_mode: cluster, application mode: undefined"]}]}]}]};
 
 /***/ },
 /* 30 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":[{"t":7,"e":"a","a":{"href":"/infrastructure"},"f":["Infrastructure"]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
 
 /***/ },
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"UnderConstruction\",{})"}}],"n":50,"x":{"r":["state.screen"],"s":"!_0"}},{"t":4,"n":51,"f":[{"t":8,"x":{"r":["resolveComponent","state"],"s":"_0(_1.screen[0].toUpperCase()+_1.screen.slice(1),{state:\"state\",search_input:\"search_input\"})"}}],"x":{"r":["state.screen"],"s":"!_0"}}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":[{"t":7,"e":"a","a":{"href":"/infrastructure"},"f":["Infrastructure"]}]}]};
 
 /***/ },
 /* 32 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"form","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"form-group"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Search","value":[{"t":2,"r":"search_input"}],"class":"form-control"}}]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/builder","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"UnderConstruction\",{})"}}],"n":50,"x":{"r":["state.screen"],"s":"!_0"}},{"t":4,"n":51,"f":[{"t":8,"x":{"r":["resolveComponent","state"],"s":"_0(_1.screen[0].toUpperCase()+_1.screen.slice(1),{state:\"state\",search_input:\"search_input\"})"}}],"x":{"r":["state.screen"],"s":"!_0"}}]}]};
 
 /***/ },
 /* 33 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Under Construction"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"form","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"form-group"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Search","value":[{"t":2,"r":"search_input"}],"class":"form-control"}}]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/builder","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
 
 /***/ },
 /* 34 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Under Construction"]}]};
+
+/***/ },
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(4);
@@ -3466,31 +3472,31 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 36 */
-35,
 /* 37 */
-35,
+36,
 /* 38 */
-35,
+36,
 /* 39 */
-35,
+36,
 /* 40 */
-35,
+36,
 /* 41 */
-35,
+36,
 /* 42 */
-35,
+36,
 /* 43 */
-35,
+36,
 /* 44 */
-35,
+36,
 /* 45 */
+36,
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -3618,12 +3624,12 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 46 */
-[63, 2, 2],
-/* 47 */,
-/* 48 */
-[62, 12],
+/* 47 */
+[75, 2, 2],
+/* 48 */,
 /* 49 */
+[63, 12],
+/* 50 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -3635,7 +3641,7 @@ webpackJsonp([1],[
 	};
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
@@ -3653,19 +3659,19 @@ webpackJsonp([1],[
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 50;
+	webpackContext.id = 51;
 
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(4);  //{  }
 
-	__webpack_require__(59);
-	__webpack_require__(44);
+	__webpack_require__(60);
+	__webpack_require__(45);
 
-	App.Controllers = App.bulk(__webpack_require__(50));
+	App.Controllers = App.bulk(__webpack_require__(51));
 
 	App.config({
 	  whoa: (function (){ console.log("WHOAAAAAA!!!") }),
@@ -3683,13 +3689,13 @@ webpackJsonp([1],[
 
 
 
-	var app = __webpack_require__(34);
+	var app = __webpack_require__(35);
 
 	app.init({
 	  App:          App,
 	  config:       __webpack_require__(5),
 	  settings:     window.settings || {},
-	  routes:       __webpack_require__(49),
+	  routes:       __webpack_require__(50),
 	  data:         {}
 	}, function(err){
 	  if(err) throw err;
@@ -3698,7 +3704,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(4);
@@ -3706,40 +3712,13 @@ webpackJsonp([1],[
 	module.exports = __webpack_require__(1).extend({
 
 	  template: __webpack_require__(23),
-	  style:    __webpack_require__(36),
+	  style:    __webpack_require__(37),
 	  
 	  components: App.bulk(
-	    __webpack_require__(53),
+	    __webpack_require__(54),
 	    function(name, context, cb){ cb(name.split("/").shift()); }),
 
 	});
-
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var map = {
-		"./Builder/Builder.js": 14,
-		"./Docs/Docs.js": 15,
-		"./Footer/Footer.js": 55,
-		"./Header/Header.js": 56,
-		"./MainContainer/MainContainer.js": 57,
-		"./TopMenu/TomMenu.js": 58,
-		"./UnderConstruction/UnderConstruction.js": 16
-	};
-	function webpackContext(req) {
-		return __webpack_require__(webpackContextResolve(req));
-	};
-	function webpackContextResolve(req) {
-		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
-	};
-	webpackContext.keys = function webpackContextKeys() {
-		return Object.keys(map);
-	};
-	webpackContext.resolve = webpackContextResolve;
-	module.exports = webpackContext;
-	webpackContext.id = 53;
 
 
 /***/ },
@@ -3747,9 +3726,13 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./i1_SetupApplication.ractive.jade": 26,
-		"./i2_TheLogger.ractive.jade": 27,
-		"./i3_Configuration.ractive.jade": 28
+		"./Builder/Builder.js": 14,
+		"./Docs/Docs.js": 15,
+		"./Footer/Footer.js": 56,
+		"./Header/Header.js": 57,
+		"./MainContainer/MainContainer.js": 58,
+		"./TopMenu/TomMenu.js": 59,
+		"./UnderConstruction/UnderConstruction.js": 16
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -3769,15 +3752,24 @@ webpackJsonp([1],[
 /* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(29),
-	  style:    __webpack_require__(39),
-	  components: {
-
-	  },
-
-
-	});
+	var map = {
+		"./i1_SetupApplication.ractive.jade": 26,
+		"./i2_TheLogger.ractive.jade": 27,
+		"./i3_Configuration.ractive.jade": 28,
+		"./i4_ProcessMode.ractive.jade": 29
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 55;
 
 
 /***/ },
@@ -3803,10 +3795,10 @@ webpackJsonp([1],[
 	  template: __webpack_require__(31),
 	  style:    __webpack_require__(41),
 	  components: {
-	    Docs:              __webpack_require__(15       ),
-	    Builder:           __webpack_require__(14 ),
-	    UnderConstruction: __webpack_require__(16 ),
-	  }
+
+	  },
+
+
 	});
 
 
@@ -3818,6 +3810,21 @@ webpackJsonp([1],[
 	  template: __webpack_require__(32),
 	  style:    __webpack_require__(42),
 	  components: {
+	    Docs:              __webpack_require__(15       ),
+	    Builder:           __webpack_require__(14 ),
+	    UnderConstruction: __webpack_require__(16 ),
+	  }
+	});
+
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(1).extend({
+	  template: __webpack_require__(33),
+	  style:    __webpack_require__(43),
+	  components: {
 
 	  },
 
@@ -3826,7 +3833,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript+bash&plugins=line-highlight+line-numbers */
@@ -3842,7 +3849,7 @@ webpackJsonp([1],[
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -3885,7 +3892,7 @@ webpackJsonp([1],[
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 	        __webpack_require__(8),
 	        __webpack_require__(7),
-	        __webpack_require__(61)
+	        __webpack_require__(62)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(js_beautify, css_beautify, html_beautify) {
 	        return get_beautify(js_beautify, css_beautify, html_beautify);
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3903,7 +3910,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -4861,7 +4868,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var _ = __webpack_require__(__webpack_module_template_argument_0__);
