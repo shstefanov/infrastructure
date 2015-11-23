@@ -6996,6 +6996,9 @@ button.close {
   margin: 0;
   height: 260px;
 }
+.code-block > .code-block {
+  margin-top: 0px;
+}
 .fs-block .fs-dir,
 .fs-block .fs-file {
   display: block;

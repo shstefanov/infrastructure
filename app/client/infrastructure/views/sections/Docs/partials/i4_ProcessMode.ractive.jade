@@ -20,6 +20,8 @@ include ../../../mixins/fs_ui.jade
 
 .page-header: h1 Process modes
 
+p By default, if not specified, process_mode is "single". If we set it to "cluster", every structure will be executed in separate child_process.
+
 +doc_example_tab_items("process_modes_1", {
   "app_js":             "in app.js",
   "in_configuration":   "in configuration",
@@ -30,6 +32,7 @@ div.code-block.large(class!=locals.getContentStateTemplate("process_modes_1.app_
   infrastructure({ process_mode: "cluster" }, function(err, env) {
     if (err) { throw err; }
   });
+
 div.code-block.large(class!=locals.getContentStateTemplate("process_modes_1.in_configuration"))
   .col-xs-2.fs-block
     +fs_block("process_modes_fs_1", {
@@ -58,3 +61,5 @@ div.code-block.large(class!=locals.getContentStateTemplate("process_modes_1.cli"
   [sys]  [2015-11-09 20:49:00][worker]........................... log
   [sys]  [2015-11-09 20:49:00][worker started]................... 56ms, structures: log
   [sys]  [2015-11-09 20:49:00][application started].............. 466ms, process_mode: cluster, application mode: undefined
+
+p In this case, the app keeps it's running state.
