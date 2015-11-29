@@ -87,3 +87,40 @@ div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.conf
       "options": { "sys": true, "debug": true }
     }
 
+.page-header: h2 Application mode
+
+p If we pass config option "mode" in config root, infrastructure will try to find 
+
++doc_example_tab_items("configuration_2", {
+  "application_mode":   "application mode",
+})
+
+div.code-block.large(class!=locals.getContentStateTemplate("configuration_2.application_mode"))
+  .col-xs-2.fs-block
+    +fs_block("conf_fs_2", {
+      "app.js" :                      true,
+      "config/structures/log.json":   false,
+      "config/development.json":      false,
+    })
+
+  .col-xs-10.code-block.large(class!=locals.getStateFromFs("conf_fs_2", "config/development.json")): pre: code.language-javascript.
+    {
+      "structures": {
+        "log": {
+          "options": { "sys": false }
+        }
+      }
+    }
+
+  .col-xs-10.code-block.large(class!=locals.getStateFromFs("conf_fs_2", "app.js")): pre: code.language-javascript.
+    var infrastructure = require("infrastructure");
+    // config/development.json will "patch" config tree when mode is "development"
+    infrastructure({ mode: "development" }, function(err, env) {
+      if (err) { throw err; }
+    });
+
+  .col-xs-10.code-block.large(class!=locals.getStateFromFs("conf_fs_2", "config/structures/log.json")): pre: code.language-javascript.
+    {
+      "engines": [ "log" ],
+      "options": { "sys": true, "debug": true }
+    }
