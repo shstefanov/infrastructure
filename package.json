@@ -19,7 +19,7 @@
     "bootstrap": "^3.3.5",
     "infrastructure-appcontroller-ractive": "latest",
     "infrastructure-express": "latest",
-    "infrastructure-webpack": "^0.3.1",
+    "infrastructure-webpack": "^0.3.6",
     "js-beautify": "^1.5.10",
     "mocha": "latest"
   },

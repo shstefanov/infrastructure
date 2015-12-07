@@ -37,6 +37,7 @@ infrastructure({
     },
 
     "webpack": {
+      "wrapped": true,
       "path": ["app/client", "*/*.webpack.js"    ],
       "engines": ["infrastructure-webpack/engine"],
       "loader":  "infrastructure-webpack/loader",

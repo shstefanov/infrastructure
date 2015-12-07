@@ -6,7 +6,6 @@ require("prism.css");
 App.Controllers = App.bulk(require.context("./controllers"));
 
 App.config({
-  whoa: SOME_FUNC,
   debug: true,
   app: {
     // container: "#main-container",
