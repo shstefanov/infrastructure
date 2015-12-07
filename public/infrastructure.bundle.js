@@ -3,7 +3,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(24);
-	module.exports = __webpack_require__(49);
+	module.exports = __webpack_require__(50);
 
 
 /***/ },
@@ -13,7 +13,7 @@ webpackJsonp([1],[
 	var Ractive    = __webpack_require__(19 );
 	// Ractive.DEBUG  = config.ractive.debug;
 
-	var backboneAdaptor      = __webpack_require__( 59 );
+	var backboneAdaptor      = __webpack_require__( 60 );
 	backboneAdaptor.Backbone = __webpack_require__( 16 );
 
 	module.exports = Ractive.extend({ adapt: [ backboneAdaptor ] });
@@ -29,7 +29,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	// Main App namespace
-	var helpers = __webpack_require__(62);
+	var helpers = __webpack_require__(63);
 	var _ = __webpack_require__(3);
 
 	var App = module.exports = {
@@ -2818,7 +2818,7 @@ webpackJsonp([1],[
 
 	module.exports = __webpack_require__(1).extend({
 	  template: __webpack_require__(34),
-	  style:    __webpack_require__(51),
+	  style:    __webpack_require__(52),
 	  components: {
 
 	  },
@@ -2835,7 +2835,7 @@ webpackJsonp([1],[
 
 	// Prism highlighter themes and stuff can be downloaded from http://prismjs.com/download.html
 
-	var beautify = __webpack_require__(64).js_beautify;
+	var beautify = __webpack_require__(65).js_beautify;
 	// beautify(tag.innerHTML, { indent_size: 2 });
 
 	var partials = App.bulk(__webpack_require__(27),function(name, context, cb){ 
@@ -2844,7 +2844,7 @@ webpackJsonp([1],[
 
 	module.exports = __webpack_require__(1).extend({
 	  template: __webpack_require__(35),
-	  style:    __webpack_require__(52),
+	  style:    __webpack_require__(53),
 	  data: {
 	    items: Object.keys(partials)
 	  },
@@ -2893,8 +2893,8 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(69),
-	  style:    __webpack_require__(55),
+	  template: __webpack_require__(44),
+	  style:    __webpack_require__(56),
 	  components: {
 
 	  },
@@ -2908,8 +2908,8 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(46),
-	  style:    __webpack_require__(58),
+	  template: __webpack_require__(47),
+	  style:    __webpack_require__(59),
 	  components: {
 
 	  },
@@ -2920,7 +2920,7 @@ webpackJsonp([1],[
 
 /***/ },
 /* 16 */
-[75, 4, 4],
+[68, 4, 4],
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3324,7 +3324,7 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var Backbone = __webpack_require__(60);
+	var Backbone = __webpack_require__(61);
 	var Class = __webpack_require__(10);
 
 	var _ = __webpack_require__(2);
@@ -3398,7 +3398,7 @@ webpackJsonp([1],[
 
 /***/ },
 /* 22 */
-[66, 2],
+[67, 2],
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3427,7 +3427,7 @@ webpackJsonp([1],[
 	var App = __webpack_require__(5);  //{  }
 
 	__webpack_require__(32);
-	__webpack_require__(48);
+	__webpack_require__(49);
 
 	App.Controllers = App.bulk(__webpack_require__(23));
 
@@ -3446,13 +3446,13 @@ webpackJsonp([1],[
 
 
 
-	var app = __webpack_require__(47);
+	var app = __webpack_require__(48);
 
 	app.init({
 	  App:          App,
 	  config:       __webpack_require__(6),
 	  settings:     window.settings || {},
-	  routes:       __webpack_require__(63),
+	  routes:       __webpack_require__(64),
 	  data:         {}
 	}, function(err){
 	  if(err) throw err;
@@ -3469,7 +3469,7 @@ webpackJsonp([1],[
 	module.exports = __webpack_require__(1).extend({
 
 	  template: __webpack_require__(33),
-	  style:    __webpack_require__(50),
+	  style:    __webpack_require__(51),
 	  
 	  components: App.bulk(
 	    __webpack_require__(26),
@@ -3538,7 +3538,7 @@ webpackJsonp([1],[
 
 	module.exports = __webpack_require__(1).extend({
 	  template: __webpack_require__(42),
-	  style:    __webpack_require__(53),
+	  style:    __webpack_require__(54),
 	  components: {
 
 	  },
@@ -3553,7 +3553,7 @@ webpackJsonp([1],[
 
 	module.exports = __webpack_require__(1).extend({
 	  template: __webpack_require__(43),
-	  style:    __webpack_require__(54),
+	  style:    __webpack_require__(55),
 	  components: {
 
 	  },
@@ -3567,8 +3567,8 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(44),
-	  style:    __webpack_require__(56),
+	  template: __webpack_require__(45),
+	  style:    __webpack_require__(57),
 	  components: {
 	    Docs:              __webpack_require__(13       ),
 	    Builder:           __webpack_require__(12 ),
@@ -3583,8 +3583,8 @@ webpackJsonp([1],[
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(45),
-	  style:    __webpack_require__(57),
+	  template: __webpack_require__(46),
+	  style:    __webpack_require__(58),
 	  components: {
 
 	  },
@@ -3679,22 +3679,28 @@ webpackJsonp([1],[
 /* 44 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"HelloWorld\",{})"}}],"n":50,"x":{"r":["state.screen"],"s":"!_0"}},{"t":4,"n":51,"f":[{"t":8,"x":{"r":["resolveComponent","state"],"s":"_0(_1.screen[0].toUpperCase()+_1.screen.slice(1),{state:\"state\",search_input:\"search_input\"})"}}],"x":{"r":["state.screen"],"s":"!_0"}}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Finally, version 1.0 is released!!"]},{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication"},"f":["Get started!"]}]};
 
 /***/ },
 /* 45 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/builder","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"HelloWorld\",{})"}}],"n":50,"x":{"r":["state.screen"],"s":"!_0"}},{"t":4,"n":51,"f":[{"t":8,"x":{"r":["resolveComponent","state"],"s":"_0(_1.screen[0].toUpperCase()+_1.screen.slice(1),{state:\"state\",search_input:\"search_input\"})"}}],"x":{"r":["state.screen"],"s":"!_0"}}]}]};
 
 /***/ },
 /* 46 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Under Construction"]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/builder","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
 
 /***/ },
 /* 47 */
+/***/ function(module, exports) {
+
+	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Under Construction"]}]};
+
+/***/ },
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App = __webpack_require__(5);
@@ -3710,33 +3716,33 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 49 */
-48,
 /* 50 */
-48,
+49,
 /* 51 */
-48,
+49,
 /* 52 */
-48,
+49,
 /* 53 */
-48,
+49,
 /* 54 */
-48,
+49,
 /* 55 */
-48,
+49,
 /* 56 */
-48,
+49,
 /* 57 */
-48,
+49,
 /* 58 */
-48,
+49,
 /* 59 */
+49,
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -3864,12 +3870,12 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 60 */
-[75, 2, 2],
-/* 61 */,
-/* 62 */
-[66, 3],
+/* 61 */
+[68, 2, 2],
+/* 62 */,
 /* 63 */
+[67, 3],
+/* 64 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -3881,7 +3887,7 @@ webpackJsonp([1],[
 	};
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -3924,7 +3930,7 @@ webpackJsonp([1],[
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 	        __webpack_require__(8),
 	        __webpack_require__(7),
-	        __webpack_require__(65)
+	        __webpack_require__(66)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(js_beautify, css_beautify, html_beautify) {
 	        return get_beautify(js_beautify, css_beautify, html_beautify);
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3942,7 +3948,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -4900,7 +4906,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var _ = __webpack_require__(__webpack_module_template_argument_0__);
@@ -5119,14 +5125,6 @@ webpackJsonp([1],[
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 67 */,
-/* 68 */,
-/* 69 */
-/***/ function(module, exports) {
-
-	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Finally, version 1.0 is released!!"]},{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication"},"f":["Get started!"]}]};
 
 /***/ }
 ]);
