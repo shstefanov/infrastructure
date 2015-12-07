@@ -5,5 +5,6 @@ module.exports = require("View").extend({
     Docs:              require("../Docs/Docs.js"       ),
     Builder:           require("../Builder/Builder.js" ),
     UnderConstruction: require("../UnderConstruction/UnderConstruction.js" ),
+    HelloWorld:        require("../HelloWorld/HelloWorld.js" ),
   }
 });

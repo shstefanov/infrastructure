@@ -1,6 +1,6 @@
 .row.
   {{#if !state.screen}}
-    {{>resolveComponent("UnderConstruction", {})}}
+    {{>resolveComponent("HelloWorld", {})}}
   {{else}}
     {{>resolveComponent(state.screen[0].toUpperCase() + state.screen.slice(1), {state: "state" , search_input: "search_input"})}}
   {{/if}}
