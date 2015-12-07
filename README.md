@@ -1,1 +1,2 @@
-[Docs](http://cryptic-cliffs-8417.herokuapp.com/home/documentation) (not finished)
+https://shstefanov.github.io/infrastructure/
+

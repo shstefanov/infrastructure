@@ -1,43 +1,27 @@
 {
   "name": "infrastructure",
-  "version": "0.3.52",
+  "version": "1.0.0",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
     "email": "s.h.stefanov@mail.bg"
   },
+  "license": "MIT",
   "main": "./index.js",
   "dependencies": {
-    "addresator": "0.0.2",
-    "async": "latest",
     "backbone": "latest",
-    "body-parser": "~1.2.0",
-    "browserify": "1.17.3",
-    "clone-rpc": "latest",
+    "bulk-require": "latest",
     "coffee-script": "latest",
-    "colors": "latest",
-    "connect-mongo": "latest",
-    "cookie-parser": "~1.1.0",
-    "express": "latest",
-    "express-session": "latest",
-    "jade": "latest",
-    "js-beautify": "latest",
-    "method-override": "~1.0.1",
-    "mkdirp": "^0.5.0",
-    "mongodb": "latest",
-    "morgan": "latest",
-    "serve-favicon": "~2.0.0",
-    "session.socket.io": "latest",
-    "socket.io": "latest",
-    "socket.io-client": "latest",
-    "ui-router": "latest",
     "underscore": "latest",
-    "walk": "latest"
+    "yamljs": "latest"
   },
   "devDependencies": {
-    "jasmine-node": "latest"
+    "mocha": "latest"
   },
-  "_id": "infrastructure@0.3.45",
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha --recursive --colors --sort --check-leaks --full-trace --no-exit --throw-deprecation test"
+  },
+  "_id": "infrastructure@0.3.99",
   "_from": "infrastructure@latest",
   "repository": "git://github.com/shstefanov/infrastructure"
 }
