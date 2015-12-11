@@ -1,6 +1,6 @@
 .row
   // form.col-xs-2: .form-group: input.form-control(type="text", placeholder="Search", value="{{search_input}}")
-  .pull-right.col-xs-4: .row
-    .pull-right.col-xs-2: a(class="btn btn-default {{condition(state.screen === 'build', 'active')}}", href="/infrastructure/builder"  ) Build
-    .pull-right.col-xs-2: a(class="btn btn-default {{condition(state.screen === 'docs', 'active')}}",  href="/infrastructure/docs/SetupApplication"   ) Docs
+  .col-xs-12: .row
+    a.pull-right(class="btn btn-default {{condition(state.screen === 'build', 'active')}}", href="/infrastructure/builder"  ) Build
+    a.pull-right(class="btn btn-default {{condition(state.screen === 'docs',  'active')}}", href="/infrastructure/docs/SetupApplication"   ) Docs
 

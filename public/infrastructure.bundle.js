@@ -2,35 +2,31 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(24);
-	module.exports = __webpack_require__(50);
+	__webpack_require__(16);
+	module.exports = __webpack_require__(48);
 
 
 /***/ },
-/* 1 */
+/* 1 */,
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Ractive    = __webpack_require__(19 );
+	var Ractive    = __webpack_require__(30 );
 	// Ractive.DEBUG  = config.ractive.debug;
 
-	var backboneAdaptor      = __webpack_require__( 60 );
-	backboneAdaptor.Backbone = __webpack_require__( 16 );
+	var backboneAdaptor      = __webpack_require__( 58 );
+	backboneAdaptor.Backbone = __webpack_require__( 5 );
 
 	module.exports = Ractive.extend({ adapt: [ backboneAdaptor ] });
 
 
 /***/ },
-/* 2 */
-3,
-/* 3 */,
-/* 4 */
-3,
-/* 5 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Main App namespace
-	var helpers = __webpack_require__(63);
-	var _ = __webpack_require__(3);
+	var helpers = __webpack_require__(59);
+	var _ = __webpack_require__(1);
 
 	var App = module.exports = {
 	  
@@ -58,7 +54,7 @@ webpackJsonp([1],[
 	  },
 
 	  config: function(conf){
-	    var config = __webpack_require__(6);
+	    var config = __webpack_require__(4);
 	    _.extend(config, typeof conf === "function" ? App.bulk(conf, function(name, context, cb){
 	      cb(name.replace(/\.(js|json|yml)$/i, ""));
 	    }) : conf );
@@ -68,14 +64,15 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 6 */
+/* 4 */
 /***/ function(module, exports) {
 
 	// Config namespace object
 	module.exports = {};
 
 /***/ },
-/* 7 */
+/* 5 */,
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -572,7 +569,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -2665,11 +2662,147 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 9 */,
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(1);
+
+	module.exports = __webpack_require__(26).extend("AppController", {
+	  Layout: __webpack_require__(17),
+	  config: "app",
+	  /*
+		Resolved config can contain the following working options:
+		container: String // selector, where the app will initialize it's Layout view
+		pushState: Boolean
+
+
+
+	  */
+
+	  routes: {
+	    "setContext": "setContext",
+	  },
+
+	  contaxtParams: ["screen", "tab", "context", "action", "param_1", "param_2", "param_3", "param_4"],
+
+	  setContext: function( screen_name, tab, context, action ){
+	    this.reset( "state", _.chain(this.contaxtParams).zip(arguments).object().value() ); 
+	  },
+
+	});
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(32),
+	  style:    __webpack_require__(50),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _ = __webpack_require__(2);
+	var App = __webpack_require__(3);
+
+	// Prism highlighter themes and stuff can be downloaded from http://prismjs.com/download.html
+
+	var beautify = __webpack_require__(61).js_beautify;
+	// beautify(tag.innerHTML, { indent_size: 2 });
+
+	var partials = App.bulk(__webpack_require__(19),function(name, context, cb){ 
+	  cb(name.replace(/\.ractive\.(jade|html)$/, "").replace(/^i[\d]{1,2}_/, ""));
+	});
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(33),
+	  style:    __webpack_require__(51),
+	  data: {
+	    items: Object.keys(partials)
+	  },
+	  partials: {
+	    TabPartial: function(){
+	      return partials[this.get("state.tab")];
+	    }
+	  },
+
+	  computed: {
+	    previous: function(){
+	      var items = this.get("items");
+	      var tab  = this.get("state.tab");
+	      return items[items.indexOf(tab) - 1];
+	    },
+	    next: function(){
+	      var items = this.get("items");
+	      var tab   = this.get("state.tab");
+	      return items[items.indexOf(tab) + 1];
+	    },
+	  },
+
+	  onrender: function(){
+	    window.scrollTo(0, 0);
+
+	    this.observe("state.tab", function(val){
+	      if(!val) return;
+	      var codes = this.el.querySelectorAll("code");
+	      if(!codes) return;
+	      for(var i=0; i< codes.length; i++){
+	        if(codes[i].className.indexOf("javascript") > -1){
+	          codes[i].innerHTML = beautify(codes[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">"), { indent_size: 2 });
+	        }
+	      }
+	      Prism.highlightAll();
+	      window.scrollTo(0, 0);
+	    })
+	  }
+
+
+	});
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(42),
+	  style:    __webpack_require__(54),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(45),
+	  style:    __webpack_require__(57),
+	  components: {
+
+	  },
+
+
+	});
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(1);
 
 	var with_constructor    = "function @@(){return proto.constructor.apply(this, arguments)}";
 	var without_constructor = "function @@(){ return parent.apply(this, arguments); };";
@@ -2782,42 +2915,146 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 11 */
+/* 14 */,
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _ = __webpack_require__(3);
+	var map = {
+		"./AppController": 8,
+		"./AppController.js": 8
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 15;
 
-	module.exports = __webpack_require__(18).extend("AppController", {
-	  Layout: __webpack_require__(25),
-	  config: "app",
-	  /*
-		Resolved config can contain the following working options:
-		container: String // selector, where the app will initialize it's Layout view
-		pushState: Boolean
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var App = __webpack_require__(3);  //{  }
+
+	__webpack_require__(24);
+	__webpack_require__(47);
+
+	App.Controllers = App.bulk(__webpack_require__(15));
+
+	App.config({
+	  debug: true,
+	  app: {
+	    // container: "#main-container",
+	    pushState: false
+	  }
+	});
+
+
+	// console.log(App.Rainbow.color("var App = require('App');", "javascript", function(code){
+	//   console.log(arguments)
+	// }));
 
 
 
-	  */
+	var app = __webpack_require__(46);
 
-	  routes: {
-	    "setContext": "setContext",
-	  },
+	app.init({
+	  App:          App,
+	  config:       __webpack_require__(4),
+	  settings:     window.settings || {},
+	  routes:       __webpack_require__(60),
+	  data:         {}
+	}, function(err){
+	  if(err) throw err;
+	  console.log("app initialized");
+	});
 
-	  contaxtParams: ["screen", "tab", "context", "action", "param_1", "param_2", "param_3", "param_4"],
 
-	  setContext: function( screen_name, tab, context, action ){
-	    this.reset( "state", _.chain(this.contaxtParams).zip(arguments).object().value() ); 
-	  },
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var App = __webpack_require__(3);
+
+	module.exports = __webpack_require__(2).extend({
+
+	  template: __webpack_require__(31),
+	  style:    __webpack_require__(49),
+	  
+	  components: App.bulk(
+	    __webpack_require__(18),
+	    function(name, context, cb){ cb(name.split("/").shift()); }),
 
 	});
 
 
 /***/ },
-/* 12 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(34),
+	var map = {
+		"./Builder/Builder.js": 9,
+		"./Docs/Docs.js": 10,
+		"./Footer/Footer.js": 20,
+		"./Header/Header.js": 21,
+		"./HelloWorld/HelloWorld.js": 11,
+		"./MainContainer/MainContainer.js": 22,
+		"./TopMenu/TomMenu.js": 23,
+		"./UnderConstruction/UnderConstruction.js": 12
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 18;
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var map = {
+		"./i1_SetupApplication.ractive.jade": 34,
+		"./i2_TheLogger.ractive.jade": 35,
+		"./i3_Configuration.ractive.jade": 36,
+		"./i4_ProcessMode.ractive.jade": 37,
+		"./i5_Structures.ractive.jade": 38,
+		"./i6_Tests.ractive.jade": 39
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 19;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(40),
 	  style:    __webpack_require__(52),
 	  components: {
 
@@ -2828,71 +3065,41 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 13 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App = __webpack_require__(5);
-
-	// Prism highlighter themes and stuff can be downloaded from http://prismjs.com/download.html
-
-	var beautify = __webpack_require__(65).js_beautify;
-	// beautify(tag.innerHTML, { indent_size: 2 });
-
-	var partials = App.bulk(__webpack_require__(27),function(name, context, cb){ 
-	  cb(name.replace(/\.ractive\.(jade|html)$/, "").replace(/^i[\d]{1,2}_/, ""));
-	});
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(35),
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(41),
 	  style:    __webpack_require__(53),
-	  data: {
-	    items: Object.keys(partials)
-	  },
-	  partials: {
-	    TabPartial: function(){
-	      return partials[this.get("state.tab")];
-	    }
-	  },
+	  components: {
 
-	  computed: {
-	    previous: function(){
-	      var items = this.get("items");
-	      var tab  = this.get("state.tab");
-	      return items[items.indexOf(tab) - 1];
-	    },
-	    next: function(){
-	      var items = this.get("items");
-	      var tab   = this.get("state.tab");
-	      return items[items.indexOf(tab) + 1];
-	    },
 	  },
-
-	  onrender: function(){
-	    window.scrollTo(0, 0);
-
-	    this.observe("state.tab", function(val){
-	      if(!val) return;
-	      var codes = this.el.querySelectorAll("code");
-	      if(!codes) return;
-	      for(var i=0; i< codes.length; i++){
-	        if(codes[i].className.indexOf("javascript") > -1){
-	          codes[i].innerHTML = beautify(codes[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">"), { indent_size: 2 });
-	        }
-	      }
-	      Prism.highlightAll();
-	      window.scrollTo(0, 0);
-	    })
-	  }
 
 
 	});
 
 
 /***/ },
-/* 14 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(1).extend({
+	module.exports = __webpack_require__(2).extend({
+	  template: __webpack_require__(43),
+	  style:    __webpack_require__(55),
+	  components: {
+	    Docs:              __webpack_require__(10       ),
+	    Builder:           __webpack_require__(9 ),
+	    UnderConstruction: __webpack_require__(12 ),
+	    HelloWorld:        __webpack_require__(11 ),
+	  }
+	});
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(2).extend({
 	  template: __webpack_require__(44),
 	  style:    __webpack_require__(56),
 	  components: {
@@ -2904,31 +3111,30 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
+/* 24 */
+/***/ function(module, exports) {
 
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(47),
-	  style:    __webpack_require__(59),
-	  components: {
+	/* WEBPACK VAR INJECTION */(function(global) {/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript+bash&plugins=line-highlight+line-numbers */
+	var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(?!\*)(\w+)\b/i,t=_self.Prism={util:{encode:function(e){return e instanceof n?new n(e.type,t.util.encode(e.content),e.alias):"Array"===t.util.type(e)?e.map(t.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},clone:function(e){var n=t.util.type(e);switch(n){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=t.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return t.util.clone(e)})}return e}},languages:{extend:function(e,n){var a=t.util.clone(t.languages[e]);for(var r in n)a[r]=n[r];return a},insertBefore:function(e,n,a,r){r=r||t.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==n)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return t.languages.DFS(t.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,n,a){for(var r in e)e.hasOwnProperty(r)&&(n.call(e,r,e[r],a||r),"Object"===t.util.type(e[r])?t.languages.DFS(e[r],n):"Array"===t.util.type(e[r])&&t.languages.DFS(e[r],n,r))}},plugins:{},highlightAll:function(e,n){for(var a,r=document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'),l=0;a=r[l++];)t.highlightElement(a,e===!0,n)},highlightElement:function(n,a,r){for(var l,i,o=n;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=t.languages[l]),n.className=n.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=n.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=n.textContent,u={element:n,language:l,grammar:i,code:s};if(!s||!i)return t.hooks.run("complete",u),void 0;if(t.hooks.run("before-highlight",u),a&&_self.Worker){var g=new Worker(t.filename);g.onmessage=function(e){u.highlightedCode=e.data,t.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),t.hooks.run("after-highlight",u),t.hooks.run("complete",u)},g.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=t.highlight(u.code,u.grammar,u.language),t.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(n),t.hooks.run("after-highlight",u),t.hooks.run("complete",u)},highlight:function(e,a,r){var l=t.tokenize(e,a);return n.stringify(t.util.encode(l),r)},tokenize:function(e,n){var a=t.Token,r=[e],l=n.rest;if(l){for(var i in l)n[i]=l[i];delete n.rest}e:for(var i in n)if(n.hasOwnProperty(i)&&n[i]){var o=n[i];o="Array"===t.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],g=u.inside,c=!!u.lookbehind,f=0,h=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var d=r[p];if(r.length>e.length)break e;if(!(d instanceof a)){u.lastIndex=0;var m=u.exec(d);if(m){c&&(f=m[1].length);var y=m.index-1+f,m=m[0].slice(f),v=m.length,k=y+v,b=d.slice(0,y+1),w=d.slice(k+1),P=[p,1];b&&P.push(b);var A=new a(i,g?t.tokenize(m,g):m,h);P.push(A),w&&P.push(w),Array.prototype.splice.apply(r,P)}}}}}return r},hooks:{all:{},add:function(e,n){var a=t.hooks.all;a[e]=a[e]||[],a[e].push(n)},run:function(e,n){var a=t.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(n)}}},n=t.Token=function(e,t,n){this.type=e,this.content=t,this.alias=n};if(n.stringify=function(e,a,r){if("string"==typeof e)return e;if("Array"===t.util.type(e))return e.map(function(t){return n.stringify(t,a,e)}).join("");var l={type:e.type,content:n.stringify(e.content,a,r),tag:"span",classes:["token",e.type],attributes:{},language:a,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===t.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}t.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var n=JSON.parse(e.data),a=n.language,r=n.code,l=n.immediateClose;_self.postMessage(t.highlight(r,t.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var a=document.getElementsByTagName("script");return a=a[a.length-1],a&&(t.filename=a.src,document.addEventListener&&!a.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",t.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
+	Prism.languages.markup={comment:/<!--[\w\W]*?-->/,prolog:/<\?[\w\W]+?\?>/,doctype:/<!DOCTYPE[\w\W]+?>/,cdata:/<!\[CDATA\[[\w\W]*?]]>/i,tag:{pattern:/<\/?(?!\d)[^\s>\/=.$<]+(?:\s+[^\s>\/=]+(?:=(?:("|')(?:\\\1|\\?(?!\1)[\w\W])*\1|[^\s'">=]+))?)*\s*\/?>/i,inside:{tag:{pattern:/^<\/?[^\s>\/]+/i,inside:{punctuation:/^<\/?/,namespace:/^[^\s>\/:]+:/}},"attr-value":{pattern:/=(?:('|")[\w\W]*?(\1)|[^\s>]+)/i,inside:{punctuation:/[=>"']/}},punctuation:/\/?>/,"attr-name":{pattern:/[^\s>\/]+/,inside:{namespace:/^[^\s>\/:]+:/}}}},entity:/&#?[\da-z]{1,8};/i},Prism.hooks.add("wrap",function(a){"entity"===a.type&&(a.attributes.title=a.content.replace(/&amp;/,"&"))}),Prism.languages.xml=Prism.languages.markup,Prism.languages.html=Prism.languages.markup,Prism.languages.mathml=Prism.languages.markup,Prism.languages.svg=Prism.languages.markup;
+	Prism.languages.css={comment:/\/\*[\w\W]*?\*\//,atrule:{pattern:/@[\w-]+?.*?(;|(?=\s*\{))/i,inside:{rule:/@[\w-]+/}},url:/url\((?:(["'])(\\(?:\r\n|[\w\W])|(?!\1)[^\\\r\n])*\1|.*?)\)/i,selector:/[^\{\}\s][^\{\};]*?(?=\s*\{)/,string:/("|')(\\(?:\r\n|[\w\W])|(?!\1)[^\\\r\n])*\1/,property:/(\b|\B)[\w-]+(?=\s*:)/i,important:/\B!important\b/i,"function":/[-a-z0-9]+(?=\()/i,punctuation:/[(){};:]/},Prism.languages.css.atrule.inside.rest=Prism.util.clone(Prism.languages.css),Prism.languages.markup&&(Prism.languages.insertBefore("markup","tag",{style:{pattern:/(<style[\w\W]*?>)[\w\W]*?(?=<\/style>)/i,lookbehind:!0,inside:Prism.languages.css,alias:"language-css"}}),Prism.languages.insertBefore("inside","attr-value",{"style-attr":{pattern:/\s*style=("|').*?\1/i,inside:{"attr-name":{pattern:/^\s*style/i,inside:Prism.languages.markup.tag.inside},punctuation:/^\s*=\s*['"]|['"]\s*$/,"attr-value":{pattern:/.+/i,inside:Prism.languages.css}},alias:"language-css"}},Prism.languages.markup.tag));
+	Prism.languages.clike={comment:[{pattern:/(^|[^\\])\/\*[\w\W]*?\*\//,lookbehind:!0},{pattern:/(^|[^\\:])\/\/.*/,lookbehind:!0}],string:/(["'])(\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/,"class-name":{pattern:/((?:\b(?:class|interface|extends|implements|trait|instanceof|new)\s+)|(?:catch\s+\())[a-z0-9_\.\\]+/i,lookbehind:!0,inside:{punctuation:/(\.|\\)/}},keyword:/\b(if|else|while|do|for|return|in|instanceof|function|new|try|throw|catch|finally|null|break|continue)\b/,"boolean":/\b(true|false)\b/,"function":/[a-z0-9_]+(?=\()/i,number:/\b-?(?:0x[\da-f]+|\d*\.?\d+(?:e[+-]?\d+)?)\b/i,operator:/--?|\+\+?|!=?=?|<=?|>=?|==?=?|&&?|\|\|?|\?|\*|\/|~|\^|%/,punctuation:/[{}[\];(),.:]/};
+	Prism.languages.javascript=Prism.languages.extend("clike",{keyword:/\b(as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/,number:/\b-?(0x[\dA-Fa-f]+|0b[01]+|0o[0-7]+|\d*\.?\d+([Ee][+-]?\d+)?|NaN|Infinity)\b/,"function":/[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*(?=\()/i}),Prism.languages.insertBefore("javascript","keyword",{regex:{pattern:/(^|[^\/])\/(?!\/)(\[.+?]|\\.|[^\/\\\r\n])+\/[gimyu]{0,5}(?=\s*($|[\r\n,.;})]))/,lookbehind:!0}}),Prism.languages.insertBefore("javascript","class-name",{"template-string":{pattern:/`(?:\\`|\\?[^`])*`/,inside:{interpolation:{pattern:/\$\{[^}]+\}/,inside:{"interpolation-punctuation":{pattern:/^\$\{|\}$/,alias:"punctuation"},rest:Prism.languages.javascript}},string:/[\s\S]+/}}}),Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{script:{pattern:/(<script[\w\W]*?>)[\w\W]*?(?=<\/script>)/i,lookbehind:!0,inside:Prism.languages.javascript,alias:"language-javascript"}}),Prism.languages.js=Prism.languages.javascript;
+	!function(e){var t={variable:[{pattern:/\$?\(\([\w\W]+?\)\)/,inside:{variable:[{pattern:/(^\$\(\([\w\W]+)\)\)/,lookbehind:!0},/^\$\(\(/],number:/\b-?(?:0x[\dA-Fa-f]+|\d*\.?\d+(?:[Ee]-?\d+)?)\b/,operator:/--?|-=|\+\+?|\+=|!=?|~|\*\*?|\*=|\/=?|%=?|<<=?|>>=?|<=?|>=?|==?|&&?|&=|\^=?|\|\|?|\|=|\?|:/,punctuation:/\(\(?|\)\)?|,|;/}},{pattern:/\$\([^)]+\)|`[^`]+`/,inside:{variable:/^\$\(|^`|\)$|`$/}},/\$(?:[a-z0-9_#\?\*!@]+|\{[^}]+\})/i]};e.languages.bash={shebang:{pattern:/^#!\s*\/bin\/bash|^#!\s*\/bin\/sh/,alias:"important"},comment:{pattern:/(^|[^"{\\])#.*/,lookbehind:!0},string:[{pattern:/((?:^|[^<])<<\s*)(?:"|')?(\w+?)(?:"|')?\s*\r?\n(?:[\s\S])*?\r?\n\2/g,lookbehind:!0,inside:t},{pattern:/("|')(?:\\?[\s\S])*?\1/g,inside:t}],variable:t.variable,"function":{pattern:/(^|\s|;|\||&)(?:alias|apropos|apt-get|aptitude|aspell|awk|basename|bash|bc|bg|builtin|bzip2|cal|cat|cd|cfdisk|chgrp|chmod|chown|chroot|chkconfig|cksum|clear|cmp|comm|command|cp|cron|crontab|csplit|cut|date|dc|dd|ddrescue|df|diff|diff3|dig|dir|dircolors|dirname|dirs|dmesg|du|egrep|eject|enable|env|ethtool|eval|exec|expand|expect|export|expr|fdformat|fdisk|fg|fgrep|file|find|fmt|fold|format|free|fsck|ftp|fuser|gawk|getopts|git|grep|groupadd|groupdel|groupmod|groups|gzip|hash|head|help|hg|history|hostname|htop|iconv|id|ifconfig|ifdown|ifup|import|install|jobs|join|kill|killall|less|link|ln|locate|logname|logout|look|lpc|lpr|lprint|lprintd|lprintq|lprm|ls|lsof|make|man|mkdir|mkfifo|mkisofs|mknod|more|most|mount|mtools|mtr|mv|mmv|nano|netstat|nice|nl|nohup|notify-send|nslookup|open|op|passwd|paste|pathchk|ping|pkill|popd|pr|printcap|printenv|printf|ps|pushd|pv|pwd|quota|quotacheck|quotactl|ram|rar|rcp|read|readarray|readonly|reboot|rename|renice|remsync|rev|rm|rmdir|rsync|screen|scp|sdiff|sed|seq|service|sftp|shift|shopt|shutdown|sleep|slocate|sort|source|split|ssh|stat|strace|su|sudo|sum|suspend|sync|tail|tar|tee|test|time|timeout|times|touch|top|traceroute|trap|tr|tsort|tty|type|ulimit|umask|umount|unalias|uname|unexpand|uniq|units|unrar|unshar|uptime|useradd|userdel|usermod|users|uuencode|uudecode|v|vdir|vi|vmstat|wait|watch|wc|wget|whereis|which|who|whoami|write|xargs|xdg-open|yes|zip)(?=$|\s|;|\||&)/,lookbehind:!0},keyword:{pattern:/(^|\s|;|\||&)(?:let|:|\.|if|then|else|elif|fi|for|break|continue|while|in|case|function|select|do|done|until|echo|exit|return|set|declare)(?=$|\s|;|\||&)/,lookbehind:!0},"boolean":{pattern:/(^|\s|;|\||&)(?:true|false)(?=$|\s|;|\||&)/,lookbehind:!0},operator:/&&?|\|\|?|==?|!=?|<<<?|>>|<=?|>=?|=~/,punctuation:/\$?\(\(?|\)\)?|\.\.|[{}[\];]/};var a=t.variable[1].inside;a["function"]=e.languages.bash["function"],a.keyword=e.languages.bash.keyword,a.boolean=e.languages.bash.boolean,a.operator=e.languages.bash.operator,a.punctuation=e.languages.bash.punctuation}(Prism);
+	!function(){function e(e,t){return Array.prototype.slice.call((t||document).querySelectorAll(e))}function t(e,t){return t=" "+t+" ",(" "+e.className+" ").replace(/[\n\t]/g," ").indexOf(t)>-1}function n(e,n,i){for(var o,a=n.replace(/\s+/g,"").split(","),l=+e.getAttribute("data-line-offset")||0,d=r()?parseInt:parseFloat,c=d(getComputedStyle(e).lineHeight),s=0;o=a[s++];){o=o.split("-");var u=+o[0],m=+o[1]||u,h=document.createElement("div");h.textContent=Array(m-u+2).join(" \n"),h.className=(i||"")+" line-highlight",t(e,"line-numbers")||(h.setAttribute("data-start",u),m>u&&h.setAttribute("data-end",m)),h.style.top=(u-l-1)*c+"px",t(e,"line-numbers")?e.appendChild(h):(e.querySelector("code")||e).appendChild(h)}}function i(){var t=location.hash.slice(1);e(".temporary.line-highlight").forEach(function(e){e.parentNode.removeChild(e)});var i=(t.match(/\.([\d,-]+)$/)||[,""])[1];if(i&&!document.getElementById(t)){var r=t.slice(0,t.lastIndexOf(".")),o=document.getElementById(r);o&&(o.hasAttribute("data-line")||o.setAttribute("data-line",""),n(o,i,"temporary "),document.querySelector(".temporary.line-highlight").scrollIntoView())}}if("undefined"!=typeof self&&self.Prism&&self.document&&document.querySelector){var r=function(){var e;return function(){if("undefined"==typeof e){var t=document.createElement("div");t.style.fontSize="13px",t.style.lineHeight="1.5",t.style.padding=0,t.style.border=0,t.innerHTML="&nbsp;<br />&nbsp;",document.body.appendChild(t),e=38===t.offsetHeight,document.body.removeChild(t)}return e}}(),o=0;Prism.hooks.add("complete",function(t){var r=t.element.parentNode,a=r&&r.getAttribute("data-line");r&&a&&/pre/i.test(r.nodeName)&&(clearTimeout(o),e(".line-highlight",r).forEach(function(e){e.parentNode.removeChild(e)}),n(r,a),o=setTimeout(i,1))}),window.addEventListener&&window.addEventListener("hashchange",i)}}();
+	!function(){"undefined"!=typeof self&&self.Prism&&self.document&&Prism.hooks.add("complete",function(e){if(e.code){var t=e.element.parentNode,s=/\s*\bline-numbers\b\s*/;if(t&&/pre/i.test(t.nodeName)&&(s.test(t.className)||s.test(e.element.className))&&!e.element.querySelector(".line-numbers-rows")){s.test(e.element.className)&&(e.element.className=e.element.className.replace(s,"")),s.test(t.className)||(t.className+=" line-numbers");var n,a=e.code.match(/\n(?!$)/g),l=a?a.length+1:1,m=new Array(l+1);m=m.join("<span></span>"),n=document.createElement("span"),n.className="line-numbers-rows",n.innerHTML=m,t.hasAttribute("data-start")&&(t.style.counterReset="linenumber "+(parseInt(t.getAttribute("data-start"),10)-1)),e.element.appendChild(n)}}})}();
 
-	  },
-
-
-	});
-
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 16 */
-[68, 4, 4],
-/* 17 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Backbone router needs jQuery to select 'window' and to attach 2 events to it
 	// Creating simple mockup
 
-	var Backbone               = __webpack_require__(16);
-	var Class                  = __webpack_require__(10);
+	var Backbone               = __webpack_require__(5);
+	var Class                  = __webpack_require__(13);
 
 	if(!Backbone.$){
 	  var jQueryMockup = {
@@ -3037,13 +3243,13 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 18 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _            = __webpack_require__(4);
-	var helpers      = __webpack_require__(22); 
-	var Controller   = __webpack_require__(21);
-	var Router       = __webpack_require__(17);
+	var _            = __webpack_require__(1);
+	var helpers      = __webpack_require__(29); 
+	var Controller   = __webpack_require__(28);
+	var Router       = __webpack_require__(25);
 
 	/*
 	  // Every controller can:
@@ -3210,13 +3416,311 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 19 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _          = __webpack_require__(4);
-	var Ractive    = __webpack_require__(9 );
+	
+	var Backbone = __webpack_require__(5);
+	var Class = __webpack_require__(13);
 
-	var config     = __webpack_require__(6);
+	var _ = __webpack_require__(1);
+
+	var EventedClass = Class.extend("EventedClass", _.extend(Backbone.Events, {
+	  
+	  // EventedClass's constructor handles props like:
+	  // events:{
+	  //   "event_name": "method name",
+	  //   "evt": ["method1", "method2", function(){}],
+	  //   "event": function(){ ... }
+	  // }
+
+	  constructor: function(){
+	    if(_.isObject(this.events)){
+	      for(event in this.events){ var evt = this.events[event];
+	        
+	        if(_.isFunction(evt)) this.on(event, evt, this);
+	        
+	        else if(_.isString(evt) && _.isFunction(this[evt])){
+	          this.on(event, this[evt], this);
+	        }
+	        
+	        else if(_.isArray(evt)){
+	          for(var i = 0;i< evt.length;i++){ var meth = evt[i];
+	            if(_.isString(meth) && _.isFunction(this[meth])){
+	              this.on(event, this[meth], this);
+	            }
+	            else if(_.isFunction(meth)){
+	              this.on(event, meth, this);
+	            }
+	          }
+	        }
+	      }
+	    }
+	    Class.apply(this, arguments);
+	  }
+
+	}), Backbone.Events);
+	module.exports = EventedClass;
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(1);
+	var EventedClass = __webpack_require__(27);
+
+	module.exports = EventedClass.extend("Controller", {
+
+	  bindRoutes: function(app){
+	    for(var key in this.routes){
+	      var handlerName = this.routes[key];
+	      if(Array.isArray(handlerName)){
+	        for(var i=0;i<handlerName.length;i++){
+	          if(_.isFunction(this[handlerName[i]])){
+	            app.router.on("route:"+key, this[handlerName[i]], this);
+	          }
+	        }
+	      }
+	      else{
+	        if(_.isFunction(this[handlerName])){
+	          app.router.on("route:"+key, this[handlerName], this);
+	        }
+	      }
+	    }
+	  }
+	});
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var _ = __webpack_require__(1);
+	var helpers = module.exports = {
+	  
+	  everyIs: function(iterator){ return function(val){ return _.isArray(val) && _.every(val, iterator);} },
+
+	  isOneOf: function(){
+	    var comparators = Array.prototype.slice.call(arguments);
+	    return function(val){
+	      return _.some(comparators, function(comparator){
+	        return comparator(val);
+	      });
+	    }
+	  },
+
+	  deepExtend: function(target, source){
+	    for(var key in source){
+	      if(_.isObject(target[key]) && _.isObject(source[key])){
+	        helpers.deepExtend(target[key], source[key]);
+	      }
+	      else { target[key] = source[key]; }
+	    }
+	  },
+
+	  filterObject: function(obj, iterator){
+	    var result = {};
+	    for(key in obj)
+	      !!iterator(key, obj[key]) && (result[key] = obj[key]);
+	    return result;
+	  },
+
+	  //Warning !!! - changing passed object
+	  cleanObject: function(obj){ for(key in obj) !obj[key] && (delete obj[key]); },
+
+	  // Takes number n and returns function that can be executed n times
+	  // when n becomes 0, will be executed callback m in context C with arguments a,b and c
+	  counter: function(n,m,C,a,b,c){return function(){n--;n===0&&m.call(C||this,a,b,c)}},
+	  
+	  // Generates a chain of functions
+	  chain: function(fns, context){
+	    var self = this;
+	    fns = fns.map(function(f){
+	      if(typeof f !== "function") {
+	        return function(){
+	          var ctx = this;
+	          var args = Array.prototype.slice.call(arguments);
+	          var chain_cb = args.pop();
+	          helpers.amap(f, function(ob_fn, amap_cb){
+	            ob_fn.apply(ctx, args.concat([amap_cb]));
+	          }, chain_cb);
+	        };
+	      }
+	      else{
+	        return f;
+	      }
+	    });
+
+	    var ft = "function", sl = [].slice, em = "callback not found!!";
+	    return function(){var t,n=context||this,a=fns,r=-1,f=sl.call(arguments);if(t=f.pop(),typeof t!==ft&&(n=t,t=f.pop()),typeof t!==ft)throw new Error(em);var l=function(){var f=arguments[0];if(f)return t(f);if(!a[++r])return t.apply(n,arguments);try{a[r].apply(n,sl.call(arguments,1).concat([l]))}catch(f){t.call(n,f)}};l.finish=t,fns.length?(r++,f.push(l),fns[0].apply(n,f)):(f.unshift(null),t.apply(n,f))};
+	    // return function(){
+	    //   var cb,c=context||this,ch=fns,ptr=-1;
+	    //   var a=sl.call(arguments);
+	    //   cb = a.pop();
+	    //   if(typeof cb!==ft) c=cb,cb=a.pop();
+	    //   if(typeof cb!==ft) throw new Error(em);
+	    //   var n=function(){
+	    //     var e=arguments[0];
+	    //     if(e) return cb(e);
+	    //     if(!ch[++ptr]) return cb.apply(c, arguments);
+	    //     try{ch[ptr].apply(c,sl.call(arguments,1).concat([n]));}
+	    //     catch(e){cb.call(c,e);}
+	    //   }
+	    //   n.finish=cb;
+	    //   if(fns.length){
+	    //     ptr++;
+	    //     a.push(n);
+	    //     fns[0].apply(c,a);
+	    //   }
+	    //   else{
+	    //     a.unshift(null);
+	    //     cb.apply(c,a);
+	    //   }
+	    // };
+
+	  },
+
+	  amapCompose: function(obj, iterator){
+	    return function(ob, itr, cb){
+	      helpers.amap( ob||obj, itr||iterator, cb, this);
+	    }
+	  },
+
+	  runFnsIterator: function(fn, cb){fn(cb);},
+	  amap: function(r,n,t,a){a=a||this,n?Array.isArray(n)&&(n=this.chain(n)):n=this.runFnsIterator;var i,e;if(Array.isArray(r)?(e=r.length,i=new Array(r.length)):(i={},e=Object.keys(r).length,r.forEach=function(n){for(var t in r)"forEach"!==t&&n(r[t],t,r)}),0===e)return t(null,r);var f;r.forEach(function(r,c){setTimeout(function(){n.call(a,r,function(r,n){if(f!==!0){if(r)return f=!0,t(r);i[c]=n,e--,0===e&&t(null,i)}})},0)}),Array.isArray(r)||delete r.forEach},
+	  // amap: function(arr, iterator, cb, ctx){
+	  //   ctx = ctx || this;
+	  //   if(!iterator) iterator = this.runFnsIterator;
+	  //   else if(Array.isArray(iterator)) iterator = this.chain(iterator);
+	  //   var results, counter;
+	  //   if(!Array.isArray(arr)){
+	  //     results = {};
+	  //     counter = Object.keys(arr).length;
+	  //     arr.forEach = function(itr){
+	  //       for(var key in arr) {
+	  //         if(key==="forEach") continue;
+	  //         itr(arr[key], key, arr);
+	  //       }
+	  //     }
+	  //   }
+	  //   else{
+	  //     counter = arr.length;
+	  //     results = new Array(arr.length);
+	  //   }
+	  //   if(counter===0) return cb(null, arr);
+
+	  //   var  error;
+	  //   arr.forEach(function(el, idx, arr){
+	  //     setTimeout(function(){
+	  //       iterator.call(ctx, el, function(err, result){
+	  //         if(error === true) return;
+	  //         if(err){error = true; return cb(err);}
+	  //         results[idx] = result;
+	  //         counter--;
+	  //         if(counter===0) {
+	  //           cb(null, results);
+	  //         }
+	  //       });
+	  //     }, 0);
+	  //   });
+	  //   if(!Array.isArray(arr)) delete arr.forEach;
+	  // },
+
+	  parseArgs: function(a){
+	    var r    = { params: Array.prototype.call.slice(a), ctx: global};
+	    var last = Array.prototype.call.slice(a, -2);
+	    var l1   = last.pop();
+	    var l2   = last.pop();
+	    if(typeof l1 === "function"){
+	      r.cb   = r.params.pop();
+	      return r;
+	    }
+	    else if(typeof l2 === "function"){
+	      r.ctx  = r.params.pop();
+	      r.cb   = r.params.pop();
+	      return r;
+	    }
+	    return r;
+	  },
+
+	  defaultize: function(base, target){
+	    if(Array.isArray(target)) target.forEach(function(t){_.defaults(t, base)});
+	    else{
+	      for(var key in target){
+	        _.defaults(target[key], base);
+	      }
+	    }
+	    return target;
+	  },
+
+	  instantiate: function(objects, Prototype){
+	    if(_.isArray(objects)){
+	      return objects.map(function(object){
+	        return new Prototype(object);
+	      });
+	    }
+	    else if(_.isObject(objects)){
+	      var result = {};
+	      for(var key in objects){
+	        result[key] = new Prototype(objects[key]);
+	      }
+	      return result;
+	    }
+	    else{
+	      return new Prototype(objects);
+	    }
+	  },
+
+	  traverse: function(obj, iterator, path){
+	    path = path || [];
+	    for(var key in obj){
+	      (function(name, val){
+	        if(_.isObject(val) && (typeof val !== "function")){
+	          return helpers.traverse(val, iterator, path.concat([name]));
+	        }
+	        iterator(val, name, obj, path.concat([name]));
+	      })(key, obj[key]);
+	    }
+	  },
+
+	  resolve: function(target, path){
+	    var parts = path.split("."), parent = target, last_target = parts.pop();
+	    for(var i = 0; i< parts.length; i++){
+	      if(!parent.hasOwnProperty(parts[i]) && !parent.__proto__.hasOwnProperty(parts[i])){
+	        return undefined;
+	      }
+	      parent = parent[parts[i]];
+	    }
+	    return parent[last_target];
+	  },
+
+	  patch: function(target, path, val){
+	    if(typeof path === "object"){
+	      for(var key in path) helpers.patch(target, key, path[key]);
+	      return;
+	    }
+	    var parts = path.split("."), parent = target, last = parts.pop();
+	    for(var i = 0; i< parts.length; i++){
+	      if(!parent.hasOwnProperty(parts[i]) && !parent.__proto__.hasOwnProperty(parts[i])) parent[parts[i]] = {};
+	      parent = parent[parts[i]];
+	    }
+	    var real_target = (!parent[last] && !parent.__proto__[last] ? parent : ( !parent.__proto__[last] ? parent : parent.__proto__ ) );
+	    real_target[last] = val;
+	  }
+
+	};
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _          = __webpack_require__(1);
+	var Ractive    = __webpack_require__(14 );
+
+	var config     = __webpack_require__(4);
 	Ractive.DEBUG  = config.debug;
 
 	module.exports = Ractive.extend({
@@ -3320,394 +3824,104 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var Backbone = __webpack_require__(61);
-	var Class = __webpack_require__(10);
-
-	var _ = __webpack_require__(2);
-
-	var EventedClass = Class.extend("EventedClass", _.extend(Backbone.Events, {
-	  
-	  // EventedClass's constructor handles props like:
-	  // events:{
-	  //   "event_name": "method name",
-	  //   "evt": ["method1", "method2", function(){}],
-	  //   "event": function(){ ... }
-	  // }
-
-	  constructor: function(){
-	    if(_.isObject(this.events)){
-	      for(event in this.events){ var evt = this.events[event];
-	        
-	        if(_.isFunction(evt)) this.on(event, evt, this);
-	        
-	        else if(_.isString(evt) && _.isFunction(this[evt])){
-	          this.on(event, this[evt], this);
-	        }
-	        
-	        else if(_.isArray(evt)){
-	          for(var i = 0;i< evt.length;i++){ var meth = evt[i];
-	            if(_.isString(meth) && _.isFunction(this[meth])){
-	              this.on(event, this[meth], this);
-	            }
-	            else if(_.isFunction(meth)){
-	              this.on(event, meth, this);
-	            }
-	          }
-	        }
-	      }
-	    }
-	    Class.apply(this, arguments);
-	  }
-
-	}), Backbone.Events);
-	module.exports = EventedClass;
-
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(2);
-	var EventedClass = __webpack_require__(20);
-
-	module.exports = EventedClass.extend("Controller", {
-
-	  bindRoutes: function(app){
-	    for(var key in this.routes){
-	      var handlerName = this.routes[key];
-	      if(Array.isArray(handlerName)){
-	        for(var i=0;i<handlerName.length;i++){
-	          if(_.isFunction(this[handlerName[i]])){
-	            app.router.on("route:"+key, this[handlerName[i]], this);
-	          }
-	        }
-	      }
-	      else{
-	        if(_.isFunction(this[handlerName])){
-	          app.router.on("route:"+key, this[handlerName], this);
-	        }
-	      }
-	    }
-	  }
-	});
-
-
-/***/ },
-/* 22 */
-[67, 2],
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var map = {
-		"./AppController": 11,
-		"./AppController.js": 11
-	};
-	function webpackContext(req) {
-		return __webpack_require__(webpackContextResolve(req));
-	};
-	function webpackContextResolve(req) {
-		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
-	};
-	webpackContext.keys = function webpackContextKeys() {
-		return Object.keys(map);
-	};
-	webpackContext.resolve = webpackContextResolve;
-	module.exports = webpackContext;
-	webpackContext.id = 23;
-
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var App = __webpack_require__(5);  //{  }
-
-	__webpack_require__(32);
-	__webpack_require__(49);
-
-	App.Controllers = App.bulk(__webpack_require__(23));
-
-	App.config({
-	  debug: true,
-	  app: {
-	    // container: "#main-container",
-	    pushState: false
-	  }
-	});
-
-
-	// console.log(App.Rainbow.color("var App = require('App');", "javascript", function(code){
-	//   console.log(arguments)
-	// }));
-
-
-
-	var app = __webpack_require__(48);
-
-	app.init({
-	  App:          App,
-	  config:       __webpack_require__(6),
-	  settings:     window.settings || {},
-	  routes:       __webpack_require__(64),
-	  data:         {}
-	}, function(err){
-	  if(err) throw err;
-	  console.log("app initialized");
-	});
-
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var App = __webpack_require__(5);
-
-	module.exports = __webpack_require__(1).extend({
-
-	  template: __webpack_require__(33),
-	  style:    __webpack_require__(51),
-	  
-	  components: App.bulk(
-	    __webpack_require__(26),
-	    function(name, context, cb){ cb(name.split("/").shift()); }),
-
-	});
-
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var map = {
-		"./Builder/Builder.js": 12,
-		"./Docs/Docs.js": 13,
-		"./Footer/Footer.js": 28,
-		"./Header/Header.js": 29,
-		"./HelloWorld/HelloWorld.js": 14,
-		"./MainContainer/MainContainer.js": 30,
-		"./TopMenu/TomMenu.js": 31,
-		"./UnderConstruction/UnderConstruction.js": 15
-	};
-	function webpackContext(req) {
-		return __webpack_require__(webpackContextResolve(req));
-	};
-	function webpackContextResolve(req) {
-		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
-	};
-	webpackContext.keys = function webpackContextKeys() {
-		return Object.keys(map);
-	};
-	webpackContext.resolve = webpackContextResolve;
-	module.exports = webpackContext;
-	webpackContext.id = 26;
-
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var map = {
-		"./i1_SetupApplication.ractive.jade": 36,
-		"./i2_TheLogger.ractive.jade": 37,
-		"./i3_Configuration.ractive.jade": 38,
-		"./i4_ProcessMode.ractive.jade": 39,
-		"./i5_Structures.ractive.jade": 40,
-		"./i6_Tests.ractive.jade": 41
-	};
-	function webpackContext(req) {
-		return __webpack_require__(webpackContextResolve(req));
-	};
-	function webpackContextResolve(req) {
-		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
-	};
-	webpackContext.keys = function webpackContextKeys() {
-		return Object.keys(map);
-	};
-	webpackContext.resolve = webpackContextResolve;
-	module.exports = webpackContext;
-	webpackContext.id = 27;
-
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(42),
-	  style:    __webpack_require__(54),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(43),
-	  style:    __webpack_require__(55),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(45),
-	  style:    __webpack_require__(57),
-	  components: {
-	    Docs:              __webpack_require__(13       ),
-	    Builder:           __webpack_require__(12 ),
-	    UnderConstruction: __webpack_require__(15 ),
-	    HelloWorld:        __webpack_require__(14 ),
-	  }
-	});
-
-
-/***/ },
 /* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(1).extend({
-	  template: __webpack_require__(46),
-	  style:    __webpack_require__(58),
-	  components: {
-
-	  },
-
-
-	});
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript+bash&plugins=line-highlight+line-numbers */
-	var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(?!\*)(\w+)\b/i,t=_self.Prism={util:{encode:function(e){return e instanceof n?new n(e.type,t.util.encode(e.content),e.alias):"Array"===t.util.type(e)?e.map(t.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},clone:function(e){var n=t.util.type(e);switch(n){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=t.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return t.util.clone(e)})}return e}},languages:{extend:function(e,n){var a=t.util.clone(t.languages[e]);for(var r in n)a[r]=n[r];return a},insertBefore:function(e,n,a,r){r=r||t.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==n)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return t.languages.DFS(t.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,n,a){for(var r in e)e.hasOwnProperty(r)&&(n.call(e,r,e[r],a||r),"Object"===t.util.type(e[r])?t.languages.DFS(e[r],n):"Array"===t.util.type(e[r])&&t.languages.DFS(e[r],n,r))}},plugins:{},highlightAll:function(e,n){for(var a,r=document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'),l=0;a=r[l++];)t.highlightElement(a,e===!0,n)},highlightElement:function(n,a,r){for(var l,i,o=n;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=t.languages[l]),n.className=n.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=n.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=n.textContent,u={element:n,language:l,grammar:i,code:s};if(!s||!i)return t.hooks.run("complete",u),void 0;if(t.hooks.run("before-highlight",u),a&&_self.Worker){var g=new Worker(t.filename);g.onmessage=function(e){u.highlightedCode=e.data,t.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),t.hooks.run("after-highlight",u),t.hooks.run("complete",u)},g.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=t.highlight(u.code,u.grammar,u.language),t.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(n),t.hooks.run("after-highlight",u),t.hooks.run("complete",u)},highlight:function(e,a,r){var l=t.tokenize(e,a);return n.stringify(t.util.encode(l),r)},tokenize:function(e,n){var a=t.Token,r=[e],l=n.rest;if(l){for(var i in l)n[i]=l[i];delete n.rest}e:for(var i in n)if(n.hasOwnProperty(i)&&n[i]){var o=n[i];o="Array"===t.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],g=u.inside,c=!!u.lookbehind,f=0,h=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var d=r[p];if(r.length>e.length)break e;if(!(d instanceof a)){u.lastIndex=0;var m=u.exec(d);if(m){c&&(f=m[1].length);var y=m.index-1+f,m=m[0].slice(f),v=m.length,k=y+v,b=d.slice(0,y+1),w=d.slice(k+1),P=[p,1];b&&P.push(b);var A=new a(i,g?t.tokenize(m,g):m,h);P.push(A),w&&P.push(w),Array.prototype.splice.apply(r,P)}}}}}return r},hooks:{all:{},add:function(e,n){var a=t.hooks.all;a[e]=a[e]||[],a[e].push(n)},run:function(e,n){var a=t.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(n)}}},n=t.Token=function(e,t,n){this.type=e,this.content=t,this.alias=n};if(n.stringify=function(e,a,r){if("string"==typeof e)return e;if("Array"===t.util.type(e))return e.map(function(t){return n.stringify(t,a,e)}).join("");var l={type:e.type,content:n.stringify(e.content,a,r),tag:"span",classes:["token",e.type],attributes:{},language:a,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===t.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}t.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var n=JSON.parse(e.data),a=n.language,r=n.code,l=n.immediateClose;_self.postMessage(t.highlight(r,t.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var a=document.getElementsByTagName("script");return a=a[a.length-1],a&&(t.filename=a.src,document.addEventListener&&!a.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",t.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
-	Prism.languages.markup={comment:/<!--[\w\W]*?-->/,prolog:/<\?[\w\W]+?\?>/,doctype:/<!DOCTYPE[\w\W]+?>/,cdata:/<!\[CDATA\[[\w\W]*?]]>/i,tag:{pattern:/<\/?(?!\d)[^\s>\/=.$<]+(?:\s+[^\s>\/=]+(?:=(?:("|')(?:\\\1|\\?(?!\1)[\w\W])*\1|[^\s'">=]+))?)*\s*\/?>/i,inside:{tag:{pattern:/^<\/?[^\s>\/]+/i,inside:{punctuation:/^<\/?/,namespace:/^[^\s>\/:]+:/}},"attr-value":{pattern:/=(?:('|")[\w\W]*?(\1)|[^\s>]+)/i,inside:{punctuation:/[=>"']/}},punctuation:/\/?>/,"attr-name":{pattern:/[^\s>\/]+/,inside:{namespace:/^[^\s>\/:]+:/}}}},entity:/&#?[\da-z]{1,8};/i},Prism.hooks.add("wrap",function(a){"entity"===a.type&&(a.attributes.title=a.content.replace(/&amp;/,"&"))}),Prism.languages.xml=Prism.languages.markup,Prism.languages.html=Prism.languages.markup,Prism.languages.mathml=Prism.languages.markup,Prism.languages.svg=Prism.languages.markup;
-	Prism.languages.css={comment:/\/\*[\w\W]*?\*\//,atrule:{pattern:/@[\w-]+?.*?(;|(?=\s*\{))/i,inside:{rule:/@[\w-]+/}},url:/url\((?:(["'])(\\(?:\r\n|[\w\W])|(?!\1)[^\\\r\n])*\1|.*?)\)/i,selector:/[^\{\}\s][^\{\};]*?(?=\s*\{)/,string:/("|')(\\(?:\r\n|[\w\W])|(?!\1)[^\\\r\n])*\1/,property:/(\b|\B)[\w-]+(?=\s*:)/i,important:/\B!important\b/i,"function":/[-a-z0-9]+(?=\()/i,punctuation:/[(){};:]/},Prism.languages.css.atrule.inside.rest=Prism.util.clone(Prism.languages.css),Prism.languages.markup&&(Prism.languages.insertBefore("markup","tag",{style:{pattern:/(<style[\w\W]*?>)[\w\W]*?(?=<\/style>)/i,lookbehind:!0,inside:Prism.languages.css,alias:"language-css"}}),Prism.languages.insertBefore("inside","attr-value",{"style-attr":{pattern:/\s*style=("|').*?\1/i,inside:{"attr-name":{pattern:/^\s*style/i,inside:Prism.languages.markup.tag.inside},punctuation:/^\s*=\s*['"]|['"]\s*$/,"attr-value":{pattern:/.+/i,inside:Prism.languages.css}},alias:"language-css"}},Prism.languages.markup.tag));
-	Prism.languages.clike={comment:[{pattern:/(^|[^\\])\/\*[\w\W]*?\*\//,lookbehind:!0},{pattern:/(^|[^\\:])\/\/.*/,lookbehind:!0}],string:/(["'])(\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/,"class-name":{pattern:/((?:\b(?:class|interface|extends|implements|trait|instanceof|new)\s+)|(?:catch\s+\())[a-z0-9_\.\\]+/i,lookbehind:!0,inside:{punctuation:/(\.|\\)/}},keyword:/\b(if|else|while|do|for|return|in|instanceof|function|new|try|throw|catch|finally|null|break|continue)\b/,"boolean":/\b(true|false)\b/,"function":/[a-z0-9_]+(?=\()/i,number:/\b-?(?:0x[\da-f]+|\d*\.?\d+(?:e[+-]?\d+)?)\b/i,operator:/--?|\+\+?|!=?=?|<=?|>=?|==?=?|&&?|\|\|?|\?|\*|\/|~|\^|%/,punctuation:/[{}[\];(),.:]/};
-	Prism.languages.javascript=Prism.languages.extend("clike",{keyword:/\b(as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/,number:/\b-?(0x[\dA-Fa-f]+|0b[01]+|0o[0-7]+|\d*\.?\d+([Ee][+-]?\d+)?|NaN|Infinity)\b/,"function":/[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*(?=\()/i}),Prism.languages.insertBefore("javascript","keyword",{regex:{pattern:/(^|[^\/])\/(?!\/)(\[.+?]|\\.|[^\/\\\r\n])+\/[gimyu]{0,5}(?=\s*($|[\r\n,.;})]))/,lookbehind:!0}}),Prism.languages.insertBefore("javascript","class-name",{"template-string":{pattern:/`(?:\\`|\\?[^`])*`/,inside:{interpolation:{pattern:/\$\{[^}]+\}/,inside:{"interpolation-punctuation":{pattern:/^\$\{|\}$/,alias:"punctuation"},rest:Prism.languages.javascript}},string:/[\s\S]+/}}}),Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{script:{pattern:/(<script[\w\W]*?>)[\w\W]*?(?=<\/script>)/i,lookbehind:!0,inside:Prism.languages.javascript,alias:"language-javascript"}}),Prism.languages.js=Prism.languages.javascript;
-	!function(e){var t={variable:[{pattern:/\$?\(\([\w\W]+?\)\)/,inside:{variable:[{pattern:/(^\$\(\([\w\W]+)\)\)/,lookbehind:!0},/^\$\(\(/],number:/\b-?(?:0x[\dA-Fa-f]+|\d*\.?\d+(?:[Ee]-?\d+)?)\b/,operator:/--?|-=|\+\+?|\+=|!=?|~|\*\*?|\*=|\/=?|%=?|<<=?|>>=?|<=?|>=?|==?|&&?|&=|\^=?|\|\|?|\|=|\?|:/,punctuation:/\(\(?|\)\)?|,|;/}},{pattern:/\$\([^)]+\)|`[^`]+`/,inside:{variable:/^\$\(|^`|\)$|`$/}},/\$(?:[a-z0-9_#\?\*!@]+|\{[^}]+\})/i]};e.languages.bash={shebang:{pattern:/^#!\s*\/bin\/bash|^#!\s*\/bin\/sh/,alias:"important"},comment:{pattern:/(^|[^"{\\])#.*/,lookbehind:!0},string:[{pattern:/((?:^|[^<])<<\s*)(?:"|')?(\w+?)(?:"|')?\s*\r?\n(?:[\s\S])*?\r?\n\2/g,lookbehind:!0,inside:t},{pattern:/("|')(?:\\?[\s\S])*?\1/g,inside:t}],variable:t.variable,"function":{pattern:/(^|\s|;|\||&)(?:alias|apropos|apt-get|aptitude|aspell|awk|basename|bash|bc|bg|builtin|bzip2|cal|cat|cd|cfdisk|chgrp|chmod|chown|chroot|chkconfig|cksum|clear|cmp|comm|command|cp|cron|crontab|csplit|cut|date|dc|dd|ddrescue|df|diff|diff3|dig|dir|dircolors|dirname|dirs|dmesg|du|egrep|eject|enable|env|ethtool|eval|exec|expand|expect|export|expr|fdformat|fdisk|fg|fgrep|file|find|fmt|fold|format|free|fsck|ftp|fuser|gawk|getopts|git|grep|groupadd|groupdel|groupmod|groups|gzip|hash|head|help|hg|history|hostname|htop|iconv|id|ifconfig|ifdown|ifup|import|install|jobs|join|kill|killall|less|link|ln|locate|logname|logout|look|lpc|lpr|lprint|lprintd|lprintq|lprm|ls|lsof|make|man|mkdir|mkfifo|mkisofs|mknod|more|most|mount|mtools|mtr|mv|mmv|nano|netstat|nice|nl|nohup|notify-send|nslookup|open|op|passwd|paste|pathchk|ping|pkill|popd|pr|printcap|printenv|printf|ps|pushd|pv|pwd|quota|quotacheck|quotactl|ram|rar|rcp|read|readarray|readonly|reboot|rename|renice|remsync|rev|rm|rmdir|rsync|screen|scp|sdiff|sed|seq|service|sftp|shift|shopt|shutdown|sleep|slocate|sort|source|split|ssh|stat|strace|su|sudo|sum|suspend|sync|tail|tar|tee|test|time|timeout|times|touch|top|traceroute|trap|tr|tsort|tty|type|ulimit|umask|umount|unalias|uname|unexpand|uniq|units|unrar|unshar|uptime|useradd|userdel|usermod|users|uuencode|uudecode|v|vdir|vi|vmstat|wait|watch|wc|wget|whereis|which|who|whoami|write|xargs|xdg-open|yes|zip)(?=$|\s|;|\||&)/,lookbehind:!0},keyword:{pattern:/(^|\s|;|\||&)(?:let|:|\.|if|then|else|elif|fi|for|break|continue|while|in|case|function|select|do|done|until|echo|exit|return|set|declare)(?=$|\s|;|\||&)/,lookbehind:!0},"boolean":{pattern:/(^|\s|;|\||&)(?:true|false)(?=$|\s|;|\||&)/,lookbehind:!0},operator:/&&?|\|\|?|==?|!=?|<<<?|>>|<=?|>=?|=~/,punctuation:/\$?\(\(?|\)\)?|\.\.|[{}[\];]/};var a=t.variable[1].inside;a["function"]=e.languages.bash["function"],a.keyword=e.languages.bash.keyword,a.boolean=e.languages.bash.boolean,a.operator=e.languages.bash.operator,a.punctuation=e.languages.bash.punctuation}(Prism);
-	!function(){function e(e,t){return Array.prototype.slice.call((t||document).querySelectorAll(e))}function t(e,t){return t=" "+t+" ",(" "+e.className+" ").replace(/[\n\t]/g," ").indexOf(t)>-1}function n(e,n,i){for(var o,a=n.replace(/\s+/g,"").split(","),l=+e.getAttribute("data-line-offset")||0,d=r()?parseInt:parseFloat,c=d(getComputedStyle(e).lineHeight),s=0;o=a[s++];){o=o.split("-");var u=+o[0],m=+o[1]||u,h=document.createElement("div");h.textContent=Array(m-u+2).join(" \n"),h.className=(i||"")+" line-highlight",t(e,"line-numbers")||(h.setAttribute("data-start",u),m>u&&h.setAttribute("data-end",m)),h.style.top=(u-l-1)*c+"px",t(e,"line-numbers")?e.appendChild(h):(e.querySelector("code")||e).appendChild(h)}}function i(){var t=location.hash.slice(1);e(".temporary.line-highlight").forEach(function(e){e.parentNode.removeChild(e)});var i=(t.match(/\.([\d,-]+)$/)||[,""])[1];if(i&&!document.getElementById(t)){var r=t.slice(0,t.lastIndexOf(".")),o=document.getElementById(r);o&&(o.hasAttribute("data-line")||o.setAttribute("data-line",""),n(o,i,"temporary "),document.querySelector(".temporary.line-highlight").scrollIntoView())}}if("undefined"!=typeof self&&self.Prism&&self.document&&document.querySelector){var r=function(){var e;return function(){if("undefined"==typeof e){var t=document.createElement("div");t.style.fontSize="13px",t.style.lineHeight="1.5",t.style.padding=0,t.style.border=0,t.innerHTML="&nbsp;<br />&nbsp;",document.body.appendChild(t),e=38===t.offsetHeight,document.body.removeChild(t)}return e}}(),o=0;Prism.hooks.add("complete",function(t){var r=t.element.parentNode,a=r&&r.getAttribute("data-line");r&&a&&/pre/i.test(r.nodeName)&&(clearTimeout(o),e(".line-highlight",r).forEach(function(e){e.parentNode.removeChild(e)}),n(r,a),o=setTimeout(i,1))}),window.addEventListener&&window.addEventListener("hashchange",i)}}();
-	!function(){"undefined"!=typeof self&&self.Prism&&self.document&&Prism.hooks.add("complete",function(e){if(e.code){var t=e.element.parentNode,s=/\s*\bline-numbers\b\s*/;if(t&&/pre/i.test(t.nodeName)&&(s.test(t.className)||s.test(e.element.className))&&!e.element.querySelector(".line-numbers-rows")){s.test(e.element.className)&&(e.element.className=e.element.className.replace(s,"")),s.test(t.className)||(t.className+=" line-numbers");var n,a=e.code.match(/\n(?!$)/g),l=a?a.length+1:1,m=new Array(l+1);m=m.join("<span></span>"),n=document.createElement("span"),n.className="line-numbers-rows",n.innerHTML=m,t.hasAttribute("data-start")&&(t.style.counterReset="linenumber "+(parseInt(t.getAttribute("data-start"),10)-1)),e.element.appendChild(n)}}})}();
-
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 33 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"container fixed-header"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"Header\",{state:\"state\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container fixed-menu"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"TopMenu\",{state:\"state\",search_input:\"search_input\"})"}}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}},{"t":7,"e":"div","a":{"class":"fluid-container"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"MainContainer\",{state:\"state\"})"}}]}]}]};
 
 /***/ },
-/* 34 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":["Builder sidebar here",{"t":7,"e":"br"},{"t":2,"r":"search_input"}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":7,"e":"p","f":["TBD"]}]}]};
 
 /***/ },
-/* 35 */
+/* 33 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"col-xs-2"},"f":[{"t":7,"e":"div","a":{"class":"fixed-sidebar"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"."}],"class":["sidebar-item col-xs-10 ",{"t":2,"x":{"r":["condition","state.tab","."],"s":"_0(_1===_2,\"active\")"}}]},"f":[{"t":2,"x":{"r":["."],"s":"_0.replace(/([a-z])([A-Z])/g,\"$1 $2\")"}}]}],"r":"items"}]}]},{"t":7,"e":"div","a":{"class":"after-fixed"}}]},{"t":7,"e":"div","a":{"class":"col-xs-10"},"f":[{"t":8,"r":"TabPartial"}]},{"t":7,"e":"div","a":{"class":"col-xs-10 pull-right"},"f":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 pull-left text-left"},"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"previous"}],"class":"btn btn-default"},"f":[{"t":2,"x":{"r":["previous"],"s":"_0.replace(/([a-z])([A-Z])/g,\"$1 $2\")"}}]}]}],"r":"previous"}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 pull-right text-right"},"f":[{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/",{"t":2,"r":"next"}],"class":"btn btn-default"},"f":[{"t":2,"x":{"r":["next"],"s":"_0.replace(/([a-z])([A-Z])/g,\"$1 $2\")"}}]}]}],"r":"next"}]}]}]}]};
 
 /***/ },
-/* 36 */
+/* 34 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Setup"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Installation"]}]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.cli","setup_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.cli\",true]"}}},"f":["command line"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_1.package\",true]"}}},"f":["package.json"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_1.cli","condition","setup_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install infrastructure\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_1.package"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"dependencies\": {\n    \"infrastructure\": \"^1.0.0\"\n  }  \n}\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Running"]}]},{"t":7,"e":"p","f":[" Create ",{"t":7,"e":"mark","f":["app.js"]}," in project folder with following content, then run it. It should exit immediately without any messages, because there are no active workers."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.app_js","setup_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"setup_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["setup_2.app_js","condition","setup_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* configuration goes here */ }, function(err, env){\n  if(err){\n    throw err;\n  }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block medium ",{"t":2,"x":{"r":["condition","setup_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n$>"]}]}]}]};
 
 /***/ },
-/* 37 */
+/* 35 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["The Logger"]}]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.app","logger_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_1.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_1.app","condition","logger_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\" ],\n      options: { sys: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_1.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-08 21:40:37][logger]........................... options: sys\n[sys]  [2015-11-08 21:40:37][application started].............. 30ms, process_mode: single, application mode: undefined\n$>\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":[" First - it's a ",{"t":7,"e":"a","a":{"href":["/infrastructure/",{"t":2,"r":"state.screen"},"/Structures"]},"f":[{"t":7,"e":"mark","f":["structure."]}]},"It uses built-in engine, called ",{"t":7,"e":"mark","f":["log"]},". Also, it's config has options. The ",{"t":7,"e":"mark","f":["options"]}," object represents which log types are turned on. Only ",{"t":7,"e":"mark","f":["sys "]},"option is used by the system to report some initialization stuff. Any other option is custom. Let's create log type ",{"t":7,"e":"mark","f":["debug"]},"and use it to log some message."]},{"t":7,"e":"p","f":["The logger is a built-in structure inside infrastructure application, so we need to define it in the config:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.app","logger_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.app\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"logger_2.cli\",true]"}}},"f":["command line"]}]}]},{"t":7,"e":"iv","a":{"class":["code-block large ",{"t":2,"x":{"r":["logger_2.app","condition","logger_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({\n  structures: {\n    log: {\n      engines: [ \"log\"],\n      options: { sys: true, debug: true }\n    }\n  }\n}, function(err, env) {\n  if (err) {\n    throw err;\n  }\n  env.i.do(\"log.debug\", \"hello\", \"logger\");\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","logger_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app.js\n[sys]  [2015-11-08 21:42:53][logger]........................... options: sys, debug\n[sys]  [2015-11-08 21:42:53][application started].............. 30ms, process_mode: single, application mode: undefined\n[debug]  [2015-11-08 21:42:53][hello]............................ logger\n$>"]}]}]}]};
 
 /***/ },
-/* 38 */
+/* 36 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Configuration"]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Let's expand our configuration"]}]},{"t":7,"e":"p","f":[" We passed the configuration object. But ",{"t":7,"e":"mark","f":["infrastructure"]}," will try to find some files or folders in project root folder and will extend passed config. Possible variants are:"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.app_js","configuration_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.app_js\",true]"}}},"f":["app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_json"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_json\",true]"}}},"f":["config.json"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_js"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_js\",true]"}}},"f":["config.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_yml"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_yml\",true]"}}},"f":["config.yml"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_1.config_folder"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_1.config_folder\",true]"}}},"f":["config folder"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["configuration_1.app_js","condition","configuration_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n});"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"structures\": {\n    \"log\": {\n      \"engines\": [ \"log\"],\n      \"options\": { \"sys\": true, \"debug\": true }\n    }\n  }\n}"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["module.exports = {\n  structures: {\n    log: {\n      engines: [ \"log\"],\n      options: { sys: true, debug: true }\n    }\n  }\n};"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_yml"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-yaml"},"f":["---\n  structures: \n    log: \n      engines: \n        - \"log\"\n      options: \n        sys: true\n        debug: true\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","configuration_1.config_folder"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 fs-block"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","conf_fs_1.app_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"conf_fs_1.app_js\",true]"}}},"f":["app.js"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["config"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["structures"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","conf_fs_1.config_structures_log_json","conf_fs_1.__active"],"s":"_0(_1||!(_2),\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"conf_fs_1.config_structures_log_json\",true]"}}},"f":["log.json"]}]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","conf_fs_1.app_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["conf_fs_1.config_structures_log_json","condition","conf_fs_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"engines\": [ \"log\" ],\n  \"options\": { \"sys\": true, \"debug\": true }\n}\n"]}]}]}]},{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h2","f":["Application mode"]}]},{"t":7,"e":"p","f":["If we pass config option \"mode\" in config root, infrastructure will try to find"]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","configuration_2.application_mode","configuration_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"configuration_2.application_mode\",true]"}}},"f":["application mode"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["configuration_2.application_mode","condition","configuration_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 fs-block"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","conf_fs_2.app_js","conf_fs_2.__active"],"s":"_0(_1||!(_2),\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"conf_fs_2.app_js\",true]"}}},"f":["app.js"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["config"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","conf_fs_2.config_development_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"conf_fs_2.config_development_json\",true]"}}},"f":["development.json"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["structures"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","conf_fs_2.config_structures_log_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"conf_fs_2.config_structures_log_json\",true]"}}},"f":["log.json"]}]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","conf_fs_2.config_development_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"structures\": {\n    \"log\": {\n      \"options\": { \"sys\": false }\n    }\n  }\n}\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["conf_fs_2.app_js","condition","conf_fs_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\n// config/development.json will \"patch\" config tree when mode is \"development\"\ninfrastructure({ mode: \"development\" }, function(err, env) {\n  if (err) { throw err; }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","conf_fs_2.config_structures_log_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"engines\": [ \"log\" ],\n  \"options\": { \"sys\": true, \"debug\": true }\n}"]}]}]}]}]};
 
 /***/ },
-/* 39 */
+/* 37 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Process modes"]}]},{"t":7,"e":"p","f":["By default, if not specified, process_mode is \"single\". If we set it to \"cluster\", every structure will be executed in separate child_process."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","process_modes_1.app_js","process_modes_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_1.app_js\",true]"}}},"f":["in app.js"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","process_modes_1.in_configuration"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_1.in_configuration\",true]"}}},"f":["in configuration"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","process_modes_1.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_1.cli\",true]"}}},"f":["cli"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["process_modes_1.app_js","condition","process_modes_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ process_mode: \"cluster\" }, function(err, env) {\n  if (err) { throw err; }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","process_modes_1.in_configuration"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 fs-block"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","process_modes_fs_1.app_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_fs_1.app_js\",true]"}}},"f":["app.js"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["config"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","process_modes_fs_1.config_process_mode_json","process_modes_fs_1.__active"],"s":"_0(_1||!(_2),\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_fs_1.config_process_mode_json\",true]"}}},"f":["process_mode.json"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["structures"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","process_modes_fs_1.config_structures_log_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"process_modes_fs_1.config_structures_log_json\",true]"}}},"f":["log.json"]}]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","process_modes_fs_1.app_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["process_modes_fs_1.config_process_mode_json","condition","process_modes_fs_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"cluster\"\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","process_modes_fs_1.config_structures_log_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"engines\": [ \"log\" ],\n  \"options\": { \"sys\": true, \"debug\": true }\n}\n"]}]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","process_modes_1.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app\n[sys]  [2015-11-09 20:49:00][logger]........................... options: sys, debug\n[sys]  [2015-11-09 20:49:00][worker]........................... log\n[sys]  [2015-11-09 20:49:00][worker started]................... 56ms, structures: log\n[sys]  [2015-11-09 20:49:00][application started].............. 466ms, process_mode: cluster, application mode: undefined\n"]}]}]},{"t":7,"e":"p","f":["In this case, the app keeps it's running state."]}]};
 
 /***/ },
-/* 40 */
+/* 38 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Structures"]}]},{"t":7,"e":"p","f":["Structures are group of similar classes which will be instantiated and structured in tree-like structure."]},{"t":7,"e":"p","f":["Lets define our structure in configuration. For the exampe, we will give the structure name \"workers\"."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","structures_1.configuration","structures_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_1.configuration\",true]"}}},"f":["configuration"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["structures_1.configuration","condition","structures_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 fs-block"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_1.app_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_1.app_js\",true]"}}},"f":["app.js"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["config"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_1.config_process_mode_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_1.config_process_mode_json\",true]"}}},"f":["process_mode.json"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["structures"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_1.config_structures_log_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_1.config_structures_log_json\",true]"}}},"f":["log.json"]},{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_1.config_structures_workers_json","structures_fs_1.__active"],"s":"_0(_1||!(_2),\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_1.config_structures_workers_json\",true]"}}},"f":["workers.json"]}]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","structures_fs_1.app_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","structures_fs_1.config_process_mode_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"cluster\"\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","structures_fs_1.config_structures_log_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"engines\": [ \"log\" ],\n  \"options\": { \"sys\": true, \"debug\": true }\n}"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["structures_fs_1.config_structures_workers_json","condition","structures_fs_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"path\": \"workers\",\n  \"engines\": []\n}\n"]}]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":["This configuration shows that the structure files must be placed in folder \"workers\" (based on project root). Lets create the folder and some files in it."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","structures_2.configuration","structures_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_2.configuration\",true]"}}},"f":["configuration"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","structures_2.cli"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_2.cli\",true]"}}},"f":["cli"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["structures_2.configuration","condition","structures_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 fs-block"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_2.app_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_2.app_js\",true]"}}},"f":["app.js"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["config"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_2.config_process_mode_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_2.config_process_mode_json\",true]"}}},"f":["process_mode.json"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["structures"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_2.config_structures_log_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_2.config_structures_log_json\",true]"}}},"f":["log.json"]},{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_2.config_structures_workers_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_2.config_structures_workers_json\",true]"}}},"f":["workers.json"]}]}]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["workers"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_2.workers_worker_1_js","structures_fs_2.__active"],"s":"_0(_1||!(_2),\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_2.workers_worker_1_js\",true]"}}},"f":["worker_1.js"]},{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","structures_fs_2.workers_worker_2_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"structures_fs_2.workers_worker_2_js\",true]"}}},"f":["worker_2.js"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","structures_fs_2.app_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n\n  // Check that workers are callable\n  env.i.do(\"workers.worker_1.worker_1_method\", \"hello worker 1\", function(err, response){\n    console.log(response);\n  });\n  env.i.do(\"workers.worker_2.worker_2_method\", \"hello worker 2\", function(err, response){\n    console.log(response);\n  });\n\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["structures_fs_2.workers_worker_1_js","condition","structures_fs_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["function Worker_1(env){\n  env.i.do(\"log.sys\", \"worker instantiated\", \"Worker_1\");\n}\nWorker_1.prototype.worker_1_method = function(text, cb){\n  cb(null, [text, \"hello master\"]);\n}\nmodule.exports = Worker_1;\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","structures_fs_2.workers_worker_2_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["function Worker_2(env){\n  env.i.do(\"log.sys\", \"worker instantiated\", \"Worker_2\");\n}\nWorker_2.prototype.worker_2_method = function(text, cb){\n  cb(null, [text, \"hello master\"]);\n}\nmodule.exports = Worker_2;\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","structures_fs_2.config_process_mode_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"cluster\"\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","structures_fs_2.config_structures_log_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"engines\": [ \"log\" ],\n  \"options\": { \"sys\": true, \"debug\": true }\n}"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","structures_fs_2.config_structures_workers_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"path\": \"workers\",\n  \"engines\": []\n}\n"]}]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","structures_2.cli"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> node app\n[sys]  [2015-11-23 22:04:01][logger]........................... options: sys, debug\n[sys]  [2015-11-23 22:04:01][worker]........................... log\n[sys]  [2015-11-23 22:04:01][worker started]................... 37ms, structures: log\n[sys]  [2015-11-23 22:04:02][application started].............. 450ms, process_mode: cluster, application mode: undefined\n[sys]  [2015-11-23 22:04:02][worker instantiated].............. Worker_1\n[sys]  [2015-11-23 22:04:02][worker instantiated].............. Worker_2\n[sys]  [2015-11-23 22:04:02][worker]........................... workers\n[sys]  [2015-11-23 22:04:02][worker started]................... 42ms, structures: workers\n[ 'hello worker 1', 'hello master' ]\n[ 'hello worker 2', 'hello master' ]"]}]}]}]};
 
 /***/ },
-/* 41 */
+/* 39 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"page-header"},"f":[{"t":7,"e":"h1","f":["Tests"]}]},{"t":7,"e":"p","f":["For this example we will use mocha."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","tests_1.install_mocha","tests_1.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1.install_mocha\",true]"}}},"f":["Install mocha"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","tests_1.package_json"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1.package_json\",true]"}}},"f":["package.json"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","tests_1.test_file"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1.test_file\",true]"}}},"f":["test file"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","tests_1.run_test"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1.run_test\",true]"}}},"f":["run test"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["tests_1.install_mocha","condition","tests_1.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm install mocha --save-dev\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","tests_1.run_test"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm test\n\n> test@1.0.0 test /project/project\n> mocha test\n\n\n\n  Start/stop application\n[sys]  [2015-11-29 16:37:14][logger]........................... options: sys, debug\n[sys]  [2015-11-29 16:37:14][worker]........................... log\n[sys]  [2015-11-29 16:37:14][worker started]................... 74ms, structures: log\n[sys]  [2015-11-29 16:37:14][application started].............. 891ms, process_mode: cluster, application mode: test\n    ✓ Starts application (895ms)\n[sys]  [2015-11-29 16:37:14][worker instantiated].............. Worker_1\n[sys]  [2015-11-29 16:37:14][worker instantiated].............. Worker_2\n[sys]  [2015-11-29 16:37:14][worker]........................... workers\n[sys]  [2015-11-29 16:37:14][worker started]................... 59ms, structures: workers\n  ✓ Calls our custom structure member and inspect the result\ntry Gracefull shutdown for structure:  log\nGracefull shutdown success for worker: log\ntry Gracefull shutdown for structure:  workers\nGracefull shutdown success for worker: workers\n    ✓ Stops application\n\n\n  3 passing (934ms)\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","tests_1.package_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"name\": \"test\",\n  \"version\": \"1.0.0\",\n  \"description\": \"\",\n  \"main\": \"app.js\",\n  \"scripts\": {\n    \"test\": \"mocha test\"\n  },\n  \"dependencies\": {\n    \"infrastructure\": \"git+https://github.com/shstefanov/infrastructure.git#dev\"\n  },\n  \"devDependencies\": {\n    \"mocha\": \"^2.3.4\"\n  }\n}\n\n"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","tests_1.test_file"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 fs-block"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_1_fs.app_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1_fs.app_js\",true]"}}},"f":["app.js"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["config"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_1_fs.config_process_mode_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1_fs.config_process_mode_json\",true]"}}},"f":["process_mode.json"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["structures"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_1_fs.config_structures_log_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1_fs.config_structures_log_json\",true]"}}},"f":["log.json"]},{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_1_fs.config_structures_workers_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1_fs.config_structures_workers_json\",true]"}}},"f":["workers.json"]}]}]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["test"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_1_fs.test_test_js","tests_1_fs.__active"],"s":"_0(_1||!(_2),\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1_fs.test_test_js\",true]"}}},"f":["test.js"]}]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["workers"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_1_fs.workers_worker_1_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1_fs.workers_worker_1_js\",true]"}}},"f":["worker_1.js"]},{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_1_fs.workers_worker_2_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_1_fs.workers_worker_2_js\",true]"}}},"f":["worker_2.js"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["tests_1_fs.test_test_js","condition","tests_1_fs.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var assert = require(\"assert\");\ndescribe(\"Start/stop application\", function(){\n  \n  var infrastructure_test_env = require(\"infrastructure/test_env\");\n  var env;\n\n  it(\"Starts application\", function(done){\n    infrastructure_test_env.start({ process_mode: \"single\" }, function(err, test_env){\n      assert.equal(err, null);\n      env = test_env;\n      done();\n    });\n  });\n\n  it(\"Calls our custom structure member and inspect the result\", function(done){\n    env.i.do(\"workers.worker_1.worker_1_method\", \"hello worker 1\", function(err, response){\n      assert.equal(err, null);\n      assert.deepEqual(response, [ 'hello worker 1', 'hello master' ]);\n      done();\n    });\n  });\n\n  it(\"Stops application\", function(done){\n    env.stop(function(err){\n      assert.equal(err, null);\n      done();\n    });\n  });\n\n});\n\n\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_1_fs.app_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n\n  // Check that workers are callable\n  env.i.do(\"workers.worker_1.worker_1_method\", \"hello worker 1\", function(err, response){\n    console.log(response);\n  });\n  env.i.do(\"workers.worker_2.worker_2_method\", \"hello worker 2\", function(err, response){\n    console.log(response);\n  });\n\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_1_fs.workers_worker_1_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["function Worker_1(env){\n  env.i.do(\"log.sys\", \"worker instantiated\", \"Worker_1\");\n}\nWorker_1.prototype.worker_1_method = function(text, cb){\n  cb(null, [text, \"hello master\"]);\n}\nmodule.exports = Worker_1;\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_1_fs.workers_worker_2_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["function Worker_2(env){\n  env.i.do(\"log.sys\", \"worker instantiated\", \"Worker_2\");\n}\nWorker_2.prototype.worker_2_method = function(text, cb){\n  cb(null, [text, \"hello master\"]);\n}\nmodule.exports = Worker_2;\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_1_fs.config_process_mode_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"cluster\"\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_1_fs.config_structures_log_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"engines\": [ \"log\" ],\n  \"options\": { \"sys\": true, \"debug\": true }\n}"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_1_fs.config_structures_workers_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"path\": \"workers\",\n  \"engines\": []\n}\n"]}]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":["Well, test passes, but we still see system logs. Test runs under application mode \"test\", so we will attach \"test\" branch to our config root."]},{"t":7,"e":"ul","a":{"class":"nav nav-tabs"},"f":[{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","tests_2.test_config","tests_2.__active"],"s":"_0(_1||!_2,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2.test_config\",true]"}}},"f":["test config"]}]},{"t":7,"e":"li","a":{"class":[{"t":2,"x":{"r":["condition","tests_2.run_test"],"s":"_0(_1,\"active\")"}}]},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);"},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2.run_test\",true]"}}},"f":["run test"]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["tests_2.test_config","condition","tests_2.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"div","a":{"class":"col-xs-2 fs-block"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_2_fs.app_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2_fs.app_js\",true]"}}},"f":["app.js"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["config"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_2_fs.config_process_mode_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2_fs.config_process_mode_json\",true]"}}},"f":["process_mode.json"]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["structures"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_2_fs.config_structures_log_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2_fs.config_structures_log_json\",true]"}}},"f":["log.json"]},{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_2_fs.config_structures_workers_json"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2_fs.config_structures_workers_json\",true]"}}},"f":["workers.json"]}]},{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_2_fs.config_test_json","tests_2_fs.__active"],"s":"_0(_1||!(_2),\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2_fs.config_test_json\",true]"}}},"f":["test.json"]}]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["test"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_2_fs.test_test_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2_fs.test_test_js\",true]"}}},"f":["test.js"]}]},{"t":7,"e":"p","a":{"onclick":"javascript:this.classList.toggle('closed');","class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript:void(0);"},"f":["workers"]}]},{"t":7,"e":"div","a":{"class":"fs-dir"},"f":[{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_2_fs.workers_worker_1_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2_fs.workers_worker_1_js\",true]"}}},"f":["worker_1.js"]},{"t":7,"e":"a","a":{"href":"javascript: void(0);","class":["fs-file ",{"t":2,"x":{"r":["condition","tests_2_fs.workers_worker_2_js"],"s":"_0(_1,\"active\")"}}]},"v":{"click":{"m":"radioToggle","a":{"r":[],"s":"[\"tests_2_fs.workers_worker_2_js\",true]"}}},"f":["worker_2.js"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["tests_2_fs.config_test_json","condition","tests_2_fs.__active"],"s":"_1(!_0,_1(_2,\"hide\"))"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"structures\": {\n    \"log\": {\n      \"options\": {\n        \"sys\": false\n      }\n    }\n  }\n}\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_2_fs.test_test_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var assert = require(\"assert\");\ndescribe(\"Start/stop application\", function(){\n  \n  var infrastructure_test_env = require(\"infrastructure/test_env\");\n  var env;\n\n  it(\"Starts application\", function(done){\n    infrastructure_test_env.start({ process_mode: \"single\" }, function(err, test_env){\n      assert.equal(err, null);\n      env = test_env;\n      done();\n    });\n  });\n\n  it(\"Calls our custom structure member and inspect the result\", function(done){\n    env.i.do(\"workers.worker_1.worker_1_method\", \"hello worker 1\", function(err, response){\n      assert.equal(err, null);\n      assert.deepEqual(response, [ 'hello worker 1', 'hello master' ]);\n      done();\n    });\n  });\n\n  it(\"Stops application\", function(done){\n    env.stop(function(err){\n      assert.equal(err, null);\n      done();\n    });\n  });\n\n});\n\n\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_2_fs.app_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["var infrastructure = require(\"infrastructure\");\ninfrastructure({ /* Write config here */ }, function(err, env) {\n  if (err) { throw err; }\n});\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_2_fs.workers_worker_1_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["function Worker_1(env){\n  env.i.do(\"log.sys\", \"worker instantiated\", \"Worker_1\");\n}\nWorker_1.prototype.worker_1_method = function(text, cb){\n  cb(null, [text, \"hello master\"]);\n}\nmodule.exports = Worker_1;\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_2_fs.workers_worker_2_js"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["function Worker_2(env){\n  env.i.do(\"log.sys\", \"worker instantiated\", \"Worker_2\");\n}\nWorker_2.prototype.worker_2_method = function(text, cb){\n  cb(null, [text, \"hello master\"]);\n}\nmodule.exports = Worker_2;\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_2_fs.config_process_mode_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["\"cluster\"\n"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_2_fs.config_structures_log_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"engines\": [ \"log\" ],\n  \"options\": { \"sys\": true, \"debug\": true }\n}"]}]}]},{"t":7,"e":"div","a":{"class":["col-xs-10 code-block large ",{"t":2,"x":{"r":["condition","tests_2_fs.config_structures_workers_json"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-javascript"},"f":["{\n  \"path\": \"workers\",\n  \"engines\": []\n}\n"]}]}]}]},{"t":7,"e":"div","a":{"class":["code-block large ",{"t":2,"x":{"r":["condition","tests_2.run_test"],"s":"_0(!_1,\"hide\")"}}]},"f":[{"t":7,"e":"pre","f":[{"t":7,"e":"code","a":{"class":"language-bash"},"f":["$> npm test\n\n> test@1.0.0 test /project/project\n> mocha test\n\n\n\n  Start/stop application\n    ✓ Starts application (460ms)\n    ✓ Calls our custom structure member and inspect the result\n    ✓ Stops application\n\n\n  3 passing (487ms)\n"]}]}]},{"t":7,"e":"p"},{"t":7,"e":"p","f":["The config tree is patched and system logs are not shown whem application mode is \"test\""]}]};
 
 /***/ },
-/* 42 */
+/* 40 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Footer"]}]};
 
 /***/ },
-/* 43 */
+/* 41 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":[{"t":7,"e":"a","a":{"href":"/infrastructure"},"f":["Infrastructure"]}]}]};
 
 /***/ },
-/* 44 */
+/* 42 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Finally, version 1.0 is released!!"]},{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication"},"f":["Get started!"]}]};
 
 /***/ },
-/* 45 */
+/* 43 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":4,"f":[{"t":8,"x":{"r":["resolveComponent"],"s":"_0(\"HelloWorld\",{})"}}],"n":50,"x":{"r":["state.screen"],"s":"!_0"}},{"t":4,"n":51,"f":[{"t":8,"x":{"r":["resolveComponent","state"],"s":"_0(_1.screen[0].toUpperCase()+_1.screen.slice(1),{state:\"state\",search_input:\"search_input\"})"}}],"x":{"r":["state.screen"],"s":"!_0"}}]}]};
 
 /***/ },
-/* 46 */
+/* 44 */
 /***/ function(module, exports) {
 
-	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-4"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/builder","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]}]},{"t":7,"e":"div","a":{"class":"pull-right col-xs-2"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication","class":["btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]}]};
+	module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"div","a":{"class":"col-xs-12"},"f":[{"t":7,"e":"div","a":{"class":"row"},"f":[{"t":7,"e":"a","a":{"href":"/infrastructure/builder","class":["pull-right btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"build\",\"active\")"}}]},"f":["Build"]},{"t":7,"e":"a","a":{"href":"/infrastructure/docs/SetupApplication","class":["pull-right btn btn-default ",{"t":2,"x":{"r":["condition","state.screen"],"s":"_0(_1===\"docs\",\"active\")"}}]},"f":["Docs"]}]}]}]}]};
 
 /***/ },
-/* 47 */
+/* 45 */
 /***/ function(module, exports) {
 
 	module.exports={"v":3,"t":[{"t":7,"e":"h1","f":["Under Construction"]}]};
 
 /***/ },
-/* 48 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App = __webpack_require__(5);
+	var App = __webpack_require__(3);
 
 	module.exports = new App.Controllers.AppController();
 
-	var config = __webpack_require__(6);
+	var config = __webpack_require__(4);
 
 	if(config.debug === true) {
 		window.app    = module.exports; 
@@ -3716,38 +3930,38 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 49 */
+/* 47 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
+/* 48 */
+47,
+/* 49 */
+47,
 /* 50 */
-49,
+47,
 /* 51 */
-49,
+47,
 /* 52 */
-49,
+47,
 /* 53 */
-49,
+47,
 /* 54 */
-49,
+47,
 /* 55 */
-49,
+47,
 /* 56 */
-49,
+47,
 /* 57 */
-49,
+47,
 /* 58 */
-49,
-/* 59 */
-49,
-/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
 	var define = false;
-	var _ = __webpack_require__(4);
+	var _ = __webpack_require__(1);
 
 	(function (global, factory) {
 		 true ? module.exports = factory() :
@@ -3870,12 +4084,9 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 61 */
-[68, 2, 2],
-/* 62 */,
-/* 63 */
-[67, 3],
-/* 64 */
+/* 59 */
+29,
+/* 60 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -3887,7 +4098,7 @@ webpackJsonp([1],[
 	};
 
 /***/ },
-/* 65 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -3928,9 +4139,9 @@ webpackJsonp([1],[
 	if (true) {
 	    // Add support for AMD ( https://github.com/amdjs/amdjs-api/wiki/AMD#defineamd-property- )
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	        __webpack_require__(8),
 	        __webpack_require__(7),
-	        __webpack_require__(66)
+	        __webpack_require__(6),
+	        __webpack_require__(62)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function(js_beautify, css_beautify, html_beautify) {
 	        return get_beautify(js_beautify, css_beautify, html_beautify);
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -3948,7 +4159,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 66 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -4871,9 +5082,9 @@ webpackJsonp([1],[
 
 	    if (true) {
 	        // Add support for AMD ( https://github.com/amdjs/amdjs-api/wiki/AMD#defineamd-property- )
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, __webpack_require__(8), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_RESULT__ = function(requireamd) {
-	            var js_beautify =  __webpack_require__(8);
-	            var css_beautify =  __webpack_require__(7);
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, __webpack_require__(7), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_RESULT__ = function(requireamd) {
+	            var js_beautify =  __webpack_require__(7);
+	            var css_beautify =  __webpack_require__(6);
 
 	            return {
 	              html_beautify: function(html_source, options) {
@@ -4904,227 +5115,6 @@ webpackJsonp([1],[
 
 	}());
 
-
-/***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var _ = __webpack_require__(__webpack_module_template_argument_0__);
-	var helpers = module.exports = {
-	  
-	  everyIs: function(iterator){ return function(val){ return _.isArray(val) && _.every(val, iterator);} },
-
-	  isOneOf: function(){
-	    var comparators = Array.prototype.slice.call(arguments);
-	    return function(val){
-	      return _.some(comparators, function(comparator){
-	        return comparator(val);
-	      });
-	    }
-	  },
-
-	  deepExtend: function(target, source){
-	    for(var key in source){
-	      if(_.isObject(target[key]) && _.isObject(source[key])){
-	        helpers.deepExtend(target[key], source[key]);
-	      }
-	      else { target[key] = source[key]; }
-	    }
-	  },
-
-	  filterObject: function(obj, iterator){
-	    var result = {};
-	    for(key in obj)
-	      !!iterator(key, obj[key]) && (result[key] = obj[key]);
-	    return result;
-	  },
-
-	  //Warning !!! - changing passed object
-	  cleanObject: function(obj){ for(key in obj) !obj[key] && (delete obj[key]); },
-
-	  // Takes number n and returns function that can be executed n times
-	  // when n becomes 0, will be executed callback m in context C with arguments a,b and c
-	  counter: function(n,m,C,a,b,c){return function(){n--;n===0&&m.call(C||this,a,b,c)}},
-	  
-	  // Generates a chain of functions
-	  chain: function(fns, context){
-	    var self = this;
-	    fns = fns.map(function(f){
-	      if(typeof f !== "function") {
-	        return function(){
-	          var ctx = this;
-	          var args = Array.prototype.slice.call(arguments);
-	          var chain_cb = args.pop();
-	          helpers.amap(f, function(ob_fn, amap_cb){
-	            ob_fn.apply(ctx, args.concat([amap_cb]));
-	          }, chain_cb);
-	        };
-	      }
-	      else{
-	        return f;
-	      }
-	    });
-
-	    var ft = "function", sl = [].slice, em = "callback not found!!";
-	    return function(){var t,n=context||this,a=fns,r=-1,f=sl.call(arguments);if(t=f.pop(),typeof t!==ft&&(n=t,t=f.pop()),typeof t!==ft)throw new Error(em);var l=function(){var f=arguments[0];if(f)return t(f);if(!a[++r])return t.apply(n,arguments);try{a[r].apply(n,sl.call(arguments,1).concat([l]))}catch(f){t.call(n,f)}};l.finish=t,fns.length?(r++,f.push(l),fns[0].apply(n,f)):(f.unshift(null),t.apply(n,f))};
-	    // return function(){
-	    //   var cb,c=context||this,ch=fns,ptr=-1;
-	    //   var a=sl.call(arguments);
-	    //   cb = a.pop();
-	    //   if(typeof cb!==ft) c=cb,cb=a.pop();
-	    //   if(typeof cb!==ft) throw new Error(em);
-	    //   var n=function(){
-	    //     var e=arguments[0];
-	    //     if(e) return cb(e);
-	    //     if(!ch[++ptr]) return cb.apply(c, arguments);
-	    //     try{ch[ptr].apply(c,sl.call(arguments,1).concat([n]));}
-	    //     catch(e){cb.call(c,e);}
-	    //   }
-	    //   n.finish=cb;
-	    //   if(fns.length){
-	    //     ptr++;
-	    //     a.push(n);
-	    //     fns[0].apply(c,a);
-	    //   }
-	    //   else{
-	    //     a.unshift(null);
-	    //     cb.apply(c,a);
-	    //   }
-	    // };
-
-	  },
-
-	  amapCompose: function(obj, iterator){
-	    return function(ob, itr, cb){
-	      helpers.amap( ob||obj, itr||iterator, cb, this);
-	    }
-	  },
-
-	  runFnsIterator: function(fn, cb){fn(cb);},
-	  amap: function(r,n,t,a){a=a||this,n?Array.isArray(n)&&(n=this.chain(n)):n=this.runFnsIterator;var i,e;if(Array.isArray(r)?(e=r.length,i=new Array(r.length)):(i={},e=Object.keys(r).length,r.forEach=function(n){for(var t in r)"forEach"!==t&&n(r[t],t,r)}),0===e)return t(null,r);var f;r.forEach(function(r,c){setTimeout(function(){n.call(a,r,function(r,n){if(f!==!0){if(r)return f=!0,t(r);i[c]=n,e--,0===e&&t(null,i)}})},0)}),Array.isArray(r)||delete r.forEach},
-	  // amap: function(arr, iterator, cb, ctx){
-	  //   ctx = ctx || this;
-	  //   if(!iterator) iterator = this.runFnsIterator;
-	  //   else if(Array.isArray(iterator)) iterator = this.chain(iterator);
-	  //   var results, counter;
-	  //   if(!Array.isArray(arr)){
-	  //     results = {};
-	  //     counter = Object.keys(arr).length;
-	  //     arr.forEach = function(itr){
-	  //       for(var key in arr) {
-	  //         if(key==="forEach") continue;
-	  //         itr(arr[key], key, arr);
-	  //       }
-	  //     }
-	  //   }
-	  //   else{
-	  //     counter = arr.length;
-	  //     results = new Array(arr.length);
-	  //   }
-	  //   if(counter===0) return cb(null, arr);
-
-	  //   var  error;
-	  //   arr.forEach(function(el, idx, arr){
-	  //     setTimeout(function(){
-	  //       iterator.call(ctx, el, function(err, result){
-	  //         if(error === true) return;
-	  //         if(err){error = true; return cb(err);}
-	  //         results[idx] = result;
-	  //         counter--;
-	  //         if(counter===0) {
-	  //           cb(null, results);
-	  //         }
-	  //       });
-	  //     }, 0);
-	  //   });
-	  //   if(!Array.isArray(arr)) delete arr.forEach;
-	  // },
-
-	  parseArgs: function(a){
-	    var r    = { params: Array.prototype.call.slice(a), ctx: global};
-	    var last = Array.prototype.call.slice(a, -2);
-	    var l1   = last.pop();
-	    var l2   = last.pop();
-	    if(typeof l1 === "function"){
-	      r.cb   = r.params.pop();
-	      return r;
-	    }
-	    else if(typeof l2 === "function"){
-	      r.ctx  = r.params.pop();
-	      r.cb   = r.params.pop();
-	      return r;
-	    }
-	    return r;
-	  },
-
-	  defaultize: function(base, target){
-	    if(Array.isArray(target)) target.forEach(function(t){_.defaults(t, base)});
-	    else{
-	      for(var key in target){
-	        _.defaults(target[key], base);
-	      }
-	    }
-	    return target;
-	  },
-
-	  instantiate: function(objects, Prototype){
-	    if(_.isArray(objects)){
-	      return objects.map(function(object){
-	        return new Prototype(object);
-	      });
-	    }
-	    else if(_.isObject(objects)){
-	      var result = {};
-	      for(var key in objects){
-	        result[key] = new Prototype(objects[key]);
-	      }
-	      return result;
-	    }
-	    else{
-	      return new Prototype(objects);
-	    }
-	  },
-
-	  traverse: function(obj, iterator, path){
-	    path = path || [];
-	    for(var key in obj){
-	      (function(name, val){
-	        if(_.isObject(val) && (typeof val !== "function")){
-	          return helpers.traverse(val, iterator, path.concat([name]));
-	        }
-	        iterator(val, name, obj, path.concat([name]));
-	      })(key, obj[key]);
-	    }
-	  },
-
-	  resolve: function(target, path){
-	    var parts = path.split("."), parent = target, last_target = parts.pop();
-	    for(var i = 0; i< parts.length; i++){
-	      if(!parent.hasOwnProperty(parts[i]) && !parent.__proto__.hasOwnProperty(parts[i])){
-	        return undefined;
-	      }
-	      parent = parent[parts[i]];
-	    }
-	    return parent[last_target];
-	  },
-
-	  patch: function(target, path, val){
-	    if(typeof path === "object"){
-	      for(var key in path) helpers.patch(target, key, path[key]);
-	      return;
-	    }
-	    var parts = path.split("."), parent = target, last = parts.pop();
-	    for(var i = 0; i< parts.length; i++){
-	      if(!parent.hasOwnProperty(parts[i]) && !parent.__proto__.hasOwnProperty(parts[i])) parent[parts[i]] = {};
-	      parent = parent[parts[i]];
-	    }
-	    var real_target = (!parent[last] && !parent.__proto__[last] ? parent : ( !parent.__proto__[last] ? parent : parent.__proto__ ) );
-	    real_target[last] = val;
-	  }
-
-	};
-
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }
 ]);
