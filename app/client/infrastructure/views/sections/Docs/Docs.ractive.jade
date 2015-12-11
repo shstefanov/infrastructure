@@ -1,5 +1,5 @@
-.col-xs-2
-  .fixed-sidebar: .row
+.col-xs-12.col-sm-2
+  .fixed-sidebar.hidden-xs: .row
     | {{#items}}
     a.sidebar-item.col-xs-10(class="{{condition(state.tab === ., 'active')}}", href="/infrastructure/{{state.screen}}/{{.}}") {{this.replace(/([a-z])([A-Z])/g, "$1 $2")}}
     | {{/items}}
