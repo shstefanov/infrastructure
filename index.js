@@ -21,6 +21,7 @@ else{
 
   var argv = require('minimist')(process.argv.slice(2), {boolean: true});
   var cli_config = argv.config;
+  var cli_options = _.omit(argv, ["config"]);
   module.exports = function findApp( config, cb ){
     var now = Date.now();
     if( cluster.isWorker ) return module.exports.init({ 
@@ -111,6 +112,8 @@ else{
     helpers.deepExtend(config, extension);
 
     if(cli_config) helpers.deepExtend(config, cli_config);
+
+    config.options = cli_options;
 
     return config;
   };
