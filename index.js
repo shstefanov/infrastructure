@@ -6,6 +6,7 @@ var cluster = require("cluster");
 
 var helpers = require("./lib/helpers");
 
+
 if(cluster.isWorker && process.env.INFRASTRUCTURE_AUTOLOAD){
   var now = Date.now();
   require("./init.js")({ 
@@ -18,6 +19,8 @@ if(cluster.isWorker && process.env.INFRASTRUCTURE_AUTOLOAD){
 }
 else{
 
+  var argv = require('minimist')(process.argv.slice(2), {boolean: true});
+  var cli_config = argv.config;
   module.exports = function findApp( config, cb ){
     var now = Date.now();
     if( cluster.isWorker ) return module.exports.init({ 
@@ -76,7 +79,7 @@ else{
     }
 
     if(app_config.mode) config.mode = app_config.mode;
-    config = JSON.parse(JSON.stringify(config));
+    config = JSON.parse(JSON.stringify(config)); // this will keep modules untouched
 
     return config
   }
@@ -106,6 +109,8 @@ else{
       helpers.deepExtend( extension, mode_extension );
     }
     helpers.deepExtend(config, extension);
+
+    if(cli_config) helpers.deepExtend(config, cli_config);
 
     return config;
   };

@@ -12,6 +12,7 @@
     "backbone": "latest",
     "bulk-require": "latest",
     "coffee-script": "latest",
+    "minimist": "^1.2.0",
     "underscore": "latest",
     "yamljs": "latest"
   },
