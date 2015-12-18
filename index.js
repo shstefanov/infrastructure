@@ -15,6 +15,12 @@ if(cluster.isWorker && process.env.INFRASTRUCTURE_AUTOLOAD){
   }, function(err, env){
     if(err) throw err;
     env.i.do("log.sys", "worker started", (Date.now() - now) +"ms, structures: "+Object.keys(env.config.structures).join(","));
+    if(env.config.options.repl && typeof env.config.options.repl === "string" && env.config.structures.hasOwnProperty(env.config.options.repl)){
+      var repl = require("repl");
+      var replServer = repl.start({ prompt: "infrastructure."+env.config.options.repl+" > " });
+      replServer.context.env = env;
+      replServer.context.config = env.config;
+    }
   });
 }
 else{
@@ -43,6 +49,12 @@ else{
     loadApp( extendConfig( config ), function(err, env){
       if(err) return cb(err);
       env.i.do("log.sys", "application started", (Date.now() - now) +"ms, process_mode: "+env.config.process_mode +", application mode: "+env.config.mode);
+      if(cli_options.repl && cli_options.repl === true){
+        var repl = require("repl");
+        var replServer = repl.start({ prompt: "infrastructure > " });
+        replServer.context.env = env;
+        replServer.context.config = env.config;
+      }
       cb(null, env);
     });
   };
