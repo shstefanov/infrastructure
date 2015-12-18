@@ -124,10 +124,19 @@ module.exports = function(env, cb){
     // send back destroy listener/stream message
   }
 
+  var spawn = function(starter){
+    starter(function(err){
+      if(err) console.error(err);
+    });
+  };
+
   // Run created workers initilization chain
   helpers.chain(nodes_chain)(function(err){
     if(err) return cb(err);
-    setTimeout(function(){ cb(null, env); }, 0 );    
+    setTimeout(function(){
+      nodes_chain = { push: spawn, unshift: spawn };
+      cb(null, env); 
+    }, 0 );    
   });
   
   env.i.do = function(){
