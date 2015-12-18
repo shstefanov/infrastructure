@@ -32,6 +32,9 @@ else{
       cluster.setupMaster({exec: __filename});
     }
 
+    if(cli_options.mode) config.mode = cli_options.mode;
+    if(cli_options.process_mode) config.mode = cli_options.process_mode;
+
     // Keep original config untouched
     config = JSON.parse(JSON.stringify(config));
     //if( !config.mode         ) config.mode         = "development"; // development is default mode
