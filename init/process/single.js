@@ -73,6 +73,7 @@ module.exports = function(env, cb){
 
   _.each(config.structures, function(node, type){
 
+    if( node.engine  ) engines.push( node.engine );
     if( node.engines ) engines = engines.concat( node.engines );
 
     if( node.loader )  loaders.push( [type, node.loader] );
