@@ -46,13 +46,12 @@ div.code-block.large(class!=locals.getContentStateTemplate("structures_1.configu
 
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("structures_fs_1", "config/structures/log.json")): pre: code.language-javascript.
     {
-      "engines": [ "log" ],
+      "engine":  "log",
       "options": { "sys": true, "debug": true }
     }
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("structures_fs_1", "config/structures/workers.json")): pre: code.language-javascript.
     {
-      "path": "workers",
-      "engines": []
+      "path": "workers"
     }
 
 p
@@ -111,13 +110,12 @@ div.code-block.large(class!=locals.getContentStateTemplate("structures_2.configu
 
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("structures_fs_2", "config/structures/log.json")): pre: code.language-javascript.
     {
-      "engines": [ "log" ],
+      "engine":  "log" ,
       "options": { "sys": true, "debug": true }
     }
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("structures_fs_2", "config/structures/workers.json")): pre: code.language-javascript.
     {
-      "path": "workers",
-      "engines": []
+      "path": "workers"
     }
 
 div.code-block.large(class!=locals.getContentStateTemplate("structures_2.cli")): pre: code.language-bash.
