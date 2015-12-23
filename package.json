@@ -13,6 +13,7 @@
     "bulk-require": "latest",
     "coffee-script": "latest",
     "minimist": "^1.2.0",
+    "request": "^2.67.0",
     "underscore": "latest",
     "yamljs": "latest"
   },
