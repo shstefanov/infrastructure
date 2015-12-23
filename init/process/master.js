@@ -37,6 +37,7 @@ module.exports = function(env, cb){
     env.stops.push(function(cb){
       if(!env.i[name]) return cb();
       log && console.log("try Gracefull shutdown for structure: ", name);
+      env.i[name].stopping = true;
       env.i[name].once("disconnect", function(){
         log && console.log("Gracefull shutdown success for worker:", name );
         cb();
@@ -61,6 +62,8 @@ module.exports = function(env, cb){
       // listening for 'exit' event and spawning node again
       worker.on("exit", function(){
         delete env.i[name];
+        // Do not spawn if stop process is goes
+        if(worker.stopping) return;
         // Creating the cache
         cache[name]     = [];
         createWorker(name, str_config, true);
@@ -124,10 +127,19 @@ module.exports = function(env, cb){
     // send back destroy listener/stream message
   }
 
+  var spawn = function(starter){
+    starter(function(err){
+      if(err) console.error(err);
+    });
+  };
+
   // Run created workers initilization chain
   helpers.chain(nodes_chain)(function(err){
     if(err) return cb(err);
-    setTimeout(function(){ cb(null, env); }, 0 );    
+    setTimeout(function(){
+      nodes_chain = { push: spawn, unshift: spawn };
+      cb(null, env); 
+    }, 0 );    
   });
   
   env.i.do = function(){
