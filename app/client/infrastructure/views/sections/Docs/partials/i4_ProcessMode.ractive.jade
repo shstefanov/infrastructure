@@ -25,7 +25,7 @@ p By default, if not specified, process_mode is "single". If we set it to "clust
 +doc_example_tab_items("process_modes_1", {
   "app_js":             "in app.js",
   "in_configuration":   "in configuration",
-  "cli":                "cli",
+  "cli":                "command line",
 })
 div.code-block.large(class!=locals.getContentStateTemplate("process_modes_1.app_js")): pre: code.language-javascript.
   var infrastructure = require("infrastructure");
@@ -51,12 +51,12 @@ div.code-block.large(class!=locals.getContentStateTemplate("process_modes_1.in_c
 
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("process_modes_fs_1", "config/structures/log.json")): pre: code.language-javascript.
     {
-      "engines": [ "log" ],
+      "engine":  "log" ,
       "options": { "sys": true, "debug": true }
     }
 
 div.code-block.large(class!=locals.getContentStateTemplate("process_modes_1.cli")): pre: code.language-bash.
-  $> node app
+  $> node app --config.process_mode=cluster
   [sys]  [2015-11-09 20:49:00][logger]........................... options: sys, debug
   [sys]  [2015-11-09 20:49:00][worker]........................... log
   [sys]  [2015-11-09 20:49:00][worker started]................... 56ms, structures: log
