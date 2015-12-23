@@ -71,7 +71,7 @@ div.code-block.large(class!=locals.getContentStateTemplate("tests_1.package_json
       "test": "mocha test"
     },
     "dependencies": {
-      "infrastructure": "git+https://github.com/shstefanov/infrastructure.git#dev"
+      "infrastructure": "^1.1.0"
     },
     "devDependencies": {
       "mocha": "^2.3.4"
@@ -163,13 +163,12 @@ div.code-block.large(class!=locals.getContentStateTemplate("tests_1.test_file"))
 
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("tests_1_fs", "config/structures/log.json")): pre: code.language-javascript.
     {
-      "engines": [ "log" ],
+      "engine":  "log" ,
       "options": { "sys": true, "debug": true }
     }
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("tests_1_fs", "config/structures/workers.json")): pre: code.language-javascript.
     {
-      "path": "workers",
-      "engines": []
+      "path": "workers"
     }
 
 p
@@ -268,13 +267,12 @@ div.code-block.large(class!=locals.getContentStateTemplate("tests_2.test_config"
 
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("tests_2_fs", "config/structures/log.json")): pre: code.language-javascript.
     {
-      "engines": [ "log" ],
+      "engine":  "log" ,
       "options": { "sys": true, "debug": true }
     }
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("tests_2_fs", "config/structures/workers.json")): pre: code.language-javascript.
     {
-      "path": "workers",
-      "engines": []
+      "path": "workers"
     }
 
 div.code-block.large(class!=locals.getContentStateTemplate("tests_2.run_test")): pre: code.language-bash.
