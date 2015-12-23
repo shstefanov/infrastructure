@@ -34,6 +34,7 @@ p
   "config_js":       "config.js",
   "config_yml":      "config.yml",
   "config_folder":   "config folder",
+  "command_line":    "command line",
 })
 div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.app_js")): pre: code.language-javascript.
   var infrastructure = require("infrastructure");
@@ -44,7 +45,7 @@ div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.conf
   {
     "structures": {
       "log": {
-        "engines": [ "log"],
+        "engine":  "log",
         "options": { "sys": true, "debug": true }
       }
     }
@@ -53,7 +54,7 @@ div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.conf
   module.exports = {
     structures: {
       log: {
-        engines: [ "log"],
+        engine:  "log",
         options: { sys: true, debug: true }
       }
     }
@@ -62,11 +63,12 @@ div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.conf
   ---
     structures: 
       log: 
-        engines: 
-          - "log"
+        engine: "log"
         options: 
           sys: true
           debug: true
+div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.command_line")): pre: code.language-bash.
+  $> node app.js --config.structures.log.engine=log --config.structures.log.options.sys --config.structures.log.options.debug
 
 div.code-block.large(class!=locals.getContentStateTemplate("configuration_1.config_folder"))
   .col-xs-2.fs-block
@@ -121,6 +123,6 @@ div.code-block.large(class!=locals.getContentStateTemplate("configuration_2.appl
 
   .col-xs-10.code-block.large(class!=locals.getStateFromFs("conf_fs_2", "config/structures/log.json")): pre: code.language-javascript.
     {
-      "engines": [ "log" ],
+      "engine":  "log" ,
       "options": { "sys": true, "debug": true }
     }
