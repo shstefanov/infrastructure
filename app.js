@@ -7,11 +7,11 @@ infrastructure({
 
   "structures": {
     "log": {
-      "engines": ["log"],
+      "engine": "log",
       "options": {"sys": true, "build": true}
     },
     "pages": {
-      "engines":    [ "infrastructure-express/engine" ],
+      "engine":     "infrastructure-express/engine" ,
       "libs": {     "Page" : "infrastructure-express/Page" },
       "config": {
         "views":{ 
@@ -38,8 +38,8 @@ infrastructure({
 
     "webpack": {
       "wrapped": true,
-      "path": ["app/client", "*/*.webpack.js"    ],
-      "engines": ["infrastructure-webpack/engine"],
+      "path":   ["app/client", "*/*.webpack.js"    ],
+      "engine": "infrastructure-webpack/engine",
       "loader":  "infrastructure-webpack/loader",
       "libs": {
         "Bundler": "infrastructure-webpack/Bundler"
@@ -55,14 +55,6 @@ infrastructure({
     }
 
   },
-
-  // "pages": {
-  //   "infrastructure": {
-  //     "root": "/infrastructure",
-  //     "template": "infrastructure",
-  //     "GET *": ["webpack.infrastructure.getAssets"]
-  //   }
-  // },
 
   "client": {
     "infrastructure": {
