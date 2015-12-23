@@ -1,5 +1,6 @@
 var path   = require("path");
 var assert = require("assert");
+var _      = require("underscore");
 
 var currentFileMark = ["\t\t\t", "[", __filename, "]", "\n"].join("");
 describe( "Application configuration" + currentFileMark, function(){
@@ -86,7 +87,9 @@ describe( "Application configuration" + currentFileMark, function(){
         rootDir:   path.join(__dirname, "fixtures/test_production_config")
       }, function(err, env){
         assert.equal( err, null );
-        assert.deepEqual( env.config, {
+
+        // Omit options - it contains cli arguments
+        assert.deepEqual( _.omit(env.config, ["options"]), {
 
           process_mode:            "single",
           rootDir:                 path.join(__dirname, "fixtures/test_production_config"),
@@ -123,7 +126,8 @@ describe( "Application configuration" + currentFileMark, function(){
         rootDir: path.join(__dirname, "fixtures/test_development_config")
       }, function(err, env){
 
-        assert.deepEqual( env.config, {
+        // Omit options - it contains cli arguments
+        assert.deepEqual( _.omit(env.config, ["options"]), {
 
           mode:                      "development",
           process_mode:              "single",
