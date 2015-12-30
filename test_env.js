@@ -92,10 +92,3 @@ module.exports.client = function(url, opts, cb){
     cb(null, window); 
   });
 }
-
-
-if(cluster.isWorker){
-  module.exports.start(JSON.parse(process.argv[2]), function(err){
-    if(err) return console.error(err);
-  });
-}
