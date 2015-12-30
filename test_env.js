@@ -27,6 +27,74 @@ module.exports.cleanup = function(err, cb){
   cb(err);
 };
 
+module.exports.client = function(url, opts, cb){
+  if(typeof opts === "function"){
+    cb = opts, opts = {};
+  }
+  var jsdom = require("jsdom");
+  // require("colors");
+  var window, conf = {
+      
+    features: {
+      FetchExternalResources: ["script", "link", "img"],
+      ProcessExternalResources: ["script", "link", "img"],
+      SkipExternalResources: false
+    },
+
+    cookieJar: jsdom.createCookieJar(),
+    headers: opts.headers || {},
+
+    created: function(err, _window){
+      if(err) return cb(err);
+      window = _window;
+
+      // This fixes leaflet (0.7.7) map initialization
+      window.HTMLDivElement.prototype.clientWidth = 500;
+      window.HTMLDivElement.prototype.clientHeight = 500;
+      
+      // This fixes websocket connections
+      window.WebSocket = require("ws");
+      
+      // Call custom handler if any
+      opts.created && opts.created(window);
+    },
+
+    // onload: function(window){
+    //   console.log("onload")
+    // }
+  
+  };
+
+  if(opts.onload) conf.onload = opts.onload;
+
+  if(opts.console === true) conf.virtualConsole = jsdom.createVirtualConsole().sendTo(console);
+
+  if(opts.resources){ // TODO ???
+    conf.resourceLoader = function (resource, callback) {
+      var pathname = resource.url.pathname;
+      if(opts.resources.hasOwnProperty(pathname)){
+        var t =setTimeout(function(){
+          console.log("RESOURCE MOCKUP::", opts.resources[pathname]);
+          callback(null, JSON.stringify(opts.resources[pathname]));
+        }, 1000 );
+      }
+      else resource.defaultFetch(callback);
+      return {
+        abort: function(){
+          clearTimeout(t);
+          callback(new Error("Resource Loader Error"));
+        }
+      }
+    }
+  }
+  
+  var stuff = jsdom.env( url, conf, function (err, window) {
+    if(err) return cb(err);
+    cb(null, window); 
+  });
+}
+
+
 if(cluster.isWorker){
   module.exports.start(JSON.parse(process.argv[2]), function(err){
     if(err) return console.error(err);

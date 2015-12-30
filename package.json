@@ -12,9 +12,11 @@
     "backbone": "latest",
     "bulk-require": "latest",
     "coffee-script": "latest",
+    "jsdom": "^7.2.2",
     "minimist": "^1.2.0",
     "request": "^2.67.0",
     "underscore": "latest",
+    "ws": "^0.8.1",
     "yamljs": "latest"
   },
   "devDependencies": {
