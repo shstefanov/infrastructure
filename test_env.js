@@ -74,7 +74,6 @@ module.exports.client = function(url, opts, cb){
       var pathname = resource.url.pathname;
       if(opts.resources.hasOwnProperty(pathname)){
         var t =setTimeout(function(){
-          console.log("RESOURCE MOCKUP::", opts.resources[pathname]);
           callback(null, JSON.stringify(opts.resources[pathname]));
         }, 1000 );
       }
