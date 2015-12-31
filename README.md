@@ -3,6 +3,7 @@ https://shstefanov.github.io/infrastructure/
 Changes in 1.2.0
 ================
   Adding config.only = [ ...structure_names ] in test mode
+  Adding test_env.client(url, options, function(err, window){}) for loading and running clientside code with jsdom
 
 config.structures
 
