@@ -1,5 +1,11 @@
 https://shstefanov.github.io/infrastructure/
 
+Changes in 1.2.0
+================
+  Adding config.only = [ ...structure_names ] in test mode
+
+config.structures
+
 Changes in 1.1.0
 ================
 

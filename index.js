@@ -126,6 +126,11 @@ else{
     }
     helpers.deepExtend(config, extension);
 
+    // Reduce structures for test needs
+    if(config.mode === "test" && config.only){
+      config.structures = _.pick(config.structures, config.only);
+    }
+
     if(cli_config) helpers.deepExtend(config, cli_config);
 
     config.options = cli_options;
