@@ -87,8 +87,14 @@ module.exports.client = function(url, opts, cb){
     }
   }
   
-  var stuff = jsdom.env( url, conf, function (err, window) {
+  var jsd = jsdom.env( url, conf, function (err, window) {
     if(err) return cb(err);
+    if(module.exports.env){
+      module.exports.env.stops.push( function(cb){
+        window.document.close();
+        cb();
+      });
+    }
     cb(null, window); 
   });
 }
