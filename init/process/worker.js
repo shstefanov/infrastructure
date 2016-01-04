@@ -7,7 +7,7 @@ module.exports = function(env, cb){
 
   // In some cases the worker may emit messages to other nodes
   // during initialization process, for example - log.sys
-  // create mocup caller that will cache all messages
+  // create mockup caller that will cache all messages
   env.i.do = function(){ local_cache.push(arguments); }
 
   require("./single")(env, function(err){
@@ -93,34 +93,29 @@ module.exports = function(env, cb){
     process.send(data);
   }
 
-  function findCbAndRespond(args, msg){
+  function respond(args, msg){
     var cb = _.last(args);
     if(_.isFunction(cb)) cb(msg)
   }
 
-  var DO = function(address){
-    var args          = Array.prototype.slice.call(arguments);
-    var address       = args[0];
-    var address_parts = address.split(".");
-    var root          = env.i[address_parts[0]];
-    if(!root) return forwardToMaster(address, args.splice(1));
-    var last          = _.last(address_parts);
-    var context       = env.helpers.resolve(env.i, address_parts.slice(0, -1).join("."));
-    if(!context || (context.methods && context.methods.indexOf(last) === -1)) return findCbAndRespond(args, "Can't find target: "+address);
-    if( !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
-    
-    try{
-      if(context.parseArguments) {
-        var parsed = context.parseArguments(args.slice(1));
-        if( parsed === false ) return findCbAndRespond( args, "Invalid arguments" );
-        args = parsed;
-      }
-      else args = args.slice(1);
-      context[last].apply(context, args);
-    }
-    catch(err){
-      findCbAndRespond( args, err );
-    }
-  };
+  var no_target = "Can't find target: ", 
+      sl = Array.prototype.slice, 
+      resolve = env.helpers.resolve
+      i = env.i;
+      
+var DO = function(address){
+  var args=sl.call(arguments,1)
+  var parts=address.split(".")
+  var root=i[parts[0]]
+  if(!root) return forwardToMaster(address,args)
+  var last=parts.pop()
+  var ctx=resolve(i, parts.join("."))
+  if(!ctx||!(_.isFunction(ctx[last]))) return respond(args,no_target+address)
+  var whitelist=ctx.callable||ctx.methods
+  if(whitelist&&whitelist.indexOf(last)===-1) return respond(args,no_target+address)
+  if(ctx.parseArguments) try{args=ctx.parseArguments(args)}catch(err){respond(args,err)}
+  try{ctx[last].apply(ctx,args)}
+  catch(err){respond( args,err)}
+};
 
 }
