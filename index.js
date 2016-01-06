@@ -54,6 +54,9 @@ else{
         var replServer = repl.start({ prompt: "infrastructure > " });
         replServer.context.env = env;
         replServer.context.config = env.config;
+        replServer.context.restart = function(name){
+          env.i.do([name, "__run", "stop"].join("."), console.log );
+        };
       }
       cb(null, env);
     });
@@ -115,10 +118,16 @@ else{
     if( config.process_mode === "cluster" && !isMaster ) return config;
     var extension      = module.exports.loadConfig(module.exports.getConfigPath(config.rootDir), config);
 
-    var mode_extension;
-    if(config.mode){
-      mode_extension = extension[config.mode];
-      delete extension[config.mode]
+    var mode_name = config.mode || extension.mode, mode_extension;
+    if(mode_name){
+      if(config[mode_name]) {
+        mode_extension = config[mode_name];
+        delete extension[config.mode];
+      }
+      else if(extension[mode_name]) {
+        mode_extension = extension[mode_name];
+        delete extension[extension.mode];
+      }
     } 
 
     if(mode_extension){
