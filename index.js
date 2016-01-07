@@ -142,7 +142,7 @@ else{
 
     if(cli_config) helpers.deepExtend(config, cli_config);
 
-    config.options = cli_options;
+    helpers.deepExtend(config, {options: cli_options});
 
     return config;
   };
