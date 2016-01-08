@@ -178,19 +178,6 @@ var DO = function(address){
         }
       }
 
-      env.deserializeStream = function deserializeStream(stream_data){
-        var stream = Array.prototype.slice.call(stream_data);
-        var deserialized = function(){
-          process.send({
-            address: stream[0],
-            run_cb: stream,
-            args: Array.prototype.slice.call(arguments)
-          });
-        }
-        deserialized.end = function(){ process.send({ address: stream[0], drop_cb: stream }); }
-        return deserialized;
-      }
-
       env.deserializeListener = function deserializeListener(listener_data){
         var listener = Array.prototype.slice.call(listener_data);
         var deserialized = function(){
