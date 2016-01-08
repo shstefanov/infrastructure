@@ -149,10 +149,10 @@ var DO = function(address){
     env.runCallback = function runCallback(data){
       var fn = callbacks[data.run_cb[1]];
       if(fn) {
-        fn.apply(global, data.args);
-        if(!fn.isListener && !fn.isStream){
+        if(!fn.isListener){
           env.dropCallback({drop_cb: data.run_cb});
         }
+        fn.apply(global, data.args);
       }
     }
 
