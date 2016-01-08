@@ -76,7 +76,7 @@ var DO = function(address){
   var last=parts.pop()
   var ctx=resolve(i, parts.join("."))
   if(!ctx||!(_.isFunction(ctx[last]))) return respond(args,no_target+address)
-  var whitelist=ctx.callable||ctx.methods
+  var whitelist=ctx.callable||ctx.methods;
   if(whitelist&&whitelist.indexOf(last)===-1) return respond(args,no_target+address)
   if(ctx.parseArguments) try{args=ctx.parseArguments(args)}catch(err){respond(args,err)}
   try{ctx[last].apply(ctx,args)}
