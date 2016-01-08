@@ -41,12 +41,6 @@ module.exports = function(env, cb){
     env.i.do.apply(env.i, doArgs);
   }
   
-  var sl = Array.prototype.slice;
-  function deserializeCallback(cb_data){
-    cb_data = Array.prototype.slice.call(cb_data);
-    return function(){ process.send({ run_cb: cb_data, args: sl.call(arguments), address: cb_data[0] }); }
-  }
-
   function forwardToMaster(address, args){
     var cb = args[args.length - 1];
     var data = {address: address, args: args};
