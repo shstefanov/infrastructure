@@ -1,5 +1,20 @@
 https://shstefanov.github.io/infrastructure/
 
+Changes in 1.2.0
+================
+  Adding config.only = [ ...structure_names ] in test mode
+  Adding test_env.client(url, options, function(err, window){}) for loading and running clientside code with jsdom
+  Adding "callable" as alternative to "methods" whitelist
+  Adding test_env.client(url, function(err, window)) for testing clientside code
+  Adding restart("structure_name") in --repl on master process
+  Adding config.only = ["structure1_name", "structure2_name"] in test mode
+  Cli options can be passed via config.options
+  Instances prototypes can point to resolvable module
+
+  Fixing config modes issues
+
+config.structures
+
 Changes in 1.1.0
 ================
 
