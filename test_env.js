@@ -1,5 +1,6 @@
 var cluster        = require("cluster");
 var infrastructure = require("./index.js");
+var _              = require("underscore");
 
 module.exports.start = function(config, cb){
 
@@ -87,7 +88,7 @@ module.exports.client = function(url, opts, cb){
     }
   }
   
-  var jsd = jsdom.env( url, conf, function (err, window) {
+  var jsd = jsdom.env( url, conf, _.once(function (err, window) {
     if(err) return cb(err);
     if(module.exports.env){
       module.exports.env.stops.push( function(cb){
@@ -96,5 +97,5 @@ module.exports.client = function(url, opts, cb){
       });
     }
     cb(null, window); 
-  });
+  }));
 }
