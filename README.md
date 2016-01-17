@@ -11,6 +11,8 @@ Changes in 1.3.0
 
 }
 ```
+  Fixing missing repl close on shutdown
+
 
 Changes in 1.2.0
 ================
