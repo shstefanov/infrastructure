@@ -1,5 +1,17 @@
 https://shstefanov.github.io/infrastructure/
 
+Changes in 1.3.0
+================
+
+  Adding 'patch' to config root (or mode root)
+```json
+{
+  "structures.pages.config.http.port": 3000,
+  "structures.models.config.mongodb.host": "example.com"
+
+}
+```
+
 Changes in 1.2.0
 ================
   Adding config.only = [ ...structure_names ] in test mode
