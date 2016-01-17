@@ -20,6 +20,7 @@ if(cluster.isWorker && process.env.INFRASTRUCTURE_AUTOLOAD){
       var replServer = repl.start({ prompt: "infrastructure."+env.config.options.repl+" > " });
       replServer.context.env = env;
       replServer.context.config = env.config;
+      env.stops.push(function(cb){ replServer.close(); cb(); })
     }
   });
 }
@@ -57,6 +58,7 @@ else{
         replServer.context.restart = function(name){
           env.i.do([name, "__run", "stop"].join("."), console.log );
         };
+        env.stops.push(function(cb){ replServer.close(); cb(); })
       }
       cb(null, env);
     });
