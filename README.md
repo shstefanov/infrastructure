@@ -13,6 +13,12 @@ Changes in 1.3.0
 ```
   Fixing missing repl close on shutdown
 
+Adding 
+```javascript
+env.i.do("master.keep", "key", value); // keeps some data (needed to restore target data on hot reload)
+env.i.do("master.unkeep", "key", function(err, data)); // pulls the data from the cache
+```
+
 
 Changes in 1.2.0
 ================
