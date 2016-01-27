@@ -171,7 +171,7 @@ module.exports = function(env, cb){
       keep_data_map[name] = data;
       cb && cb();
     },
-    "master.unkeep": function(name, cb){
+    "master.pull": function(name, cb){
       cb(null, keep_data_map[name]);
       delete keep_data_map[name];
     }

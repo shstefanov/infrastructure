@@ -12,11 +12,12 @@ Changes in 1.3.0
 }
 ```
   Fixing missing repl close on shutdown
+  Try to return better error message on catch in helpers.chain
 
 Adding 
 ```javascript
 env.i.do("master.keep", "key", value); // keeps some data (needed to restore target data on hot reload)
-env.i.do("master.unkeep", "key", function(err, data)); // pulls the data from the cache
+env.i.do("master.pull", "key", function(err, data)); // pulls the data from the cache
 ```
 
 
