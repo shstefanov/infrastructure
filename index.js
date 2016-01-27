@@ -151,6 +151,7 @@ else{
       for(var target in config.patch){
         helpers.patch(config, target, config.patch[target]);
       }
+      delete config.patch;
     }
 
     return config;
