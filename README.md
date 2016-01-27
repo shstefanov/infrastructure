@@ -3,6 +3,8 @@ https://shstefanov.github.io/infrastructure/
 Changes in 1.3.0
 ================
 
+  Support .hson file format in config ( https://github.com/timjansen/hanson )
+
   Adding 'patch' to config root (or mode root)
 ```json
 {

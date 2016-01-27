@@ -69,7 +69,7 @@ describe( "Application configuration" + currentFileMark, function(){
       assert.deepEqual(config, {
         mode: "custom",
                foo: {a: 5 }, bar: {b: 6 }, baz: {c: 7 } ,
-        sub: { foo: {a: 25}, bar: {b: 26}, baz: {c: 27} }
+        sub: { foo: {a: 25}, bar: {b: 26}, baz: {c: 27}, faz: { json_for_humans: 22 } }
       });
       next();
     });

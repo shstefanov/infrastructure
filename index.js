@@ -83,6 +83,7 @@ else{
     if(fs.statSync(configPath).isDirectory()){
 
       var YAML              = require('yamljs');
+      var hanson            = require('hanson');
       var bulk              = require('bulk-require');
 
       require.extensions['.yml'] = function(module, filename) {
@@ -90,7 +91,12 @@ else{
         module.exports      = YAML.parse(yaml_string);
       };
 
-      config = bulk(configPath, ['**/*.js','**/*.json', '**/*.yml']);
+      require.extensions['.hson'] = function(module, filename) {
+        var hson_string     = fs.readFileSync(filename, 'utf8').toString();
+        module.exports      = hanson.parse(hson_string);
+      };
+
+      config = bulk(configPath, ['**/*.js', '**/*.json', '**/*.hson', '**/*.yml']);
     }
     else if(configPath.split(".").pop() === "yml"){
       config = require('yamljs').parse(fs.readFileSync(configPath, 'utf8').toString());
