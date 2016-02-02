@@ -181,6 +181,7 @@ module.exports = function(env){
         }, cb);
       }
       else{
+        var model = _.first(args);
         var err = model.validate();
         if(err) return cb(err);
         Self.coll.update({_id: model.get("_id")}, model.omit("_id"), cb);
