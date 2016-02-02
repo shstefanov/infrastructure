@@ -23,7 +23,7 @@ module.exports = EventedClass.extend("SocketsCollection", {
 
   emit: function(controller, event, data){
     for(var i = 0; i<this.sockets.length;i++)
-      if(this.sockets[i].controllers.indexOf(controller)!=1)
+      if(this.sockets[i].controllers.indexOf(controller)!==-1)
         this.sockets[i].emit(controller.name, {action: event, body: data});
   },
 
