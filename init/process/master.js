@@ -152,6 +152,28 @@ module.exports = function(env, cb){
       else if(data.run_cb){
         return env.runCallback(data);
       }
+      else if(master_handlers.hasOwnProperty(data.address)){
+        master_handlers[data.address].apply(master_handlers, data.args.concat([function(){
+          if(!data.cb) return;
+          var target = env.i[data.cb[0]];
+          if(target) target.send({
+            run_cb: data.cb,
+            args: [].slice.call(arguments)
+          });
+        }]));
+      }
+    }
+  };
+
+  var keep_data_map = {};
+  var master_handlers = {
+    "master.keep": function(name, data, cb){
+      keep_data_map[name] = data;
+      cb && cb();
+    },
+    "master.pull": function(name, cb){
+      cb(null, keep_data_map[name]);
+      delete keep_data_map[name];
     }
   }
 

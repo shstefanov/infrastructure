@@ -20,6 +20,7 @@ if(cluster.isWorker && process.env.INFRASTRUCTURE_AUTOLOAD){
       var replServer = repl.start({ prompt: "infrastructure."+env.config.options.repl+" > " });
       replServer.context.env = env;
       replServer.context.config = env.config;
+      env.stops.push(function(cb){ replServer.close(); cb(); });
     }
   });
 }
@@ -57,6 +58,7 @@ else{
         replServer.context.restart = function(name){
           env.i.do([name, "__run", "stop"].join("."), console.log );
         };
+        env.stops.push(function(cb){ replServer.close(); cb(); });
       }
       cb(null, env);
     });
@@ -81,6 +83,7 @@ else{
     if(fs.statSync(configPath).isDirectory()){
 
       var YAML              = require('yamljs');
+      var hanson            = require('hanson');
       var bulk              = require('bulk-require');
 
       require.extensions['.yml'] = function(module, filename) {
@@ -88,7 +91,12 @@ else{
         module.exports      = YAML.parse(yaml_string);
       };
 
-      config = bulk(configPath, ['**/*.js','**/*.json', '**/*.yml']);
+      require.extensions['.hson'] = function(module, filename) {
+        var hson_string     = fs.readFileSync(filename, 'utf8').toString();
+        module.exports      = hanson.parse(hson_string);
+      };
+
+      config = bulk(configPath, ['**/*.js', '**/*.json', '**/*.hson', '**/*.yml']);
     }
     else if(configPath.split(".").pop() === "yml"){
       config = require('yamljs').parse(fs.readFileSync(configPath, 'utf8').toString());
@@ -143,6 +151,14 @@ else{
     if(cli_config) helpers.deepExtend(config, cli_config);
 
     helpers.deepExtend(config, {options: cli_options});
+
+    //using 'patch'
+    if(config.patch){
+      for(var target in config.patch){
+        helpers.patch(config, target, config.patch[target]);
+      }
+      delete config.patch;
+    }
 
     return config;
   };
