@@ -25,7 +25,5 @@
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --recursive --colors --sort --check-leaks --full-trace --no-exit --throw-deprecation test"
   },
-  "_id": "infrastructure@0.3.99",
-  "_from": "infrastructure@latest",
   "repository": "git://github.com/shstefanov/infrastructure"
 }
