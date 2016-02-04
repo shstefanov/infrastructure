@@ -1,0 +1,5 @@
+{
+  structures: {
+    structure_a: { path: "structure_a" },
+  }
+}

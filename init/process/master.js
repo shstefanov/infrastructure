@@ -134,7 +134,7 @@ module.exports = function(env, cb){
     var data = {address: address.join("."), args: args};
     if(target && target.send){
       if(cb_data) {
-        if(cb.name === "do_listener") { data.listener = cb_data; callback.isListener = true; }
+        if(cb.name === "do_listener") { data.listener = cb_data; cb.isListener = true; }
         else data.cb = cb_data;
       }
       target.send(data);
