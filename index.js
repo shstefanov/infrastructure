@@ -75,31 +75,26 @@ else{
     return      fs.existsSync(path.join(rootDir, "config"       )) 
             ||  fs.existsSync(path.join(rootDir, "config.js"    ))
             ||  fs.existsSync(path.join(rootDir, "config.json"  ))
+            ||  fs.existsSync(path.join(rootDir, "config.hson"  ))
             ||  fs.existsSync(path.join(rootDir, "config.yml"   ));
   };
 
   var loadConfig = module.exports.loadConfig = function(configPath, app_config){
     var config;
+    
+    require.extensions['.yml'] = function(module, filename) {
+      var yaml_string     = fs.readFileSync(filename, 'utf8').toString();
+      module.exports      = require('yamljs').parse(yaml_string); // something like lazy loading
+    };
+
+    require.extensions['.hson'] = function(module, filename) {
+      var hson_string     = fs.readFileSync(filename, 'utf8').toString();
+      module.exports      = require('hanson').parse(hson_string); // something like lazy loading
+    };
+
     if(fs.statSync(configPath).isDirectory()){
-
-      var YAML              = require('yamljs');
-      var hanson            = require('hanson');
       var bulk              = require('bulk-require');
-
-      require.extensions['.yml'] = function(module, filename) {
-        var yaml_string     = fs.readFileSync(filename, 'utf8').toString();
-        module.exports      = YAML.parse(yaml_string);
-      };
-
-      require.extensions['.hson'] = function(module, filename) {
-        var hson_string     = fs.readFileSync(filename, 'utf8').toString();
-        module.exports      = hanson.parse(hson_string);
-      };
-
       config = bulk(configPath, ['**/*.js', '**/*.json', '**/*.hson', '**/*.yml']);
-    }
-    else if(configPath.split(".").pop() === "yml"){
-      config = require('yamljs').parse(fs.readFileSync(configPath, 'utf8').toString());
     }
     else{
       config = require(configPath);
@@ -115,6 +110,7 @@ else{
     return  ( fs.existsSync(path.join(rootDir, "config"       )) ? path.join(rootDir, "config"      ) : false )
         ||  ( fs.existsSync(path.join(rootDir, "config.js"    )) ? path.join(rootDir, "config.js"   ) : false )
         ||  ( fs.existsSync(path.join(rootDir, "config.json"  )) ? path.join(rootDir, "config.json" ) : false )
+        ||  ( fs.existsSync(path.join(rootDir, "config.hson"  )) ? path.join(rootDir, "config.hson" ) : false )
         ||  ( fs.existsSync(path.join(rootDir, "config.yml"   )) ? path.join(rootDir, "config.yml"  ) : false )
   }
 
