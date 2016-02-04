@@ -8,11 +8,13 @@ describe( "Application configuration" + currentFileMark, function(){
   var infrastructure = require("../../index.js");
   // Stopping defaut initializer and jumping into callback
   var original_init = infrastructure.init;
-  infrastructure.init = function(env, cb){ cb(null, env); };
 
   describe("Check presense of config", function(){
 
     it("loader - hasConfig on folder without config", function(next){
+      // Mockup init - will be restored at the end of this test
+      infrastructure.init = function(env, cb){ cb(null, env); };
+
       var target = path.join(__dirname, "fixtures/no_config");
       assert.equal( infrastructure.hasConfig(target), false );
       next();
@@ -79,7 +81,6 @@ describe( "Application configuration" + currentFileMark, function(){
   describe("Extending config depending on mode", function(){
 
     it("If no mode is specified - no config patches", function(next){
-
 
       infrastructure.init = original_init;
 
