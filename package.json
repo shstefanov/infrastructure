@@ -1,6 +1,6 @@
 {
   "name": "infrastructure",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": false,
   "author": {
     "name": "Stefan Stefanov",
@@ -12,6 +12,7 @@
     "backbone": "latest",
     "bulk-require": "latest",
     "coffee-script": "latest",
+    "hanson": "^1.1.1",
     "jsdom": "^7.2.2",
     "minimist": "^1.2.0",
     "request": "^2.67.0",
@@ -25,7 +26,5 @@
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --recursive --colors --sort --check-leaks --full-trace --no-exit --throw-deprecation test"
   },
-  "_id": "infrastructure@0.3.99",
-  "_from": "infrastructure@latest",
   "repository": "git://github.com/shstefanov/infrastructure"
 }

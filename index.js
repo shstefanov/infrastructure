@@ -20,6 +20,7 @@ if(cluster.isWorker && process.env.INFRASTRUCTURE_AUTOLOAD){
       var replServer = repl.start({ prompt: "infrastructure."+env.config.options.repl+" > " });
       replServer.context.env = env;
       replServer.context.config = env.config;
+      env.stops.push(function(cb){ replServer.close(); cb(); });
     }
   });
 }
@@ -57,6 +58,7 @@ else{
         replServer.context.restart = function(name){
           env.i.do([name, "__run", "stop"].join("."), console.log );
         };
+        env.stops.push(function(cb){ replServer.close(); cb(); });
       }
       cb(null, env);
     });
@@ -73,25 +75,26 @@ else{
     return      fs.existsSync(path.join(rootDir, "config"       )) 
             ||  fs.existsSync(path.join(rootDir, "config.js"    ))
             ||  fs.existsSync(path.join(rootDir, "config.json"  ))
+            ||  fs.existsSync(path.join(rootDir, "config.hson"  ))
             ||  fs.existsSync(path.join(rootDir, "config.yml"   ));
   };
 
   var loadConfig = module.exports.loadConfig = function(configPath, app_config){
     var config;
+    
+    require.extensions['.yml'] = function(module, filename) {
+      var yaml_string     = fs.readFileSync(filename, 'utf8').toString();
+      module.exports      = require('yamljs').parse(yaml_string); // something like lazy loading
+    };
+
+    require.extensions['.hson'] = function(module, filename) {
+      var hson_string     = fs.readFileSync(filename, 'utf8').toString();
+      module.exports      = require('hanson').parse(hson_string); // something like lazy loading
+    };
+
     if(fs.statSync(configPath).isDirectory()){
-
-      var YAML              = require('yamljs');
       var bulk              = require('bulk-require');
-
-      require.extensions['.yml'] = function(module, filename) {
-        var yaml_string     = fs.readFileSync(filename, 'utf8').toString();
-        module.exports      = YAML.parse(yaml_string);
-      };
-
-      config = bulk(configPath, ['**/*.js','**/*.json', '**/*.yml']);
-    }
-    else if(configPath.split(".").pop() === "yml"){
-      config = require('yamljs').parse(fs.readFileSync(configPath, 'utf8').toString());
+      config = bulk(configPath, ['**/*.js', '**/*.json', '**/*.hson', '**/*.yml']);
     }
     else{
       config = require(configPath);
@@ -107,6 +110,7 @@ else{
     return  ( fs.existsSync(path.join(rootDir, "config"       )) ? path.join(rootDir, "config"      ) : false )
         ||  ( fs.existsSync(path.join(rootDir, "config.js"    )) ? path.join(rootDir, "config.js"   ) : false )
         ||  ( fs.existsSync(path.join(rootDir, "config.json"  )) ? path.join(rootDir, "config.json" ) : false )
+        ||  ( fs.existsSync(path.join(rootDir, "config.hson"  )) ? path.join(rootDir, "config.hson" ) : false )
         ||  ( fs.existsSync(path.join(rootDir, "config.yml"   )) ? path.join(rootDir, "config.yml"  ) : false )
   }
 
@@ -143,6 +147,14 @@ else{
     if(cli_config) helpers.deepExtend(config, cli_config);
 
     helpers.deepExtend(config, {options: cli_options});
+
+    //using 'patch'
+    if(config.patch){
+      for(var target in config.patch){
+        helpers.patch(config, target, config.patch[target]);
+      }
+      delete config.patch;
+    }
 
     return config;
   };
