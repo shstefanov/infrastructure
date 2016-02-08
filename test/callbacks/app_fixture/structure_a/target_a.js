@@ -1,7 +1,7 @@
 
 
 var TargetA = function(env){
-  console.log("DO ::: ", env.i.do.toString());
+
 };
 
 TargetA.prototype.handle_callback = function(data, cb){
