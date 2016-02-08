@@ -1,5 +1,28 @@
 https://shstefanov.github.io/infrastructure/
 
+Changes in 1.3.0
+================
+
+  Support .hson file format in config ( https://github.com/timjansen/hanson )
+
+  Adding 'patch' to config root (or mode root)
+```json
+{
+  "structures.pages.config.http.port": 3000,
+  "structures.models.config.mongodb.host": "example.com"
+
+}
+```
+  Fixing missing repl close on shutdown
+  Try to return better error message on catch in helpers.chain
+
+Adding 
+```javascript
+env.i.do("master.keep", "key", value); // keeps some data (needed to restore target data on hot reload)
+env.i.do("master.pull", "key", function(err, data)); // pulls the data from the cache
+```
+
+
 Changes in 1.2.0
 ================
   Adding config.only = [ ...structure_names ] in test mode

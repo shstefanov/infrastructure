@@ -46,8 +46,11 @@ module.exports = function(env, cb){
     var data = {address: address, args: args};
     if(typeof cb === "function"){
       cb = args.pop();
-      if(cb.name === "do_listener") data.listener = env.serializeCallback(cb);
-      else  data.cb = env.serializeCallback(cb);        
+      if(cb.name === "do_listener") {
+        data.listener = env.serializeCallback(cb);
+        // Add cb.drop here !!! ???
+      }
+      else  data.cb = env.serializeCallback(cb);
     }
     process.send(data);
   }
