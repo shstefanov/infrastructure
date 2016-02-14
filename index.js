@@ -122,7 +122,7 @@ else{
     if( config.process_mode === "cluster" && !isMaster ) return config;
     var extension      = module.exports.loadConfig(module.exports.getConfigPath(config.rootDir), config);
 
-    var mode_name = config.mode || extension.mode, mode_extension;
+    var mode_name = cli_options.mode || config.mode || extension.mode, mode_extension;
     if(mode_name){
       if(config[mode_name]) {
         mode_extension = config[mode_name];
@@ -139,12 +139,10 @@ else{
     }
     helpers.deepExtend(config, extension);
 
-    // Reduce structures for test needs
-    if(config.mode === "test" && config.only){
-      config.structures = _.pick(config.structures, config.only);
-    }
 
     if(cli_config) helpers.deepExtend(config, cli_config);
+
+    // Reduce structures for test needs
 
     helpers.deepExtend(config, {options: cli_options});
 
@@ -154,6 +152,10 @@ else{
         helpers.patch(config, target, config.patch[target]);
       }
       delete config.patch;
+    }
+    
+    if(config.mode === "test" && config.only){
+      config.structures = _.pick(config.structures, config.only);
     }
 
     return config;
