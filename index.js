@@ -154,7 +154,8 @@ else{
       delete config.patch;
     }
     
-    if(config.mode === "test" && config.only){
+    if(config.only){
+      if(typeof config.only === "string") config.only = config.only.split(",");
       config.structures = _.pick(config.structures, config.only);
     }
 
