@@ -28,13 +28,14 @@ module.exports.cleanup = function(err, cb){
   cb(err);
 };
 
-module.exports.client = function(url, opts, cb){
-  if(typeof opts === "function"){
-    cb = opts, opts = {};
-  }
+module.exports.client = function(opts, cb){
+  opts = opts || {};
   var jsdom = require("jsdom");
-  // require("colors");
-  var window, conf = {
+
+  var client = {cookieJar: jsdom.createCookieJar()};
+
+
+  var conf = {
       
     features: {
       FetchExternalResources: ["script", "link", "img"],
@@ -42,15 +43,15 @@ module.exports.client = function(url, opts, cb){
       SkipExternalResources: false
     },
 
-    cookieJar: jsdom.createCookieJar(),
+    cookieJar: client.cookieJar,
     headers: opts.headers || {},
 
     created: function(err, _window){
       if(err) return cb(err);
-      window = _window;
+      var window = client.window = _window;
 
       // This fixes leaflet (0.7.7) map initialization
-      window.HTMLDivElement.prototype.clientWidth = 500;
+      window.HTMLDivElement.prototype.clientWidth  = 500;
       window.HTMLDivElement.prototype.clientHeight = 500;
       
       // This fixes websocket connections
@@ -59,10 +60,6 @@ module.exports.client = function(url, opts, cb){
       // Call custom handler if any
       opts.created && opts.created(window);
     },
-
-    // onload: function(window){
-    //   console.log("onload")
-    // }
   
   };
 
@@ -87,15 +84,80 @@ module.exports.client = function(url, opts, cb){
       }
     }
   }
-  
-  var jsd = jsdom.env( url, conf, _.once(function (err, window) {
-    if(err) return cb(err);
-    if(module.exports.env){
-      module.exports.env.stops.push( function(cb){
-        window.document.close();
-        cb();
-      });
+
+
+  function getCookie(){
+    var cookie = client.cookieJar.toJSON().cookies.pop();
+    return cookie ? cookie.key+"="+cookie.value : null;
+  }
+
+  client.post = function(uri, data, cb){
+    var request = require("request");
+    var url = "http://" + module.exports.env.config.host + uri;
+    var cookie = getCookie();
+    request.post(url, {
+      followRedirect: false,
+      form: data,
+      headers: cookie ? { cookie: cookie } : {}
+    }, function(err, response, body){
+      if([301,302].indexOf(response.statusCode) !== -1) {
+        return client.get(response.headers.location, cb);
+      }
+
+      client.window && client.window.document.close();
+      delete client.window;
+      delete client.jsd;
+      client.jsd = jsdom.env( body, conf, _.once(function (err, window) {
+        if(err) return cb(err);
+        client.location = uri;
+        client.window = window;
+        cb(null, window);
+      }));
+      
+    });
+  };
+
+
+  client.get = function(uri, opts, cb){
+    if(typeof opts === "function"){
+      cb = opts, opts = {};
     }
-    cb(null, window); 
-  }));
+    var request = require("request");
+    var url = "http://" + module.exports.env.config.host + uri;
+    var cookie = getCookie();
+    request.get(url, {
+      followRedirect: false,
+      headers: cookie ? { cookie: cookie } : {}
+    }, function(err, response, body){
+      if([301,302].indexOf(response.statusCode) !== -1) {
+        return client.get(response.headers.location, cb);
+      }
+
+      client.window && client.window.document.close();
+      delete client.window;
+      delete client.jsd;
+      client.jsd = jsdom.env( body, conf, _.once(function (err, window) {
+        if(err) return cb(err);
+        client.location = uri;
+        client.window = window;
+        cb(null, window);
+      }));
+      
+    });
+
+  };
+
+  // Needed just for cookie to be set
+  client.cookie = function(uri, cb){
+    var url = "http://" + module.exports.env.config.host + uri;
+    client.jsd = jsdom.env( url, conf, _.once(cb));
+  }
+
+  client.reload = function(cb){
+    if(!client.location) return cb(new Error("Can't reload - no page loaded"));
+    client.get(client.location, cb);
+  }
+
+
+  return client;
 }
