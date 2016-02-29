@@ -67,23 +67,21 @@ module.exports.client = function(opts, cb){
 
   if(opts.console === true) conf.virtualConsole = jsdom.createVirtualConsole().sendTo(console);
 
-  if(opts.resources){ // TODO ???
-    conf.resourceLoader = function (resource, callback) {
-      var pathname = resource.url.pathname;
-      if(opts.resources.hasOwnProperty(pathname)){
-        var t =setTimeout(function(){
-          callback(null, JSON.stringify(opts.resources[pathname]));
-        }, 1000 );
-      }
-      else resource.defaultFetch(callback);
-      return {
-        abort: function(){
-          clearTimeout(t);
-          callback(new Error("Resource Loader Error"));
-        }
-      }
-    }
-  }
+  var resourceCache = {};
+
+  // conf.resourceLoader = function(resource, cb){
+  //   var request = require("request");
+  //   if(resourceCache[resource.url.href]) {
+  //     return setTimeout(function(){
+  //         return cb(null, resourceCache[resource.url.href]);
+  //     }, 100);
+  //   }
+  //   request.get(resource.url.href, function(err, response, body){
+  //     if(err) return cb(err);
+  //     resourceCache[resource.url.href] = body;
+  //     cb(null, body);
+  //   });
+  // }
 
 
   function getCookie(){
@@ -95,12 +93,14 @@ module.exports.client = function(opts, cb){
     var request = require("request");
     var url = "http://" + module.exports.env.config.host + uri;
     var cookie = getCookie();
+    console.log("POST", cookie);
     request.post(url, {
       followRedirect: false,
       form: data,
       headers: cookie ? { cookie: cookie } : {}
     }, function(err, response, body){
       if([301,302].indexOf(response.statusCode) !== -1) {
+        console.log("POST REDIRECT", response.headers.location);
         return client.get(response.headers.location, cb);
       }
 
@@ -130,6 +130,7 @@ module.exports.client = function(opts, cb){
       headers: cookie ? { cookie: cookie } : {}
     }, function(err, response, body){
       if([301,302].indexOf(response.statusCode) !== -1) {
+        console.log("GET REDIRECT", response.headers.location, cookie);
         return client.get(response.headers.location, cb);
       }
 
@@ -148,7 +149,7 @@ module.exports.client = function(opts, cb){
   };
 
   // Needed just for cookie to be set
-  client.cookie = function(uri, cb){
+  client.visit = function(uri, cb){
     var url = "http://" + module.exports.env.config.host + uri;
     client.jsd = jsdom.env( url, conf, _.once(cb));
   }
