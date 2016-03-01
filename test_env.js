@@ -93,14 +93,12 @@ module.exports.client = function(opts, cb){
     var request = require("request");
     var url = "http://" + module.exports.env.config.host + uri;
     var cookie = getCookie();
-    console.log("POST", cookie);
     request.post(url, {
       followRedirect: false,
       form: data,
       headers: cookie ? { cookie: cookie } : {}
     }, function(err, response, body){
       if([301,302].indexOf(response.statusCode) !== -1) {
-        console.log("POST REDIRECT", response.headers.location);
         return client.get(response.headers.location, cb);
       }
 
@@ -130,7 +128,6 @@ module.exports.client = function(opts, cb){
       headers: cookie ? { cookie: cookie } : {}
     }, function(err, response, body){
       if([301,302].indexOf(response.statusCode) !== -1) {
-        console.log("GET REDIRECT", response.headers.location, cookie);
         return client.get(response.headers.location, cb);
       }
 
