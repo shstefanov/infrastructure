@@ -4,6 +4,8 @@ module.exports = function(cb){
 
   var Backbone  = require("backbone");
   Backbone.sync = function(method, model, options){
+
+    if(model.__sync) return model.__sync.apply(env, arguments);
     
     function callback(err, result){ err? options.error(err) : options.success(result); }
 
@@ -18,7 +20,7 @@ module.exports = function(cb){
       case 'patch':
       case 'delete':
         var target = options.dataPath || ( model.dataPath+"."+(options.method || method) );
-        env.i.do( target, query || model.toJSON(), opts, callback); 
+        env.i.do( target, query || model.toJSON(), opts, callback);
         break;
       case 'read':
         var dataPath = options.dataPath || ( (model instanceof Backbone.Collection)? (model.dataPath || model.model.prototype.dataPath) : model.dataPath ) + ( options.method || ( (model instanceof Backbone.Collection ) ? ".find" : ".findOne" ) );
