@@ -57,7 +57,7 @@ module.exports = function(env, cb){
 
   function respond(args, msg){
     var cb = _.last(args);
-    if(_.isFunction(cb)) cb(msg)
+    if(_.isFunction(cb)) cb(msg instanceof Error ? msg.stack : msg);
   }
 
   var no_target = "Can't find target: ", 
@@ -66,18 +66,14 @@ module.exports = function(env, cb){
       i = env.i;
 
 var DO = function(address){
-  var args=sl.call(arguments,1)
-  var parts=address.split(".")
-  var root=i[parts[0]]
+  var args=sl.call(arguments,1),parts=address.split("."),root=i[parts[0]]
   if(!root) return forwardToMaster(address,args)
-  var last=parts.pop()
-  var ctx=resolve(i, parts.join("."))
+  var last=parts.pop(),ctx=resolve(i, parts.join("."))
   if(!ctx||!(_.isFunction(ctx[last]))) return respond(args,no_target+address)
   var whitelist=ctx.callable||ctx.methods;
   if(whitelist&&whitelist.indexOf(last)===-1) return respond(args,no_target+address)
   if(ctx.parseArguments) try{args=ctx.parseArguments(args)}catch(err){respond(args,err)}
-  try{ctx[last].apply(ctx,args)}
-  catch(err){respond( args,err)}
+  try{ctx[last].apply(ctx,args)}catch(err){respond( args,err)}
 };
 
 }
