@@ -99,20 +99,42 @@ module.exports = function(env, cb){
   }
 
 
-  var DO = function(address){
-    var args          = Array.prototype.slice.call(arguments);
-    var address       = args[0];
-    var address_parts = address.split(".");
-    var root          = env.i[address_parts[0]];
-    if(!root) return findCbAndRespond(args, "Can't find target: ", address);
-    var last          = _.last(address_parts);
-    var context       = env.helpers.resolve(env.i, address_parts.slice(0, -1).join("."));
-    if(!context || !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
+  var no_target = "Can't find target: ", 
+    sl = Array.prototype.slice, 
+    resolve = env.helpers.resolve,
+    i = env.i,
+    respond = findCbAndRespond;
+
+var DO = function(address){
+  var args=sl.call(arguments,1)
+  var parts=address.split(".")
+  var root=i[parts[0]]
+  if(!root) return respond(args,no_target+address)
+  var last=parts.pop()
+  var ctx=resolve(i, parts.join("."))
+  if(!ctx||!(_.isFunction(ctx[last]))) return respond(args,no_target+address)
+  var whitelist=ctx.callable||ctx.methods
+  if(whitelist&&whitelist.indexOf(last)===-1) return respond(args,no_target+address)
+  if(ctx.parseArguments) try{args=ctx.parseArguments(args)}catch(err){respond(args,err)}
+  try{ctx[last].apply(ctx,args)}
+  catch(err){respond( args,err)}
+};
+
+
+  // var DO = function(address){
+  //   var args          = Array.prototype.slice.call(arguments);
+  //   var address       = args[0];
+  //   var address_parts = address.split(".");
+  //   var root          = env.i[address_parts[0]];
+  //   if(!root) return findCbAndRespond(args, "Can't find target: ", address);
+  //   var last          = _.last(address_parts);
+  //   var context       = env.helpers.resolve(env.i, address_parts.slice(0, -1).join("."));
+  //   if(!context || !(_.isFunction(context[last]))) return findCbAndRespond(args, "Can't find target: "+address);
     
-    if(context.parseArguments) args = context.parseArguments(args.slice(1));
-    else args = args.slice(1);
-    context[last].apply(context, args);
-  };
+  //   if(context.parseArguments) args = context.parseArguments(args.slice(1));
+  //   else args = args.slice(1);
+  //   context[last].apply(context, args);
+  // };
 
 
   if(config.process_mode === "cluster"){
@@ -127,18 +149,16 @@ module.exports = function(env, cb){
     env.runCallback = function runCallback(data){
       var fn = callbacks[data.run_cb[1]];
       if(fn) {
-        fn.apply(global, data.args);
-        if(!fn.isListener && !fn.isStream){
+        if(!fn.isListener){
           env.dropCallback({drop_cb: data.run_cb});
         }
+        fn.apply(global, data.args);
       }
     }
 
-    env.dropCallback = function runCallback(data){
+    env.dropCallback = function dropCallback(data){
       var fn = callbacks[data.drop_cb[1]];
-      if(fn) {
-        delete callbacks[data.drop_cb[1]];
-      }
+      if(fn) delete callbacks[data.drop_cb[1]];
     }
 
     var cluster = require("cluster");
@@ -156,19 +176,6 @@ module.exports = function(env, cb){
             args: Array.prototype.slice.call(arguments)
           });
         }
-      }
-
-      env.deserializeStream = function deserializeStream(stream_data){
-        var stream = Array.prototype.slice.call(stream_data);
-        var deserialized = function(){
-          process.send({
-            address: stream[0],
-            run_cb: stream,
-            args: Array.prototype.slice.call(arguments)
-          });
-        }
-        deserialized.end = function(){ process.send({ address: stream[0], drop_cb: stream }); }
-        return deserialized;
       }
 
       env.deserializeListener = function deserializeListener(listener_data){
@@ -221,10 +228,5 @@ module.exports = function(env, cb){
       cb(null, env);
     });
   }
-
-  // if      (!env.config.nodes && cluster.isMaster)     require("./init/single.js")(env, cb);
-  // else if (env.config.nodes  && cluster.isMaster)     require("./init/master.js")(env, cb);
-  // else                                                require("./init/worker.js")(env, cb);
-
 
 };

@@ -13,7 +13,7 @@ module.exports = function(cb){
 
   _.each(config.structures.log.options, function(val, key, log){
     env.i.log[key] = function(logName, value, cb){
-      if(!config.structures.log.options[key]) return;
+      if(!config.structures.log.options[key]) return cb && cb();
       if(_.isNull(logName) || _.isUndefined(logName)) logName = logName+"";
       var date = new Date().toISOString().replace(/\..*$/, "").replace("T", " ");
       console.log("["+key+"]  ["+date+"]"+(env.config.address?("["+env.config.address+"]"+shortline.slice(env.config.address.length)):"")+"["+logName+"]"+line.slice(logName.length), value);

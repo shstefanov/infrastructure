@@ -83,35 +83,17 @@ module.exports = function(env, cb){
         // Removing the cache
         delete cache[name];
         
+        var i = env.i;
         // Listen for messages
         worker.on("message", function(data){
-          // If there is no 'address' property, there is some anomaly
-          if(!data.address) return console.log("????", JSON.stringify(data));
-          
-          // The address is dot notated, split it to it's parts
-          var address_parts = data.address.split(".");
-
-          // Targeted node is the first part
-          var target_name   = address_parts[0];
-
-          // Resolve targeted worker from workers namespace
-          var target = env.i[target_name];
-          
-          // Parse callbacks, listeners and streams, 
-          // they must contain source worker name so 
-          // make them to be array of type [worker_name, fn_id]
-          if(data.cb && !Array.isArray(data.cb)                  ) data.cb       = [name, data.cb       ];
+          if(!data.address) return;
+          var target_name  = data.address.split(".")[0];
+          var target = i[target_name];
+          if(data.cb && !Array.isArray(data.cb) ) data.cb = [ name, data.cb ];
           else if(data.listener && !Array.isArray(data.listener) ) data.listener = [name, data.listener ];
-          else if(data.stream   && !Array.isArray(data.stream)   ) data.stream   = [name, data.stream   ];
-
-          // If target is found, send message to target
           if(target) target.send(data);
-          // If target does not exist, may be it is still not initialized
-          // pushing data to cache
           else if(cache[target_name]) cache[target_name].push(data);
-          else {
-            handleMissingTarget(worker, data);
-          }
+          else handleMissingTarget(worker, data);
         });
 
         // Node is initialized, calling callback to continue/finish initialization chain
@@ -142,29 +124,22 @@ module.exports = function(env, cb){
     }, 0 );    
   });
   
+  var sl = Array.prototype.slice, i = env.i;
   env.i.do = function(){
-    var args = Array.prototype.slice.call(arguments);
-    var address = args[0];
-    if(_.isString(address)) address = args.shift().split(".");
-    var callback = _.last(args), cb_data;
-    if(_.isFunction(callback)) cb_data = ["master", env.serializeCallback(args.pop())];
-    else cb_data = undefined;
-
-    var target_name = address[0];
-    var target = env.i[target_name];
-
-    if(target && target.send) {
-      var sendData = {address: address.join("."), args: args};
+    var args = sl.call(arguments);
+    var address = _.isString(args[0])? args.shift().split("."):args[0];
+    var cb = _.last(args), cb_data;
+    if(_.isFunction(cb)) cb_data = ["master", env.serializeCallback(args.pop())];
+    var target = i[address[0]];
+    var data = {address: address.join("."), args: args};
+    if(target && target.send){
       if(cb_data) {
-        if     (callback.name === "do_stream"  ) { sendData.stream   = cb_data; callback.isStream   = true; }
-        else if(callback.name === "do_listener") { sendData.listener = cb_data; callback.isListener = true; }
-        else                                       sendData.cb        = cb_data;
+        if(cb.name === "do_listener") { data.listener = cb_data; cb.isListener = true; }
+        else data.cb = cb_data;
       }
-      target.send(sendData);
+      target.send(data);
     }
-
-    // Try to handle missing target called from master process
-    else handleMissingTarget( env.i.master, sendData );
+    else handleMissingTarget(i.master,data);
   }
 
   env.i.master = {
@@ -177,17 +152,28 @@ module.exports = function(env, cb){
       else if(data.run_cb){
         return env.runCallback(data);
       }
+      else if(master_handlers.hasOwnProperty(data.address)){
+        master_handlers[data.address].apply(master_handlers, data.args.concat([function(){
+          if(!data.cb) return;
+          var target = env.i[data.cb[0]];
+          if(target) target.send({
+            run_cb: data.cb,
+            args: [].slice.call(arguments)
+          });
+        }]));
+      }
+    }
+  };
 
-
-      // if(data.cb){
-      //   data.args.push(deserializeCallback(data.cb));
-      // }
-      // var address_parts = data.address.split(".");
-      // if(!env.i[address_parts[0]]){ console.error("Can't find target ???");}
-      // else{
-      //   var doArgs = [data.address].concat(data.args);
-      //   env.i.do.apply(env.i, doArgs);
-      // }
+  var keep_data_map = {};
+  var master_handlers = {
+    "master.keep": function(name, data, cb){
+      keep_data_map[name] = data;
+      cb && cb();
+    },
+    "master.pull": function(name, cb){
+      cb(null, keep_data_map[name]);
+      delete keep_data_map[name];
     }
   }
 

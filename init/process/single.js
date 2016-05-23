@@ -69,6 +69,8 @@ module.exports = function(env, cb){
 
   }
 
+  env.resolveDep = resolvePath;
+
   env.classes = env.lib = classes;
 
   _.each(config.structures, function(node, type){
