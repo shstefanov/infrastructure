@@ -49,7 +49,8 @@ infrastructure({
         "webpack": {
           "watch":  true,
           "buildDestination": "./public",
-          "publicPath": "/infrastructure/"
+          "publicPath": "/infrastructure/public",
+          "sourceMap": true,
         }
       }
     }
@@ -62,7 +63,6 @@ infrastructure({
       "entry": ["./infrastructure.index.js", "./infrastructure.index.less"],
       "output": "infrastructure.bundle.js",
       "styleFilename": "infrastructure.bundle.css",
-      "watch": true,
       "chunks": {
         "vendor": {
           "output": "infrastructure.vendor.js",
