@@ -34,9 +34,11 @@ module.exports = function(env, cb){
 
   function processMessage(data){
     if(data.run_cb) return env.runCallback(data);
+    if(data.run_listener) return env.runListener(data);
+    if(data.drop_listener) return env.dropListener(data);
+    
     if(data.cb) data.args.push(env.deserializeCallback(data.cb));
     else if(data.listener) data.args.push(env.deserializeListener(data.listener));
-    else if(data.stream) data.args.push(env.deserializeStream(data.stream));
     var doArgs = [data.address].concat(data.args);
     env.i.do.apply(env.i, doArgs);
   }
@@ -47,7 +49,7 @@ module.exports = function(env, cb){
     if(typeof cb === "function"){
       cb = args.pop();
       if(cb.name === "do_listener") {
-        data.listener = env.serializeCallback(cb);
+        data.listener = env.serializeListener(cb);
         // Add cb.drop here !!! ???
       }
       else  data.cb = env.serializeCallback(cb);

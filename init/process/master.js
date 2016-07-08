@@ -123,57 +123,49 @@ module.exports = function(env, cb){
       cb(null, env); 
     }, 0 );    
   });
+
+  function processFn(fn){
+    return fn.name === "do_listener" ? {
+      listener: ["master", env.serializeListener(fn)]
+    } : {
+      cb: ["master", env.serializeCallback(fn)]
+    };
+  };
   
-  var sl = Array.prototype.slice, i = env.i;
+  var sl = Array.prototype.slice, i = env.i, emptyObj = {};
   env.i.do = function(){
     var args = sl.call(arguments);
     var address = _.isString(args[0])? args.shift().split("."):args[0];
     var cb = _.last(args), cb_data;
-    if(_.isFunction(cb)) cb_data = ["master", env.serializeCallback(args.pop())];
+    var cb_data = _.isFunction(cb) ? processFn(args.pop()) : emptyObj;
     var target = i[address[0]];
     var data = {address: address.join("."), args: args};
-    if(target && target.send){
-      if(cb_data) {
-        if(cb.name === "do_listener") { data.listener = cb_data; cb.isListener = true; }
-        else data.cb = cb_data;
-      }
-      target.send(data);
-    }
+    if(target && target.send) target.send(_.extend(data, cb_data));
     else handleMissingTarget(i.master,data);
   }
 
   env.i.master = {
     initialized: true,
     send: function processMessage(data){
-      // TODO - make master node callable
-      if(data.drop_cb){
-        return env.dropCallback(data);
-      }
-      else if(data.run_cb){
-        return env.runCallback(data);
-      }
-      else if(master_handlers.hasOwnProperty(data.address)){
-        master_handlers[data.address].apply(master_handlers, data.args.concat([function(){
-          if(!data.cb) return;
-          var target = env.i[data.cb[0]];
-          if(target) target.send({
-            run_cb: data.cb,
-            args: [].slice.call(arguments)
-          });
-        }]));
+      if(data.run_cb)             return env.runCallback(data);
+      else if(data.run_listener)  return env.runListener(data);
+      if(master_handlers.hasOwnProperty(data.address)){
+        if(data.cb)             data.args.push(env.deserializeCallback(data));
+        else if(data.listener)  data.args.push(env.deserializeListener(data));
+        master_handlers[data.address].apply(master_handlers, data.args);
       }
     }
   };
 
-  var keep_data_map = {};
+  var keep_data_map = new Map();
   var master_handlers = {
     "master.keep": function(name, data, cb){
-      keep_data_map[name] = data;
+      keep_data_map.set(name, data);
       cb && cb();
     },
     "master.pull": function(name, cb){
-      cb(null, keep_data_map[name]);
-      delete keep_data_map[name];
+      cb(null,keep_data_map.get(name));
+      keep_data_map.delete(name);
     }
   }
 
