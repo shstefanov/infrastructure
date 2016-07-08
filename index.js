@@ -115,7 +115,11 @@ else{
   }
 
   var extendConfig = module.exports.extendConfig = function( config ){
-    if( !hasConfig(config.rootDir) ) return config; // Nothing to extend
+    if( !hasConfig(config.rootDir) ) {
+      if(cli_config) helpers.deepExtend(config, cli_config);
+      helpers.deepExtend(config, {options: cli_options});
+      return config;
+    }
     var isMaster = cluster.isMaster;
 
     // Workers will get their from process.env

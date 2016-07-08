@@ -27,12 +27,12 @@ describe( "Callbacks and listeners" + currentFileMark, function(){
         next();
       }
     }
-    env.i.structure_a.on("message", messageListener);
     env.i.do("structure_a.target_a.handle_callback", 123, function(err, data){
       assert.equal(err, null);
       assert.equal(data, 123);
       results.push([err, data]);
     });
+    env.i.structure_a.on("message", messageListener);
   });
 
   it("Calls target and give listener", function(next){
