@@ -104,6 +104,12 @@ module.exports = function(env, cb){
   }
 
   function handleMissingTarget(worker, data){
+    if(data.cb){
+      worker.send({
+        run_cb: data.cb,
+        args: ["Can't find target: "+data.address]
+      });
+    }
     // TODO: If has callback - send back error message
     // if stream or listener is present 
     // send back destroy listener/stream message
