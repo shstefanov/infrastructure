@@ -139,26 +139,78 @@ var DO = function(address){
 
   if(config.process_mode === "cluster"){
 
-    var callbacks = {}, cb_index = 0;
+    var ExpireStore = require("./lib/ExpireStore.js");
+    var cb_store = new ExpireStore(config.callback_timeout || 60000);
+
+    var cb_index = 0;
     env.serializeCallback = function serializeCallback(fn){
       cb_index++;
-      callbacks[cb_index] = fn;
+      cb_store.set(cb_index, fn);
       return cb_index;
     }
 
     env.runCallback = function runCallback(data){
-      var fn = callbacks[data.run_cb[1]];
-      if(fn) {
-        if(!fn.isListener){
-          env.dropCallback({drop_cb: data.run_cb});
-        }
-        fn.apply(global, data.args);
+      var fn = cb_store.pull(data.run_cb[1]);
+      fn && fn.apply(global, data.args);
+    }
+
+    env.deserializeCallback = function deserializeCallback(cb_data){
+      var cb = Array.prototype.slice.call(cb_data);
+      return function(){
+        process.send({
+          address: cb[0],
+          run_cb: cb,
+          args: Array.prototype.slice.call(arguments)
+        });
       }
     }
 
-    env.dropCallback = function dropCallback(data){
-      var fn = callbacks[data.drop_cb[1]];
-      if(fn) delete callbacks[data.drop_cb[1]];
+    cb_store.on("expire", function(cb_id, fn){
+      fn("Callback timeout error");
+    });
+
+    env.stops.push(function(cb){
+      env.serializeCallback = function(fn){ fn("Process termination in progress"); };
+      cb_store.map.forEach(function(fn, key, store){
+        env.serializeCallback(fn);
+      });
+      cb_store.stop();
+      cb(); 
+    });
+
+    cb_store.start(config.callback_check_timeout_interval || 5000);
+    // var cb_check_interval = setInterval(function(){
+    //   cb_store.check();
+    // }, config.callback_check_timeout_interval || 5000);
+
+    var listeners = new Map(), listeners_index = 0;
+    env.serializeListener = function serializeListener(fn){
+      listeners_index++;
+      listeners.set(listeners_index, fn);
+      return listeners_index;
+    }
+
+    env.runListener = function runListener(data){
+      var fn = listeners.get(data.run_listener[1]);
+      fn && fn.apply(global, data.args);
+    }
+
+    env.dropListener = function runListener(data){
+      var l_id = data.run_listener[1], fn = listeners.get(l_id);
+      fn && listeners.delete(l_id);
+    }
+
+    env.deserializeListener = function deserializeListener(listener_data){
+      var listener = Array.prototype.slice.call(listener_data);
+      var deserialized = function(){
+        process.send({
+          address: listener[0],
+          run_listener: listener,
+          args: Array.prototype.slice.call(arguments)
+        });
+      }
+      deserialized.drop = function(){ process.send({ address: listener[0], drop_cb: listener }); };
+      return deserialized;
     }
 
     var cluster = require("cluster");
@@ -166,30 +218,6 @@ var DO = function(address){
       require("./init/process/master.js")(env, cb);
     }
     else{
-
-      env.deserializeCallback = function deserializeCallback(cb_data){
-        var cb = Array.prototype.slice.call(cb_data);
-        return function(){
-          process.send({
-            address: cb[0],
-            run_cb: cb,
-            args: Array.prototype.slice.call(arguments)
-          });
-        }
-      }
-
-      env.deserializeListener = function deserializeListener(listener_data){
-        var listener = Array.prototype.slice.call(listener_data);
-        var deserialized = function(){
-          process.send({
-            address: listener[0],
-            run_cb: listener,
-            args: Array.prototype.slice.call(arguments)
-          });
-        }
-        deserialized.drop = function(){ process.send({ address: listener[0], drop_cb: listener }); };
-        return deserialized;
-      }
 
       actual_do = env.i.do;
 

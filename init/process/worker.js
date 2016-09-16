@@ -34,9 +34,11 @@ module.exports = function(env, cb){
 
   function processMessage(data){
     if(data.run_cb) return env.runCallback(data);
+    if(data.run_listener) return env.runListener(data);
+    if(data.drop_listener) return env.dropListener(data);
+    
     if(data.cb) data.args.push(env.deserializeCallback(data.cb));
     else if(data.listener) data.args.push(env.deserializeListener(data.listener));
-    else if(data.stream) data.args.push(env.deserializeStream(data.stream));
     var doArgs = [data.address].concat(data.args);
     env.i.do.apply(env.i, doArgs);
   }
@@ -47,7 +49,7 @@ module.exports = function(env, cb){
     if(typeof cb === "function"){
       cb = args.pop();
       if(cb.name === "do_listener") {
-        data.listener = env.serializeCallback(cb);
+        data.listener = env.serializeListener(cb);
         // Add cb.drop here !!! ???
       }
       else  data.cb = env.serializeCallback(cb);
@@ -57,7 +59,7 @@ module.exports = function(env, cb){
 
   function respond(args, msg){
     var cb = _.last(args);
-    if(_.isFunction(cb)) cb(msg)
+    if(_.isFunction(cb)) cb(msg instanceof Error ? msg.stack : msg);
   }
 
   var no_target = "Can't find target: ", 
@@ -66,18 +68,14 @@ module.exports = function(env, cb){
       i = env.i;
 
 var DO = function(address){
-  var args=sl.call(arguments,1)
-  var parts=address.split(".")
-  var root=i[parts[0]]
+  var args=sl.call(arguments,1),parts=address.split("."),root=i[parts[0]]
   if(!root) return forwardToMaster(address,args)
-  var last=parts.pop()
-  var ctx=resolve(i, parts.join("."))
+  var last=parts.pop(),ctx=resolve(i, parts.join("."))
   if(!ctx||!(_.isFunction(ctx[last]))) return respond(args,no_target+address)
   var whitelist=ctx.callable||ctx.methods;
   if(whitelist&&whitelist.indexOf(last)===-1) return respond(args,no_target+address)
   if(ctx.parseArguments) try{args=ctx.parseArguments(args)}catch(err){respond(args,err)}
-  try{ctx[last].apply(ctx,args)}
-  catch(err){respond( args,err)}
+  try{ctx[last].apply(ctx,args)}catch(err){respond( args,err)}
 };
 
 }
