@@ -40,11 +40,11 @@ module.exports = function(env, cb){
         }
       }
       else{
-        env.i[name] = {};        
+        env.i[name] = {};
       }
     }
     else{
-      env.i[name] = {};        
+      env.i[name] = {};
     }
 
 
