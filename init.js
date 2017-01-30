@@ -36,7 +36,6 @@ module.exports = function(env, cb){
           env.i[name] = bulk(stagePath, Array.isArray(structureConfig.path)?structureConfig.path[1]:["**/*.js", "**/*.coffee"]);
         }
         catch(err){
-          console.error(err);
           return cb(err);
         }
       }
