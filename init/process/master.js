@@ -86,7 +86,7 @@ module.exports = function(env, cb){
         var i = env.i;
         // Listen for messages
         worker.on("message", function(data){
-          if(!data.address) return;
+          if(!data || !data.address) return;
           var target_name  = data.address.split(".")[0];
           var target = i[target_name];
           if(data.cb && !Array.isArray(data.cb) ) data.cb = [ name, data.cb ];

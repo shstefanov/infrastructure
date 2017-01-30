@@ -32,14 +32,19 @@ module.exports = function(env, cb){
     if(structureConfig.path){
       var stagePath = path.join(env.config.rootDir, Array.isArray(structureConfig.path)?structureConfig.path[0]:structureConfig.path);
       if(fs.existsSync(stagePath)) {
-        env.i[name] = bulk(stagePath, Array.isArray(structureConfig.path)?structureConfig.path[1]:["**/*.js", "**/*.coffee"]);
+        try{
+          env.i[name] = bulk(stagePath, Array.isArray(structureConfig.path)?structureConfig.path[1]:["**/*.js", "**/*.coffee"]);
+        }
+        catch(err){
+          return cb(err);
+        }
       }
       else{
-        env.i[name] = {};        
+        env.i[name] = {};
       }
     }
     else{
-      env.i[name] = {};        
+      env.i[name] = {};
     }
 
 
