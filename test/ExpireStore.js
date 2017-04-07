@@ -77,14 +77,14 @@ describe("ExpireStore" + currentFileMark, () => {
   });
 
   it("event: expire", (next) => {
-    var now = Date.now();
     var exp = new Expire(50);
-    exp.set("test", 99);
     setTimeout( exp.check.bind(exp), 100 );
+    var now = Date.now();
+    exp.set("test", 99);
     exp.on("expire", (key, val, expires_at) => {
+      assert.equal(expires_at, now + 50);
       assert.equal(key, "test");
       assert.equal(val, 99);
-      assert.equal(expires_at, now + 50);
       assert.equal(exp.map.has("test"), false);
       next();
     });
