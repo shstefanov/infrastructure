@@ -27,9 +27,9 @@
     "mongodb": "latest",
     "morgan": "latest",
     "serve-favicon": "~2.0.0",
-    "session.socket.io": "latest",
-    "socket.io": "latest",
-    "socket.io-client": "latest",
+    "session.socket.io": "0.2.1",
+    "socket.io": "1.4.5",
+    "socket.io-client": "1.4.5",
     "ui-router": "latest",
     "underscore": "latest",
     "walk": "latest"
