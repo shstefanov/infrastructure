@@ -24,7 +24,7 @@
     "js-beautify": "latest",
     "method-override": "~1.0.1",
     "mkdirp": "^0.5.0",
-    "mongodb": "latest",
+    "mongodb": "2.1.17",
     "morgan": "latest",
     "serve-favicon": "~2.0.0",
     "session.socket.io": "0.2.1",
