@@ -34,7 +34,7 @@ module.exports = function(cb){
   if(config.morgan){
     !Array.isArray(config.morgan)?app.use(morgan(config.morgan)):config.morgan.forEach(function(opt){app.use(morgan(opt));});
   }
-  app.use(bodyParser(config.limit));
+  app.use(bodyParser(config.body_parser));
   app.use(methodOverride());
   var cookieParser = CookieParser(config.session.secret);
   app.use(cookieParser);
