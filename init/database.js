@@ -1,5 +1,7 @@
 
 module.exports = function(cb){
+
+  if(!config.db) return cb();
   
   var createURL = function(conf){
     var cr = "";
